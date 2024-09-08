@@ -30,14 +30,6 @@ class Program {
     UnhookWindowsHookEx(_mouseHookID);
   }
 
-  private static void MessageLoop() {
-    MSG msg = new MSG();
-    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
-      TranslateMessage(ref msg);
-      DispatchMessage(ref msg);
-    }
-  }
-
   private static void MonitorKeyStates() {
     while (true) {
       Console.WriteLine("Current Key States:");
@@ -45,6 +37,14 @@ class Program {
         Console.WriteLine($"{keyState.Key}: {keyState.Value}");
       }
       Thread.Sleep(1000);
+    }
+  }
+
+  private static void MessageLoop() {
+    MSG msg = new MSG();
+    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
+      TranslateMessage(ref msg);
+      DispatchMessage(ref msg);
     }
   }
 
