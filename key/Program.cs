@@ -64,19 +64,13 @@ class Program {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
           _keyStates[key] = true;
-          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
-            SimulateKeyPress(ConsoleKey.L);
-          }
+          Console.WriteLine($"{key} Pressed");
           break;
 
         case WM_KEYUP:
         case WM_SYSKEYUP:
           _keyStates[key] = false;
-          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
-            SimulateKeyPress(ConsoleKey.L);
-          } else if (key == ConsoleKey.A || key == ConsoleKey.L) {
-            SimulateKeyRelease(ConsoleKey.L);
-          }
+          Console.WriteLine($"{key} Released");
           break;
       }
     }
