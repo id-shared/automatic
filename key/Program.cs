@@ -17,9 +17,10 @@ class Program {
     _mouseHookID = await Task.Run(() => SetHook(_mouseProc, WH_MOUSE_LL));
 
     if (_keyboardHookID == IntPtr.Zero || _mouseHookID == IntPtr.Zero) {
-      Console.WriteLine("Failed to set hooks!");
       return;
     }
+
+    _ = Task.Run(() => MonitorKeyStatesAsync()); // Start monitoring key states
 
     await Task.Run(() => MessageLoopAsync());
 
@@ -35,24 +36,28 @@ class Program {
     }
   }
 
+  private static async Task MonitorKeyStatesAsync() {
+    while (true) {
+      await Task.Delay(1000);
+      Console.WriteLine("Current Key States:");
+      foreach (var keyState in _keyStates) {
+        Console.WriteLine($"{keyState.Key}: {keyState.Value}");
+      }
+    }
+  }
+
   private static IntPtr SetHook(Delegate proc, int hookType) {
     using ProcessModule curModule = Process.GetCurrentProcess().MainModule;
     if (curModule == null) {
-      Console.WriteLine("Error: Could not get current module.");
       return IntPtr.Zero;
     }
 
     IntPtr moduleHandle = GetModuleHandle(curModule.ModuleName);
     if (moduleHandle == IntPtr.Zero) {
-      Console.WriteLine("Error getting module handle: " + Marshal.GetLastWin32Error());
       return IntPtr.Zero;
     }
 
     IntPtr hook = SetWindowsHookEx(hookType, proc, moduleHandle, 0);
-    if (hook == IntPtr.Zero) {
-      Console.WriteLine($"Error setting hook: {Marshal.GetLastWin32Error()}");
-    }
-
     return hook;
   }
 
