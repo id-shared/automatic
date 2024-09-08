@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
@@ -66,7 +64,6 @@ class Program {
             _keyStates[key] = true;
           }
 
-          // Check if both LMB and A key are pressed
           if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
             SimulateKeyPress(ConsoleKey.L);
           }
@@ -78,7 +75,6 @@ class Program {
             _keyStates[key] = false;
           }
 
-          // Check if both LMB and A key are still pressed
           if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
             SimulateKeyPress(ConsoleKey.L);
           } else if (key == ConsoleKey.A || key == ConsoleKey.L) {
@@ -92,7 +88,7 @@ class Program {
 
         case WM_LBUTTONUP:
           _lmbPressed = false;
-          SimulateKeyRelease(ConsoleKey.L); // Release J if LMB is released
+          SimulateKeyRelease(ConsoleKey.L);
           break;
       }
     }
