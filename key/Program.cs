@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -11,8 +12,7 @@ class Program {
   private static readonly LowLevelMouseProc _mouseProc = MouseHookCallback;
   private static IntPtr _keyboardHookID = IntPtr.Zero;
   private static IntPtr _mouseHookID = IntPtr.Zero;
-  private static readonly Dictionary<ConsoleKey, bool> _keyStates = new();
-  private static bool _lmbPressed;
+  private static readonly Dictionary<string, bool> _keyStates = new();
 
   static void Main() {
     _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
@@ -58,19 +58,17 @@ class Program {
   private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       var key = (ConsoleKey)Marshal.ReadInt32(lParam);
-
-      Console.WriteLine($"Pressed key: {key}");
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-          _keyStates[key] = true;
-          Console.WriteLine($"{key} Pressed");
+          _keyStates[key.ToString()] = true;
+          foreach (var kvp in _keyStates) {
+            Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
+          }
           break;
-
         case WM_KEYUP:
         case WM_SYSKEYUP:
-          _keyStates[key] = false;
-          Console.WriteLine($"{key} Released");
+          _keyStates[key.ToString()] = false;
           break;
       }
     }
@@ -81,36 +79,18 @@ class Program {
     if (nCode >= 0) {
       switch ((int)wParam) {
         case WM_LBUTTONDOWN:
-          _lmbPressed = true;
-          Console.WriteLine("LMB Pressed");
+          _keyStates["LMB"] = true;
+          foreach (var kvp in _keyStates) {
+            Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
+          }
           break;
-
         case WM_LBUTTONUP:
-          _lmbPressed = false;
-          Console.WriteLine("LMB Released");
+          _keyStates["LMB"] = true;
           break;
       }
     }
     return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
   }
-
-  private static void SimulateKey(ConsoleKey key, bool isPress) {
-    INPUT input = new INPUT {
-      type = INPUT_KEYBOARD,
-      u = new InputUnion {
-        ki = new KEYBDINPUT {
-          wVk = (ushort)key,
-          dwFlags = isPress ? 0 : KEYEVENTF_KEYUP,
-          dwExtraInfo = IntPtr.Zero
-        }
-      }
-    };
-    SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
-    Console.WriteLine($"Simulated key {(isPress ? "press" : "release")}: {key}");
-  }
-
-  private static void SimulateKeyPress(ConsoleKey key) => SimulateKey(key, true);
-  private static void SimulateKeyRelease(ConsoleKey key) => SimulateKey(key, false);
 
   private const int WH_KEYBOARD_LL = 13;
   private const int WH_MOUSE_LL = 14;
@@ -120,8 +100,6 @@ class Program {
   private const int WM_SYSKEYUP = 0x0105;
   private const int WM_LBUTTONDOWN = 0x0201;
   private const int WM_LBUTTONUP = 0x0202;
-  private const int INPUT_KEYBOARD = 1;
-  private const int KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct INPUT {
