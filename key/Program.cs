@@ -1,33 +1,40 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-  private static readonly LowLevelKeyboardProc _proc = HookCallback;
-  private static IntPtr _hookID = IntPtr.Zero;
+  private static readonly LowLevelKeyboardProc _keyboardProc = KeyboardHookCallback;
+  private static readonly LowLevelMouseProc _mouseProc = MouseHookCallback;
+  private static IntPtr _keyboardHookID = IntPtr.Zero;
+  private static IntPtr _mouseHookID = IntPtr.Zero;
   private static readonly Dictionary<ConsoleKey, bool> _keyStates = new();
   private static bool _lmbPressed;
 
   static void Main() {
-    _hookID = SetHook(_proc);
+    _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
+    _mouseHookID = SetHook(_mouseProc, WH_MOUSE_LL);
 
-    if (_hookID == IntPtr.Zero) {
-      Console.WriteLine("Failed to set hook!");
+    if (_keyboardHookID == IntPtr.Zero || _mouseHookID == IntPtr.Zero) {
+      Console.WriteLine("Failed to set hooks!");
       return;
     }
 
-    Console.WriteLine("Hook set successfully. Listening for key events...");
+    Console.WriteLine("Hooks set successfully. Listening for keyboard and mouse events...");
 
     while (GetMessage(out MSG msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
 
-    UnhookWindowsHookEx(_hookID);
+    UnhookWindowsHookEx(_keyboardHookID);
+    UnhookWindowsHookEx(_mouseHookID);
   }
 
-  private static IntPtr SetHook(LowLevelKeyboardProc proc) {
+  private static IntPtr SetHook(Delegate proc, int hookType) {
     using ProcessModule curModule = Process.GetCurrentProcess().MainModule;
     if (curModule == null) {
       Console.WriteLine("Error: Could not get current module.");
@@ -40,39 +47,30 @@ class Program {
       return IntPtr.Zero;
     }
 
-    IntPtr hook = SetWindowsHookEx(WH_KEYBOARD_LL, proc, moduleHandle, 0);
+    IntPtr hook = SetWindowsHookEx(hookType, proc, moduleHandle, 0);
     if (hook == IntPtr.Zero) {
-      Console.WriteLine("Error setting hook: " + Marshal.GetLastWin32Error());
+      Console.WriteLine($"Error setting hook: {Marshal.GetLastWin32Error()}");
     }
 
     return hook;
   }
 
-  private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       var key = (ConsoleKey)Marshal.ReadInt32(lParam);
 
       Console.WriteLine($"Pressed key: {key}");
       switch ((int)wParam) {
-        case WM_LBUTTONDOWN:
-          _lmbPressed = true;
-          break;
-
-        case WM_LBUTTONUP:
-          _lmbPressed = false;
-          SimulateKeyRelease(ConsoleKey.L);
-          break;
-
-        case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
           _keyStates[key] = true;
           if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
             SimulateKeyPress(ConsoleKey.L);
           }
           break;
 
-        case WM_SYSKEYUP:
         case WM_KEYUP:
+        case WM_SYSKEYUP:
           _keyStates[key] = false;
           if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
             SimulateKeyPress(ConsoleKey.L);
@@ -82,7 +80,24 @@ class Program {
           break;
       }
     }
-    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+    return CallNextHookEx(_keyboardHookID, nCode, wParam, lParam);
+  }
+
+  private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    if (nCode >= 0) {
+      switch ((int)wParam) {
+        case WM_LBUTTONDOWN:
+          _lmbPressed = true;
+          Console.WriteLine("LMB Pressed");
+          break;
+
+        case WM_LBUTTONUP:
+          _lmbPressed = false;
+          Console.WriteLine("LMB Released");
+          break;
+      }
+    }
+    return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
   }
 
   private static void SimulateKey(ConsoleKey key, bool isPress) {
@@ -104,6 +119,7 @@ class Program {
   private static void SimulateKeyRelease(ConsoleKey key) => SimulateKey(key, false);
 
   private const int WH_KEYBOARD_LL = 13;
+  private const int WH_MOUSE_LL = 14;
   private const int WM_KEYDOWN = 0x0100;
   private const int WM_SYSKEYDOWN = 0x0104;
   private const int WM_KEYUP = 0x0101;
@@ -175,7 +191,7 @@ class Program {
   private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-  private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+  private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   [return: MarshalAs(UnmanagedType.Bool)]
