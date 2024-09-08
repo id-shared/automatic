@@ -94,6 +94,22 @@ class Program {
     return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
   }
 
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSG {
+    public IntPtr hWnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+  }
+
   private const int WH_KEYBOARD_LL = 13;
   private const int WH_MOUSE_LL = 14;
   private const int WM_KEYDOWN = 0x0100;
@@ -126,20 +142,4 @@ class Program {
 
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct POINT {
-    public int x;
-    public int y;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MSG {
-    public IntPtr hWnd;
-    public uint message;
-    public IntPtr wParam;
-    public IntPtr lParam;
-    public uint time;
-    public POINT pt;
-  }
 }
