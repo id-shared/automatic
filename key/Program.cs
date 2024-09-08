@@ -175,6 +175,22 @@ class Program {
     public ushort wParamH;
   }
 
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSG {
+    public IntPtr hWnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+  }
+
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
@@ -201,20 +217,4 @@ class Program {
 
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MSG {
-    public IntPtr hWnd;
-    public uint message;
-    public IntPtr wParam;
-    public IntPtr lParam;
-    public uint time;
-    public POINT pt;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct POINT {
-    public int x;
-    public int y;
-  }
 }
