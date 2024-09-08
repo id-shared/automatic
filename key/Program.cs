@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
-  // Define the callback delegate
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
   private static LowLevelKeyboardProc _proc = HookCallback;
@@ -68,6 +67,9 @@ class Program {
           }
           Console.WriteLine("Key down: " + key);
 
+          // Move the mouse down by 100 pixels
+          MoveMouseDown(100);
+
           // Check if the key pressed is the one to hold
           if (key == ConsoleKey.H) {
             _keyToHold = ConsoleKey.J;  // Example: Hold key J when H is pressed
@@ -91,6 +93,18 @@ class Program {
       }
     }
     return CallNextHookEx(_hookID, nCode, wParam, lParam);
+  }
+
+  private static void MoveMouseDown(int pixels) {
+    // Get the current cursor position
+    POINT cursorPos;
+    if (GetCursorPos(out cursorPos)) {
+      // Move the cursor down by the specified number of pixels
+      SetCursorPos(cursorPos.x, cursorPos.y + pixels);
+      Console.WriteLine("Moved mouse down by " + pixels + " pixels.");
+    } else {
+      Console.WriteLine("Failed to get cursor position.");
+    }
   }
 
   private static void SimulateKeyPress(ConsoleKey key) {
@@ -175,6 +189,22 @@ class Program {
     public ushort wParamH;
   }
 
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSG {
+    public IntPtr hWnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+  }
+
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
@@ -202,19 +232,11 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MSG {
-    public IntPtr hWnd;
-    public uint message;
-    public IntPtr wParam;
-    public IntPtr lParam;
-    public uint time;
-    public POINT pt;
-  }
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool SetCursorPos(int X, int Y);
 
-  [StructLayout(LayoutKind.Sequential)]
-  private struct POINT {
-    public int x;
-    public int y;
-  }
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool GetCursorPos(out POINT lpPoint);
 }
