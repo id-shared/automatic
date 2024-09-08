@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
@@ -8,6 +7,10 @@ class Program {
 
   private static LowLevelKeyboardProc _proc = HookCallback;
   private static IntPtr _hookID = IntPtr.Zero;
+
+  // Dictionary to keep track of key states
+  private static Dictionary<ConsoleKey, bool> _keyStates = new Dictionary<ConsoleKey, bool>();
+  private static ConsoleKey _keyToHold = ConsoleKey.None;
 
   static void Main(string[] args) {
     _hookID = SetHook(_proc);
@@ -53,18 +56,51 @@ class Program {
   private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       int vkCode = Marshal.ReadInt32(lParam);
+      ConsoleKey key = (ConsoleKey)vkCode;
+
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-          Console.WriteLine("Key down: " + (ConsoleKey)vkCode);
+          if (!_keyStates.ContainsKey(key)) {
+            _keyStates[key] = true;
+          }
+          Console.WriteLine("Key down: " + key);
+
+          // Check if the key pressed is the one to hold
+          if (key == ConsoleKey.H) {
+            _keyToHold = ConsoleKey.J;  // Example: Hold key J when H is pressed
+            SimulateKeyPress(_keyToHold);
+          }
           break;
+
         case WM_KEYUP:
         case WM_SYSKEYUP:
-          Console.WriteLine("Key up: " + (ConsoleKey)vkCode);
+          if (_keyStates.ContainsKey(key)) {
+            _keyStates[key] = false;
+          }
+          Console.WriteLine("Key up: " + key);
+
+          // Release the key if it was the one being held
+          if (key == _keyToHold) {
+            _keyToHold = ConsoleKey.None;
+            SimulateKeyRelease(key);
+          }
           break;
       }
     }
     return CallNextHookEx(_hookID, nCode, wParam, lParam);
+  }
+
+  private static void SimulateKeyPress(ConsoleKey key) {
+    Console.WriteLine("Simulating key press: " + key);
+    // Simulate a key press event here
+    // You may need additional logic to interact with other applications
+  }
+
+  private static void SimulateKeyRelease(ConsoleKey key) {
+    Console.WriteLine("Simulating key release: " + key);
+    // Simulate a key release event here
+    // You may need additional logic to interact with other applications
   }
 
   // P/Invoke declarations
