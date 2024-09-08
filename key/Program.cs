@@ -4,23 +4,22 @@ using System.Runtime.InteropServices;
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-  private static LowLevelKeyboardProc _proc = HookCallback;
+  private static readonly LowLevelKeyboardProc _proc = HookCallback;
   private static IntPtr _hookID = IntPtr.Zero;
+  private static readonly Dictionary<ConsoleKey, bool> _keyStates = new();
+  private static bool _lmbPressed;
 
-  private static Dictionary<ConsoleKey, bool> _keyStates = new Dictionary<ConsoleKey, bool>();
-  private static bool _lmbPressed = false; // Track left mouse button state
-
-  static void Main(string[] args) {
+  static void Main() {
     _hookID = SetHook(_proc);
 
     if (_hookID == IntPtr.Zero) {
       Console.WriteLine("Failed to set hook!");
-    } else {
-      Console.WriteLine("Hook set successfully. Listening for key events...");
+      return;
     }
 
-    MSG msg;
-    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
+    Console.WriteLine("Hook set successfully. Listening for key events...");
+
+    while (GetMessage(out MSG msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
@@ -29,59 +28,32 @@ class Program {
   }
 
   private static IntPtr SetHook(LowLevelKeyboardProc proc) {
-    using (Process curProcess = Process.GetCurrentProcess())
-    using (ProcessModule curModule = curProcess.MainModule) {
-      if (curModule == null) {
-        Console.WriteLine("Error: Could not get current module.");
-        return IntPtr.Zero;
-      }
-
-      IntPtr moduleHandle = GetModuleHandle(curModule.ModuleName);
-      if (moduleHandle == IntPtr.Zero) {
-        Console.WriteLine("Error getting module handle: " + Marshal.GetLastWin32Error());
-        return IntPtr.Zero;
-      }
-
-      IntPtr hook = SetWindowsHookEx(WH_KEYBOARD_LL, proc, moduleHandle, 0);
-      if (hook == IntPtr.Zero) {
-        Console.WriteLine("Error setting hook: " + Marshal.GetLastWin32Error());
-      }
-      return hook;
+    using ProcessModule curModule = Process.GetCurrentProcess().MainModule;
+    if (curModule == null) {
+      Console.WriteLine("Error: Could not get current module.");
+      return IntPtr.Zero;
     }
+
+    IntPtr moduleHandle = GetModuleHandle(curModule.ModuleName);
+    if (moduleHandle == IntPtr.Zero) {
+      Console.WriteLine("Error getting module handle: " + Marshal.GetLastWin32Error());
+      return IntPtr.Zero;
+    }
+
+    IntPtr hook = SetWindowsHookEx(WH_KEYBOARD_LL, proc, moduleHandle, 0);
+    if (hook == IntPtr.Zero) {
+      Console.WriteLine("Error setting hook: " + Marshal.GetLastWin32Error());
+    }
+
+    return hook;
   }
 
   private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      int vkCode = Marshal.ReadInt32(lParam);
-      ConsoleKey key = (ConsoleKey)vkCode;
+      var key = (ConsoleKey)Marshal.ReadInt32(lParam);
 
+      Console.WriteLine($"Pressed key: {key}");
       switch ((int)wParam) {
-        case WM_KEYDOWN:
-        case WM_SYSKEYDOWN:
-          if (!_keyStates.ContainsKey(key)) {
-            _keyStates[key] = true;
-          } else {
-            _keyStates[key] = true;
-          }
-
-          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
-            SimulateKeyPress(ConsoleKey.L);
-          }
-          break;
-
-        case WM_KEYUP:
-        case WM_SYSKEYUP:
-          if (_keyStates.ContainsKey(key)) {
-            _keyStates[key] = false;
-          }
-
-          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
-            SimulateKeyPress(ConsoleKey.L);
-          } else if (key == ConsoleKey.A || key == ConsoleKey.L) {
-            SimulateKeyRelease(ConsoleKey.L);
-          }
-          break;
-
         case WM_LBUTTONDOWN:
           _lmbPressed = true;
           break;
@@ -90,40 +62,46 @@ class Program {
           _lmbPressed = false;
           SimulateKeyRelease(ConsoleKey.L);
           break;
+
+        case WM_SYSKEYDOWN:
+        case WM_KEYDOWN:
+          _keyStates[key] = true;
+          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
+            SimulateKeyPress(ConsoleKey.L);
+          }
+          break;
+
+        case WM_SYSKEYUP:
+        case WM_KEYUP:
+          _keyStates[key] = false;
+          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
+            SimulateKeyPress(ConsoleKey.L);
+          } else if (key == ConsoleKey.A || key == ConsoleKey.L) {
+            SimulateKeyRelease(ConsoleKey.L);
+          }
+          break;
       }
     }
     return CallNextHookEx(_hookID, nCode, wParam, lParam);
   }
 
-  private static void SimulateKeyPress(ConsoleKey key) {
+  private static void SimulateKey(ConsoleKey key, bool isPress) {
     INPUT input = new INPUT {
       type = INPUT_KEYBOARD,
       u = new InputUnion {
         ki = new KEYBDINPUT {
           wVk = (ushort)key,
-          dwFlags = 0, // 0 for key press
+          dwFlags = isPress ? 0 : KEYEVENTF_KEYUP,
           dwExtraInfo = IntPtr.Zero
         }
       }
     };
-    SendInput(1, new INPUT[] { input }, Marshal.SizeOf(typeof(INPUT)));
-    Console.WriteLine("Simulated key press: " + key);
+    SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+    Console.WriteLine($"Simulated key {(isPress ? "press" : "release")}: {key}");
   }
 
-  private static void SimulateKeyRelease(ConsoleKey key) {
-    INPUT input = new INPUT {
-      type = INPUT_KEYBOARD,
-      u = new InputUnion {
-        ki = new KEYBDINPUT {
-          wVk = (ushort)key,
-          dwFlags = KEYEVENTF_KEYUP, // Key release
-          dwExtraInfo = IntPtr.Zero
-        }
-      }
-    };
-    SendInput(1, new INPUT[] { input }, Marshal.SizeOf(typeof(INPUT)));
-    Console.WriteLine("Simulated key release: " + key);
-  }
+  private static void SimulateKeyPress(ConsoleKey key) => SimulateKey(key, true);
+  private static void SimulateKeyRelease(ConsoleKey key) => SimulateKey(key, false);
 
   private const int WH_KEYBOARD_LL = 13;
   private const int WM_KEYDOWN = 0x0100;
@@ -132,7 +110,6 @@ class Program {
   private const int WM_SYSKEYUP = 0x0105;
   private const int WM_LBUTTONDOWN = 0x0201;
   private const int WM_LBUTTONUP = 0x0202;
-
   private const int INPUT_KEYBOARD = 1;
   private const int KEYEVENTF_KEYUP = 0x0002;
 
