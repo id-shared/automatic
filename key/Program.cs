@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -10,7 +10,7 @@ class Program {
   private static readonly LowLevelMouseProc _mouseProc = MouseHookCallback;
   private static IntPtr _keyboardHookID = IntPtr.Zero;
   private static IntPtr _mouseHookID = IntPtr.Zero;
-  private static readonly Dictionary<string, bool> _keyStates = new();
+  private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
 
   static async Task Main() {
     _keyboardHookID = await Task.Run(() => SetHook(_keyboardProc, WH_KEYBOARD_LL));
@@ -20,29 +20,31 @@ class Program {
       return;
     }
 
-    _ = Task.Run(() => MonitorKeyStatesAsync()); // Start monitoring key states
+    Thread messageLoopThreads = new Thread(MonitorKeyStates);
+    messageLoopThreads.IsBackground = true;
+    messageLoopThreads.Start();
 
-    await Task.Run(() => MessageLoopAsync());
+    MessageLoop();
 
     UnhookWindowsHookEx(_keyboardHookID);
     UnhookWindowsHookEx(_mouseHookID);
   }
 
-  private static async Task MessageLoopAsync() {
+  private static void MessageLoop() {
     MSG msg = new MSG();
-    while (await Task.Run(() => GetMessage(out msg, IntPtr.Zero, 0, 0))) {
+    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
   }
 
-  private static async Task MonitorKeyStatesAsync() {
+  private static void MonitorKeyStates() {
     while (true) {
-      await Task.Delay(1000);
       Console.WriteLine("Current Key States:");
       foreach (var keyState in _keyStates) {
         Console.WriteLine($"{keyState.Key}: {keyState.Value}");
       }
+      Thread.Sleep(1000);
     }
   }
 
@@ -63,8 +65,7 @@ class Program {
 
   private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      int keyCode = Marshal.ReadInt32(lParam);
-      string key = ((ConsoleKey)keyCode).ToString();
+      string key = ((ConsoleKey)Marshal.ReadInt32(lParam)).ToString();
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
