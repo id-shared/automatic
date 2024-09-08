@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
@@ -14,7 +15,7 @@ class Program {
     if (_hookID == IntPtr.Zero) {
       Console.WriteLine("Failed to set hook!");
     } else {
-      Console.WriteLine("Hook set successfully. Listening for key presses...");
+      Console.WriteLine("Hook set successfully. Listening for key events...");
     }
 
     // Run message loop to keep the application alive and listen to hook events
@@ -50,9 +51,18 @@ class Program {
   }
 
   private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN)) {
+    if (nCode >= 0) {
       int vkCode = Marshal.ReadInt32(lParam);
-      Console.WriteLine("Key pressed: " + (ConsoleKey)vkCode);
+      switch ((int)wParam) {
+        case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
+          Console.WriteLine("Key down: " + (ConsoleKey)vkCode);
+          break;
+        case WM_KEYUP:
+        case WM_SYSKEYUP:
+          Console.WriteLine("Key up: " + (ConsoleKey)vkCode);
+          break;
+      }
     }
     return CallNextHookEx(_hookID, nCode, wParam, lParam);
   }
@@ -61,6 +71,8 @@ class Program {
   private const int WH_KEYBOARD_LL = 13;
   private const int WM_KEYDOWN = 0x0100;
   private const int WM_SYSKEYDOWN = 0x0104;
+  private const int WM_KEYUP = 0x0101;
+  private const int WM_SYSKEYUP = 0x0105;
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
