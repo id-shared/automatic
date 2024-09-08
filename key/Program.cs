@@ -3,39 +3,44 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 
 class Program {
+  private static readonly ConcurrentDictionary<string, bool> _keyboardStates = new();
+  private static readonly ConcurrentDictionary<string, bool> _mouseStates = new();
+  private static readonly LowLevelKeyboardProc _keyboardProc = KeyboardHookCallback;
+  private static readonly LowLevelMouseProc _mouseProc = MouseHookCallback;
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-  private static readonly LowLevelKeyboardProc _keyboardProc = KeyboardHookCallback;
   private static IntPtr _keyboardHookID = IntPtr.Zero;
   private static IntPtr _mouseHookID = IntPtr.Zero;
-  private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
 
   static async Task Main() {
-    _keyboardHookID = await Task.Run(() => SetHook(_keyboardProc, WH_KEYBOARD_LL));
+    _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
+    _mouseHookID = SetHook(_mouseProc, WH_MOUSE_LL);
 
-    Thread messageLoopThreads = new Thread(MonitorKeyStates);
-    messageLoopThreads.IsBackground = true;
-    messageLoopThreads.Start();
+    using (var cts = new CancellationTokenSource()) {
+      var monitoringTask = Task.Run(() => MonitorStates(cts.Token), cts.Token);
+      MessageLoop(new MSG());
 
-    MessageLoop();
-
-    UnhookWindowsHookEx(_keyboardHookID);
-    UnhookWindowsHookEx(_mouseHookID);
-  }
-
-  private static void MonitorKeyStates() {
-    while (true) {
-      Console.WriteLine("Current Key States:");
-      foreach (var keyState in _keyStates) {
-        Console.WriteLine($"{keyState.Key}: {keyState.Value}");
-      }
-      Thread.Sleep(1000);
+      UnhookWindowsHookEx(_keyboardHookID);
+      UnhookWindowsHookEx(_mouseHookID);
+      cts.Cancel();
     }
   }
 
-  private static void MessageLoop() {
-    MSG msg = new MSG();
+  private static async Task MonitorStates(CancellationToken token) {
+    while (!token.IsCancellationRequested) {
+      Console.WriteLine("Current Key States:");
+      foreach (var keyState in _keyboardStates) {
+        Console.WriteLine($"{keyState.Key}: {keyState.Value}");
+      }
+      Console.WriteLine("Current Mouse States:");
+      foreach (var mouseState in _mouseStates) {
+        Console.WriteLine($"{mouseState.Key}: {mouseState.Value}");
+      }
+      await Task.Delay(1000, token);
+    }
+  }
+
+  private static void MessageLoop(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
@@ -63,15 +68,29 @@ class Program {
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-          _keyStates[key] = true;
+          _keyboardStates[key] = true;
           break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-          _keyStates[key] = false;
+          _keyboardStates[key] = false;
           break;
       }
     }
     return CallNextHookEx(_keyboardHookID, nCode, wParam, lParam);
+  }
+
+  private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    if (nCode >= 0) {
+      switch ((int)wParam) {
+        case WM_LBUTTONDOWN:
+          _mouseStates["LMB"] = true;
+          break;
+        case WM_LBUTTONUP:
+          _mouseStates["LMB"] = false;
+          break;
+      }
+    }
+    return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
   }
 
   [StructLayout(LayoutKind.Sequential)]
