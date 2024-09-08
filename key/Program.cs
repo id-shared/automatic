@@ -4,15 +4,13 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
-  // Define the callback delegate
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
   private static LowLevelKeyboardProc _proc = HookCallback;
   private static IntPtr _hookID = IntPtr.Zero;
 
-  // Dictionary to keep track of key states
   private static Dictionary<ConsoleKey, bool> _keyStates = new Dictionary<ConsoleKey, bool>();
-  private static ConsoleKey _keyToHold = ConsoleKey.None;
+  private static bool _lmbPressed = false; // Track left mouse button state
 
   static void Main(string[] args) {
     _hookID = SetHook(_proc);
@@ -23,14 +21,13 @@ class Program {
       Console.WriteLine("Hook set successfully. Listening for key events...");
     }
 
-    // Run message loop to keep the application alive and listen to hook events
     MSG msg;
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
 
-    UnhookWindowsHookEx(_hookID);  // This won't be hit but is included for completeness
+    UnhookWindowsHookEx(_hookID);
   }
 
   private static IntPtr SetHook(LowLevelKeyboardProc proc) {
@@ -65,13 +62,13 @@ class Program {
         case WM_SYSKEYDOWN:
           if (!_keyStates.ContainsKey(key)) {
             _keyStates[key] = true;
+          } else {
+            _keyStates[key] = true;
           }
-          Console.WriteLine("Key down: " + key);
 
-          // Check if the key pressed is the one to hold
-          if (key == ConsoleKey.H) {
-            _keyToHold = ConsoleKey.J;  // Example: Hold key J when H is pressed
-            SimulateKeyPress(_keyToHold);
+          // Check if both LMB and A key are pressed
+          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
+            SimulateKeyPress(ConsoleKey.L);
           }
           break;
 
@@ -80,13 +77,22 @@ class Program {
           if (_keyStates.ContainsKey(key)) {
             _keyStates[key] = false;
           }
-          Console.WriteLine("Key up: " + key);
 
-          // Release the key if it was the one being held
-          if (key == _keyToHold) {
-            _keyToHold = ConsoleKey.None;
-            SimulateKeyRelease(ConsoleKey.J);  // Release the held key
+          // Check if both LMB and A key are still pressed
+          if (_lmbPressed && _keyStates.ContainsKey(ConsoleKey.A) && _keyStates[ConsoleKey.A]) {
+            SimulateKeyPress(ConsoleKey.L);
+          } else if (key == ConsoleKey.A || key == ConsoleKey.L) {
+            SimulateKeyRelease(ConsoleKey.L);
           }
+          break;
+
+        case WM_LBUTTONDOWN:
+          _lmbPressed = true;
+          break;
+
+        case WM_LBUTTONUP:
+          _lmbPressed = false;
+          SimulateKeyRelease(ConsoleKey.L); // Release J if LMB is released
           break;
       }
     }
@@ -123,12 +129,13 @@ class Program {
     Console.WriteLine("Simulated key release: " + key);
   }
 
-  // P/Invoke declarations
   private const int WH_KEYBOARD_LL = 13;
   private const int WM_KEYDOWN = 0x0100;
   private const int WM_SYSKEYDOWN = 0x0104;
   private const int WM_KEYUP = 0x0101;
   private const int WM_SYSKEYUP = 0x0105;
+  private const int WM_LBUTTONDOWN = 0x0201;
+  private const int WM_LBUTTONUP = 0x0202;
 
   private const int INPUT_KEYBOARD = 1;
   private const int KEYEVENTF_KEYUP = 0x0002;
