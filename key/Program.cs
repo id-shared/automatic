@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -14,24 +12,27 @@ class Program {
   private static IntPtr _mouseHookID = IntPtr.Zero;
   private static readonly Dictionary<string, bool> _keyStates = new();
 
-  static void Main() {
-    _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
-    _mouseHookID = SetHook(_mouseProc, WH_MOUSE_LL);
+  static async Task Main() {
+    _keyboardHookID = await Task.Run(() => SetHook(_keyboardProc, WH_KEYBOARD_LL));
+    _mouseHookID = await Task.Run(() => SetHook(_mouseProc, WH_MOUSE_LL));
 
     if (_keyboardHookID == IntPtr.Zero || _mouseHookID == IntPtr.Zero) {
       Console.WriteLine("Failed to set hooks!");
       return;
     }
 
-    Console.WriteLine("Hooks set successfully. Listening for keyboard and mouse events...");
-
-    while (GetMessage(out MSG msg, IntPtr.Zero, 0, 0)) {
-      TranslateMessage(ref msg);
-      DispatchMessage(ref msg);
-    }
+    await Task.Run(() => MessageLoopAsync());
 
     UnhookWindowsHookEx(_keyboardHookID);
     UnhookWindowsHookEx(_mouseHookID);
+  }
+
+  private static async Task MessageLoopAsync() {
+    MSG msg = new MSG();
+    while (await Task.Run(() => GetMessage(out msg, IntPtr.Zero, 0, 0))) {
+      TranslateMessage(ref msg);
+      DispatchMessage(ref msg);
+    }
   }
 
   private static IntPtr SetHook(Delegate proc, int hookType) {
@@ -57,18 +58,16 @@ class Program {
 
   private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      var key = (ConsoleKey)Marshal.ReadInt32(lParam);
+      int keyCode = Marshal.ReadInt32(lParam);
+      string key = ((ConsoleKey)keyCode).ToString();
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-          _keyStates[key.ToString()] = true;
-          foreach (var kvp in _keyStates) {
-            Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
-          }
+          _keyStates[key] = true;
           break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-          _keyStates[key.ToString()] = false;
+          _keyStates[key] = false;
           break;
       }
     }
@@ -80,12 +79,9 @@ class Program {
       switch ((int)wParam) {
         case WM_LBUTTONDOWN:
           _keyStates["LMB"] = true;
-          foreach (var kvp in _keyStates) {
-            Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
-          }
           break;
         case WM_LBUTTONUP:
-          _keyStates["LMB"] = true;
+          _keyStates["LMB"] = false;
           break;
       }
     }
@@ -100,67 +96,6 @@ class Program {
   private const int WM_SYSKEYUP = 0x0105;
   private const int WM_LBUTTONDOWN = 0x0201;
   private const int WM_LBUTTONUP = 0x0202;
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct INPUT {
-    public int type;
-    public InputUnion u;
-  }
-
-  [StructLayout(LayoutKind.Explicit)]
-  private struct InputUnion {
-    [FieldOffset(0)]
-    public MOUSEINPUT mi;
-    [FieldOffset(0)]
-    public KEYBDINPUT ki;
-    [FieldOffset(0)]
-    public HARDWAREINPUT hi;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MOUSEINPUT {
-    public int dx;
-    public int dy;
-    public int mouseData;
-    public int dwFlags;
-    public int time;
-    public IntPtr dwExtraInfo;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct KEYBDINPUT {
-    public ushort wVk;
-    public ushort wScan;
-    public int dwFlags;
-    public int time;
-    public IntPtr dwExtraInfo;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct HARDWAREINPUT {
-    public int uMsg;
-    public ushort wParamL;
-    public ushort wParamH;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct POINT {
-    public int x;
-    public int y;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MSG {
-    public IntPtr hWnd;
-    public uint message;
-    public IntPtr wParam;
-    public IntPtr lParam;
-    public uint time;
-    public POINT pt;
-  }
-
-  [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
@@ -185,4 +120,20 @@ class Program {
 
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSG {
+    public IntPtr hWnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+  }
 }
