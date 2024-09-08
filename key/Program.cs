@@ -1,31 +1,25 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-class Program
-{
+class Program {
   // Define the callback delegate
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
   private static LowLevelKeyboardProc _proc = HookCallback;
   private static IntPtr _hookID = IntPtr.Zero;
 
-  static void Main(string[] args)
-  {
+  static void Main(string[] args) {
     _hookID = SetHook(_proc);
 
-    if (_hookID == IntPtr.Zero)
-    {
+    if (_hookID == IntPtr.Zero) {
       Console.WriteLine("Failed to set hook!");
-    }
-    else
-    {
+    } else {
       Console.WriteLine("Hook set successfully. Listening for key presses...");
     }
 
     // Run message loop to keep the application alive and listen to hook events
     MSG msg;
-    while (GetMessage(out msg, IntPtr.Zero, 0, 0))
-    {
+    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
@@ -33,37 +27,30 @@ class Program
     UnhookWindowsHookEx(_hookID);  // This won't be hit but is included for completeness
   }
 
-  private static IntPtr SetHook(LowLevelKeyboardProc proc)
-  {
+  private static IntPtr SetHook(LowLevelKeyboardProc proc) {
     using (Process curProcess = Process.GetCurrentProcess())
-    using (ProcessModule curModule = curProcess.MainModule)
-    {
-      if (curModule == null)
-      {
+    using (ProcessModule curModule = curProcess.MainModule) {
+      if (curModule == null) {
         Console.WriteLine("Error: Could not get current module.");
         return IntPtr.Zero;
       }
 
       IntPtr moduleHandle = GetModuleHandle(curModule.ModuleName);
-      if (moduleHandle == IntPtr.Zero)
-      {
+      if (moduleHandle == IntPtr.Zero) {
         Console.WriteLine("Error getting module handle: " + Marshal.GetLastWin32Error());
         return IntPtr.Zero;
       }
 
       IntPtr hook = SetWindowsHookEx(WH_KEYBOARD_LL, proc, moduleHandle, 0);
-      if (hook == IntPtr.Zero)
-      {
+      if (hook == IntPtr.Zero) {
         Console.WriteLine("Error setting hook: " + Marshal.GetLastWin32Error());
       }
       return hook;
     }
   }
 
-  private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-  {
-    if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
-    {
+  private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN)) {
       int vkCode = Marshal.ReadInt32(lParam);
       Console.WriteLine("Key pressed: " + (ConsoleKey)vkCode);
     }
@@ -100,8 +87,7 @@ class Program
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct MSG
-  {
+  private struct MSG {
     public IntPtr hWnd;
     public uint message;
     public IntPtr wParam;
@@ -111,8 +97,7 @@ class Program
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct POINT
-  {
+  private struct POINT {
     public int x;
     public int y;
   }
