@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Program {
@@ -83,7 +85,7 @@ class Program {
           // Release the key if it was the one being held
           if (key == _keyToHold) {
             _keyToHold = ConsoleKey.None;
-            SimulateKeyRelease(key);
+            SimulateKeyRelease(ConsoleKey.J);  // Release the held key
           }
           break;
       }
@@ -92,15 +94,33 @@ class Program {
   }
 
   private static void SimulateKeyPress(ConsoleKey key) {
-    Console.WriteLine("Simulating key press: " + key);
-    // Simulate a key press event here
-    // You may need additional logic to interact with other applications
+    INPUT input = new INPUT {
+      type = INPUT_KEYBOARD,
+      u = new InputUnion {
+        ki = new KEYBDINPUT {
+          wVk = (ushort)key,
+          dwFlags = 0, // 0 for key press
+          dwExtraInfo = IntPtr.Zero
+        }
+      }
+    };
+    SendInput(1, new INPUT[] { input }, Marshal.SizeOf(typeof(INPUT)));
+    Console.WriteLine("Simulated key press: " + key);
   }
 
   private static void SimulateKeyRelease(ConsoleKey key) {
-    Console.WriteLine("Simulating key release: " + key);
-    // Simulate a key release event here
-    // You may need additional logic to interact with other applications
+    INPUT input = new INPUT {
+      type = INPUT_KEYBOARD,
+      u = new InputUnion {
+        ki = new KEYBDINPUT {
+          wVk = (ushort)key,
+          dwFlags = KEYEVENTF_KEYUP, // Key release
+          dwExtraInfo = IntPtr.Zero
+        }
+      }
+    };
+    SendInput(1, new INPUT[] { input }, Marshal.SizeOf(typeof(INPUT)));
+    Console.WriteLine("Simulated key release: " + key);
   }
 
   // P/Invoke declarations
@@ -109,6 +129,54 @@ class Program {
   private const int WM_SYSKEYDOWN = 0x0104;
   private const int WM_KEYUP = 0x0101;
   private const int WM_SYSKEYUP = 0x0105;
+
+  private const int INPUT_KEYBOARD = 1;
+  private const int KEYEVENTF_KEYUP = 0x0002;
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct INPUT {
+    public int type;
+    public InputUnion u;
+  }
+
+  [StructLayout(LayoutKind.Explicit)]
+  private struct InputUnion {
+    [FieldOffset(0)]
+    public MOUSEINPUT mi;
+    [FieldOffset(0)]
+    public KEYBDINPUT ki;
+    [FieldOffset(0)]
+    public HARDWAREINPUT hi;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MOUSEINPUT {
+    public int dx;
+    public int dy;
+    public int mouseData;
+    public int dwFlags;
+    public int time;
+    public IntPtr dwExtraInfo;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct KEYBDINPUT {
+    public ushort wVk;
+    public ushort wScan;
+    public int dwFlags;
+    public int time;
+    public IntPtr dwExtraInfo;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct HARDWAREINPUT {
+    public int uMsg;
+    public ushort wParamL;
+    public ushort wParamH;
+  }
+
+  [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
