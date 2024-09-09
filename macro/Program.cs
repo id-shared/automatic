@@ -15,7 +15,7 @@ class Program {
         switch (true) {
           case var _ when dict.GetOrAdd(ConsoleKey.D, false) || dict.GetOrAdd(ConsoleKey.A, false):
             Keyboard.SendKeyI(ConsoleKey.K);
-            Thread.Sleep(1000);
+            Thread.Sleep(10);
             Keyboard.SendKeyO(ConsoleKey.K);
             Console.WriteLine("K Pressed");
             return true;
@@ -56,46 +56,18 @@ class Program {
     if (nCode >= 0) {
       ConsoleKey key = (ConsoleKey)Marshal.ReadInt32(lParam);
       switch ((int)wParam) {
-        case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
+        case WM_KEYDOWN:
           state[key] = true;
           Every(state);
           break;
-        case WM_KEYUP:
         case WM_SYSKEYUP:
+        case WM_KEYUP:
           state[key] = false;
-          Every(state);
           break;
       }
     }
     return CallNextHookEx(hook_id, nCode, wParam, lParam);
-  }
-
-  static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
-  static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
-  static uint SimulateKey(ConsoleKey key, bool isPress) {
-    INPUT input = new INPUT {
-      type = INPUT_KEYBOARD,
-      u = new InputUnion {
-        ki = new KEYBDINPUT {
-          wVk = 0x45,
-          wScan = 0,
-          dwFlags = isPress ? 0 : KEYEVENTF_KEYUP,
-          time = 0,
-          dwExtraInfo = IntPtr.Zero
-        }
-      }
-    };
-
-    uint result = SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
-    if (result == 0) {
-      int errorCode = Marshal.GetLastWin32Error();
-      Console.WriteLine($"SendInput failed with error code: {errorCode}");
-    } else {
-      Console.WriteLine($"SimulateKey result: {result}");
-    }
-
-    return result;
   }
 
   static void Main() {
@@ -114,27 +86,6 @@ class Program {
   private const int KEYEVENTF_KEYUP = 0x0002;
   private const int INPUT_KEYBOARD = 1;
 
-  [StructLayout(LayoutKind.Explicit)]
-  private struct InputUnion {
-    [FieldOffset(0)]
-    public KEYBDINPUT ki;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct INPUT {
-    public int type;
-    public InputUnion u;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct KEYBDINPUT {
-    public ushort wVk;
-    public ushort wScan;
-    public int dwFlags;
-    public int time;
-    public IntPtr dwExtraInfo;
-  }
-
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
     public IntPtr hWnd;
@@ -150,9 +101,6 @@ class Program {
     public int x;
     public int y;
   }
-
-  [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
