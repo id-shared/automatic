@@ -1,6 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -15,12 +18,13 @@ class Program {
   private static readonly ConcurrentDictionary<string, bool> _mouseStates = new();
 
   static async Task Main() {
-    _keyboardHookID = await Task.Run(() => SetHook(_keyboardProc, WH_KEYBOARD_LL));
-    _mouseHookID = await Task.Run(() => SetHook(_mouseProc, WH_MOUSE_LL));
+    _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
+    _mouseHookID = SetHook(_mouseProc, WH_MOUSE_LL);
 
-    Thread messageLoopThreads = new Thread(MonitorStates);
-    messageLoopThreads.IsBackground = true;
-    messageLoopThreads.Start();
+    var messageLoopThread = new Thread(MonitorStates) {
+      IsBackground = true
+    };
+    messageLoopThread.Start();
 
     MessageLoop();
 
@@ -30,7 +34,6 @@ class Program {
 
   private static void MonitorStates() {
     while (true) {
-      Console.Clear();
       Console.WriteLine("Current Key States:");
       foreach (var keyState in _keyStates) {
         Console.WriteLine($"{keyState.Key}: {keyState.Value}");
@@ -62,8 +65,7 @@ class Program {
       return IntPtr.Zero;
     }
 
-    IntPtr hook = SetWindowsHookEx(hookType, proc, moduleHandle, 0);
-    return hook;
+    return SetWindowsHookEx(hookType, proc, moduleHandle, 0);
   }
 
   private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
