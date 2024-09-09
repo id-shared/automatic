@@ -21,8 +21,6 @@ class Program {
       default:
         return false;
     }
-
-    return true;
   }
 
   static bool Each(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key_2, ConsoleKey key_1, ConsoleKey key) {
