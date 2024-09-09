@@ -1,8 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Windows.Forms;
-using System.Reflection;
 
 class Program {
   static readonly ConcurrentDictionary<ConsoleKey, bool> state = new();
@@ -13,27 +11,27 @@ class Program {
 
   static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
     switch (true) {
-      case var _ when key.Equals(ConsoleKey.W):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey(ConsoleKey.K, is_press);
-          default:
-            return false;
-        }
-      case var _ when key.Equals(ConsoleKey.S):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey(ConsoleKey.I, is_press);
-          default:
-            return false;
-        }
-      case var _ when key.Equals(ConsoleKey.D):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey(ConsoleKey.J, is_press);
-          default:
-            return false;
-        }
+      //case var _ when key.Equals(ConsoleKey.W):
+      //  switch (true) {
+      //    case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+      //      return Keyboard.SendKey(ConsoleKey.K, is_press);
+      //    default:
+      //      return false;
+      //  }
+      //case var _ when key.Equals(ConsoleKey.S):
+      //  switch (true) {
+      //    case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+      //      return Keyboard.SendKey(ConsoleKey.I, is_press);
+      //    default:
+      //      return false;
+      //  }
+      //case var _ when key.Equals(ConsoleKey.D):
+      //  switch (true) {
+      //    case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+      //      return Keyboard.SendKey(ConsoleKey.J, is_press);
+      //    default:
+      //      return false;
+      //  }
       case var _ when key.Equals(ConsoleKey.A):
         switch (true) {
           case var _ when dict.GetOrAdd(ConsoleKey.V, false):
@@ -154,21 +152,23 @@ class Keyboard {
 
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].mkhi.ki = new KEYBDINPUT {
-      wVk = ConsoleKeyToVkCode (key),
+      wVk = ConsoleKeyToVkCode(key),
       wScan = 0,
       dwFlags = is_press ? 0 : KEYEVENTF_KEYUP,
       time = 0,
       dwExtraInfo = IntPtr.Zero
     };
 
-    Console.WriteLine(ConsoleKeyToVkCode(key));
+    //Console.WriteLine($"{ConsoleKeyToVkCode(key):X}");
 
     SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
 
     return is_press;
   }
+
   public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
-    return (ushort)MapVirtualKey((uint)key, 0x01);
+    Console.WriteLine($"scancode: {(uint)key:X}");
+    return (ushort)MapVirtualKey(0x25, 0x01);
   }
 
   const uint INPUT_KEYBOARD = 1;
@@ -216,9 +216,9 @@ class Keyboard {
     public ushort wParamH;
   }
 
-  [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+  [DllImport("user32.dll", SetLastError = true)]
   static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
-  [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+  [DllImport("user32.dll", SetLastError = true)]
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
