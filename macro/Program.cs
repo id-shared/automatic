@@ -166,9 +166,18 @@ class Keyboard {
     return is_press;
   }
 
-  public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
-    Console.WriteLine($"scancode: {(uint)key:X}");
-    return (ushort)MapVirtualKey(0x25, 0x01);
+  public static ushort ConsoleKeyToVkCode(ConsoleKey keys) {
+    Console.WriteLine($"scancode: {(uint)keys:X}");
+    foreach (ConsoleKey key in Enum.GetValues(typeof(ConsoleKey))) {
+      uint virtualKeyCode = (uint)key;
+
+      // Convert the virtual key code to a scan code
+      uint scanCode = MapVirtualKey(virtualKeyCode, 0x01);
+
+      // Output the ConsoleKey and its corresponding scan code
+      Console.WriteLine($"ConsoleKey: {key}, Scan Code: {scanCode:X}");
+    }
+    return (ushort)MapVirtualKey(0x2E, 0x01);
   }
 
   const uint INPUT_KEYBOARD = 1;
