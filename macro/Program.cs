@@ -37,9 +37,9 @@ class Program {
 
   static bool Each(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
     switch (true) {
-      case var _ when dict.GetOrAdd(key_2, false) && dict.GetOrAdd(key_3, false):
+      case var _ when key_3.Equals(key) && dict.GetOrAdd(key_3, false):
         return Keyboard.SendKey(key_1, is_pressed);
-      case var _ when dict.GetOrAdd(key_3, false):
+      case var _ when key_3.Equals(key):
         return Keyboard.SendKey(key_1, false);
       default:
         return false;
