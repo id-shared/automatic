@@ -11,12 +11,31 @@ class Program {
 
   static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
     switch (true) {
-      case var _ when dict.GetOrAdd(ConsoleKey.W, false):
+      case var _ when key.Equals(ConsoleKey.W):
         switch (true) {
-          case var _ when key.Equals(ConsoleKey.A) || key.Equals(ConsoleKey.D):
-            Keyboard.SendKey(ConsoleKey.K, is_press);
-            Console.WriteLine("K Pressed");
-            return true;
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey(ConsoleKey.K, is_press);
+          default:
+            return false;
+        }
+      case var _ when key.Equals(ConsoleKey.S):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey(ConsoleKey.I, is_press);
+          default:
+            return false;
+        }
+      case var _ when key.Equals(ConsoleKey.D):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey(ConsoleKey.J, is_press);
+          default:
+            return false;
+        }
+      case var _ when key.Equals(ConsoleKey.A):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey(ConsoleKey.L, is_press);
           default:
             return false;
         }
@@ -175,7 +194,7 @@ class Keyboard {
   const uint INPUT_KEYBOARD = 1;
   const uint KEYEVENTF_KEYUP = 0x0002;
 
-  public static uint SendKey(ConsoleKey key, bool is_press) {
+  public static bool SendKey(ConsoleKey key, bool is_press) {
     INPUT[] inputs = new INPUT[2];
 
     inputs[0].type = INPUT_KEYBOARD;
@@ -187,7 +206,9 @@ class Keyboard {
       dwExtraInfo = IntPtr.Zero
     };
 
-    return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+
+    return is_press;
   }
 }
 
