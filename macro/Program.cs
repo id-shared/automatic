@@ -10,23 +10,25 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
+  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_pressed) {
     switch (true) {
       case var _ when key.Equals(ConsoleKey.V) || key.Equals(ConsoleKey.W) || key.Equals(ConsoleKey.S) || key.Equals(ConsoleKey.D) || key.Equals(ConsoleKey.A):
-        Each(dict, ConsoleKey.V, ConsoleKey.W, ConsoleKey.K);
-        Each(dict, ConsoleKey.V, ConsoleKey.S, ConsoleKey.I);
-        Each(dict, ConsoleKey.V, ConsoleKey.D, ConsoleKey.J);
-        Each(dict, ConsoleKey.V, ConsoleKey.A, ConsoleKey.L);
+        Each(dict, ConsoleKey.V, ConsoleKey.W, ConsoleKey.K, is_pressed);
+        Each(dict, ConsoleKey.V, ConsoleKey.S, ConsoleKey.I, is_pressed);
+        Each(dict, ConsoleKey.V, ConsoleKey.D, ConsoleKey.J, is_pressed);
+        Each(dict, ConsoleKey.V, ConsoleKey.A, ConsoleKey.L, is_pressed);
         return true;
       default:
         return false;
     }
   }
 
-  static bool Each(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key_2, ConsoleKey key_1, ConsoleKey key) {
+  static bool Each(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key_2, ConsoleKey key_1, ConsoleKey key, bool is_pressed) {
     switch (true) {
       case var _ when dict.GetOrAdd(key_2, false) && dict.GetOrAdd(key_1, false):
-        return Keyboard.SendKey((uint)key, true);
+        return Keyboard.SendKey((uint)key, is_pressed);
+      case var _ when dict.GetOrAdd(key_2, false):
+        return Keyboard.SendKey((uint)key, false);
       case var _ when dict.GetOrAdd(key_1, false):
         return Keyboard.SendKey((uint)key, false);
       default:
@@ -137,21 +139,21 @@ class Program {
 }
 
 class Keyboard {
-  public static bool SendKey(uint key, bool is_press) {
+  public static bool SendKey(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].mkhi.ki = new KEYBDINPUT {
       wVk = (ushort)key,
       wScan = 0,
-      dwFlags = is_press ? 0 : KEYEVENTF_KEYUP,
+      dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
       time = 0,
       dwExtraInfo = IntPtr.Zero
     };
 
     SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
 
-    return is_press;
+    return is_pressed;
   }
 
   public static ushort ConsoleKeyToVkCode(ConsoleKey keys) {
