@@ -218,23 +218,20 @@ class Keyboard {
 
 class Convert {
   public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
-    int scanCode = ConsoleKeyToScanCode(key);
-    return ScanCodeToVkCode(scanCode);
+    return ScanCodeToVkCode(ConsoleKeyToScanCode(key));
   }
 
-  public static ushort ScanCodeToVkCode(int scanCode) {
-    return (ushort)MapVirtualKey(scanCode, MAPVK_VK_TO_VSC);
+  public static ushort ScanCodeToVkCode(uint scanCode) {
+    return (ushort)MapVirtualKey(scanCode, 0x00);
   }
 
-  public static int ConsoleKeyToScanCode(ConsoleKey key) {
+  public static uint ConsoleKeyToScanCode(ConsoleKey key) {
     switch (key) {
-      case ConsoleKey.L: return 0x1E;
+      case ConsoleKey.L: return 0x26;
       default: throw new ArgumentException($"No scan code found for ConsoleKey.{key}");
     }
   }
 
-  const int MAPVK_VK_TO_VSC = 0;
-
-  [DllImport("user32.dll", SetLastError = true)]
-  static extern int MapVirtualKey(int uCode, int uMapType);
+  [DllImport("user32.dll", CharSet = CharSet.Auto)]
+  static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
