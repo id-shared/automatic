@@ -3,18 +3,18 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 
 class Program {
-  private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
-  private static IntPtr hook_id = IntPtr.Zero;
+  static readonly ConcurrentDictionary<string, bool> _keyStates = new();
+  static IntPtr hook_id = IntPtr.Zero;
 
-  private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
   static void Main() {
     var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
 
     hook_id = SetHook(hook, WH_KEYBOARD_LL);
-    subscribe(new MSG());
-    detach(hook_id);
+    Subscribe(new MSG());
+    Detach(hook_id);
   }
 
   static async Task MonitorStatesAsync() {
@@ -28,14 +28,14 @@ class Program {
     }
   }
 
-  static void subscribe(MSG msg) {
+  static void Subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
   }
 
-  static void detach(nint id) {
+  static void Detach(nint id) {
     UnhookWindowsHookEx(id);
   }
 
@@ -82,7 +82,7 @@ class Program {
       }
     };
 
-    return SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+    return SendInput(1, [input], Marshal.SizeOf<INPUT>());
   }
 
   static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
