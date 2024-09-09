@@ -42,7 +42,7 @@ class Program {
   }
 
   private static IntPtr SetHook(Delegate proc, int hookType) {
-    using ProcessModule curModule = Process.GetCurrentProcess().MainModule;
+    using ProcessModule? curModule = Process.GetCurrentProcess().MainModule;
     if (curModule == null) {
       return IntPtr.Zero;
     }
@@ -72,7 +72,7 @@ class Program {
     return CallNextHookEx(_keyboardHookID, nCode, wParam, lParam);
   }
 
-  private static void SimulateKey(ConsoleKey key, bool isPress) {
+  private static uint SimulateKey(ConsoleKey key, bool isPress) {
     INPUT input = new INPUT {
       type = INPUT_KEYBOARD,
       u = new InputUnion {
@@ -83,12 +83,12 @@ class Program {
         }
       }
     };
-    SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
-    Console.WriteLine($"Simulated key {(isPress ? "press" : "release")}: {key}");
+
+    return SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
   }
 
-  private static void SimulateKeyRelease(ConsoleKey key) => SimulateKey(key, false);
-  private static void SimulateKeyPress(ConsoleKey key) => SimulateKey(key, true);
+  private static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
+  private static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
 
   private const int WH_KEYBOARD_LL = 13;
   private const int WM_KEYDOWN = 0x0100;
