@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 class Program {
   private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
-  private static IntPtr _keyboardHookID = IntPtr.Zero;
+  private static IntPtr hook_id = IntPtr.Zero;
 
-  private static readonly LowLevelKeyboardProc _keyboardProc = KeyboardHookCallback;
+  private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
   static void Main() {
-    _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
-
     var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
 
+    hook_id = SetHook(hook, WH_KEYBOARD_LL);
     subscribe(new MSG());
+    detach(hook_id);
   }
 
   private static async Task MonitorStatesAsync() {
@@ -31,13 +31,15 @@ class Program {
     }
   }
 
-  private static bool subscribe(MSG msg) {
+  private static void subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
-    UnhookWindowsHookEx(_keyboardHookID);
-    return true;
+  }
+
+  private static void detach(nint id) {
+    UnhookWindowsHookEx(id);
   }
 
   private static IntPtr SetHook(Delegate proc, int hookType) {
@@ -68,7 +70,7 @@ class Program {
           break;
       }
     }
-    return CallNextHookEx(_keyboardHookID, nCode, wParam, lParam);
+    return CallNextHookEx(hook_id, nCode, wParam, lParam);
   }
 
   private static uint SimulateKey(ConsoleKey key, bool isPress) {
