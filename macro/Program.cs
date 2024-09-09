@@ -1,9 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 
 class Program {
   private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
@@ -20,7 +17,7 @@ class Program {
     detach(hook_id);
   }
 
-  private static async Task MonitorStatesAsync() {
+  static async Task MonitorStatesAsync() {
     while (true) {
       Console.Clear();
       Console.WriteLine("Current Key States:");
@@ -31,18 +28,18 @@ class Program {
     }
   }
 
-  private static void subscribe(MSG msg) {
+  static void subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
   }
 
-  private static void detach(nint id) {
+  static void detach(nint id) {
     UnhookWindowsHookEx(id);
   }
 
-  private static IntPtr SetHook(Delegate proc, int hookType) {
+  static IntPtr SetHook(Delegate proc, int hookType) {
     using ProcessModule? curModule = Process.GetCurrentProcess().MainModule;
     if (curModule == null) {
       return IntPtr.Zero;
@@ -56,7 +53,7 @@ class Program {
     return SetWindowsHookEx(hookType, proc, moduleHandle, 0);
   }
 
-  private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       string key = ((ConsoleKey)Marshal.ReadInt32(lParam)).ToString();
       switch ((int)wParam) {
@@ -73,7 +70,7 @@ class Program {
     return CallNextHookEx(hook_id, nCode, wParam, lParam);
   }
 
-  private static uint SimulateKey(ConsoleKey key, bool isPress) {
+  static uint SimulateKey(ConsoleKey key, bool isPress) {
     INPUT input = new INPUT {
       type = INPUT_KEYBOARD,
       u = new InputUnion {
@@ -88,8 +85,8 @@ class Program {
     return SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
   }
 
-  private static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
-  private static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
+  static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
+  static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
 
   private const int WH_KEYBOARD_LL = 13;
   private const int WM_KEYDOWN = 0x0100;
