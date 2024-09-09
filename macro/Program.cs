@@ -9,14 +9,12 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict) {
+  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, bool is_press) {
     switch (true) {
       case var _ when dict.GetOrAdd(ConsoleKey.W, false):
         switch (true) {
           case var _ when dict.GetOrAdd(ConsoleKey.D, false) || dict.GetOrAdd(ConsoleKey.A, false):
-            Keyboard.SendKeyI(ConsoleKey.K);
-            Thread.Sleep(10);
-            Keyboard.SendKeyO(ConsoleKey.K);
+            Keyboard.SendKey(ConsoleKey.K, is_press);
             Console.WriteLine("K Pressed");
             return true;
           default:
@@ -56,14 +54,15 @@ class Program {
     if (nCode >= 0) {
       ConsoleKey key = (ConsoleKey)Marshal.ReadInt32(lParam);
       switch ((int)wParam) {
-        case WM_SYSKEYDOWN:
-        case WM_KEYDOWN:
-          state[key] = true;
-          Every(state);
-          break;
         case WM_SYSKEYUP:
         case WM_KEYUP:
           state[key] = false;
+          Every(state, false);
+          break;
+        case WM_SYSKEYDOWN:
+        case WM_KEYDOWN:
+          state[key] = true;
+          Every(state, true);
           break;
       }
     }
@@ -175,9 +174,6 @@ class Keyboard {
 
   const uint INPUT_KEYBOARD = 1;
   const uint KEYEVENTF_KEYUP = 0x0002;
-
-  public static void SendKeyO(ConsoleKey key) => SendKey(key, false);
-  public static void SendKeyI(ConsoleKey key) => SendKey(key, true);
 
   public static uint SendKey(ConsoleKey key, bool is_press) {
     INPUT[] inputs = new INPUT[2];
