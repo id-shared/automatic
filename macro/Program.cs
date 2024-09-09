@@ -99,6 +99,77 @@ class Program {
     return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
   }
 
+  private static void SimulateKey(ConsoleKey key, bool isPress) {
+    INPUT input = new INPUT {
+      type = INPUT_KEYBOARD,
+      u = new InputUnion {
+        ki = new KEYBDINPUT {
+          wVk = (ushort)key,
+          dwFlags = isPress ? 0 : KEYEVENTF_KEYUP,
+          dwExtraInfo = IntPtr.Zero
+        }
+      }
+    };
+    SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+    Console.WriteLine($"Simulated key {(isPress ? "press" : "release")}: {key}");
+  }
+
+  private static void SimulateKeyRelease(ConsoleKey key) => SimulateKey(key, false);
+  private static void SimulateKeyPress(ConsoleKey key) => SimulateKey(key, true);
+
+  private const int WH_KEYBOARD_LL = 13;
+  private const int WH_MOUSE_LL = 14;
+  private const int WM_KEYDOWN = 0x0100;
+  private const int WM_SYSKEYDOWN = 0x0104;
+  private const int WM_KEYUP = 0x0101;
+  private const int WM_SYSKEYUP = 0x0105;
+  private const int WM_LBUTTONDOWN = 0x0201;
+  private const int WM_LBUTTONUP = 0x0202;
+  private const int KEYEVENTF_KEYUP = 0x0002;
+  private const int INPUT_KEYBOARD = 1;
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct INPUT {
+    public int type;
+    public InputUnion u;
+  }
+
+  [StructLayout(LayoutKind.Explicit)]
+  private struct InputUnion {
+    [FieldOffset(0)]
+    public MOUSEINPUT mi;
+    [FieldOffset(0)]
+    public KEYBDINPUT ki;
+    [FieldOffset(0)]
+    public HARDWAREINPUT hi;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MOUSEINPUT {
+    public int dx;
+    public int dy;
+    public int mouseData;
+    public int dwFlags;
+    public int time;
+    public IntPtr dwExtraInfo;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct KEYBDINPUT {
+    public ushort wVk;
+    public ushort wScan;
+    public int dwFlags;
+    public int time;
+    public IntPtr dwExtraInfo;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct HARDWAREINPUT {
+    public int uMsg;
+    public ushort wParamL;
+    public ushort wParamH;
+  }
+
   [StructLayout(LayoutKind.Sequential)]
   private struct POINT {
     public int x;
@@ -115,14 +186,8 @@ class Program {
     public POINT pt;
   }
 
-  private const int WH_KEYBOARD_LL = 13;
-  private const int WH_MOUSE_LL = 14;
-  private const int WM_KEYDOWN = 0x0100;
-  private const int WM_SYSKEYDOWN = 0x0104;
-  private const int WM_KEYUP = 0x0101;
-  private const int WM_SYSKEYUP = 0x0105;
-  private const int WM_LBUTTONDOWN = 0x0201;
-  private const int WM_LBUTTONUP = 0x0202;
+  [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
