@@ -9,14 +9,6 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static void Main() {
-    var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
-
-    hook_id = SetHook(hook, WH_KEYBOARD_LL);
-    Subscribe(new MSG());
-    Detach(hook_id);
-  }
-
   static async Task MonitorStatesAsync() {
     while (true) {
       Console.Clear();
@@ -24,7 +16,7 @@ class Program {
       foreach (var keyState in _keyStates) {
         Console.WriteLine($"{keyState.Key}: {keyState.Value}");
       }
-      await Task.Delay(10); // Use Task.Delay instead of Thread.Sleep
+      await Task.Delay(10);
     }
   }
 
@@ -87,6 +79,14 @@ class Program {
 
   static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
   static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
+
+  static void Main() {
+    var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
+
+    hook_id = SetHook(hook, WH_KEYBOARD_LL);
+    Subscribe(new MSG());
+    Detach(hook_id);
+  }
 
   private const int WH_KEYBOARD_LL = 13;
   private const int WM_KEYDOWN = 0x0100;
