@@ -11,34 +11,13 @@ class Program {
 
   static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
     switch (true) {
-      case var _ when key.Equals(ConsoleKey.W):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey((uint)ConsoleKey.K, is_press);
-          default:
-            return false;
-        }
-      case var _ when key.Equals(ConsoleKey.S):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey((uint)ConsoleKey.I, is_press);
-          default:
-            return false;
-        }
-      case var _ when key.Equals(ConsoleKey.D):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey((uint)ConsoleKey.J, is_press);
-          default:
-            return false;
-        }
-      case var _ when key.Equals(ConsoleKey.A):
-        switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey((uint)ConsoleKey.L, is_press);
-          default:
-            return false;
-        }
+      case var _ when dict.GetOrAdd(ConsoleKey.V, false) && dict.GetOrAdd(ConsoleKey.W, false):
+        Console.WriteLine("w");
+        return Keyboard.SendKey((uint)ConsoleKey.K, true);
+      case var _ when dict.GetOrAdd(ConsoleKey.W, false):
+        return Keyboard.SendKey((uint)ConsoleKey.K, false);
+      case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+        return Keyboard.SendKey((uint)ConsoleKey.K, false);
       default:
         return false;
     }
