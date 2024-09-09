@@ -10,14 +10,20 @@ class Program {
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
   static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
+    Each(dict, ConsoleKey.V, ConsoleKey.W, ConsoleKey.K);
+    Each(dict, ConsoleKey.V, ConsoleKey.S, ConsoleKey.I);
+    Each(dict, ConsoleKey.V, ConsoleKey.D, ConsoleKey.J);
+    Each(dict, ConsoleKey.V, ConsoleKey.A, ConsoleKey.L);
+
+    return true;
+  }
+
+  static bool Each(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key_2, ConsoleKey key_1, ConsoleKey key) {
     switch (true) {
-      case var _ when dict.GetOrAdd(ConsoleKey.V, false) && dict.GetOrAdd(ConsoleKey.W, false):
-        Console.WriteLine("w");
-        return Keyboard.SendKey((uint)ConsoleKey.K, true);
-      case var _ when dict.GetOrAdd(ConsoleKey.W, false):
-        return Keyboard.SendKey((uint)ConsoleKey.K, false);
-      case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-        return Keyboard.SendKey((uint)ConsoleKey.K, false);
+      case var _ when dict.GetOrAdd(key_2, false) && dict.GetOrAdd(key_1, false):
+        return Keyboard.SendKey((uint)key, true);
+      case var _ when dict.GetOrAdd(key_1, false):
+        return Keyboard.SendKey((uint)key, false);
       default:
         return false;
     }
@@ -61,7 +67,6 @@ class Program {
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
           state[key] = true;
-          Console.WriteLine($"  {key}.");
           Every(state, key, true);
           break;
       }
