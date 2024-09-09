@@ -1,6 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
+using System.Reflection;
 
 class Program {
   static readonly ConcurrentDictionary<ConsoleKey, bool> state = new();
@@ -71,6 +73,7 @@ class Program {
 
   static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
+      int scanCode = Marshal.ReadInt32(lParam);
       ConsoleKey key = (ConsoleKey)Marshal.ReadInt32(lParam);
       switch ((int)wParam) {
         case WM_SYSKEYUP:
@@ -82,6 +85,7 @@ class Program {
         case WM_KEYDOWN:
           state[key] = true;
           Every(state, key, true);
+          Console.WriteLine(scanCode);
           break;
       }
     }
@@ -214,62 +218,23 @@ class Keyboard {
 
 class Convert {
   public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
-    uint scanCode = ConsoleKeyToScanCode(key);
+    int scanCode = ConsoleKeyToScanCode(key);
     return ScanCodeToVkCode(scanCode);
   }
 
-  public static ushort ScanCodeToVkCode(uint scanCode) {
-    return (ushort)MapVirtualKey(scanCode, MAPVK_VSC_TO_VK);
+  public static ushort ScanCodeToVkCode(int scanCode) {
+    return (ushort)MapVirtualKey(scanCode, MAPVK_VK_TO_VSC);
   }
 
-  public static uint ConsoleKeyToScanCode(ConsoleKey key) {
-    // Map ConsoleKey to scan code manually or via a dictionary
+  public static int ConsoleKeyToScanCode(ConsoleKey key) {
     switch (key) {
-      case ConsoleKey.A: return 0x1E;
-      case ConsoleKey.B: return 0x30;
-      case ConsoleKey.C: return 0x2E;
-      case ConsoleKey.D: return 0x20;
-      case ConsoleKey.E: return 0x12;
-      case ConsoleKey.F: return 0x21;
-      case ConsoleKey.G: return 0x22;
-      case ConsoleKey.H: return 0x23;
-      case ConsoleKey.I: return 0x17;
-      case ConsoleKey.J: return 0x24;
-      case ConsoleKey.K: return 0x25;
-      case ConsoleKey.L: return 0x26;
-      case ConsoleKey.M: return 0x32;
-      case ConsoleKey.N: return 0x31;
-      case ConsoleKey.O: return 0x18;
-      case ConsoleKey.P: return 0x19;
-      case ConsoleKey.Q: return 0x10;
-      case ConsoleKey.R: return 0x13;
-      case ConsoleKey.S: return 0x1F;
-      case ConsoleKey.T: return 0x14;
-      case ConsoleKey.U: return 0x16;
-      case ConsoleKey.V: return 0x2F;
-      case ConsoleKey.W: return 0x11;
-      case ConsoleKey.X: return 0x2D;
-      case ConsoleKey.Y: return 0x15;
-      case ConsoleKey.Z: return 0x2C;
-      case ConsoleKey.D0: return 0x0B;
-      case ConsoleKey.D1: return 0x02;
-      case ConsoleKey.D2: return 0x03;
-      case ConsoleKey.D3: return 0x04;
-      case ConsoleKey.D4: return 0x05;
-      case ConsoleKey.D5: return 0x06;
-      case ConsoleKey.D6: return 0x07;
-      case ConsoleKey.D7: return 0x08;
-      case ConsoleKey.D8: return 0x09;
-      case ConsoleKey.D9: return 0x0A;
-      case ConsoleKey.Enter: return 0x1C;
-      case ConsoleKey.Escape: return 0x01;
-      // Add other keys as needed
+      case ConsoleKey.L: return 0x1E;
       default: throw new ArgumentException($"No scan code found for ConsoleKey.{key}");
     }
   }
 
-  const uint MAPVK_VSC_TO_VK = 0;
+  const int MAPVK_VK_TO_VSC = 0;
 
   [DllImport("user32.dll", SetLastError = true)]
-  static extern uint MapVirtualKey(uint uCode, uint uMapType);
+  static extern int MapVirtualKey(int uCode, int uMapType);
 }
