@@ -12,14 +12,12 @@ class Program {
   private static readonly LowLevelKeyboardProc _keyboardProc = KeyboardHookCallback;
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-  static async Task Main() {
+  static void Main() {
     _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
 
     var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
 
-    await MessageLoopAsync();
-
-    UnhookWindowsHookEx(_keyboardHookID);
+    subscribe(new MSG());
   }
 
   private static async Task MonitorStatesAsync() {
@@ -33,12 +31,13 @@ class Program {
     }
   }
 
-  private static async Task MessageLoopAsync() {
-    MSG msg = new MSG();
+  private static bool subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
+    UnhookWindowsHookEx(_keyboardHookID);
+    return true;
   }
 
   private static IntPtr SetHook(Delegate proc, int hookType) {
