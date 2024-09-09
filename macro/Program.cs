@@ -9,20 +9,21 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  //static bool OnEach(ConcurrentDictionary<string, bool> dict) {
-  //  switch (true) {
-  //    case var _ when dict.GetOrAdd("W", false):
-  //      switch (true) {
-  //        case var _ when dict.GetOrAdd("D", false) || dict.GetOrAdd("A", false):
-  //          Console.WriteLine("Pressed K");
-  //          return true;
-  //        default:
-  //          return false;
-  //      }
-  //    default:
-  //      return false;
-  //  }
-  //}
+  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict) {
+    switch (true) {
+      case var _ when dict.GetOrAdd(ConsoleKey.W, false):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.D, false) || dict.GetOrAdd(ConsoleKey.A, false):
+            //Keyboard.SendKey(ConsoleKey.K);
+            Console.WriteLine("K Pressed");
+            return true;
+          default:
+            return false;
+        }
+      default:
+        return false;
+    }
+  }
 
   static void Subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
@@ -56,13 +57,12 @@ class Program {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
           state[key] = true;
-          Console.WriteLine(key);
+          Every(state);
           break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
           state[key] = false;
-          Console.WriteLine(key);
-          Keyboard.SendKey(0x44);
+          Every(state);
           break;
       }
     }
