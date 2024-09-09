@@ -4,33 +4,31 @@ using System.Collections.Concurrent;
 using System.Windows.Forms;
 
 class Program {
-  static readonly ConcurrentDictionary<ConsoleKey, bool> state = new();
+  static readonly ConcurrentDictionary<uint, bool> state = new();
   static IntPtr hook_id = IntPtr.Zero;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_pressed) {
+  static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
     switch (true) {
-      case var _ when key.Equals(ConsoleKey.V) || key.Equals(ConsoleKey.W) || key.Equals(ConsoleKey.S) || key.Equals(ConsoleKey.D) || key.Equals(ConsoleKey.A):
-        Each(dict, ConsoleKey.V, ConsoleKey.W, ConsoleKey.K, is_pressed);
-        Each(dict, ConsoleKey.V, ConsoleKey.S, ConsoleKey.I, is_pressed);
-        Each(dict, ConsoleKey.V, ConsoleKey.D, ConsoleKey.J, is_pressed);
-        Each(dict, ConsoleKey.V, ConsoleKey.A, ConsoleKey.L, is_pressed);
+      case var _ when key.Equals(164) || key.Equals((uint)ConsoleKey.W) || key.Equals((uint)ConsoleKey.S) || key.Equals((uint)ConsoleKey.D) || key.Equals((uint)ConsoleKey.A):
+        Each(dict, 164, (uint)ConsoleKey.W, (uint)ConsoleKey.K, is_pressed);
+        Each(dict, 164, (uint)ConsoleKey.S, (uint)ConsoleKey.I, is_pressed);
+        Each(dict, 164, (uint)ConsoleKey.D, (uint)ConsoleKey.J, is_pressed);
+        Each(dict, 164, (uint)ConsoleKey.A, (uint)ConsoleKey.L, is_pressed);
         return true;
       default:
         return false;
     }
   }
 
-  static bool Each(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key_2, ConsoleKey key_1, ConsoleKey key, bool is_pressed) {
+  static bool Each(ConcurrentDictionary<uint, bool> dict, uint key_2, uint key_1, uint key, bool is_pressed) {
     switch (true) {
       case var _ when dict.GetOrAdd(key_2, false) && dict.GetOrAdd(key_1, false):
-        return Keyboard.SendKey((uint)key, is_pressed);
-      case var _ when dict.GetOrAdd(key_2, false):
-        return Keyboard.SendKey((uint)key, false);
+        return Keyboard.SendKey(key, is_pressed);
       case var _ when dict.GetOrAdd(key_1, false):
-        return Keyboard.SendKey((uint)key, false);
+        return Keyboard.SendKey(key, false);
       default:
         return false;
     }
@@ -63,8 +61,7 @@ class Program {
 
   static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      int scanCode = Marshal.ReadInt32(lParam);
-      ConsoleKey key = (ConsoleKey)Marshal.ReadInt32(lParam);
+      uint key = (uint)Marshal.ReadInt32(lParam);
       switch ((int)wParam) {
         case WM_SYSKEYUP:
         case WM_KEYUP:
@@ -75,6 +72,7 @@ class Program {
         case WM_KEYDOWN:
           state[key] = true;
           Every(state, key, true);
+          Console.WriteLine(key);
           break;
       }
     }
@@ -154,20 +152,6 @@ class Keyboard {
     SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
 
     return is_pressed;
-  }
-
-  public static ushort ConsoleKeyToVkCode(ConsoleKey keys) {
-    Console.WriteLine($"scancode: {(uint)keys:X}");
-    foreach (ConsoleKey key in Enum.GetValues(typeof(ConsoleKey))) {
-      uint virtualKeyCode = (uint)key;
-
-      // Convert the virtual key code to a scan code
-      uint scanCode = MapVirtualKey(virtualKeyCode, 0x01);
-
-      // Output the ConsoleKey and its corresponding scan code
-      Console.WriteLine($"ConsoleKey: {key}, Scan Code: {scanCode:X}");
-    }
-    return (ushort)MapVirtualKey(0x2E, 0x01);
   }
 
   const uint INPUT_KEYBOARD = 1;
