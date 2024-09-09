@@ -6,20 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 
 class Program {
-  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
+  private static IntPtr _keyboardHookID = IntPtr.Zero;
 
   private static readonly LowLevelKeyboardProc _keyboardProc = KeyboardHookCallback;
-  private static readonly LowLevelMouseProc _mouseProc = MouseHookCallback;
-
-  private static IntPtr _keyboardHookID = IntPtr.Zero;
-  private static IntPtr _mouseHookID = IntPtr.Zero;
-  private static readonly ConcurrentDictionary<string, bool> _keyStates = new();
-  private static readonly ConcurrentDictionary<string, bool> _mouseStates = new();
+  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
   static async Task Main() {
     _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
-    _mouseHookID = SetHook(_mouseProc, WH_MOUSE_LL);
 
     var messageLoopThread = new Thread(MonitorStates) {
       IsBackground = true
@@ -29,7 +23,6 @@ class Program {
     MessageLoop();
 
     UnhookWindowsHookEx(_keyboardHookID);
-    UnhookWindowsHookEx(_mouseHookID);
   }
 
   private static void MonitorStates() {
@@ -37,10 +30,6 @@ class Program {
       Console.WriteLine("Current Key States:");
       foreach (var keyState in _keyStates) {
         Console.WriteLine($"{keyState.Key}: {keyState.Value}");
-      }
-      Console.WriteLine("Current Mouse States:");
-      foreach (var mouseState in _mouseStates) {
-        Console.WriteLine($"{mouseState.Key}: {mouseState.Value}");
       }
       Thread.Sleep(1000);
     }
@@ -85,20 +74,6 @@ class Program {
     return CallNextHookEx(_keyboardHookID, nCode, wParam, lParam);
   }
 
-  private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0) {
-      switch ((int)wParam) {
-        case WM_LBUTTONDOWN:
-          _mouseStates["LMB"] = true;
-          break;
-        case WM_LBUTTONUP:
-          _mouseStates["LMB"] = false;
-          break;
-      }
-    }
-    return CallNextHookEx(_mouseHookID, nCode, wParam, lParam);
-  }
-
   private static void SimulateKey(ConsoleKey key, bool isPress) {
     INPUT input = new INPUT {
       type = INPUT_KEYBOARD,
@@ -118,13 +93,10 @@ class Program {
   private static void SimulateKeyPress(ConsoleKey key) => SimulateKey(key, true);
 
   private const int WH_KEYBOARD_LL = 13;
-  private const int WH_MOUSE_LL = 14;
   private const int WM_KEYDOWN = 0x0100;
   private const int WM_SYSKEYDOWN = 0x0104;
   private const int WM_KEYUP = 0x0101;
   private const int WM_SYSKEYUP = 0x0105;
-  private const int WM_LBUTTONDOWN = 0x0201;
-  private const int WM_LBUTTONUP = 0x0202;
   private const int KEYEVENTF_KEYUP = 0x0002;
   private const int INPUT_KEYBOARD = 1;
 
@@ -137,21 +109,7 @@ class Program {
   [StructLayout(LayoutKind.Explicit)]
   private struct InputUnion {
     [FieldOffset(0)]
-    public MOUSEINPUT mi;
-    [FieldOffset(0)]
     public KEYBDINPUT ki;
-    [FieldOffset(0)]
-    public HARDWAREINPUT hi;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MOUSEINPUT {
-    public int dx;
-    public int dy;
-    public int mouseData;
-    public int dwFlags;
-    public int time;
-    public IntPtr dwExtraInfo;
   }
 
   [StructLayout(LayoutKind.Sequential)]
@@ -164,19 +122,6 @@ class Program {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct HARDWAREINPUT {
-    public int uMsg;
-    public ushort wParamL;
-    public ushort wParamH;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct POINT {
-    public int x;
-    public int y;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
     public IntPtr hWnd;
     public uint message;
@@ -184,6 +129,12 @@ class Program {
     public IntPtr lParam;
     public uint time;
     public POINT pt;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
   }
 
   [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
