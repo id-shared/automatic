@@ -9,11 +9,11 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, bool is_press) {
+  static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
     switch (true) {
       case var _ when dict.GetOrAdd(ConsoleKey.W, false):
         switch (true) {
-          case var _ when dict.GetOrAdd(ConsoleKey.D, false) || dict.GetOrAdd(ConsoleKey.A, false):
+          case var _ when key.Equals(ConsoleKey.A) || key.Equals(ConsoleKey.D):
             Keyboard.SendKey(ConsoleKey.K, is_press);
             Console.WriteLine("K Pressed");
             return true;
@@ -57,12 +57,12 @@ class Program {
         case WM_SYSKEYUP:
         case WM_KEYUP:
           state[key] = false;
-          Every(state, false);
+          Every(state, key, false);
           break;
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
           state[key] = true;
-          Every(state, true);
+          Every(state, key, true);
           break;
       }
     }
