@@ -14,7 +14,9 @@ class Program {
       case var _ when dict.GetOrAdd(ConsoleKey.W, false):
         switch (true) {
           case var _ when dict.GetOrAdd(ConsoleKey.D, false) || dict.GetOrAdd(ConsoleKey.A, false):
-            //Keyboard.SendKey(ConsoleKey.K);
+            Keyboard.SendKeyI(ConsoleKey.K);
+            Thread.Sleep(1000);
+            Keyboard.SendKeyO(ConsoleKey.K);
             Console.WriteLine("K Pressed");
             return true;
           default:
@@ -92,6 +94,7 @@ class Program {
     } else {
       Console.WriteLine($"SimulateKey result: {result}");
     }
+
     return result;
   }
 
@@ -225,28 +228,22 @@ class Keyboard {
   const uint INPUT_KEYBOARD = 1;
   const uint KEYEVENTF_KEYUP = 0x0002;
 
-  public static void SendKey(ConsoleKey key) {
+  public static void SendKeyO(ConsoleKey key) => SendKey(key, false);
+  public static void SendKeyI(ConsoleKey key) => SendKey(key, true);
+
+  public static uint SendKey(ConsoleKey key, bool is_press) {
     INPUT[] inputs = new INPUT[2];
 
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].mkhi.ki = new KEYBDINPUT {
       wVk = Convert.ConsoleKeyToVkCode (key),
       wScan = 0,
-      dwFlags = 0,
+      dwFlags = is_press ? 0 : KEYEVENTF_KEYUP,
       time = 0,
       dwExtraInfo = IntPtr.Zero
     };
 
-    inputs[1].type = INPUT_KEYBOARD;
-    inputs[1].mkhi.ki = new KEYBDINPUT {
-      wVk = Convert.ConsoleKeyToVkCode(key),
-      wScan = 0,
-      dwFlags = KEYEVENTF_KEYUP,
-      time = 0,
-      dwExtraInfo = IntPtr.Zero
-    };
-
-    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+    return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
   }
 }
 
