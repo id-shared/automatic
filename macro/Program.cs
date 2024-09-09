@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 class Program {
   static readonly ConcurrentDictionary<ConsoleKey, bool> state = new();
@@ -10,10 +11,16 @@ class Program {
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
   static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
-    Each(dict, ConsoleKey.V, ConsoleKey.W, ConsoleKey.K);
-    Each(dict, ConsoleKey.V, ConsoleKey.S, ConsoleKey.I);
-    Each(dict, ConsoleKey.V, ConsoleKey.D, ConsoleKey.J);
-    Each(dict, ConsoleKey.V, ConsoleKey.A, ConsoleKey.L);
+    switch (true) {
+      case var _ when key.Equals(ConsoleKey.V) || key.Equals(ConsoleKey.W) || key.Equals(ConsoleKey.S) || key.Equals(ConsoleKey.D) || key.Equals(ConsoleKey.A):
+        Each(dict, ConsoleKey.V, ConsoleKey.W, ConsoleKey.K);
+        Each(dict, ConsoleKey.V, ConsoleKey.S, ConsoleKey.I);
+        Each(dict, ConsoleKey.V, ConsoleKey.D, ConsoleKey.J);
+        Each(dict, ConsoleKey.V, ConsoleKey.A, ConsoleKey.L);
+        return true;
+      default:
+        return false;
+    }
 
     return true;
   }
