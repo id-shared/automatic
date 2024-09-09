@@ -9,20 +9,20 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static bool OnEach(ConcurrentDictionary<string, bool> dict) {
-    switch (true) {
-      case var _ when dict.GetOrAdd("W", false):
-        switch (true) {
-          case var _ when dict.GetOrAdd("D", false) || dict.GetOrAdd("A", false):
-            Console.WriteLine("Pressed K");
-            return true;
-          default:
-            return false;
-        }
-      default:
-        return false;
-    }
-  }
+  //static bool OnEach(ConcurrentDictionary<string, bool> dict) {
+  //  switch (true) {
+  //    case var _ when dict.GetOrAdd("W", false):
+  //      switch (true) {
+  //        case var _ when dict.GetOrAdd("D", false) || dict.GetOrAdd("A", false):
+  //          Console.WriteLine("Pressed K");
+  //          return true;
+  //        default:
+  //          return false;
+  //      }
+  //    default:
+  //      return false;
+  //  }
+  //}
 
   static void Subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
@@ -56,12 +56,14 @@ class Program {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
           state[key] = true;
-          OnEach(state);
+          Console.WriteLine(key);
           break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
           state[key] = false;
-          OnEach(state);
+          Console.WriteLine(key);
+          SimulateKeyI(ConsoleKey.P);
+          SimulateKeyO(ConsoleKey.P);
           break;
       }
     }
@@ -75,21 +77,30 @@ class Program {
       type = INPUT_KEYBOARD,
       u = new InputUnion {
         ki = new KEYBDINPUT {
-          wVk = (ushort)key,
+          wVk = 0x45,
+          wScan = 0,
           dwFlags = isPress ? 0 : KEYEVENTF_KEYUP,
+          time = 0,
           dwExtraInfo = IntPtr.Zero
         }
       }
     };
 
-    return SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+    uint result = SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+    if (result == 0) {
+      int errorCode = Marshal.GetLastWin32Error();
+      Console.WriteLine($"SendInput failed with error code: {errorCode}");
+    } else {
+      Console.WriteLine($"SimulateKey result: {result}");
+    }
+    return result;
   }
 
   static void Main() {
-    SimulateKey(ConsoleKey.K, true);
-
     hook_id = SetHook(hook, WH_KEYBOARD_LL);
+
     Subscribe(new MSG());
+
     Detach(hook_id);
   }
 
