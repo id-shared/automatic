@@ -15,27 +15,25 @@ class Program {
   static async Task Main() {
     _keyboardHookID = SetHook(_keyboardProc, WH_KEYBOARD_LL);
 
-    var messageLoopThread = new Thread(MonitorStates) {
-      IsBackground = true
-    };
-    messageLoopThread.Start();
+    var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
 
-    MessageLoop();
+    await MessageLoopAsync();
 
     UnhookWindowsHookEx(_keyboardHookID);
   }
 
-  private static void MonitorStates() {
+  private static async Task MonitorStatesAsync() {
     while (true) {
+      Console.Clear();
       Console.WriteLine("Current Key States:");
       foreach (var keyState in _keyStates) {
         Console.WriteLine($"{keyState.Key}: {keyState.Value}");
       }
-      Thread.Sleep(1000);
+      await Task.Delay(10); // Use Task.Delay instead of Thread.Sleep
     }
   }
 
-  private static void MessageLoop() {
+  private static async Task MessageLoopAsync() {
     MSG msg = new MSG();
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
