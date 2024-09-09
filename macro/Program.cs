@@ -85,7 +85,6 @@ class Program {
         case WM_KEYDOWN:
           state[key] = true;
           Every(state, key, true);
-          Console.WriteLine(scanCode);
           break;
       }
     }
@@ -150,8 +149,30 @@ class Program {
 }
 
 class Keyboard {
-  [DllImport("user32.dll", SetLastError = true)]
-  static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+  public static bool SendKey(ConsoleKey key, bool is_press) {
+    INPUT[] inputs = new INPUT[1];
+
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].mkhi.ki = new KEYBDINPUT {
+      wVk = ConsoleKeyToVkCode (key),
+      wScan = 0,
+      dwFlags = is_press ? 0 : KEYEVENTF_KEYUP,
+      time = 0,
+      dwExtraInfo = IntPtr.Zero
+    };
+
+    Console.WriteLine(ConsoleKeyToVkCode(key));
+
+    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+
+    return is_press;
+  }
+  public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
+    return (ushort)MapVirtualKey((uint)key, 0x01);
+  }
+
+  const uint INPUT_KEYBOARD = 1;
+  const uint KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
   struct INPUT {
@@ -195,43 +216,9 @@ class Keyboard {
     public ushort wParamH;
   }
 
-  const uint INPUT_KEYBOARD = 1;
-  const uint KEYEVENTF_KEYUP = 0x0002;
+  [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+  static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
-  public static bool SendKey(ConsoleKey key, bool is_press) {
-    INPUT[] inputs = new INPUT[2];
-
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].mkhi.ki = new KEYBDINPUT {
-      wVk = Convert.ConsoleKeyToVkCode (key),
-      wScan = 0,
-      dwFlags = is_press ? 0 : KEYEVENTF_KEYUP,
-      time = 0,
-      dwExtraInfo = IntPtr.Zero
-    };
-
-    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-
-    return is_press;
-  }
-}
-
-class Convert {
-  public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
-    return ScanCodeToVkCode(ConsoleKeyToScanCode(key));
-  }
-
-  public static ushort ScanCodeToVkCode(uint scanCode) {
-    return (ushort)MapVirtualKey(scanCode, 0x00);
-  }
-
-  public static uint ConsoleKeyToScanCode(ConsoleKey key) {
-    switch (key) {
-      case ConsoleKey.L: return 0x26;
-      default: throw new ArgumentException($"No scan code found for ConsoleKey.{key}");
-    }
-  }
-
-  [DllImport("user32.dll", CharSet = CharSet.Auto)]
+  [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
