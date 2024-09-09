@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 
 class Program {
-  static readonly ConcurrentDictionary<string, bool> state = new();
+  static readonly ConcurrentDictionary<ConsoleKey, bool> state = new();
   static IntPtr hook_id = IntPtr.Zero;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -51,7 +51,7 @@ class Program {
 
   static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      string key = ((ConsoleKey)Marshal.ReadInt32(lParam)).ToString();
+      ConsoleKey key = (ConsoleKey)Marshal.ReadInt32(lParam);
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
@@ -62,8 +62,7 @@ class Program {
         case WM_SYSKEYUP:
           state[key] = false;
           Console.WriteLine(key);
-          SimulateKeyI(ConsoleKey.P);
-          SimulateKeyO(ConsoleKey.P);
+          Keyboard.SendKey(0x44);
           break;
       }
     }
@@ -175,4 +174,78 @@ class Program {
 
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
+}
+
+class Keyboard {
+  [DllImport("user32.dll", SetLastError = true)]
+  static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+
+  [StructLayout(LayoutKind.Sequential)]
+  struct INPUT {
+    public uint type;
+    public MOUSEKEYBDHARDWAREINPUT mkhi;
+  }
+
+  [StructLayout(LayoutKind.Explicit)]
+  struct MOUSEKEYBDHARDWAREINPUT {
+    [FieldOffset(0)]
+    public MOUSEINPUT mi;
+    [FieldOffset(0)]
+    public KEYBDINPUT ki;
+    [FieldOffset(0)]
+    public HARDWAREINPUT hi;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  struct KEYBDINPUT {
+    public ushort wVk;
+    public ushort wScan;
+    public uint dwFlags;
+    public uint time;
+    public IntPtr dwExtraInfo;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  struct MOUSEINPUT {
+    public int dx;
+    public int dy;
+    public uint mouseData;
+    public uint dwFlags;
+    public uint time;
+    public IntPtr dwExtraInfo;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  struct HARDWAREINPUT {
+    public uint uMsg;
+    public ushort wParamL;
+    public ushort wParamH;
+  }
+
+  const uint INPUT_KEYBOARD = 1;
+  const uint KEYEVENTF_KEYUP = 0x0002;
+
+  public static void SendKey(ushort vkCode) {
+    INPUT[] inputs = new INPUT[2];
+
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].mkhi.ki = new KEYBDINPUT {
+      wVk = vkCode,
+      wScan = 0,
+      dwFlags = 0,
+      time = 0,
+      dwExtraInfo = IntPtr.Zero
+    };
+
+    inputs[1].type = INPUT_KEYBOARD;
+    inputs[1].mkhi.ki = new KEYBDINPUT {
+      wVk = vkCode,
+      wScan = 0,
+      dwFlags = KEYEVENTF_KEYUP,
+      time = 0,
+      dwExtraInfo = IntPtr.Zero
+    };
+
+    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+  }
 }
