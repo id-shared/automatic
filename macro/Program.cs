@@ -11,39 +11,31 @@ class Program {
 
   static bool Every(ConcurrentDictionary<ConsoleKey, bool> dict, ConsoleKey key, bool is_press) {
     switch (true) {
-      //case var _ when key.Equals(ConsoleKey.W):
-      //  switch (true) {
-      //    case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-      //      return Keyboard.SendKey(ConsoleKey.K, is_press);
-      //    default:
-      //      return false;
-      //  }
-      //case var _ when key.Equals(ConsoleKey.S):
-      //  switch (true) {
-      //    case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-      //      return Keyboard.SendKey(ConsoleKey.I, is_press);
-      //    default:
-      //      return false;
-      //  }
-      //case var _ when key.Equals(ConsoleKey.D):
-      //  switch (true) {
-      //    case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-      //      return Keyboard.SendKey(ConsoleKey.J, is_press);
-      //    default:
-      //      return false;
-      //  }
+      case var _ when key.Equals(ConsoleKey.W):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey((uint)ConsoleKey.K, is_press);
+          default:
+            return false;
+        }
+      case var _ when key.Equals(ConsoleKey.S):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey((uint)ConsoleKey.I, is_press);
+          default:
+            return false;
+        }
+      case var _ when key.Equals(ConsoleKey.D):
+        switch (true) {
+          case var _ when dict.GetOrAdd(ConsoleKey.V, false):
+            return Keyboard.SendKey((uint)ConsoleKey.J, is_press);
+          default:
+            return false;
+        }
       case var _ when key.Equals(ConsoleKey.A):
         switch (true) {
           case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            Console.WriteLine("Scanning for all ConsoleKey values based on scan codes...");
-            uint startScanCode = 0x00;
-            uint endScanCode = 0xFF;
-
-            for (uint scanCode = startScanCode; scanCode <= endScanCode; scanCode++) {
-              Keyboard.SendKey(scanCode, is_press);
-            }
-            //return Keyboard.SendKey(ConsoleKey.L, is_press);
-            return true;
+            return Keyboard.SendKey((uint)ConsoleKey.L, is_press);
           default:
             return false;
         }
@@ -90,6 +82,7 @@ class Program {
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
           state[key] = true;
+          Console.WriteLine($"  {key}.");
           Every(state, key, true);
           break;
       }
@@ -237,3 +230,14 @@ class Keyboard {
   [DllImport("user32.dll", SetLastError = true)]
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
+
+//Console.WriteLine("Scanning for all ConsoleKey values based on scan codes...");
+//uint startScanCode = 0x43;
+//uint endScanCode = 0xFF;
+
+//for (uint scanCode = startScanCode; scanCode <= endScanCode; scanCode++) {
+//  Thread.Sleep(1000);
+//  Console.WriteLine($"{scanCode}:");
+//  Keyboard.SendKey((uint)ConsoleKey.C, true);
+//  Keyboard.SendKey((uint)ConsoleKey.C, false);
+//}
