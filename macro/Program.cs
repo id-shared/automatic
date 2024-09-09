@@ -3,20 +3,18 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 
 class Program {
-  static readonly ConcurrentDictionary<string, bool> _keyStates = new();
+  static readonly ConcurrentDictionary<string, bool> state = new();
   static IntPtr hook_id = IntPtr.Zero;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static async Task MonitorStatesAsync() {
-    while (true) {
-      Console.Clear();
-      Console.WriteLine("Current Key States:");
-      foreach (var keyState in _keyStates) {
-        Console.WriteLine($"{keyState.Key}: {keyState.Value}");
-      }
-      await Task.Delay(10);
+  static void OnEach(ConcurrentDictionary<string, bool> state) {
+    //var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
+
+    Console.WriteLine("Current Key States:");
+    foreach (var keyState in state) {
+      Console.WriteLine($"{keyState.Key}: {keyState.Value}");
     }
   }
 
@@ -51,11 +49,13 @@ class Program {
       switch ((int)wParam) {
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-          _keyStates[key] = true;
+          state[key] = true;
+          OnEach(state);
           break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-          _keyStates[key] = false;
+          state[key] = false;
+          OnEach(state);
           break;
       }
     }
@@ -81,8 +81,6 @@ class Program {
   static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
 
   static void Main() {
-    var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
-
     hook_id = SetHook(hook, WH_KEYBOARD_LL);
     Subscribe(new MSG());
     Detach(hook_id);
