@@ -9,12 +9,18 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
-  static void OnEach(ConcurrentDictionary<string, bool> state) {
-    //var monitorStatesTask = Task.Run(() => MonitorStatesAsync());
-
-    Console.WriteLine("Current Key States:");
-    foreach (var keyState in state) {
-      Console.WriteLine($"{keyState.Key}: {keyState.Value}");
+  static bool OnEach(ConcurrentDictionary<string, bool> dict) {
+    switch (true) {
+      case var _ when dict.GetOrAdd("W", false):
+        switch (true) {
+          case var _ when dict.GetOrAdd("D", false) || dict.GetOrAdd("A", false):
+            Console.WriteLine("Pressed K");
+            return true;
+          default:
+            return false;
+        }
+      default:
+        return false;
     }
   }
 
@@ -62,6 +68,8 @@ class Program {
     return CallNextHookEx(hook_id, nCode, wParam, lParam);
   }
 
+  static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
+  static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
   static uint SimulateKey(ConsoleKey key, bool isPress) {
     INPUT input = new INPUT {
       type = INPUT_KEYBOARD,
@@ -74,13 +82,12 @@ class Program {
       }
     };
 
-    return SendInput(1, [input], Marshal.SizeOf<INPUT>());
+    return SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
   }
 
-  static void SimulateKeyO(ConsoleKey key) => SimulateKey(key, false);
-  static void SimulateKeyI(ConsoleKey key) => SimulateKey(key, true);
-
   static void Main() {
+    SimulateKey(ConsoleKey.K, true);
+
     hook_id = SetHook(hook, WH_KEYBOARD_LL);
     Subscribe(new MSG());
     Detach(hook_id);
@@ -94,16 +101,16 @@ class Program {
   private const int KEYEVENTF_KEYUP = 0x0002;
   private const int INPUT_KEYBOARD = 1;
 
-  [StructLayout(LayoutKind.Sequential)]
-  private struct INPUT {
-    public int type;
-    public InputUnion u;
-  }
-
   [StructLayout(LayoutKind.Explicit)]
   private struct InputUnion {
     [FieldOffset(0)]
     public KEYBDINPUT ki;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct INPUT {
+    public int type;
+    public InputUnion u;
   }
 
   [StructLayout(LayoutKind.Sequential)]
