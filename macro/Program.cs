@@ -11,10 +11,12 @@ class Program {
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
   static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
-    uint ra = (uint)ConsoleKey.RightArrow;
-    uint la = (uint)ConsoleKey.LeftArrow;
-    uint da = (uint)ConsoleKey.DownArrow;
-    uint ua = (uint)ConsoleKey.UpArrow;
+    uint arrow_r = (uint)ConsoleKey.RightArrow;
+    uint arrow_l = (uint)ConsoleKey.LeftArrow;
+    uint arrow_d = (uint)ConsoleKey.DownArrow;
+    uint arrow_u = (uint)ConsoleKey.UpArrow;
+
+    uint tab = (uint)ConsoleKey.Tab;
 
     uint w = (uint)ConsoleKey.W;
     uint s = (uint)ConsoleKey.S;
@@ -22,11 +24,11 @@ class Program {
     uint a = (uint)ConsoleKey.A;
 
     switch (true) {
-      case var _ when key.Equals(a) || key.Equals(d) || key.Equals(s) || key.Equals(w) || key.Equals(164):
-        Each(dict, 164, w, da, is_pressed);
-        Each(dict, 164, s, ua, is_pressed);
-        Each(dict, 164, d, la, is_pressed);
-        Each(dict, 164, a, ra, is_pressed);
+      case var _ when key.Equals(a) || key.Equals(d) || key.Equals(s) || key.Equals(w) || key.Equals(tab):
+        Each(dict, w, tab, arrow_d, is_pressed);
+        Each(dict, s, tab, arrow_u, is_pressed);
+        Each(dict, d, tab, arrow_l, is_pressed);
+        Each(dict, a, tab, arrow_r, is_pressed);
         return true;
       default:
         return false;
@@ -35,9 +37,9 @@ class Program {
 
   static bool Each(ConcurrentDictionary<uint, bool> dict, uint key_2, uint key_1, uint key, bool is_pressed) {
     switch (true) {
-      case var _ when dict.GetOrAdd(key_2, false) && dict.GetOrAdd(key_1, false):
+      case var _ when dict.GetOrAdd(key_1, false) && dict.GetOrAdd(key_2, false):
         return Keyboard.SendKey(key, is_pressed);
-      case var _ when dict.GetOrAdd(key_1, false):
+      case var _ when dict.GetOrAdd(key_2, false):
         return Keyboard.SendKey(key, false);
       default:
         return false;
