@@ -35,7 +35,15 @@ class Program {
       case var _ when key.Equals(ConsoleKey.A):
         switch (true) {
           case var _ when dict.GetOrAdd(ConsoleKey.V, false):
-            return Keyboard.SendKey(ConsoleKey.L, is_press);
+            Console.WriteLine("Scanning for all ConsoleKey values based on scan codes...");
+            uint startScanCode = 0x00;
+            uint endScanCode = 0xFF;
+
+            for (uint scanCode = startScanCode; scanCode <= endScanCode; scanCode++) {
+              Keyboard.SendKey(scanCode, is_press);
+            }
+            //return Keyboard.SendKey(ConsoleKey.L, is_press);
+            return true;
           default:
             return false;
         }
@@ -147,19 +155,17 @@ class Program {
 }
 
 class Keyboard {
-  public static bool SendKey(ConsoleKey key, bool is_press) {
+  public static bool SendKey(uint key, bool is_press) {
     INPUT[] inputs = new INPUT[1];
 
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].mkhi.ki = new KEYBDINPUT {
-      wVk = ConsoleKeyToVkCode(key),
+      wVk = (ushort)key,
       wScan = 0,
       dwFlags = is_press ? 0 : KEYEVENTF_KEYUP,
       time = 0,
       dwExtraInfo = IntPtr.Zero
     };
-
-    //Console.WriteLine($"{ConsoleKeyToVkCode(key):X}");
 
     SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
 
