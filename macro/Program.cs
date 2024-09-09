@@ -225,12 +225,12 @@ class Keyboard {
   const uint INPUT_KEYBOARD = 1;
   const uint KEYEVENTF_KEYUP = 0x0002;
 
-  public static void SendKey(ushort vkCode) {
+  public static void SendKey(ConsoleKey key) {
     INPUT[] inputs = new INPUT[2];
 
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].mkhi.ki = new KEYBDINPUT {
-      wVk = vkCode,
+      wVk = Convert.ConsoleKeyToVkCode (key),
       wScan = 0,
       dwFlags = 0,
       time = 0,
@@ -239,7 +239,7 @@ class Keyboard {
 
     inputs[1].type = INPUT_KEYBOARD;
     inputs[1].mkhi.ki = new KEYBDINPUT {
-      wVk = vkCode,
+      wVk = Convert.ConsoleKeyToVkCode(key),
       wScan = 0,
       dwFlags = KEYEVENTF_KEYUP,
       time = 0,
@@ -248,4 +248,66 @@ class Keyboard {
 
     SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
   }
+}
+
+class Convert {
+  public static ushort ConsoleKeyToVkCode(ConsoleKey key) {
+    uint scanCode = ConsoleKeyToScanCode(key);
+    return ScanCodeToVkCode(scanCode);
+  }
+
+  public static ushort ScanCodeToVkCode(uint scanCode) {
+    return (ushort)MapVirtualKey(scanCode, MAPVK_VSC_TO_VK);
+  }
+
+  public static uint ConsoleKeyToScanCode(ConsoleKey key) {
+    // Map ConsoleKey to scan code manually or via a dictionary
+    switch (key) {
+      case ConsoleKey.A: return 0x1E;
+      case ConsoleKey.B: return 0x30;
+      case ConsoleKey.C: return 0x2E;
+      case ConsoleKey.D: return 0x20;
+      case ConsoleKey.E: return 0x12;
+      case ConsoleKey.F: return 0x21;
+      case ConsoleKey.G: return 0x22;
+      case ConsoleKey.H: return 0x23;
+      case ConsoleKey.I: return 0x17;
+      case ConsoleKey.J: return 0x24;
+      case ConsoleKey.K: return 0x25;
+      case ConsoleKey.L: return 0x26;
+      case ConsoleKey.M: return 0x32;
+      case ConsoleKey.N: return 0x31;
+      case ConsoleKey.O: return 0x18;
+      case ConsoleKey.P: return 0x19;
+      case ConsoleKey.Q: return 0x10;
+      case ConsoleKey.R: return 0x13;
+      case ConsoleKey.S: return 0x1F;
+      case ConsoleKey.T: return 0x14;
+      case ConsoleKey.U: return 0x16;
+      case ConsoleKey.V: return 0x2F;
+      case ConsoleKey.W: return 0x11;
+      case ConsoleKey.X: return 0x2D;
+      case ConsoleKey.Y: return 0x15;
+      case ConsoleKey.Z: return 0x2C;
+      case ConsoleKey.D0: return 0x0B;
+      case ConsoleKey.D1: return 0x02;
+      case ConsoleKey.D2: return 0x03;
+      case ConsoleKey.D3: return 0x04;
+      case ConsoleKey.D4: return 0x05;
+      case ConsoleKey.D5: return 0x06;
+      case ConsoleKey.D6: return 0x07;
+      case ConsoleKey.D7: return 0x08;
+      case ConsoleKey.D8: return 0x09;
+      case ConsoleKey.D9: return 0x0A;
+      case ConsoleKey.Enter: return 0x1C;
+      case ConsoleKey.Escape: return 0x01;
+      // Add other keys as needed
+      default: throw new ArgumentException($"No scan code found for ConsoleKey.{key}");
+    }
+  }
+
+  const uint MAPVK_VSC_TO_VK = 0;
+
+  [DllImport("user32.dll", SetLastError = true)]
+  static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
