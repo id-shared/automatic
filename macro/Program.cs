@@ -11,12 +11,22 @@ class Program {
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
   static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
+    uint ra = (uint)ConsoleKey.RightArrow;
+    uint la = (uint)ConsoleKey.LeftArrow;
+    uint da = (uint)ConsoleKey.DownArrow;
+    uint ua = (uint)ConsoleKey.UpArrow;
+
+    uint w = (uint)ConsoleKey.W;
+    uint s = (uint)ConsoleKey.S;
+    uint d = (uint)ConsoleKey.D;
+    uint a = (uint)ConsoleKey.A;
+
     switch (true) {
-      case var _ when key.Equals(164) || key.Equals((uint)ConsoleKey.W) || key.Equals((uint)ConsoleKey.S) || key.Equals((uint)ConsoleKey.D) || key.Equals((uint)ConsoleKey.A):
-        Each(dict, 164, (uint)ConsoleKey.W, (uint)ConsoleKey.K, is_pressed);
-        Each(dict, 164, (uint)ConsoleKey.S, (uint)ConsoleKey.I, is_pressed);
-        Each(dict, 164, (uint)ConsoleKey.D, (uint)ConsoleKey.J, is_pressed);
-        Each(dict, 164, (uint)ConsoleKey.A, (uint)ConsoleKey.L, is_pressed);
+      case var _ when key.Equals(a) || key.Equals(d) || key.Equals(s) || key.Equals(w) || key.Equals(164):
+        Each(dict, 164, w, da, is_pressed);
+        Each(dict, 164, s, ua, is_pressed);
+        Each(dict, 164, d, la, is_pressed);
+        Each(dict, 164, a, ra, is_pressed);
         return true;
       default:
         return false;
