@@ -64,22 +64,25 @@ class Program {
   }
 
   static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0) {
-      uint key = (uint)Marshal.ReadInt32(lParam);
-      switch ((int)wParam) {
-        case WM_SYSKEYUP:
-        case WM_KEYUP:
-          state[key] = false;
-          Every(state, key, false);
-          break;
-        case WM_SYSKEYDOWN:
-        case WM_KEYDOWN:
-          state[key] = true;
-          Every(state, key, true);
-          break;
-      }
+    switch (true) {
+      case var _ when nCode >= 0:
+        uint key = (uint)Marshal.ReadInt32(lParam);
+        int act = (int)wParam;
+        switch (true) {
+          case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
+            state[key] = true;
+            Every(state, key, true);
+            return CallNextHookEx(hook_id, nCode, wParam, lParam);
+          case var _ when act.Equals(WM_SYSKEYUP) || act.Equals(WM_KEYUP):
+            state[key] = false;
+            Every(state, key, false);
+            return CallNextHookEx(hook_id, nCode, wParam, lParam);
+          default:
+            return CallNextHookEx(hook_id, nCode, wParam, lParam);
+        }
+      default:
+        return CallNextHookEx(hook_id, nCode, wParam, lParam);
     }
-    return CallNextHookEx(hook_id, nCode, wParam, lParam);
   }
 
   static void Main() {
