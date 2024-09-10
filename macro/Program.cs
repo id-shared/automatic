@@ -3,13 +3,11 @@ using System.Diagnostics;
 using System.Collections.Concurrent;
 
 class Program {
-  static readonly ConcurrentDictionary<uint, bool> state = new();
-  static IntPtr hook_id = IntPtr.Zero;
-
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
+  static IntPtr hook_id = IntPtr.Zero;
 
-  static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
+  static bool Every(uint key, bool is_pressed) {
     switch (true) {
       case var _ when is_pressed.Equals(false):
         switch (true) {
@@ -69,12 +67,10 @@ class Program {
         int act = (int)wParam;
         switch (true) {
           case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
-            state[key] = true;
-            Every(state, key, true);
+            Every(key, true);
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
           case var _ when act.Equals(WM_SYSKEYUP) || act.Equals(WM_KEYUP):
-            state[key] = false;
-            Every(state, key, false);
+            Every(key, false);
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
           default:
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
