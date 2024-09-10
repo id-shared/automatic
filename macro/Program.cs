@@ -24,17 +24,30 @@ class Program {
 
     switch (true) {
       case var _ when new[] { a, d, s, w, tab }.Contains(key):
-        Each(dict, w, tab, arrow_d, key, is_pressed);
-        Each(dict, s, tab, arrow_u, key, is_pressed);
-        Each(dict, d, tab, arrow_l, key, is_pressed);
-        Each(dict, a, tab, arrow_r, key, is_pressed);
+        Stop(dict, w, tab, arrow_d, key, is_pressed);
+        Stop(dict, s, tab, arrow_u, key, is_pressed);
+        Stop(dict, d, tab, arrow_l, key, is_pressed);
+        Stop(dict, a, tab, arrow_r, key, is_pressed);
         return true;
       default:
         return false;
     }
   }
 
-  static bool Each(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
+  static bool Stop(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
+    switch (true) {
+      case var _ when dict.GetOrAdd(key_3, false) && key_2.Equals(key):
+        return Keyboard.SendKey(key_1, is_pressed);
+      case var _ when key_3.Equals(key) && dict.GetOrAdd(key_2, false):
+        return Keyboard.SendKey(key_1, is_pressed);
+      case var _ when key_3.Equals(key):
+        return Keyboard.SendKey(key_1, false);
+      default:
+        return false;
+    }
+  }
+
+  static bool Move(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
     switch (true) {
       case var _ when dict.GetOrAdd(key_3, false) && key_2.Equals(key):
         return Keyboard.SendKey(key_1, is_pressed);
@@ -85,7 +98,6 @@ class Program {
         case WM_KEYDOWN:
           state[key] = true;
           Every(state, key, true);
-          Console.WriteLine(key);
           break;
       }
     }
