@@ -11,29 +11,31 @@ class Program {
 
   static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
     switch (true) {
-      case var _ when key.Equals((uint)ConsoleKey.A):
-        return Move((uint)ConsoleKey.RightArrow, is_pressed);
-      case var _ when key.Equals((uint)ConsoleKey.D):
-        return Move((uint)ConsoleKey.LeftArrow, is_pressed);
-      case var _ when key.Equals((uint)ConsoleKey.W):
-        return Move((uint)ConsoleKey.DownArrow, is_pressed);
-      case var _ when key.Equals((uint)ConsoleKey.S):
-        return Move((uint)ConsoleKey.UpArrow, is_pressed);
+      case var _ when is_pressed.Equals(false):
+        switch (true) {
+          case var _ when key.Equals((uint)ConsoleKey.A):
+            return Move((uint)ConsoleKey.RightArrow, is_pressed);
+          case var _ when key.Equals((uint)ConsoleKey.D):
+            return Move((uint)ConsoleKey.LeftArrow, is_pressed);
+          case var _ when key.Equals((uint)ConsoleKey.W):
+            return Move((uint)ConsoleKey.DownArrow, is_pressed);
+          case var _ when key.Equals((uint)ConsoleKey.S):
+            return Move((uint)ConsoleKey.UpArrow, is_pressed);
+          default:
+            return false;
+        };
       default:
         return false;
     }
+
   }
 
   static bool Move(uint key, bool is_pressed) {
-    switch (true) {
-      case var _ when is_pressed.Equals(false):
-        Keyboard.SendKey(key, true);
-        Thread.Sleep (1000 / 5);
-        Keyboard.SendKey(key, false);
-        return true;
-      default:
-        return false;
-    }
+    Keyboard.SendKey(key, true);
+    Thread.Sleep(1000 / 5);
+    Keyboard.SendKey(key, false);
+
+    return true;
   }
 
   static void Subscribe(MSG msg) {
