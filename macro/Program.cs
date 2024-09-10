@@ -36,7 +36,7 @@ class Program {
     switch (true) {
       case var _ when key_2.Equals(key) && is_pressed.Equals(false):
         Keyboard.SendKey(key_1, true);
-        Thread.Sleep (125);
+        Thread.Sleep ((1000 / 16) * 2);
         Keyboard.SendKey(key_1, false);
         return true;
       default:
