@@ -12,18 +12,12 @@ class Program {
   static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
     uint arrow_r = (uint)ConsoleKey.RightArrow;
     uint arrow_l = (uint)ConsoleKey.LeftArrow;
-    uint arrow_d = (uint)ConsoleKey.DownArrow;
-    uint arrow_u = (uint)ConsoleKey.UpArrow;
 
-    uint w = (uint)ConsoleKey.W;
-    uint s = (uint)ConsoleKey.S;
     uint d = (uint)ConsoleKey.D;
     uint a = (uint)ConsoleKey.A;
 
     switch (true) {
-      case var _ when new[] { a, d, s, w }.Contains(key):
-        Move(dict, w, arrow_d, key, is_pressed);
-        Move(dict, s, arrow_u, key, is_pressed);
+      case var _ when new[] { a, d }.Contains(key):
         Move(dict, d, arrow_l, key, is_pressed);
         Move(dict, a, arrow_r, key, is_pressed);
         return true;
@@ -36,7 +30,7 @@ class Program {
     switch (true) {
       case var _ when key_2.Equals(key) && is_pressed.Equals(false):
         Keyboard.SendKey(key_1, true);
-        Thread.Sleep ((1000 / 16) * 2);
+        Thread.Sleep (1000 / 4);
         Keyboard.SendKey(key_1, false);
         return true;
       default:
