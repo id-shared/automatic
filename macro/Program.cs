@@ -15,46 +15,30 @@ class Program {
     uint arrow_d = (uint)ConsoleKey.DownArrow;
     uint arrow_u = (uint)ConsoleKey.UpArrow;
 
-    uint tab = (uint)ConsoleKey.Tab;
-
     uint w = (uint)ConsoleKey.W;
     uint s = (uint)ConsoleKey.S;
     uint d = (uint)ConsoleKey.D;
     uint a = (uint)ConsoleKey.A;
 
     switch (true) {
-      case var _ when new[] { a, d, s, w, tab }.Contains(key):
-        Stop(dict, w, tab, arrow_d, key, is_pressed);
-        Stop(dict, s, tab, arrow_u, key, is_pressed);
-        Stop(dict, d, tab, arrow_l, key, is_pressed);
-        Stop(dict, a, tab, arrow_r, key, is_pressed);
+      case var _ when new[] { a, d, s, w }.Contains(key):
+        Move(dict, w, arrow_d, key, is_pressed);
+        Move(dict, s, arrow_u, key, is_pressed);
+        Move(dict, d, arrow_l, key, is_pressed);
+        Move(dict, a, arrow_r, key, is_pressed);
         return true;
       default:
         return false;
     }
   }
 
-  static bool Stop(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
+  static bool Move(ConcurrentDictionary<uint, bool> dict, uint key_2, uint key_1, uint key, bool is_pressed) {
     switch (true) {
-      case var _ when dict.GetOrAdd(key_3, false) && key_2.Equals(key):
-        return Keyboard.SendKey(key_1, is_pressed);
-      case var _ when key_3.Equals(key) && dict.GetOrAdd(key_2, false):
-        return Keyboard.SendKey(key_1, is_pressed);
-      case var _ when key_3.Equals(key):
-        return Keyboard.SendKey(key_1, false);
-      default:
-        return false;
-    }
-  }
-
-  static bool Move(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
-    switch (true) {
-      case var _ when dict.GetOrAdd(key_3, false) && key_2.Equals(key):
-        return Keyboard.SendKey(key_1, is_pressed);
-      case var _ when key_3.Equals(key) && dict.GetOrAdd(key_2, false):
-        return Keyboard.SendKey(key_1, is_pressed);
-      case var _ when key_3.Equals(key):
-        return Keyboard.SendKey(key_1, false);
+      case var _ when key_2.Equals(key) && is_pressed.Equals(false):
+        Keyboard.SendKey(key_1, true);
+        Thread.Sleep (125);
+        Keyboard.SendKey(key_1, false);
+        return true;
       default:
         return false;
     }
@@ -230,6 +214,19 @@ class Keyboard {
   [DllImport("user32.dll", SetLastError = true)]
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
+
+//static bool Stop(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
+//  switch (true) {
+//    case var _ when dict.GetOrAdd(key_3, false) && key_2.Equals(key):
+//      return Keyboard.SendKey(key_1, is_pressed);
+//    case var _ when key_3.Equals(key) && dict.GetOrAdd(key_2, false):
+//      return Keyboard.SendKey(key_1, is_pressed);
+//    case var _ when key_3.Equals(key):
+//      return Keyboard.SendKey(key_1, false);
+//    default:
+//      return false;
+//  }
+//}
 
 //Console.WriteLine("Scanning for all ConsoleKey values based on scan codes...");
 //uint startScanCode = 0x43;
