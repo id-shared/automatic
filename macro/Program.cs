@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Windows.Forms;
 
 class Program {
   static readonly ConcurrentDictionary<uint, bool> state = new();
@@ -31,7 +30,7 @@ class Program {
     switch (true) {
       case var _ when is_pressed.Equals(false):
         Keyboard.SendKey(key, true);
-        Thread.Sleep (1000 / 2 / 2 / 2);
+        Thread.Sleep (1000 / 2 / 2);
         Keyboard.SendKey(key, false);
         return true;
       default:
