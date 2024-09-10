@@ -10,17 +10,15 @@ class Program {
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
 
   static bool Every(ConcurrentDictionary<uint, bool> dict, uint key, bool is_pressed) {
-    uint arrow_r = (uint)ConsoleKey.RightArrow;
-    uint arrow_l = (uint)ConsoleKey.LeftArrow;
-
-    uint d = (uint)ConsoleKey.D;
-    uint a = (uint)ConsoleKey.A;
-
     switch (true) {
-      case var _ when key.Equals(d):
-        return Move(arrow_l, is_pressed);
-      case var _ when key.Equals(a):
-        return Move(arrow_r, is_pressed);
+      case var _ when key.Equals((uint)ConsoleKey.A):
+        return Move((uint)ConsoleKey.RightArrow, is_pressed);
+      case var _ when key.Equals((uint)ConsoleKey.D):
+        return Move((uint)ConsoleKey.LeftArrow, is_pressed);
+      case var _ when key.Equals((uint)ConsoleKey.W):
+        return Move((uint)ConsoleKey.DownArrow, is_pressed);
+      case var _ when key.Equals((uint)ConsoleKey.S):
+        return Move((uint)ConsoleKey.UpArrow, is_pressed);
       default:
         return false;
     }
@@ -30,7 +28,7 @@ class Program {
     switch (true) {
       case var _ when is_pressed.Equals(false):
         Keyboard.SendKey(key, true);
-        Thread.Sleep (1000 / 2 / 2);
+        Thread.Sleep (1000 / 5);
         Keyboard.SendKey(key, false);
         return true;
       default:
