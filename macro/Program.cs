@@ -27,7 +27,6 @@ class Program {
       default:
         return false;
     }
-
   }
 
   static bool Move(uint key, bool is_pressed) {
