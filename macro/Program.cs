@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 class Program {
   static readonly ConcurrentDictionary<uint, bool> state = new();
@@ -17,21 +18,21 @@ class Program {
     uint a = (uint)ConsoleKey.A;
 
     switch (true) {
-      case var _ when new[] { a, d }.Contains(key):
-        Move(dict, d, arrow_l, key, is_pressed);
-        Move(dict, a, arrow_r, key, is_pressed);
-        return true;
+      case var _ when key.Equals(d):
+        return Move(arrow_l, is_pressed);
+      case var _ when key.Equals(a):
+        return Move(arrow_r, is_pressed);
       default:
         return false;
     }
   }
 
-  static bool Move(ConcurrentDictionary<uint, bool> dict, uint key_2, uint key_1, uint key, bool is_pressed) {
+  static bool Move(uint key, bool is_pressed) {
     switch (true) {
-      case var _ when key_2.Equals(key) && is_pressed.Equals(false):
-        Keyboard.SendKey(key_1, true);
-        Thread.Sleep (1000 / 5);
-        Keyboard.SendKey(key_1, false);
+      case var _ when is_pressed.Equals(false):
+        Keyboard.SendKey(key, true);
+        Thread.Sleep (1000 / 4);
+        Keyboard.SendKey(key, false);
         return true;
       default:
         return false;
