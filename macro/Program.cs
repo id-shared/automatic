@@ -20,10 +20,10 @@ class Program {
           case var _ when key.Equals((uint)ConsoleKey.S):
             return Move((uint)ConsoleKey.UpArrow, is_pressed);
           default:
-            return false;
+            return is_pressed;
         };
       default:
-        return false;
+        return is_pressed;
     }
   }
 
