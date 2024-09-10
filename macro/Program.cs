@@ -1,36 +1,34 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
   static IntPtr hook_id = IntPtr.Zero;
 
-  static bool Every(uint key, bool is_pressed) {
-    switch (true) {
-      case var _ when is_pressed.Equals(false):
-        switch (true) {
-          case var _ when key.Equals((uint)ConsoleKey.A):
-            return Move((uint)ConsoleKey.RightArrow, is_pressed);
-          case var _ when key.Equals((uint)ConsoleKey.D):
-            return Move((uint)ConsoleKey.LeftArrow, is_pressed);
-          case var _ when key.Equals((uint)ConsoleKey.W):
-            return Move((uint)ConsoleKey.DownArrow, is_pressed);
-          case var _ when key.Equals((uint)ConsoleKey.S):
-            return Move((uint)ConsoleKey.UpArrow, is_pressed);
-          default:
-            return is_pressed;
-        };
-      default:
-        return is_pressed;
-    }
+  static bool OnDown(uint key) {
+    return false;
   }
 
-  static bool Move(uint key, bool is_pressed) {
-    Keyboard.SendKey(key, true);
+  static bool OnUp(uint key) {
+    switch (true) {
+      case var _ when key.Equals((uint)ConsoleKey.A):
+        return Move((uint)ConsoleKey.RightArrow);
+      case var _ when key.Equals((uint)ConsoleKey.D):
+        return Move((uint)ConsoleKey.LeftArrow);
+      case var _ when key.Equals((uint)ConsoleKey.W):
+        return Move((uint)ConsoleKey.DownArrow);
+      case var _ when key.Equals((uint)ConsoleKey.S):
+        return Move((uint)ConsoleKey.UpArrow);
+      default:
+        return false;
+    };
+  }
+
+  static bool Move(uint key) {
+    Keyboard.I(key, true);
     Thread.Sleep(1000 / 5);
-    Keyboard.SendKey(key, false);
+    Keyboard.I(key, false);
 
     return true;
   }
@@ -67,10 +65,10 @@ class Program {
         int act = (int)wParam;
         switch (true) {
           case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
-            Every(key, true);
+            OnDown(key);
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
           case var _ when act.Equals(WM_SYSKEYUP) || act.Equals(WM_KEYUP):
-            Every(key, false);
+            OnUp(key);
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
           default:
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
@@ -138,7 +136,7 @@ class Program {
 }
 
 class Keyboard {
-  public static bool SendKey(uint key, bool is_pressed) {
+  public static bool I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
     inputs[0].type = INPUT_KEYBOARD;
@@ -152,7 +150,7 @@ class Keyboard {
 
     SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
 
-    return is_pressed;
+    return true;
   }
 
   const uint INPUT_KEYBOARD = 1;
