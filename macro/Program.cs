@@ -15,12 +15,16 @@ class Program {
 
   static async Task<bool> OnD2Down(uint key) {
     Console.WriteLine($"D2 Down. {key}: {Keyboard.X((uint)ConsoleKey.V)}");
-    return T;
+    switch (T) {
+      case var _ when key.Equals(513):
+        return await Move((uint)ConsoleKey.A);
+      default:
+        return F;
+    };
   }
 
   static async Task<bool> OnD2Up(uint key) {
-    Console.WriteLine("D2 Up.");
-    return T;
+    return F;
   }
 
   static async Task<bool> OnD1Down(uint key) {
