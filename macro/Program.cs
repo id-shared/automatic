@@ -19,7 +19,6 @@ class Program {
 
       switch (T) {
         case var _ when key.Equals(0x01):
-          Help(key, duration);
           return await Stop(key, duration);
         default:
           return F;
@@ -41,25 +40,10 @@ class Program {
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+        Keyboard.I((uint)ConsoleKey.V, T);
         return await Stop(key, time);
       default:
-        return T;
-    };
-  }
-
-  static async Task<bool> Help(uint key, int time) {
-    await Task.Delay(1);
-    switch (T) {
-      case var _ when Keyboard.X(0x01):
-        switch (T) {
-          case var _ when Keyboard.X((uint)ConsoleKey.V):
-            return await Help(key, time);
-          default:
-            Keyboard.I(key, T);
-            return await Help(key, time);
-        };
-      default:
-        Keyboard.I(key, F);
+        Keyboard.I((uint)ConsoleKey.V, F);
         return T;
     };
   }
