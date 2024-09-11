@@ -8,31 +8,33 @@ class Program {
   static readonly bool F = false;
   static readonly bool T = true;
 
-  static bool OnDown(uint key) {
+  static async Task<bool> OnDown(uint key) {
     return F;
   }
 
-  static bool OnUp(uint key) {
+  static async Task<bool> OnUp(uint key) {
     switch (T) {
       case var _ when key.Equals((uint)ConsoleKey.A):
-        return Move((uint)ConsoleKey.RightArrow);
+        return await Move((uint)ConsoleKey.RightArrow);
       case var _ when key.Equals((uint)ConsoleKey.D):
-        return Move((uint)ConsoleKey.LeftArrow);
+        return await Move((uint)ConsoleKey.LeftArrow);
       case var _ when key.Equals((uint)ConsoleKey.W):
-        return Move((uint)ConsoleKey.DownArrow);
+        return await Move((uint)ConsoleKey.DownArrow);
       case var _ when key.Equals((uint)ConsoleKey.S):
-        return Move((uint)ConsoleKey.UpArrow);
+        return await Move((uint)ConsoleKey.UpArrow);
       default:
         return F;
     };
   }
 
-  static bool Move(uint key) {
-    Keyboard.I(key, T);
-    Thread.Sleep(100);
-    Keyboard.I(key, F);
+  static async Task<bool> Move(uint key) {
+    return await Task.Run(() => {
+      Keyboard.I(key, T);
+      Task.Delay(100);
+      Keyboard.I(key, F);
 
-    return T;
+      return T;
+    });
   }
 
   static void Subscribe(MSG msg) {
@@ -67,10 +69,10 @@ class Program {
         int act = (int)wParam;
         switch (T) {
           case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
-            OnDown(key);
+            Task.Run (() => OnDown(key));
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
           case var _ when act.Equals(WM_SYSKEYUP) || act.Equals(WM_KEYUP):
-            OnUp(key);
+            Task.Run(() => OnUp(key));
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
           default:
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
