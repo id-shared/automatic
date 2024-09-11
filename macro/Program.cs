@@ -14,39 +14,40 @@ class Program {
   static readonly bool T = true;
 
   static async Task<bool> OnD2Down(uint key) {
-    Console.WriteLine($"D2 Down. {key}: {Keyboard.X(0x01)}");
-    switch (T) {
-      case var _ when key.Equals(0x01):
-        return await Stop((uint)ConsoleKey.A);
-      default:
-        return F;
-    };
-  }
-
-  static async Task<bool> OnD2Up(uint key) {
-    return F;
-  }
-
-  static async Task<bool> Stop(uint key) {
     return await Task.Run(async () => {
+      int duration = 100;
+      Console.WriteLine($"D2 Down. {key}: {Keyboard.X(0x01)}");
       switch (T) {
-        case var _ when Keyboard.X(0x01):
-          Keyboard.I(key, T);
-          Thread.Sleep(100);
-          Keyboard.I(key, F);
-          return await Stop(key);
+        case var _ when key.Equals(0x01):
+          return await Stop(key, duration);
         default:
           return F;
       };
     });
   }
-  static bool Halt(uint key_1, uint key) {
+
+  static async Task<bool> OnD2Up(uint key) {
+    return await Task.Run(() => {
+      return F;
+    });
+  }
+
+  static async Task<bool> Stop(uint key, int time) {
+    return await Task.Run(async () => {
+      switch (T) {
+        case var _ when Keyboard.X(0x01):
+          Task.Run(() => Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time));
+          Task.Run(() => Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time));
+          return await Stop(key, time);
+        default:
+          return F;
+      };
+    });
+  }
+  static bool Halt(uint key_1, uint key, int time) {
     switch (T) {
       case var _ when Keyboard.X(key_1):
-        Keyboard.I(key, T);
-        Thread.Sleep(100);
-        Keyboard.I(key, F);
-        return T;
+        return Move(key, time);
       default:
         return F;
     };
