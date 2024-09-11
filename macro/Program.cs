@@ -13,12 +13,12 @@ class Program {
   static readonly bool F = false;
   static readonly bool T = true;
 
-  static async Task<bool> OnD2Down(int key) {
+  static async Task<bool> OnD2Down(uint key) {
     Console.WriteLine($"D2 Down. {key}: {Keyboard.X((uint)ConsoleKey.V)}");
     return T;
   }
 
-  static async Task<bool> OnD2Up(int key) {
+  static async Task<bool> OnD2Up(uint key) {
     Console.WriteLine("D2 Up.");
     return T;
   }
@@ -65,7 +65,7 @@ class Program {
     }
   }
 
-  static IntPtr SetHook(Delegate proc, int hookType) {
+  static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? curModule = Process.GetCurrentProcess().MainModule;
     if (curModule == null) {
       return IntPtr.Zero;
@@ -76,13 +76,13 @@ class Program {
       return IntPtr.Zero;
     }
 
-    return SetWindowsHookEx(hookType, proc, moduleHandle, 0);
+    return SetWindowsHookEx((int)hookType, proc, moduleHandle, 0);
   }
 
   static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
-      int act = (int)wParam;
+      uint act = (uint)wParam;
       switch (T) {
         case var _ when act.Equals(WM_SYSKEYDOWN):
           Task.Run(() => OnD1Down(key));
@@ -105,7 +105,7 @@ class Program {
 
   static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      int act = (int)wParam;
+      uint act = (uint)wParam;
       switch (T) {
         case var _ when act.Equals(WM_LBUTTONDOWN):
           Task.Run(() => OnD2Down(act));
@@ -136,17 +136,17 @@ class Program {
     Detach(d2_hook_id);
   }
 
-  private const int WH_KEYBOARD_LL = 13;
-  private const int WH_MOUSE_LL = 14;
-  private const int WM_KEYDOWN = 0x0100;
-  private const int WM_SYSKEYDOWN = 0x0104;
-  private const int WM_KEYUP = 0x0101;
-  private const int WM_SYSKEYUP = 0x0105;
-  private const int WM_LBUTTONDOWN = 0x0201;
-  private const int WM_LBUTTONUP = 0x0202;
-  private const int WM_RBUTTONDOWN = 0x0204;
-  private const int WM_RBUTTONUP = 0x0205;
-  private const int KEYEVENTF_KEYUP = 0x0002;
+  private const uint WH_KEYBOARD_LL = 13;
+  private const uint WH_MOUSE_LL = 14;
+  private const uint WM_KEYDOWN = 0x0100;
+  private const uint WM_SYSKEYDOWN = 0x0104;
+  private const uint WM_KEYUP = 0x0101;
+  private const uint WM_SYSKEYUP = 0x0105;
+  private const uint WM_LBUTTONDOWN = 0x0201;
+  private const uint WM_LBUTTONUP = 0x0202;
+  private const uint WM_RBUTTONDOWN = 0x0204;
+  private const uint WM_RBUTTONUP = 0x0205;
+  private const uint KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
