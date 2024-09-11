@@ -81,9 +81,9 @@ class Program {
   }
 
   static async Task<bool> Move(uint key, int time) {
-    return await Task.Run(() => {
+    return await Task.Run(async () => {
       Keyboard.I(key, T);
-      Thread.Sleep(time);
+      await Task.Delay(time);
       Keyboard.I(key, F);
 
       return T;
