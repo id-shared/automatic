@@ -15,8 +15,8 @@ class Program {
 
   static async Task<bool> OnD2Down(uint key) {
     return await Task.Run(async () => {
-      int duration = 100;
-      Console.WriteLine($"D2 Down. {key}: {Keyboard.X(0x01)}");
+      int duration = 10;
+
       switch (T) {
         case var _ when key.Equals(0x01):
           return await Stop(key, duration);
@@ -36,11 +36,14 @@ class Program {
     return await Task.Run(async () => {
       switch (T) {
         case var _ when Keyboard.X(0x01):
-          Task.Run(() => Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time));
-          Task.Run(() => Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time));
+          Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+          Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+          Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+          Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+          await Task.Delay(time);
           return await Stop(key, time);
         default:
-          return F;
+          return T;
       };
     });
   }
