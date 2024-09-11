@@ -14,9 +14,9 @@ class Program {
   static readonly bool T = true;
 
   static async Task<bool> OnD2Down(uint key) {
-    Console.WriteLine($"D2 Down. {key}: {Keyboard.X(key)}");
+    Console.WriteLine($"D2 Down. {key}: {Keyboard.X(0x01)}");
     switch (T) {
-      case var _ when key.Equals(513):
+      case var _ when key.Equals(0x01):
         return await Move((uint)ConsoleKey.A);
       default:
         return F;
