@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -9,7 +8,6 @@ class Program {
   private static readonly LowLevelKeyboardProc d1_hook = D1HookCallback;
   private static readonly LowLevelMouseProc d2_hook = D2HookCallback;
 
-  static ConcurrentDictionary<uint, bool> data = new ConcurrentDictionary<uint, bool>();
   static IntPtr d1_hook_id = IntPtr.Zero;
   static IntPtr d2_hook_id = IntPtr.Zero;
   static readonly bool F = false;
@@ -104,6 +102,7 @@ class Program {
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
+
   static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       int act = (int)wParam;
