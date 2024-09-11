@@ -14,7 +14,7 @@ class Program {
   static readonly bool T = true;
 
   static async Task<bool> OnD2Down(uint key) {
-    Console.WriteLine($"D2 Down. {key}: {Keyboard.X((uint)ConsoleKey.V)}");
+    Console.WriteLine($"D2 Down. {key}: {Keyboard.X(key)}");
     switch (T) {
       case var _ when key.Equals(513):
         return await Move((uint)ConsoleKey.A);
@@ -112,16 +112,16 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act.Equals(WM_LBUTTONDOWN):
-          Task.Run(() => OnD2Down(act));
+          Task.Run(() => OnD2Down(0x01));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act.Equals(WM_LBUTTONUP):
-          Task.Run(() => OnD2Up(act));
+          Task.Run(() => OnD2Up(0x01));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act.Equals(WM_RBUTTONDOWN):
-          Task.Run(() => OnD2Down(act));
+          Task.Run(() => OnD2Down(0x02));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act.Equals(WM_RBUTTONUP):
-          Task.Run(() => OnD2Up(act));
+          Task.Run(() => OnD2Up(0x02));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
