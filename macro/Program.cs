@@ -36,10 +36,10 @@ class Program {
     await Task.Delay(1);
     switch (T) {
       case var _ when Keyboard.X(0x01):
-        Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-        Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-        Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-        Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+        await Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time).ConfigureAwait(false);
+        await Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time).ConfigureAwait(false);
+        await Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time).ConfigureAwait(false);
+        await Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time).ConfigureAwait(false);
         Keyboard.I(162, T);
         return await Stop(key, time);
       default:
