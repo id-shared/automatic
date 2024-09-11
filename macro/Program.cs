@@ -16,14 +16,12 @@ class Program {
   static readonly bool T = true;
 
   static async Task<bool> OnD2Down() {
-    // Handle mouse down event here
-    Console.WriteLine("Mouse button pressed.");
+    Console.WriteLine("D2 Down.");
     return T;
   }
 
   static async Task<bool> OnD2Up() {
-    // Handle mouse up event here
-    Console.WriteLine("Mouse button released.");
+    Console.WriteLine("D2 Up.");
     return T;
   }
 
@@ -109,23 +107,23 @@ class Program {
       switch (act) {
         case WM_LBUTTONDOWN:
         case WM_LBUTTONUP:
-          Console.WriteLine("Left mouse button up.");
-          Task.Run(() => OnD2Up());
+          Console.WriteLine("D2 Down.");
+          Task.Run(() => OnD2Down());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case WM_RBUTTONDOWN:
         case WM_RBUTTONUP:
-          Console.WriteLine("Right mouse button up.");
+          Console.WriteLine("D2 Up.");
           Task.Run(() => OnD2Up());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
       }
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   static void Main() {
-    //d1_hook_id = SetHook(d1_hook, WH_KEYBOARD_LL);
+    d1_hook_id = SetHook(d1_hook, WH_KEYBOARD_LL);
     d2_hook_id = SetHook(d2_hook, WH_MOUSE_LL);
 
     Subscribe(new MSG());
