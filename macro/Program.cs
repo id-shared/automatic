@@ -53,11 +53,13 @@ class Program {
   }
 
   static async Task<bool> OnD1Down(uint key) {
-    return F;
+    return await Task.Run(() => {
+      return F;
+    });
   }
 
   static async Task<bool> OnD1Up(uint key) {
-    return await Task.Run (() => {
+    return await Task.Run(() => {
       int duration = 100;
 
       switch (T) {
