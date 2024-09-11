@@ -17,7 +17,7 @@ class Program {
     Console.WriteLine($"D2 Down. {key}: {Keyboard.X(0x01)}");
     switch (T) {
       case var _ when key.Equals(0x01):
-        return await Move((uint)ConsoleKey.A);
+        return await Stop((uint)ConsoleKey.A);
       default:
         return F;
     };
@@ -27,33 +27,60 @@ class Program {
     return F;
   }
 
-  static async Task<bool> OnD1Down(uint key) {
-    return F;
+  static async Task<bool> Stop(uint key) {
+    return await Task.Run(async () => {
+      switch (T) {
+        case var _ when Keyboard.X(0x01):
+          Keyboard.I(key, T);
+          Thread.Sleep(100);
+          Keyboard.I(key, F);
+          return await Stop(key);
+        default:
+          return F;
+      };
+    });
   }
-
-  static async Task<bool> OnD1Up(uint key) {
+  static bool Halt(uint key_1, uint key) {
     switch (T) {
-      case var _ when key.Equals((uint)ConsoleKey.A):
-        return await Move((uint)ConsoleKey.RightArrow);
-      case var _ when key.Equals((uint)ConsoleKey.D):
-        return await Move((uint)ConsoleKey.LeftArrow);
-      case var _ when key.Equals((uint)ConsoleKey.W):
-        return await Move((uint)ConsoleKey.DownArrow);
-      case var _ when key.Equals((uint)ConsoleKey.S):
-        return await Move((uint)ConsoleKey.UpArrow);
+      case var _ when Keyboard.X(key_1):
+        Keyboard.I(key, T);
+        Thread.Sleep(100);
+        Keyboard.I(key, F);
+        return T;
       default:
         return F;
     };
   }
 
-  static async Task<bool> Move(uint key) {
-    return await Task.Run(() => {
-      Keyboard.I(key, T);
-      Thread.Sleep(100);
-      Keyboard.I(key, F);
+  static async Task<bool> OnD1Down(uint key) {
+    return F;
+  }
 
-      return T;
+  static async Task<bool> OnD1Up(uint key) {
+    return await Task.Run (() => {
+      int duration = 100;
+
+      switch (T) {
+        case var _ when key.Equals((uint)ConsoleKey.A):
+          return Move((uint)ConsoleKey.RightArrow, duration);
+        case var _ when key.Equals((uint)ConsoleKey.D):
+          return Move((uint)ConsoleKey.LeftArrow, duration);
+        case var _ when key.Equals((uint)ConsoleKey.W):
+          return Move((uint)ConsoleKey.DownArrow, duration);
+        case var _ when key.Equals((uint)ConsoleKey.S):
+          return Move((uint)ConsoleKey.UpArrow, duration);
+        default:
+          return F;
+      };
     });
+  }
+
+  static bool Move(uint key, int time) {
+    Keyboard.I(key, T);
+    Thread.Sleep(time);
+    Keyboard.I(key, F);
+
+    return T;
   }
 
   static void Subscribe(MSG msg) {
