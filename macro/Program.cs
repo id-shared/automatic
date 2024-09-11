@@ -5,13 +5,15 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
   static IntPtr hook_id = IntPtr.Zero;
+  static readonly bool F = false;
+  static readonly bool T = true;
 
   static bool OnDown(uint key) {
-    return false;
+    return F;
   }
 
   static bool OnUp(uint key) {
-    switch (true) {
+    switch (T) {
       case var _ when key.Equals((uint)ConsoleKey.A):
         return Move((uint)ConsoleKey.RightArrow);
       case var _ when key.Equals((uint)ConsoleKey.D):
@@ -21,16 +23,16 @@ class Program {
       case var _ when key.Equals((uint)ConsoleKey.S):
         return Move((uint)ConsoleKey.UpArrow);
       default:
-        return false;
+        return F;
     };
   }
 
   static bool Move(uint key) {
-    Keyboard.I(key, true);
-    Thread.Sleep(1000 / 5);
-    Keyboard.I(key, false);
+    Keyboard.I(key, T);
+    Thread.Sleep(100);
+    Keyboard.I(key, F);
 
-    return true;
+    return T;
   }
 
   static void Subscribe(MSG msg) {
@@ -59,11 +61,11 @@ class Program {
   }
 
   static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    switch (true) {
+    switch (T) {
       case var _ when nCode >= 0:
         uint key = (uint)Marshal.ReadInt32(lParam);
         int act = (int)wParam;
-        switch (true) {
+        switch (T) {
           case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
             OnDown(key);
             return CallNextHookEx(hook_id, nCode, wParam, lParam);
@@ -136,7 +138,7 @@ class Program {
 }
 
 class Keyboard {
-  public static bool I(uint key, bool is_pressed) {
+  public static uint I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
     inputs[0].type = INPUT_KEYBOARD;
@@ -148,9 +150,7 @@ class Keyboard {
       dwExtraInfo = IntPtr.Zero
     };
 
-    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-
-    return true;
+    return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
   }
 
   const uint INPUT_KEYBOARD = 1;
@@ -206,15 +206,15 @@ class Keyboard {
 }
 
 //static bool Stop(ConcurrentDictionary<uint, bool> dict, uint key_3, uint key_2, uint key_1, uint key, bool is_pressed) {
-//  switch (true) {
-//    case var _ when dict.GetOrAdd(key_3, false) && key_2.Equals(key):
+//  switch (T) {
+//    case var _ when dict.GetOrAdd(key_3, F) && key_2.Equals(key):
 //      return Keyboard.SendKey(key_1, is_pressed);
-//    case var _ when key_3.Equals(key) && dict.GetOrAdd(key_2, false):
+//    case var _ when key_3.Equals(key) && dict.GetOrAdd(key_2, F):
 //      return Keyboard.SendKey(key_1, is_pressed);
 //    case var _ when key_3.Equals(key):
-//      return Keyboard.SendKey(key_1, false);
+//      return Keyboard.SendKey(key_1, F);
 //    default:
-//      return false;
+//      return F;
 //  }
 //}
 
@@ -225,6 +225,6 @@ class Keyboard {
 //for (uint scanCode = startScanCode; scanCode <= endScanCode; scanCode++) {
 //  Thread.Sleep(1000);
 //  Console.WriteLine($"{scanCode}:");
-//  Keyboard.SendKey((uint)ConsoleKey.C, true);
-//  Keyboard.SendKey((uint)ConsoleKey.C, false);
+//  Keyboard.SendKey((uint)ConsoleKey.C, T);
+//  Keyboard.SendKey((uint)ConsoleKey.C, F);
 //}
