@@ -100,19 +100,20 @@ class Program {
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
-
   static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       int act = (int)wParam;
       switch (act) {
         case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP:
-          Console.WriteLine("D2 Down.");
           Task.Run(() => OnD2Down());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
+        case WM_LBUTTONUP:
+          Task.Run(() => OnD2Up());
+          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case WM_RBUTTONDOWN:
+          Task.Run(() => OnD2Down());
+          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case WM_RBUTTONUP:
-          Console.WriteLine("D2 Up.");
           Task.Run(() => OnD2Up());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
