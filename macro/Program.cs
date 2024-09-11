@@ -1,9 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
+  static ConcurrentDictionary<uint, bool> data = [];
   static IntPtr hook_id = IntPtr.Zero;
   static readonly bool F = false;
   static readonly bool T = true;
@@ -30,7 +32,7 @@ class Program {
   static async Task<bool> Move(uint key) {
     return await Task.Run(() => {
       Keyboard.I(key, T);
-      Task.Delay(100);
+      Thread.Sleep(100);
       Keyboard.I(key, F);
 
       return T;
