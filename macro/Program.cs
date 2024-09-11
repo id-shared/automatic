@@ -125,14 +125,8 @@ class Program {
   }
 
   static void Main() {
-    d1_hook_id = SetHook(d1_hook, WH_KEYBOARD_LL);
+    //d1_hook_id = SetHook(d1_hook, WH_KEYBOARD_LL);
     d2_hook_id = SetHook(d2_hook, WH_MOUSE_LL);
-
-    if (d2_hook_id == IntPtr.Zero) {
-      Console.WriteLine("Failed to set mouse hook.");
-    } else {
-      Console.WriteLine("Mouse hook set successfully.");
-    }
 
     Subscribe(new MSG());
 
