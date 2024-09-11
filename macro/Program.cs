@@ -19,6 +19,7 @@ class Program {
 
       switch (T) {
         case var _ when key.Equals(0x01):
+          Help(key, duration);
           return await Stop(key, duration);
         default:
           return F;
@@ -33,40 +34,34 @@ class Program {
   }
 
   static async Task<bool> Stop(uint key, int time) {
-    return await Task.Run(async () => {
-      switch (T) {
-        case var _ when Keyboard.X(0x01):
-          Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-          Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-          Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-          Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-          await Task.Delay(1);
-          return await Stop(key, time);
-        default:
-          return T;
-      };
-    });
+    await Task.Delay(1);
+    switch (T) {
+      case var _ when Keyboard.X(0x01):
+        Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+        Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+        Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+        Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+        return await Stop(key, time);
+      default:
+        return T;
+    };
   }
 
   static async Task<bool> Help(uint key, int time) {
-    return await Task.Run(async () => {
-      switch (T) {
-        case var _ when Keyboard.X(0x01):
-          switch (T) {
-            case var _ when Keyboard.X(0x01):
-              await Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-              await Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-              await Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-              await Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-              await Task.Delay(1);
-              return await Help(key, time);
-            default:
-              return T;
-          };
-        default:
-          return T;
-      };
-    });
+    await Task.Delay(1);
+    switch (T) {
+      case var _ when Keyboard.X(0x01):
+        switch (T) {
+          case var _ when Keyboard.X((uint)ConsoleKey.V):
+            return await Help(key, time);
+          default:
+            Keyboard.I(key, T);
+            return await Help(key, time);
+        };
+      default:
+        Keyboard.I(key, F);
+        return T;
+    };
   }
 
   static async Task<bool> Halt(uint key_1, uint key, int time) {
