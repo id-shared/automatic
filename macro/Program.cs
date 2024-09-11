@@ -4,9 +4,9 @@ using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-  private static readonly LowLevelKeyboardProc hook = KeyboardHookCallback;
+  private static readonly LowLevelKeyboardProc d1_hook = D1HookCallback;
   static ConcurrentDictionary<uint, bool> data = [];
-  static IntPtr hook_id = IntPtr.Zero;
+  static IntPtr d1_hook_id = IntPtr.Zero;
   static readonly bool F = false;
   static readonly bool T = true;
 
@@ -64,7 +64,7 @@ class Program {
     return SetWindowsHookEx(hookType, proc, moduleHandle, 0);
   }
 
-  static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     switch (T) {
       case var _ when nCode >= 0:
         uint key = (uint)Marshal.ReadInt32(lParam);
@@ -72,24 +72,24 @@ class Program {
         switch (T) {
           case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
             Task.Run (() => OnDown(key));
-            return CallNextHookEx(hook_id, nCode, wParam, lParam);
+            return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
           case var _ when act.Equals(WM_SYSKEYUP) || act.Equals(WM_KEYUP):
             Task.Run(() => OnUp(key));
-            return CallNextHookEx(hook_id, nCode, wParam, lParam);
+            return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
           default:
-            return CallNextHookEx(hook_id, nCode, wParam, lParam);
+            return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         }
       default:
-        return CallNextHookEx(hook_id, nCode, wParam, lParam);
+        return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
     }
   }
 
   static void Main() {
-    hook_id = SetHook(hook, WH_KEYBOARD_LL);
+    d1_hook_id = SetHook(d1_hook, WH_KEYBOARD_LL);
 
     Subscribe(new MSG());
 
-    Detach(hook_id);
+    Detach(d1_hook_id);
   }
 
   private const int WH_KEYBOARD_LL = 13;
