@@ -85,17 +85,17 @@ class Program {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       int act = (int)wParam;
-      switch (act) {
-        case WM_SYSKEYDOWN:
+      switch (T) {
+        case var _ when act.Equals(WM_SYSKEYDOWN):
           Task.Run(() => OnD1Down(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case WM_KEYDOWN:
+        case var _ when act.Equals(WM_KEYDOWN):
           Task.Run(() => OnD1Down(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case WM_SYSKEYUP:
+        case var _ when act.Equals(WM_SYSKEYUP):
           Task.Run(() => OnD1Up(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case WM_KEYUP:
+        case var _ when act.Equals(WM_KEYUP):
           Task.Run(() => OnD1Up(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         default:
@@ -107,17 +107,17 @@ class Program {
   static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       int act = (int)wParam;
-      switch (act) {
-        case WM_LBUTTONDOWN:
+      switch (T) {
+        case var _ when act.Equals(WM_LBUTTONDOWN):
           Task.Run(() => OnD2Down());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case WM_LBUTTONUP:
+        case var _ when act.Equals(WM_LBUTTONUP):
           Task.Run(() => OnD2Up());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case WM_RBUTTONDOWN:
+        case var _ when act.Equals(WM_RBUTTONDOWN):
           Task.Run(() => OnD2Down());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case WM_RBUTTONUP:
+        case var _ when act.Equals(WM_RBUTTONUP):
           Task.Run(() => OnD2Up());
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
