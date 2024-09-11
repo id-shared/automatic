@@ -1,6 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
+  public static bool X(uint key) {
+    short state = GetAsyncKeyState(key);
+    return (state & 0x8000) != 0;
+  }
+
   public static uint I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
@@ -66,4 +71,7 @@ class Keyboard {
 
   [DllImport("user32.dll")]
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+  [DllImport("user32.dll")]
+  private static extern short GetAsyncKeyState(uint vKey);
 }
