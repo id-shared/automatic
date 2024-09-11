@@ -13,12 +13,12 @@ class Program {
   static readonly bool F = false;
   static readonly bool T = true;
 
-  static async Task<bool> OnD2Down(uint key) {
+  static async Task<bool> OnD2Down(int key) {
     Console.WriteLine($"D2 Down. {key}: {Keyboard.X((uint)ConsoleKey.V)}");
     return T;
   }
 
-  static async Task<bool> OnD2Up(uint key) {
+  static async Task<bool> OnD2Up(int key) {
     Console.WriteLine("D2 Up.");
     return T;
   }
@@ -105,20 +105,19 @@ class Program {
 
   static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      uint key = (uint)Marshal.ReadInt32(lParam);
       int act = (int)wParam;
       switch (T) {
         case var _ when act.Equals(WM_LBUTTONDOWN):
-          Task.Run(() => OnD2Down(key));
+          Task.Run(() => OnD2Down(act));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act.Equals(WM_LBUTTONUP):
-          Task.Run(() => OnD2Up(key));
+          Task.Run(() => OnD2Up(act));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act.Equals(WM_RBUTTONDOWN):
-          Task.Run(() => OnD2Down(key));
+          Task.Run(() => OnD2Down(act));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act.Equals(WM_RBUTTONUP):
-          Task.Run(() => OnD2Up(key));
+          Task.Run(() => OnD2Up(act));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
