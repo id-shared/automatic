@@ -2,7 +2,7 @@
 
 class Keyboard {
   public static bool X(uint key) {
-    short state = GetKeyState(key);
+    short state = GetAsyncKeyState(key);
     return (state & 0x8000) != 0;
   }
 
@@ -73,5 +73,5 @@ class Keyboard {
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
   [DllImport("user32.dll")]
-  private static extern short GetKeyState(uint vKey);
+  private static extern short GetAsyncKeyState(uint vKey);
 }
