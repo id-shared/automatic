@@ -40,10 +40,10 @@ class Program {
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.I((uint)ConsoleKey.V, T);
+        Keyboard.I(162, T);
         return await Stop(key, time);
       default:
-        Keyboard.I((uint)ConsoleKey.V, F);
+        Keyboard.I(162, F);
         return T;
     };
   }
@@ -58,7 +58,6 @@ class Program {
   }
 
   static async Task<bool> OnD1Down(uint key) {
-    Console.WriteLine(key);
     return await Task.Run(() => {
       return F;
     });
