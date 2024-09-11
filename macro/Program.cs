@@ -87,10 +87,14 @@ class Program {
       int act = (int)wParam;
       switch (act) {
         case WM_SYSKEYDOWN:
+          Task.Run(() => OnD1Down(key));
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case WM_KEYDOWN:
           Task.Run(() => OnD1Down(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case WM_SYSKEYUP:
+          Task.Run(() => OnD1Up(key));
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case WM_KEYUP:
           Task.Run(() => OnD1Up(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
