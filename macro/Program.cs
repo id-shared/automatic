@@ -15,7 +15,7 @@ class Program {
 
   static async Task<bool> OnD2Down(uint key) {
     return await Task.Run(async () => {
-      int duration = 10;
+      int duration = 100;
 
       switch (T) {
         case var _ when key.Equals(0x01):
@@ -40,17 +40,16 @@ class Program {
           Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
           Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
           Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-          await Task.Delay(time);
           return await Stop(key, time);
         default:
           return T;
       };
     });
   }
-  static bool Halt(uint key_1, uint key, int time) {
+  static async Task<bool> Halt(uint key_1, uint key, int time) {
     switch (T) {
       case var _ when Keyboard.X(key_1):
-        return Move(key, time);
+        return await Move(key, time);
       default:
         return F;
     };
@@ -63,30 +62,32 @@ class Program {
   }
 
   static async Task<bool> OnD1Up(uint key) {
-    return await Task.Run(() => {
+    return await Task.Run(async () => {
       int duration = 100;
 
       switch (T) {
         case var _ when key.Equals((uint)ConsoleKey.A):
-          return Move((uint)ConsoleKey.RightArrow, duration);
+          return await Move((uint)ConsoleKey.RightArrow, duration);
         case var _ when key.Equals((uint)ConsoleKey.D):
-          return Move((uint)ConsoleKey.LeftArrow, duration);
+          return await Move((uint)ConsoleKey.LeftArrow, duration);
         case var _ when key.Equals((uint)ConsoleKey.W):
-          return Move((uint)ConsoleKey.DownArrow, duration);
+          return await Move((uint)ConsoleKey.DownArrow, duration);
         case var _ when key.Equals((uint)ConsoleKey.S):
-          return Move((uint)ConsoleKey.UpArrow, duration);
+          return await Move((uint)ConsoleKey.UpArrow, duration);
         default:
           return F;
       };
     });
   }
 
-  static bool Move(uint key, int time) {
-    Keyboard.I(key, T);
-    Thread.Sleep(time);
-    Keyboard.I(key, F);
+  static async Task<bool> Move(uint key, int time) {
+    return await Task.Run(() => {
+      Keyboard.I(key, T);
+      Thread.Sleep(time);
+      Keyboard.I(key, F);
 
-    return T;
+      return T;
+    });
   }
 
   static void Subscribe(MSG msg) {
