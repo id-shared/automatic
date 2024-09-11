@@ -71,7 +71,7 @@ class Program {
         int act = (int)wParam;
         switch (T) {
           case var _ when act.Equals(WM_SYSKEYDOWN) || act.Equals(WM_KEYDOWN):
-            Task.Run (() => OnDown(key));
+            Task.Run(() => OnDown(key));
             return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
           case var _ when act.Equals(WM_SYSKEYUP) || act.Equals(WM_KEYUP):
             Task.Run(() => OnUp(key));
