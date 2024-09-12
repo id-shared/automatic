@@ -71,11 +71,15 @@ class Program {
 
       switch (T) {
         case var _ when key == 0x01:
-          return await Stop((int time) => {
+          return await Stop(async (int time) => {
             Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
             Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
             Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
             Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+
+            await Task.Delay(time);
+
+            return T;
           }, key, time, 0);
         default:
           return F;
@@ -89,24 +93,19 @@ class Program {
     });
   }
 
-  static async Task<bool> Stop(Action<int> func, uint key, int time, int duration) {
+  static async Task<bool> Stop(Func<int, Task<bool>> func, uint key, int time, int sum) {
     switch (T) {
       case var _ when await Keyboard.X(key):
-        Task.Run(() => {
-          Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-          Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-          Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-          Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        });
+        await func(time);
+
+        int duration = sum + time;
 
         switch (T) {
-          case var _ when duration >= 100:
+          case var _ when duration >= 200:
             Keyboard.I(162, T);
-            await Task.Delay(time);
-            return await Stop(func, key, time, duration + time);
+            return await Stop(func, key, time, duration);
           default:
-            await Task.Delay(time);
-            return await Stop(func, key, time, duration + time);
+            return await Stop(func, key, time, duration);
         };
       default:
         Keyboard.I(162, F);
