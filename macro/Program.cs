@@ -7,15 +7,15 @@ class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-  private static readonly LowLevelKeyboardProc d1_hook = D1HookCallback;
-  private static readonly LowLevelMouseProc d2_hook = D2HookCallback;
+  private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
+  private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
 
-  static IntPtr d1_hook_id = IntPtr.Zero;
   static IntPtr d2_hook_id = IntPtr.Zero;
+  static IntPtr d1_hook_id = IntPtr.Zero;
   static readonly bool F = false;
   static readonly bool T = true;
 
-  static async Task<bool> OnD2Down(uint key) {
+  static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
       int time = 10;
 
@@ -28,7 +28,7 @@ class Program {
     });
   }
 
-  static async Task<bool> OnD2Up(uint key) {
+  static async Task<bool> OnD1Up(uint key) {
     return await Task.Run(() => {
       return F;
     });
@@ -68,13 +68,13 @@ class Program {
     };
   }
 
-  static async Task<bool> OnD1Down(uint key) {
+  static async Task<bool> OnD2Down(uint key) {
     return await Task.Run(() => {
       return F;
     });
   }
 
-  static async Task<bool> OnD1Up(uint key) {
+  static async Task<bool> OnD2Up(uint key) {
     return await Task.Run(async () => {
       int time = 100;
 
@@ -137,45 +137,22 @@ class Program {
     return SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
-  static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_SYSKEYDOWN:
-          Task.Run(() => OnD1Down(key));
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+          Task.Run(() => OnD2Down(key));
+          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_KEYDOWN:
-          Task.Run(() => OnD1Down(key));
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+          Task.Run(() => OnD2Down(key));
+          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_SYSKEYUP:
-          Task.Run(() => OnD1Up(key));
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+          Task.Run(() => OnD2Up(key));
+          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_KEYUP:
-          Task.Run(() => OnD1Up(key));
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        default:
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-      }
-    }
-    return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-  }
-
-  static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0) {
-      uint act = (uint)wParam;
-      switch (T) {
-        case var _ when act == WM_LBUTTONDOWN:
-          Task.Run(() => OnD2Down(0x01));
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_LBUTTONUP:
-          Task.Run(() => OnD2Up(0x01));
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_RBUTTONDOWN:
-          Task.Run(() => OnD2Down(0x02));
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_RBUTTONUP:
-          Task.Run(() => OnD2Up(0x02));
+          Task.Run(() => OnD2Up(key));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
@@ -184,14 +161,37 @@ class Program {
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
+  static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    if (nCode >= 0) {
+      uint act = (uint)wParam;
+      switch (T) {
+        case var _ when act == WM_LBUTTONDOWN:
+          Task.Run(() => OnD1Down(0x01));
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+        case var _ when act == WM_LBUTTONUP:
+          Task.Run(() => OnD1Up(0x01));
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+        case var _ when act == WM_RBUTTONDOWN:
+          Task.Run(() => OnD1Down(0x02));
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+        case var _ when act == WM_RBUTTONUP:
+          Task.Run(() => OnD1Up(0x02));
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+        default:
+          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+      }
+    }
+    return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+  }
+
   static void Main() {
-    d1_hook_id = SetHook(d1_hook, WH_KEYBOARD_LL);
-    d2_hook_id = SetHook(d2_hook, WH_MOUSE_LL);
+    d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
+    d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
 
     Subscribe(new MSG());
 
-    Detach(d1_hook_id);
     Detach(d2_hook_id);
+    Detach(d1_hook_id);
   }
 
   private const uint WH_KEYBOARD_LL = 13;
