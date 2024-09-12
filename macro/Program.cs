@@ -40,6 +40,31 @@ class Program {
     });
   }
 
+  static async Task<bool> Turn(uint key, int time, int duration) {
+    switch (T) {
+      case var _ when await Keyboard.X((uint)ConsoleKey.W):
+        Task.Run(() => {
+          Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+          Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+          Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+          Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+        });
+
+        switch (T) {
+          case var _ when await Keyboard.X((uint)ConsoleKey.W):
+            Keyboard.I(162, T);
+            await Task.Delay(time);
+            return await Turn(key, time, duration + time);
+          default:
+            await Task.Delay(time);
+            return await Turn(key, time, duration + time);
+        };
+      default:
+        Keyboard.I(162, F);
+        return T;
+    };
+  }
+
   static async Task<bool> Move(uint key, int time) {
     return await Task.Run(async () => {
       await Keyboard.I(key, T);
@@ -52,11 +77,16 @@ class Program {
 
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
-      int time = 100;
+      int time = 10;
 
       switch (T) {
         case var _ when key == 0x01:
-          return await Stop(key, time, 0);
+          return await Stop((int time) => {
+            Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+            Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+            Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+            Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+          }, key, time, 0);
         default:
           return F;
       };
@@ -69,9 +99,9 @@ class Program {
     });
   }
 
-  static async Task<bool> Stop(uint key, int time, int duration) {
+  static async Task<bool> Stop(Action<int> func, uint key, int time, int duration) {
     switch (T) {
-      case var _ when await Keyboard.X(0x01):
+      case var _ when await Keyboard.X(key):
         Task.Run(() => {
           Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
           Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
@@ -80,13 +110,13 @@ class Program {
         });
 
         switch (T) {
-          case var _ when duration >= time:
+          case var _ when duration >= 100:
             Keyboard.I(162, T);
             await Task.Delay(time);
-            return await Stop(key, time, duration + time);
+            return await Stop(func, key, time, duration + time);
           default:
             await Task.Delay(time);
-            return await Stop(key, time, duration + time);
+            return await Stop(func, key, time, duration + time);
         };
       default:
         Keyboard.I(162, F);
