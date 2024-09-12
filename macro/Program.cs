@@ -80,7 +80,7 @@ class Program {
         });
 
         switch (T) {
-          case var _ when duration >= (time * 5):
+          case var _ when duration >= 100:
             Keyboard.I(162, T);
             await Task.Delay(time);
             return await Stop(key, time, duration + time);
