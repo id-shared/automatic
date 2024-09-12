@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -106,17 +107,24 @@ class Program {
   }
 
   static IntPtr SetHook(Delegate proc, uint hookType) {
-    using ProcessModule? curModule = Process.GetCurrentProcess().MainModule;
-    if (curModule == null) {
-      return IntPtr.Zero;
+    using ProcessModule? module = Process.GetCurrentProcess().MainModule;
+
+    switch (T) {
+      case var _ when module == null:
+        return IntPtr.Zero;
+      default:
+        break;
     }
 
-    IntPtr moduleHandle = GetModuleHandle(curModule.ModuleName);
-    if (moduleHandle == IntPtr.Zero) {
-      return IntPtr.Zero;
+    IntPtr handle = GetModuleHandle(module.ModuleName);
+    switch (T) {
+      case var _ when handle == IntPtr.Zero:
+        return IntPtr.Zero;
+      default:
+        break;
     }
 
-    return SetWindowsHookEx((int)hookType, proc, moduleHandle, 0);
+    return SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
   static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
