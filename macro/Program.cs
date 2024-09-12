@@ -40,7 +40,7 @@ class Program {
     });
   }
 
-  static async Task<bool> Turn(uint key, int time, int duration) {
+  static async Task<bool> Turn(Action<int> func, uint key, int time, int duration) {
     switch (T) {
       case var _ when await Keyboard.X((uint)ConsoleKey.W):
         Task.Run(() => {
@@ -54,10 +54,10 @@ class Program {
           case var _ when await Keyboard.X((uint)ConsoleKey.W):
             Keyboard.I(162, T);
             await Task.Delay(time);
-            return await Turn(key, time, duration + time);
+            return await Turn(func, key, time, duration + time);
           default:
             await Task.Delay(time);
-            return await Turn(key, time, duration + time);
+            return await Turn(func, key, time, duration + time);
         };
       default:
         Keyboard.I(162, F);
