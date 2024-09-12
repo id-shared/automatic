@@ -27,13 +27,13 @@ class Program {
 
       switch (T) {
         case var _ when key == (uint)ConsoleKey.A:
-          return await Move((uint)ConsoleKey.RightArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.RightArrow, time);
         case var _ when key == (uint)ConsoleKey.D:
-          return await Move((uint)ConsoleKey.LeftArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.LeftArrow, time);
         case var _ when key == (uint)ConsoleKey.W:
-          return await Move((uint)ConsoleKey.DownArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.DownArrow, time);
         case var _ when key == (uint)ConsoleKey.S:
-          return await Move((uint)ConsoleKey.UpArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.UpArrow, time);
         default:
           return F;
       };
@@ -63,16 +63,6 @@ class Program {
         Keyboard.I(162, F);
         return T;
     };
-  }
-
-  static async Task<bool> Move(uint key, int time) {
-    return await Task.Run(async () => {
-      await Keyboard.I(key, T);
-      await Task.Delay(time);
-      await Keyboard.I(key, F);
-
-      return T;
-    });
   }
 
   static async Task<bool> OnD1Down(uint key) {
@@ -127,7 +117,7 @@ class Program {
   static async Task<bool> Halt(uint key_1, uint key, int time) {
     switch (T) {
       case var _ when await Keyboard.X(key_1):
-        return await Move(key, time);
+        return await Keyboard.Z(key, time);
       default:
         return F;
     };

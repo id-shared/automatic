@@ -1,6 +1,19 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
+  static readonly bool F = false;
+  static readonly bool T = true;
+
+  public static async Task<bool> Z(uint key, int time) {
+    return await Task.Run(async () => {
+      await I(key, T);
+      await Task.Delay(time);
+      await I(key, F);
+
+      return T;
+    });
+  }
+
   public static async Task<bool> X(uint key) {
     return await Task.Run(() => {
       return (GetKeyState(key) & 0x8000) != 0;
