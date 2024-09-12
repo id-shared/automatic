@@ -19,7 +19,7 @@ class Program {
 
       switch (T) {
         case var _ when key == 0x01:
-          return await Stop(key, duration);
+          return await Stop(key, duration, duration);
         default:
           return F;
       };
@@ -32,16 +32,22 @@ class Program {
     });
   }
 
-  static async Task<bool> Stop(uint key, int time) {
-    await Task.Delay(1 / time);
+  static async Task<bool> Stop(uint key, int time, int sum) {
+    await Task.Delay(time);
     switch (T) {
       case var _ when Keyboard.X(0x01):
         await Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time).ConfigureAwait(false);
         await Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time).ConfigureAwait(false);
         await Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time).ConfigureAwait(false);
         await Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time).ConfigureAwait(false);
-        Keyboard.I(162, T);
-        return await Stop(key, time);
+
+        switch (T) {
+          case var _ when sum >= 100:
+            Keyboard.I(162, T);
+            return await Stop(key, time, time + sum);
+          default:
+            return await Stop(key, time, time + sum);
+        };
       default:
         Keyboard.I(162, F);
         return T;
