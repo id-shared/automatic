@@ -52,7 +52,7 @@ class Program {
 
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
-      int time = 10;
+      int time = 100;
 
       switch (T) {
         case var _ when key == 0x01:
@@ -80,7 +80,7 @@ class Program {
         });
 
         switch (T) {
-          case var _ when duration >= 100:
+          case var _ when duration >= time:
             Keyboard.I(162, T);
             await Task.Delay(time);
             return await Stop(key, time, duration + time);
