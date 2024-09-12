@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -34,7 +33,7 @@ class Program {
   }
 
   static async Task<bool> Stop(uint key, int time) {
-    await Task.Delay(1);
+    await Task.Delay(1 / time);
     switch (T) {
       case var _ when Keyboard.X(0x01):
         await Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time).ConfigureAwait(false);
