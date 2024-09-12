@@ -40,34 +40,20 @@ class Program {
     });
   }
 
-  static async Task<bool> Turn(Action<int> func, uint key, int time, int duration) {
+  static async Task<bool> Stop2(Func<uint, int, Task<bool>> func, uint key, int time) {
     switch (T) {
-      case var _ when await Keyboard.X((uint)ConsoleKey.W):
-        Task.Run(() => {
-          Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-          Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-          Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-          Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        });
+      case var _ when await Keyboard.X(key):
+        await func(key, time);
 
-        switch (T) {
-          case var _ when await Keyboard.X((uint)ConsoleKey.W):
-            Keyboard.I(162, T);
-            await Task.Delay(time);
-            return await Turn(func, key, time, duration + time);
-          default:
-            await Task.Delay(time);
-            return await Turn(func, key, time, duration + time);
-        };
+        return await Stop2(func, key, time);
       default:
-        Keyboard.I(162, F);
         return T;
     };
   }
 
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
-      int time = 10;
+      int time = 50;
 
       switch (T) {
         case var _ when key == 0x01:
@@ -102,13 +88,13 @@ class Program {
 
         switch (T) {
           case var _ when duration >= 200:
-            Keyboard.I(162, T);
+            await Keyboard.I(162, T);
             return await Stop(func, key, time, duration);
           default:
             return await Stop(func, key, time, duration);
         };
       default:
-        Keyboard.I(162, F);
+        await Keyboard.I(162, F);
         return T;
     };
   }
