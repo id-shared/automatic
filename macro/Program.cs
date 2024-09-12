@@ -16,8 +16,21 @@ class Program {
   static readonly bool T = true;
 
   static async Task<bool> OnD2Down(uint key) {
-    return await Task.Run(() => {
-      return F;
+    return await Task.Run(async () => {
+      int time = 100;
+
+      switch (T) {
+        case var _ when key == (uint)ConsoleKey.A:
+          return await Move(async (uint key, int time) => {
+            Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+
+            await Task.Delay(time);
+
+            return T;
+          }, key, time);
+        default:
+          return F;
+      };
     });
   }
 
@@ -40,12 +53,12 @@ class Program {
     });
   }
 
-  static async Task<bool> Stop2(Func<uint, int, Task<bool>> func, uint key, int time) {
+  static async Task<bool> Move(Func<uint, int, Task<bool>> func, uint key, int time) {
     switch (T) {
       case var _ when await Keyboard.X(key):
         await func(key, time);
 
-        return await Stop2(func, key, time);
+        return await Move(func, key, time);
       default:
         return T;
     };
@@ -53,7 +66,7 @@ class Program {
 
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
-      int time = 50;
+      int time = 10;
 
       switch (T) {
         case var _ when key == 0x01:
