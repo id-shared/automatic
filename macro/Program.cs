@@ -15,7 +15,7 @@ class Program {
 
   static async Task<bool> OnD2Down(uint key) {
     return await Task.Run(async () => {
-      int time = 10;
+      int time = 100 / 10;
 
       switch (T) {
         case var _ when key == 0x01:
