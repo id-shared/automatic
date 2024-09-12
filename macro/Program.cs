@@ -19,7 +19,7 @@ class Program {
       int duration = 10;
 
       switch (T) {
-        case var _ when key.Equals(0x01):
+        case var _ when key == 0x01:
           return await Stop(key, duration);
         default:
           return F;
@@ -69,13 +69,13 @@ class Program {
       int duration = 100;
 
       switch (T) {
-        case var _ when key.Equals((uint)ConsoleKey.A):
+        case var _ when key == (uint)ConsoleKey.A:
           return await Move((uint)ConsoleKey.RightArrow, duration);
-        case var _ when key.Equals((uint)ConsoleKey.D):
+        case var _ when key == (uint)ConsoleKey.D:
           return await Move((uint)ConsoleKey.LeftArrow, duration);
-        case var _ when key.Equals((uint)ConsoleKey.W):
+        case var _ when key == (uint)ConsoleKey.W:
           return await Move((uint)ConsoleKey.DownArrow, duration);
-        case var _ when key.Equals((uint)ConsoleKey.S):
+        case var _ when key == (uint)ConsoleKey.S:
           return await Move((uint)ConsoleKey.UpArrow, duration);
         default:
           return F;
@@ -132,16 +132,16 @@ class Program {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
       switch (T) {
-        case var _ when act.Equals(WM_SYSKEYDOWN):
+        case var _ when act == WM_SYSKEYDOWN:
           Task.Run(() => OnD1Down(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case var _ when act.Equals(WM_KEYDOWN):
+        case var _ when act == WM_KEYDOWN:
           Task.Run(() => OnD1Down(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case var _ when act.Equals(WM_SYSKEYUP):
+        case var _ when act == WM_SYSKEYUP:
           Task.Run(() => OnD1Up(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case var _ when act.Equals(WM_KEYUP):
+        case var _ when act == WM_KEYUP:
           Task.Run(() => OnD1Up(key));
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         default:
@@ -155,16 +155,16 @@ class Program {
     if (nCode >= 0) {
       uint act = (uint)wParam;
       switch (T) {
-        case var _ when act.Equals(WM_LBUTTONDOWN):
+        case var _ when act == WM_LBUTTONDOWN:
           Task.Run(() => OnD2Down(0x01));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act.Equals(WM_LBUTTONUP):
+        case var _ when act == WM_LBUTTONUP:
           Task.Run(() => OnD2Up(0x01));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act.Equals(WM_RBUTTONDOWN):
+        case var _ when act == WM_RBUTTONDOWN:
           Task.Run(() => OnD2Down(0x02));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act.Equals(WM_RBUTTONUP):
+        case var _ when act == WM_RBUTTONUP:
           Task.Run(() => OnD2Up(0x02));
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
