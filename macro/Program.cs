@@ -20,7 +20,7 @@ class Program {
       int time = 100;
 
       switch (T) {
-        case var _ when key == (uint)ConsoleKey.A:
+        case var _ when key == (uint)ConsoleKey.A || key == (uint)ConsoleKey.D:
           return await Move(async (uint key, int time) => {
             Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
 
