@@ -1,24 +1,27 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  public static bool X(uint key) {
-    short state = GetKeyState(key);
-    return (state & 0x8000) != 0;
+  public static async Task<bool> X(uint key) {
+    return await Task.Run(() => {
+      return (GetKeyState(key) & 0x8000) != 0;
+    });
   }
 
-  public static uint I(uint key, bool is_pressed) {
-    INPUT[] inputs = new INPUT[1];
+  public static async Task<uint> I(uint key, bool is_pressed) {
+    return await Task.Run(() => {
+      INPUT[] inputs = new INPUT[1];
 
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].mkhi.ki = new KEYBDINPUT {
-      wVk = (ushort)key,
-      wScan = 0,
-      dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
-      time = 0,
-      dwExtraInfo = IntPtr.Zero
-    };
+      inputs[0].type = INPUT_KEYBOARD;
+      inputs[0].mkhi.ki = new KEYBDINPUT {
+        wVk = (ushort)key,
+        wScan = 0,
+        dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
+        time = 0,
+        dwExtraInfo = IntPtr.Zero
+      };
 
-    return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+      return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+    });
   }
 
   const uint INPUT_KEYBOARD = 1;
