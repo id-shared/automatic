@@ -15,6 +15,41 @@ class Program {
   static readonly bool F = false;
   static readonly bool T = true;
 
+  static async Task<bool> OnD2Down(uint key) {
+    return await Task.Run(() => {
+      return F;
+    });
+  }
+
+  static async Task<bool> OnD2Up(uint key) {
+    return await Task.Run(async () => {
+      int time = 100;
+
+      switch (T) {
+        case var _ when key == (uint)ConsoleKey.A:
+          return await Move((uint)ConsoleKey.RightArrow, time);
+        case var _ when key == (uint)ConsoleKey.D:
+          return await Move((uint)ConsoleKey.LeftArrow, time);
+        case var _ when key == (uint)ConsoleKey.W:
+          return await Move((uint)ConsoleKey.DownArrow, time);
+        case var _ when key == (uint)ConsoleKey.S:
+          return await Move((uint)ConsoleKey.UpArrow, time);
+        default:
+          return F;
+      };
+    });
+  }
+
+  static async Task<bool> Move(uint key, int time) {
+    return await Task.Run(async () => {
+      await Keyboard.I(key, T);
+      await Task.Delay(time);
+      await Keyboard.I(key, F);
+
+      return T;
+    });
+  }
+
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
       int time = 10;
@@ -66,41 +101,6 @@ class Program {
       default:
         return F;
     };
-  }
-
-  static async Task<bool> OnD2Down(uint key) {
-    return await Task.Run(() => {
-      return F;
-    });
-  }
-
-  static async Task<bool> OnD2Up(uint key) {
-    return await Task.Run(async () => {
-      int time = 100;
-
-      switch (T) {
-        case var _ when key == (uint)ConsoleKey.A:
-          return await Move((uint)ConsoleKey.RightArrow, time);
-        case var _ when key == (uint)ConsoleKey.D:
-          return await Move((uint)ConsoleKey.LeftArrow, time);
-        case var _ when key == (uint)ConsoleKey.W:
-          return await Move((uint)ConsoleKey.DownArrow, time);
-        case var _ when key == (uint)ConsoleKey.S:
-          return await Move((uint)ConsoleKey.UpArrow, time);
-        default:
-          return F;
-      };
-    });
-  }
-
-  static async Task<bool> Move(uint key, int time) {
-    return await Task.Run(async () => {
-      await Keyboard.I(key, T);
-      await Task.Delay(time);
-      await Keyboard.I(key, F);
-
-      return T;
-    });
   }
 
   static void Subscribe(MSG msg) {
