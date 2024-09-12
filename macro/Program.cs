@@ -15,11 +15,11 @@ class Program {
 
   static async Task<bool> OnD2Down(uint key) {
     return await Task.Run(async () => {
-      int duration = 10;
+      int time = 10;
 
       switch (T) {
         case var _ when key == 0x01:
-          return await Stop(key, duration, duration);
+          return await Stop(key, time, 0);
         default:
           return F;
       };
@@ -32,8 +32,7 @@ class Program {
     });
   }
 
-  static async Task<bool> Stop(uint key, int time, int sum) {
-    await Task.Delay(time);
+  static async Task<bool> Stop(uint key, int time, int duration) {
     switch (T) {
       case var _ when Keyboard.X(0x01):
         await Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time).ConfigureAwait(false);
@@ -42,11 +41,13 @@ class Program {
         await Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time).ConfigureAwait(false);
 
         switch (T) {
-          case var _ when sum >= 100:
+          case var _ when duration >= 100:
             Keyboard.I(162, T);
-            return await Stop(key, time, time + sum);
+            await Task.Delay(time);
+            return await Stop(key, time, duration + time);
           default:
-            return await Stop(key, time, time + sum);
+            await Task.Delay(time);
+            return await Stop(key, time, duration + time);
         };
       default:
         Keyboard.I(162, F);
@@ -71,17 +72,17 @@ class Program {
 
   static async Task<bool> OnD1Up(uint key) {
     return await Task.Run(async () => {
-      int duration = 100;
+      int time = 100;
 
       switch (T) {
         case var _ when key == (uint)ConsoleKey.A:
-          return await Move((uint)ConsoleKey.RightArrow, duration);
+          return await Move((uint)ConsoleKey.RightArrow, time);
         case var _ when key == (uint)ConsoleKey.D:
-          return await Move((uint)ConsoleKey.LeftArrow, duration);
+          return await Move((uint)ConsoleKey.LeftArrow, time);
         case var _ when key == (uint)ConsoleKey.W:
-          return await Move((uint)ConsoleKey.DownArrow, duration);
+          return await Move((uint)ConsoleKey.DownArrow, time);
         case var _ when key == (uint)ConsoleKey.S:
-          return await Move((uint)ConsoleKey.UpArrow, duration);
+          return await Move((uint)ConsoleKey.UpArrow, time);
         default:
           return F;
       };
