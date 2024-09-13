@@ -2,6 +2,7 @@
 
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -10,37 +11,36 @@ class Program {
   private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
   private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
 
-  static IntPtr d2_hook_id = IntPtr.Zero;
-  static IntPtr d1_hook_id = IntPtr.Zero;
-  static readonly bool F = false;
-  static readonly bool T = true;
+  public static IntPtr d2_hook_id = IntPtr.Zero;
+  public static IntPtr d1_hook_id = IntPtr.Zero;
+  public static readonly bool F = false;
+  public static readonly bool T = true;
+  public static bool X = true;
 
-  static async Task<bool> OnD2Down(uint key) {
+  private static async Task<bool> OnD2Down(uint key) {
     return await Task.Run(() => {
       return T;
     });
   }
 
-  static async Task<bool> OnD2Up(uint key) {
+  private static async Task<bool> OnD2Up(uint key) {
     return await Task.Run(async () => {
-      int time = 100;
-
       switch (T) {
         case var _ when key == (uint)ConsoleKey.A:
-          return await Keyboard.Z((uint)ConsoleKey.RightArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
         case var _ when key == (uint)ConsoleKey.D:
-          return await Keyboard.Z((uint)ConsoleKey.LeftArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
         case var _ when key == (uint)ConsoleKey.W:
-          return await Keyboard.Z((uint)ConsoleKey.DownArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.DownArrow, 100);
         case var _ when key == (uint)ConsoleKey.S:
-          return await Keyboard.Z((uint)ConsoleKey.UpArrow, time);
+          return await Keyboard.Z((uint)ConsoleKey.UpArrow, 100);
         default:
           return F;
       };
     });
   }
 
-  static async Task<bool> OnD1Down(uint key) {
+  private static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
       switch (T) {
         case var _ when key == 0x01:
@@ -60,13 +60,25 @@ class Program {
     });
   }
 
-  static async Task<bool> OnD1Up(uint key) {
-    return await Task.Run(() => {
-      return F;
+  private static async Task<bool> OnD1Up(uint key) {
+    return await Task.Run(async () => {
+      switch (T) {
+        case var _ when key == 0x01:
+          switch (T) {
+            case var _ when X:
+              X = F;
+              return await Keyboard.Z((uint)ConsoleKey.RightArrow, 50);
+            default:
+              X = T;
+              return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 50);
+          };
+        default:
+          return F;
+      };
     });
   }
 
-  static async Task<bool> Stop(Func<int, Task<bool>> func, Stopwatch wait, uint key, int time) {
+  private static async Task<bool> Stop(Func<int, Task<bool>> func, Stopwatch wait, uint key, int time) {
     switch (T) {
       case var _ when await Keyboard.X(key):
         await func(time);
@@ -84,7 +96,7 @@ class Program {
     };
   }
 
-  static async Task<bool> Halt(uint key_1, uint key, int time) {
+  private static async Task<bool> Halt(uint key_1, uint key, int time) {
     switch (T) {
       case var _ when await Keyboard.X(key_1):
         return await Keyboard.Z(key, time);
@@ -93,20 +105,20 @@ class Program {
     };
   }
 
-  static void Subscribe(MSG msg) {
+  private static void Subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
   }
 
-  static void Detach(nint id) {
+  private static void Detach(nint id) {
     if (id != IntPtr.Zero) {
       UnhookWindowsHookEx(id);
     }
   }
 
-  static IntPtr SetHook(Delegate proc, uint hookType) {
+  private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
 
     switch (T) {
@@ -127,7 +139,7 @@ class Program {
     return SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
-  static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
@@ -151,7 +163,7 @@ class Program {
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
-  static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint act = (uint)wParam;
       switch (T) {
@@ -174,7 +186,7 @@ class Program {
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
 
-  static void Main() {
+  private static void Main() {
     d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
     d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
 
