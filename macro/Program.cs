@@ -60,17 +60,18 @@ class Program {
   }
 
   private static async Task<bool> OnD1Up(uint key) {
-    return await Task.Run(async () => {
+    return await Task.Run(() => {
       switch (T) {
         case var _ when key == 0x01:
           switch (T) {
             case var _ when A:
               A = F;
-              return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
+              //return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
+              return A;
             default:
               A = T;
-              return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
-          };
+              //return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
+              return A;        };
         default:
           return F;
       };
