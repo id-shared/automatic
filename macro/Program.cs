@@ -53,8 +53,6 @@ class Program {
 
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
-      int time = 10;
-
       switch (T) {
         case var _ when key == 0x01:
           return await Stop(async (int time) => {
@@ -66,7 +64,7 @@ class Program {
             await Task.Delay(time);
 
             return T;
-          }, key, time, 0);
+          }, Stopwatch.StartNew(), key, 1);
         default:
           return F;
       };
@@ -79,19 +77,19 @@ class Program {
     });
   }
 
-  static async Task<bool> Stop(Func<int, Task<bool>> func, uint key, int time, int sum) {
+  static async Task<bool> Stop(Func<int, Task<bool>> func, Stopwatch wait, uint key, int time) {
     switch (T) {
       case var _ when await Keyboard.X(key):
         await func(time);
 
-        int duration = sum + time;
+        Console.WriteLine(wait.ElapsedMilliseconds);
 
         switch (T) {
-          case var _ when duration >= 200:
+          case var _ when wait.ElapsedMilliseconds >= 200:
             await Keyboard.I(162, T);
-            return await Stop(func, key, time, duration);
+            return await Stop(func, wait, key, time);
           default:
-            return await Stop(func, key, time, duration);
+            return await Stop(func, wait, key, time);
         };
       default:
         await Keyboard.I(162, F);
