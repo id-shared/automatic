@@ -53,7 +53,7 @@ class Program {
             await Task.Delay(time);
 
             return T;
-          }, Stopwatch.StartNew(), key, 1);
+          }, Stopwatch.StartNew(), key, 10);
         default:
           return F;
       };
