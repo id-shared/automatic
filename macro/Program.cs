@@ -71,10 +71,8 @@ class Program {
       case var _ when await Keyboard.X(key):
         await func(time);
 
-        Console.WriteLine(wait.ElapsedMilliseconds);
-
         switch (T) {
-          case var _ when wait.ElapsedMilliseconds >= 200:
+          case var _ when wait.ElapsedMilliseconds >= 100:
             await Keyboard.I(162, T);
             return await Stop(func, wait, key, time);
           default:
