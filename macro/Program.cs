@@ -12,7 +12,6 @@ class Program {
 
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
-  public static readonly int X = 1;
   public static readonly bool F = false;
   public static readonly bool T = true;
   public static bool A = true;
@@ -27,13 +26,13 @@ class Program {
     return await Task.Run(async () => {
       switch (T) {
         case var _ when key == (uint)ConsoleKey.A:
-          return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100 * X);
+          return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
         case var _ when key == (uint)ConsoleKey.D:
-          return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100 * X);
+          return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
         case var _ when key == (uint)ConsoleKey.W:
-          return await Keyboard.Z((uint)ConsoleKey.DownArrow, 100 * X);
+          return await Keyboard.Z((uint)ConsoleKey.DownArrow, 100);
         case var _ when key == (uint)ConsoleKey.S:
-          return await Keyboard.Z((uint)ConsoleKey.UpArrow, 100 * X);
+          return await Keyboard.Z((uint)ConsoleKey.UpArrow, 100);
         default:
           return F;
       };
@@ -53,7 +52,7 @@ class Program {
             await Task.Delay(time);
 
             return T;
-          }, Stopwatch.StartNew(), key, 10 * X);
+          }, Stopwatch.StartNew(), key, 10);
         default:
           return F;
       };
@@ -67,10 +66,10 @@ class Program {
           switch (T) {
             case var _ when A:
               A = F;
-              return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100 * X);
+              return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
             default:
               A = T;
-              return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100 * X);
+              return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
           };
         default:
           return F;
@@ -84,7 +83,7 @@ class Program {
         await func(time);
 
         switch (T) {
-          case var _ when wait.ElapsedMilliseconds >= 100 * X:
+          case var _ when wait.ElapsedMilliseconds >= 100:
             await Keyboard.I(162, T);
             return await Stop(func, wait, key, time);
           default:
