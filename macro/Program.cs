@@ -67,10 +67,10 @@ class Program {
           switch (T) {
             case var _ when X:
               X = F;
-              return await Keyboard.Z((uint)ConsoleKey.RightArrow, 50);
+              return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
             default:
               X = T;
-              return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 50);
+              return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
           };
         default:
           return F;
