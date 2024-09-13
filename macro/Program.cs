@@ -40,17 +40,6 @@ class Program {
     });
   }
 
-  static async Task<bool> Move(Func<uint, int, Task<bool>> func, uint key, int time) {
-    switch (T) {
-      case var _ when await Keyboard.X(key):
-        await func(key, time);
-
-        return await Move(func, key, time);
-      default:
-        return T;
-    };
-  }
-
   static async Task<bool> OnD1Down(uint key) {
     return await Task.Run(async () => {
       switch (T) {
@@ -264,3 +253,14 @@ class Program {
 //  default:
 //    return F;
 //};
+
+//static async Task<bool> Move(Func<uint, int, Task<bool>> func, uint key, int time) {
+//  switch (T) {
+//    case var _ when await Keyboard.X(key):
+//      await func(key, time);
+
+//      return await Move(func, key, time);
+//    default:
+//      return T;
+//  };
+//}
