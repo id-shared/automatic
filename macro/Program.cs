@@ -3,7 +3,6 @@
 
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Reflection.Metadata;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
