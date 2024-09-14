@@ -15,6 +15,7 @@ class Program {
   public static IntPtr d1_hook_id = IntPtr.Zero;
   public static readonly bool F = false;
   public static readonly bool T = true;
+  public static bool A = true;
 
   private static async Task<bool> OnD2Down(uint key) {
     return T switch {
@@ -51,7 +52,10 @@ class Program {
 
   private static async Task<bool> OnD1Up(uint key) {
     return T switch {
-      var _ when key == 0x01 => await Abcd (),
+      var _ when key == 0x01 => T switch {
+        var _ when A => await Move((uint)ConsoleKey.D, 200),
+        _ => await Move((uint)ConsoleKey.A, 200),
+      },
       _ => F,
     };
   }
@@ -74,18 +78,16 @@ class Program {
     };
   }
 
+  private static async Task<bool> Move(uint key, int time) {
+    A = A ? F : T;
+    return await Keyboard.Z(key, time);
+  }
+
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
       var _ when await Keyboard.X(key_1) => await Keyboard.Z(key, time),
       _ => F,
     };
-  }
-
-  private static async Task<bool> Abcd() {
-    await Keyboard.Z((uint)ConsoleKey.RightArrow, 50);
-    await Keyboard.Z((uint)ConsoleKey.LeftArrow, 50);
-
-    return T;
   }
 
   private static void Subscribe(MSG msg) {
