@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS4014
+#pragma warning disable CS1998
 
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -17,65 +18,49 @@ class Program {
   public static bool A = true;
 
   private static async Task<bool> OnD2Down(uint key) {
-    return await Task.Run(() => {
-      return T;
-    });
+    return T switch {
+      var _ when key == 0x01 => T switch {
+        var _ when A => A,
+        _ => A,
+      },
+      _ => F,
+    };
   }
 
   private static async Task<bool> OnD2Up(uint key) {
-    return await Task.Run(async () => {
-      switch (T) {
-        case var _ when key == (uint)ConsoleKey.A:
-          return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
-        case var _ when key == (uint)ConsoleKey.D:
-          return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
-        case var _ when key == (uint)ConsoleKey.W:
-          return await Keyboard.Z((uint)ConsoleKey.DownArrow, 100);
-        case var _ when key == (uint)ConsoleKey.S:
-          return await Keyboard.Z((uint)ConsoleKey.UpArrow, 100);
-        default:
-          return F;
-      };
-    });
+    return T switch {
+      var _ when key == (uint)ConsoleKey.A => await Keyboard.Z((uint)ConsoleKey.RightArrow, 100),
+      var _ when key == (uint)ConsoleKey.D => await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100),
+      var _ when key == (uint)ConsoleKey.W => await Keyboard.Z((uint)ConsoleKey.DownArrow, 100),
+      var _ when key == (uint)ConsoleKey.S => await Keyboard.Z((uint)ConsoleKey.UpArrow, 100),
+      _ => F,
+    };
   }
 
   private static async Task<bool> OnD1Down(uint key) {
-    return await Task.Run(async () => {
-      switch (T) {
-        case var _ when key == 0x01:
-          return await Stop(async (int time) => {
-            Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-            Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-            Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-            Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+    return T switch {
+      var _ when key == 0x01 => await Stop(async (int time) => {
+        Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+        Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+        Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+        Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
 
-            await Task.Delay(time);
+        await Task.Delay(time);
 
-            return T;
-          }, Stopwatch.StartNew(), key, 10);
-        default:
-          return F;
-      };
-    });
+        return T;
+      }, Stopwatch.StartNew(), key, 10),
+      _ => F,
+    };
   }
 
   private static async Task<bool> OnD1Up(uint key) {
-    return await Task.Run(() => {
-      switch (T) {
-        case var _ when key == 0x01:
-          switch (T) {
-            case var _ when A:
-              A = F;
-              //return await Keyboard.Z((uint)ConsoleKey.RightArrow, 100);
-              return A;
-            default:
-              A = T;
-              //return await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100);
-              return A;        };
-        default:
-          return F;
-      };
-    });
+    return T switch {
+      var _ when key == 0x01 => T switch {
+        var _ when A => A,
+        _ => A,
+      },
+      _ => F,
+    };
   }
 
   private static async Task<bool> Stop(Func<int, Task<bool>> func, Stopwatch wait, uint key, int time) {
@@ -97,12 +82,11 @@ class Program {
   }
 
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
-    switch (T) {
-      case var _ when await Keyboard.X(key_1):
-        return await Keyboard.Z(key, time);
-      default:
-        return F;
+    return T switch {
+      var _ when await Keyboard.X(key_1) => await Keyboard.Z(key, time),
+      _ => F,
     };
+    ;
   }
 
   private static void Subscribe(MSG msg) {
