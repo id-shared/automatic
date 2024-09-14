@@ -26,7 +26,10 @@ class Program {
 
   private static async Task<bool> OnD2Up(uint key) {
     return T switch {
-      var _ when key == 0x01 => T,
+      var _ when key == (uint)ConsoleKey.A => await Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
+      var _ when key == (uint)ConsoleKey.D => await Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
+      var _ when key == (uint)ConsoleKey.W => await Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
+      var _ when key == (uint)ConsoleKey.S => await Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
       _ => F,
     };
   }
@@ -214,13 +217,3 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
-
-//private static async Task<bool> OnD2Up(uint key) {
-//  return T switch {
-//    var _ when key == (uint)ConsoleKey.A => await Keyboard.Z((uint)ConsoleKey.RightArrow, 100),
-//    var _ when key == (uint)ConsoleKey.D => await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100),
-//    var _ when key == (uint)ConsoleKey.W => await Keyboard.Z((uint)ConsoleKey.DownArrow, 100),
-//    var _ when key == (uint)ConsoleKey.S => await Keyboard.Z((uint)ConsoleKey.UpArrow, 100),
-//    _ => F,
-//  };
-//}
