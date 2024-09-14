@@ -61,11 +61,9 @@ class Program {
   }
 
   private static async Task<bool> Stop(Func<int, Task<int>> func, uint key, int time) {
-    switch (T) {
-      case var _ when await Keyboard.X(key):
-        return await Stop (func, key, await func(time));
-      default:
-        return T;
+    return T switch {
+      var _ when await Keyboard.X(key) => await Stop(func, key, await func(time)),
+      _ => T,
     };
   }
 
