@@ -3,6 +3,7 @@
 
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -96,10 +97,11 @@ class Program {
     }
   }
 
-  private static void Detach(nint id) {
-    if (id != IntPtr.Zero) {
-      UnhookWindowsHookEx(id);
-    }
+  private static bool Detach(nint id) {
+    return T switch {
+      var _ when id == IntPtr.Zero => F,
+      _ => UnhookWindowsHookEx(id),
+    };
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
@@ -109,18 +111,13 @@ class Program {
       case var _ when module == null:
         return IntPtr.Zero;
       default:
-        break;
-    }
+        IntPtr handle = GetModuleHandle(module.ModuleName);
 
-    IntPtr handle = GetModuleHandle(module.ModuleName);
-    switch (T) {
-      case var _ when handle == IntPtr.Zero:
-        return IntPtr.Zero;
-      default:
-        break;
+        return T switch {
+          var _ when handle == IntPtr.Zero => IntPtr.Zero,
+          _ => SetWindowsHookEx((int)hookType, proc, handle, 0),
+        };
     }
-
-    return SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
   private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
