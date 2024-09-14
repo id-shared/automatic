@@ -69,7 +69,7 @@ class Program {
         await func(time);
 
         switch (T) {
-          case var _ when wait.ElapsedMilliseconds >= 100:
+          case var _ when wait.ElapsedMilliseconds >= 200:
             await Keyboard.I(162, T);
             return await Stop(func, wait, key, time);
           default:
