@@ -41,10 +41,10 @@ class Program {
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, time / 2);
+        Keyboard.Hold(162, time - 2);
         await Task.Delay(time);
         return time;
-      }, key, 10),
+      }, key, 5),
       _ => F,
     };
   }
