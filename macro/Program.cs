@@ -52,8 +52,8 @@ class Program {
   private static async Task<bool> OnD1Up(uint key) {
     return T switch {
       var _ when key == 0x01 => T switch {
-        var _ when A => await Move((uint)ConsoleKey.RightArrow, 100),
-        _ => await Move((uint)ConsoleKey.LeftArrow, 100),
+        var _ when A => await Move((uint)ConsoleKey.RightArrow, 200),
+        _ => await Move((uint)ConsoleKey.LeftArrow, 200),
       },
       _ => F,
     };
