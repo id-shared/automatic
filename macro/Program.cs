@@ -26,10 +26,7 @@ class Program {
 
   private static async Task<bool> OnD2Up(uint key) {
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => await Keyboard.Z((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100),
-      var _ when key == (uint)ConsoleKey.W => await Keyboard.Z((uint)ConsoleKey.DownArrow, 100),
-      var _ when key == (uint)ConsoleKey.S => await Keyboard.Z((uint)ConsoleKey.UpArrow, 100),
+      var _ when key == 0x01 => T,
       _ => F,
     };
   }
@@ -41,7 +38,8 @@ class Program {
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        await Task.Delay(162);
+        Keyboard.Hold(162, time);
+        await Task.Delay(time);
         return time;
       }, key, 10),
       _ => F,
@@ -51,8 +49,8 @@ class Program {
   private static async Task<bool> OnD1Up(uint key) {
     return T switch {
       var _ when key == 0x01 => T switch {
-        var _ when A => await Move((uint)ConsoleKey.D, 100),
-        _ => await Move((uint)ConsoleKey.A, 100),
+        var _ when A => await Move((uint)ConsoleKey.D, 200),
+        _ => await Move((uint)ConsoleKey.A, 200),
       },
       _ => F,
     };
@@ -60,19 +58,19 @@ class Program {
 
   private static async Task<bool> Stop(Func<int, Task<int>> func, uint key, int time) {
     return T switch {
-      var _ when await Keyboard.X(key) => await Stop(func, key, await func(time)),
+      var _ when await Keyboard.Held(key) => await Stop(func, key, await func(time)),
       _ => T,
     };
   }
 
   private static async Task<bool> Move(uint key, int time) {
-    await Keyboard.Z(key, time);
+    await Keyboard.Hold(key, time);
     return A = A ? F : T;
   }
 
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
-      var _ when await Keyboard.X(key_1) => await Keyboard.Z(key, time),
+      var _ when await Keyboard.Held(key_1) => await Keyboard.Hold(key, time),
       _ => F,
     };
   }
@@ -217,28 +215,12 @@ class Program {
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
 
-//int time = 100;
-
-//switch (T) {
-//  case var _ when key == (uint)ConsoleKey.A || key == (uint)ConsoleKey.D:
-//    return await Move(async (uint key, int time) => {
-//      Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-
-//      await Task.Delay(time);
-
-//      return T;
-//    }, key, time);
-//  default:
-//    return F;
-//};
-
-//static async Task<bool> Move(Func<uint, int, Task<bool>> func, uint key, int time) {
-//  switch (T) {
-//    case var _ when await Keyboard.X(key):
-//      await func(key, time);
-
-//      return await Move(func, key, time);
-//    default:
-//      return T;
+//private static async Task<bool> OnD2Up(uint key) {
+//  return T switch {
+//    var _ when key == (uint)ConsoleKey.A => await Keyboard.Z((uint)ConsoleKey.RightArrow, 100),
+//    var _ when key == (uint)ConsoleKey.D => await Keyboard.Z((uint)ConsoleKey.LeftArrow, 100),
+//    var _ when key == (uint)ConsoleKey.W => await Keyboard.Z((uint)ConsoleKey.DownArrow, 100),
+//    var _ when key == (uint)ConsoleKey.S => await Keyboard.Z((uint)ConsoleKey.UpArrow, 100),
+//    _ => F,
 //  };
 //}

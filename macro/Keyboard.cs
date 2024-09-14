@@ -4,17 +4,15 @@ class Keyboard {
   static readonly bool F = false;
   static readonly bool T = true;
 
-  public static async Task<bool> Z(uint key, int time) {
-    return await Task.Run(async () => {
-      await I(key, T);
-      await Task.Delay(time);
-      await I(key, F);
+  public static async Task<bool> Hold(uint key, int time) {
+    await I(key, T);
+    await Task.Delay(time);
+    await I(key, F);
 
-      return T;
-    });
+    return T;
   }
 
-  public static async Task<bool> X(uint key) {
+  public static async Task<bool> Held(uint key) {
     return await Task.Run(() => {
       return (GetKeyState(key) & 0x8000) != 0;
     });
