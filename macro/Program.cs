@@ -36,15 +36,15 @@ class Program {
 
   private static async Task<bool> OnD1Down(uint key) {
     return T switch {
-      var _ when key == 0x01 => await Stop(async (int time) => {
+      var _ when key == 0x01 => await Stop(async (uint key) => {
+        int time = 10;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, time);
-        await Task.Delay(time);
-        return time;
-      }, key, 10),
+        await Keyboard.Hold(162, time);
+        return key;
+      }, key),
       _ => F,
     };
   }
@@ -59,9 +59,9 @@ class Program {
     };
   }
 
-  private static async Task<bool> Stop(Func<int, Task<int>> func, uint key, int time) {
+  private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
     return T switch {
-      var _ when await Keyboard.Held(key) => await Stop(func, key, await func(time)),
+      var _ when await Keyboard.Held(key) => await Stop(func, await func(key)),
       _ => T,
     };
   }
