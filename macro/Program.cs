@@ -44,8 +44,8 @@ class Program {
 
         await Task.Delay(time);
 
-        return T;
-      }, Stopwatch.StartNew(), key, 10),
+        return time;
+      }, key, 10),
       _ => F,
     };
   }
@@ -60,20 +60,11 @@ class Program {
     };
   }
 
-  private static async Task<bool> Stop(Func<int, Task<bool>> func, Stopwatch wait, uint key, int time) {
+  private static async Task<bool> Stop(Func<int, Task<int>> func, uint key, int time) {
     switch (T) {
       case var _ when await Keyboard.X(key):
-        await func(time);
-
-        switch (T) {
-          case var _ when wait.ElapsedMilliseconds >= 200:
-            await Keyboard.I(162, T);
-            return await Stop(func, wait, key, time);
-          default:
-            return await Stop(func, wait, key, time);
-        };
+        return await Stop (func, key, await func(time));
       default:
-        await Keyboard.I(162, F);
         return T;
     };
   }
