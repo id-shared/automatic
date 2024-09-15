@@ -26,12 +26,11 @@ class Program {
   }
 
   private static async Task<bool> OnD2Up(uint key) {
-    To(key);
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => await Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => await Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-      var _ when key == (uint)ConsoleKey.W => await Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-      var _ when key == (uint)ConsoleKey.S => await Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
+      var _ when key == (uint)ConsoleKey.A => await Keyboard.Hold(To ((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => await Keyboard.Hold(To ((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => await Keyboard.Hold(To ((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => await Keyboard.Hold(To ((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
@@ -73,11 +72,11 @@ class Program {
   }
   private static uint To(uint key) {
     to = T switch {
-      var _ when key == (uint)ConsoleKey.A => (uint)ConsoleKey.RightArrow,
-      var _ when key == (uint)ConsoleKey.D => (uint)ConsoleKey.LeftArrow,
-      var _ when key == (uint)ConsoleKey.W => (uint)ConsoleKey.RightArrow,
-      var _ when key == (uint)ConsoleKey.S => (uint)ConsoleKey.LeftArrow,
-      _ => key,
+      var _ when key == (uint)ConsoleKey.RightArrow => (uint)ConsoleKey.LeftArrow,
+      var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.RightArrow,
+      var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.LeftArrow,
+      var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.RightArrow,
+      _ => to,
     };
     return key;
   }
