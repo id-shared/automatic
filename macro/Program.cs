@@ -28,10 +28,10 @@ class Program {
 
   private static async Task<bool> OnD2Up(uint key) {
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => await Keyboard.Hold(To((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => await Keyboard.Hold(To((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => await Keyboard.Hold(To((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => await Keyboard.Hold(To((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(To((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(To((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(To((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(To((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
@@ -53,34 +53,33 @@ class Program {
 
   private static async Task<bool> OnD1Up(uint key) {
     return T switch {
-      var _ when key == 0x01 => await Move(new List<uint> {
+      var _ when key == 0x01 => await Move([
         (uint)ConsoleKey.W,
         (uint)ConsoleKey.S,
         (uint)ConsoleKey.D,
         (uint)ConsoleKey.A,
-      },to, 240),
+      ], to, 240),
       _ => F,
     };
   }
 
   private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
     return T switch {
-      var _ when await Keyboard.Held(key) => await Stop(func, await func(key)),
+      var _ when Keyboard.Held(key) => await Stop(func, await func(key)),
       _ => T,
     };
   }
 
   private static async Task<bool> Move(List<uint> list, uint to, int time) {
-    foreach (uint key in list) {
-      await Keyboard.I(key, F);
-    }
-    await Keyboard.Hold(to, time);
-    return T;
+    //foreach (uint key in list) {
+    //  await Keyboard.I(key, F);
+    //}
+    return Keyboard.Hold(to, time);
   }
 
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
-      var _ when await Keyboard.Held(key_1) => await Keyboard.Hold(key, time),
+      var _ when Keyboard.Held(key_1) => Keyboard.Hold(key, time),
       _ => F,
     };
   }

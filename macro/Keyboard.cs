@@ -4,35 +4,31 @@ class Keyboard {
   static readonly bool F = false;
   static readonly bool T = true;
 
-  public static async Task<bool> Hold(uint key, int time) {
-    await I(key, T);
-    await Task.Delay(time);
-    await I(key, F);
+  public static bool Hold(uint key, int time) {
+    I(key, T);
+    Thread.Sleep(time);
+    I(key, F);
 
     return T;
   }
 
-  public static async Task<bool> Held(uint key) {
-    return await Task.Run(() => {
-      return (GetKeyState(key) & 0x8000) != 0;
-    });
+  public static bool Held(uint key) {
+    return (GetAsyncKeyState(key) & 0x8000) != 0;
   }
 
-  public static async Task<uint> I(uint key, bool is_pressed) {
-    return await Task.Run(() => {
-      INPUT[] inputs = new INPUT[1];
+  public static uint I(uint key, bool is_pressed) {
+    INPUT[] inputs = new INPUT[1];
 
-      inputs[0].type = INPUT_KEYBOARD;
-      inputs[0].mkhi.ki = new KEYBDINPUT {
-        wVk = (ushort)key,
-        wScan = 0,
-        dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
-        time = 0,
-        dwExtraInfo = IntPtr.Zero
-      };
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].mkhi.ki = new KEYBDINPUT {
+      wVk = (ushort)key,
+      wScan = 0,
+      dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
+      time = 0,
+      dwExtraInfo = IntPtr.Zero
+    };
 
-      return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-    });
+    return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
   }
 
   const uint INPUT_KEYBOARD = 1;
@@ -87,5 +83,5 @@ class Keyboard {
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
   [DllImport("user32.dll")]
-  private static extern short GetKeyState(uint vKey);
+  private static extern short GetAsyncKeyState(uint vKey);
 }
