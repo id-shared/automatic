@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Threading;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -33,10 +34,10 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => await Hold(To((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => await Hold(To((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => await Hold(To((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => await Hold(To((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == (uint)ConsoleKey.A => Hold(To((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => Hold(To((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => Hold(To((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => Hold(To((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
@@ -54,20 +55,14 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == 0x01 => await Move(move, 240),
+      var _ when key == 0x01 => Hold(move, 240),
       _ => F,
     };
   }
 
-  private static async Task<bool> Move(uint key, int time) {
-    return await Hold(key, time);
-  }
-
-  public static async Task<bool> Hold(uint key, int time) {
+  public static bool Hold(uint key, int time) {
     Keyboard.I(key, T);
-    await Task.Delay(time);
-    Keyboard.I(key, F);
-
+    _ = new System.Threading.Timer(_ => Keyboard.I(key, F), null, time, Timeout.Infinite);
     return T;
   }
 
