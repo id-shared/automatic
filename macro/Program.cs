@@ -46,12 +46,12 @@ class Program {
 
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 1;
+        int time = 2;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        await Task.Delay(time);
+        await Task.Delay(1);
         return key;
       }, key),
       _ => F,
