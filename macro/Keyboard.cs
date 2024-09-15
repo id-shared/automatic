@@ -13,7 +13,7 @@ class Keyboard {
   }
 
   public static bool Held(uint key) {
-    return (GetAsyncKeyState(key) & 0x8000) != 0;
+    return (GetKeyState(key) & 0x8000) != 0;
   }
 
   public static uint I(uint key, bool is_pressed) {
@@ -83,5 +83,5 @@ class Keyboard {
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
   [DllImport("user32.dll")]
-  private static extern short GetAsyncKeyState(uint vKey);
+  private static extern short GetKeyState(uint vKey);
 }
