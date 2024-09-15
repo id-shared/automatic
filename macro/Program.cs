@@ -16,7 +16,7 @@ class Program {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  public static ConcurrentDictionary<uint, bool> held = new() { };
+  public static Dictionary<uint, bool> held = new() { };
   public static uint move = (uint)ConsoleKey.RightArrow;
   public static readonly bool F = false;
   public static readonly bool T = true;
@@ -34,10 +34,10 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(To((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(To((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(To((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(To((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == (uint)ConsoleKey.A => await Hold(To((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => await Hold(To((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => await Hold(To((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => await Hold(To((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
@@ -68,7 +68,7 @@ class Program {
 
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
-      var _ when held.ContainsKey(key_1) && held[key_1] == T => Keyboard.Hold(key, time),
+      var _ when held.ContainsKey(key_1) && held[key_1] == T => await Hold(key, time),
       _ => F,
     };
   }
@@ -91,7 +91,7 @@ class Program {
     //foreach (uint key in list) {
     //  await Keyboard.I(key, F);
     //}
-    return Keyboard.Hold(to, time);
+    return await Hold(to, time);
   }
 
   private static uint To(uint key) {
@@ -103,6 +103,14 @@ class Program {
       _ => move,
     };
     return key;
+  }
+
+  public static async Task<bool> Hold(uint key, int time) {
+    Keyboard.I(key, T);
+    Task.Delay(time);
+    Keyboard.I(key, F);
+
+    return T;
   }
 
   private static void Subscribe(MSG msg) {
