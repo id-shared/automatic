@@ -12,9 +12,9 @@ class Keyboard {
     return T;
   }
 
-  public static bool Held(uint key) {
-    return (GetKeyState(key) & 0x8000) != 0;
-  }
+  //public static bool Held(uint key) {
+  //  return (GetKeyState(key) & 0x8000) != 0;
+  //}
 
   public static uint I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];

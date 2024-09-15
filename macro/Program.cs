@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -21,6 +22,8 @@ class Program {
   public static readonly bool T = true;
 
   private static async Task<bool> OnD2Down(uint key) {
+    held[key] = T;
+
     return T switch {
       var _ when key == 0x01 => T,
       _ => F,
@@ -28,6 +31,8 @@ class Program {
   }
 
   private static async Task<bool> OnD2Up(uint key) {
+    held[key] = F;
+
     return T switch {
       var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(To((uint)ConsoleKey.RightArrow), 100),
       var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(To((uint)ConsoleKey.LeftArrow), 100),
@@ -38,6 +43,8 @@ class Program {
   }
 
   private static async Task<bool> OnD1Down(uint key) {
+    held[key] = T;
+
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
         int time = 10;
@@ -52,7 +59,23 @@ class Program {
     };
   }
 
+  private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
+    return T switch {
+      var _ when held.TryGetValue(key, out bool _) => await Stop(func, await func(key)),
+      _ => T,
+    };
+  }
+
+  private static async Task<bool> Halt(uint key_1, uint key, int time) {
+    return T switch {
+      var _ when held.TryGetValue(key_1, out bool _) => Keyboard.Hold(key, time),
+      _ => F,
+    };
+  }
+
   private static async Task<bool> OnD1Up(uint key) {
+    held[key] = F;
+
     return T switch {
       var _ when key == 0x01 => await Move([
         (uint)ConsoleKey.W,
@@ -64,25 +87,11 @@ class Program {
     };
   }
 
-  private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
-    return T switch {
-      var _ when Keyboard.Held(key) => await Stop(func, await func(key)),
-      _ => T,
-    };
-  }
-
   private static async Task<bool> Move(List<uint> list, uint to, int time) {
     //foreach (uint key in list) {
     //  await Keyboard.I(key, F);
     //}
     return Keyboard.Hold(to, time);
-  }
-
-  private static async Task<bool> Halt(uint key_1, uint key, int time) {
-    return T switch {
-      var _ when Keyboard.Held(key_1) => Keyboard.Hold(key, time),
-      _ => F,
-    };
   }
 
   private static uint To(uint key) {
@@ -132,16 +141,16 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_SYSKEYDOWN:
-          Task.Run(() => OnD2Down(key));
+          OnD2Down(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_KEYDOWN:
-          Task.Run(() => OnD2Down(key));
+          OnD2Down(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_SYSKEYUP:
-          Task.Run(() => OnD2Up(key));
+          OnD2Up(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_KEYUP:
-          Task.Run(() => OnD2Up(key));
+          OnD2Up(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
@@ -155,16 +164,16 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_LBUTTONDOWN:
-          Task.Run(() => OnD1Down(0x01));
+          OnD1Down(0x01);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_LBUTTONUP:
-          Task.Run(() => OnD1Up(0x01));
+          OnD1Up(0x01);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONDOWN:
-          Task.Run(() => OnD1Down(0x02));
+          OnD1Down(0x02);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONUP:
-          Task.Run(() => OnD1Up(0x02));
+          OnD1Up(0x02);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
