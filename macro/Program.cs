@@ -45,29 +45,7 @@ class Program {
     held[key] = T;
 
     return T switch {
-      var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 2;
-        Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-        Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-        Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-        Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        await Task.Delay(1);
-        return key;
-      }, key),
-      _ => F,
-    };
-  }
-
-  private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
-    return T switch {
-      var _ when held.ContainsKey(key) && held[key] == T => await Stop(func, await func(key)),
-      _ => T,
-    };
-  }
-
-  private static async Task<bool> Halt(uint key_1, uint key, int time) {
-    return T switch {
-      var _ when held.ContainsKey(key_1) && held[key_1] == T => await Hold(key, time),
+      var _ when key == 0x01 => T,
       _ => F,
     };
   }
@@ -94,13 +72,7 @@ class Program {
   }
 
   private static uint To(uint key) {
-    move = T switch {
-      var _ when key == (uint)ConsoleKey.RightArrow => (uint)ConsoleKey.RightArrow,
-      var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.LeftArrow,
-      var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
-      var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,
-      _ => move,
-    };
+    move = key;
     return key;
   }
 
@@ -243,3 +215,33 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
+//private static async Task<bool> OnD1Down(uint key) {
+//  held[key] = T;
+
+//  return T switch {
+//    var _ when key == 0x01 => await Stop(async (uint key) => {
+//      int time = 10;
+//      Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+//      Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+//      Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+//      Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+//      await Task.Delay(time / 2);
+//      return key;
+//    }, key),
+//    _ => F,
+//  };
+//}
+
+//private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
+//  return T switch {
+//    var _ when held.ContainsKey(key) && held[key] == T => await Stop(func, await func(key)),
+//    _ => T,
+//  };
+//}
+
+//private static async Task<bool> Halt(uint key_1, uint key, int time) {
+//  return T switch {
+//    var _ when held.ContainsKey(key_1) && held[key_1] == T => await Hold(key, time),
+//    _ => F,
+//  };
+//}
