@@ -38,13 +38,12 @@ class Program {
   private static async Task<bool> OnD1Down(uint key) {
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 100;
+        int time = 10;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        await Keyboard.Hold(162, 80);
-        await Task.Delay(20);
+        await Task.Delay(time);
         return key;
       }, key),
       _ => F,
