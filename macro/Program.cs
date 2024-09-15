@@ -4,7 +4,6 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -16,7 +15,7 @@ class Program {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  public static Dictionary<uint, bool> held = new() { };
+  public static ConcurrentDictionary<uint, bool> held = new() { };
   public static uint move = (uint)ConsoleKey.RightArrow;
   public static readonly bool F = false;
   public static readonly bool T = true;
@@ -47,12 +46,12 @@ class Program {
 
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 10;
+        int time = 1;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        await Task.Delay(time / 2);
+        await Task.Delay(time);
         return key;
       }, key),
       _ => F,
@@ -77,21 +76,21 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == 0x01 => await Move([
-        (uint)ConsoleKey.W,
-        (uint)ConsoleKey.S,
-        (uint)ConsoleKey.D,
-        (uint)ConsoleKey.A,
-      ], move, 240),
+      var _ when key == 0x01 => await Move(move, 240),
       _ => F,
     };
   }
 
-  private static async Task<bool> Move(List<uint> list, uint to, int time) {
-    //foreach (uint key in list) {
-    //  await Keyboard.I(key, F);
-    //}
-    return await Hold(to, time);
+  private static async Task<bool> Move(uint key, int time) {
+    return await Hold(key, time);
+  }
+
+  public static async Task<bool> Hold(uint key, int time) {
+    Keyboard.I(key, T);
+    await Task.Delay(time);
+    Keyboard.I(key, F);
+
+    return T;
   }
 
   private static uint To(uint key) {
@@ -103,14 +102,6 @@ class Program {
       _ => move,
     };
     return key;
-  }
-
-  public static async Task<bool> Hold(uint key, int time) {
-    Keyboard.I(key, T);
-    Task.Delay(time);
-    Keyboard.I(key, F);
-
-    return T;
   }
 
   private static void Subscribe(MSG msg) {
