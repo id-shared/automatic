@@ -3,6 +3,7 @@
 
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -14,7 +15,8 @@ class Program {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  public static uint to = (uint)ConsoleKey.RightArrow;
+  public static ConcurrentDictionary<uint, bool> held = new() { };
+  public static uint move = (uint)ConsoleKey.RightArrow;
   public static readonly bool F = false;
   public static readonly bool T = true;
 
@@ -57,7 +59,7 @@ class Program {
         (uint)ConsoleKey.S,
         (uint)ConsoleKey.D,
         (uint)ConsoleKey.A,
-      ], to, 240),
+      ], move, 240),
       _ => F,
     };
   }
@@ -84,12 +86,12 @@ class Program {
   }
 
   private static uint To(uint key) {
-    to = T switch {
+    move = T switch {
       var _ when key == (uint)ConsoleKey.RightArrow => (uint)ConsoleKey.RightArrow,
       var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.LeftArrow,
       var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
       var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,
-      _ => to,
+      _ => move,
     };
     return key;
   }
