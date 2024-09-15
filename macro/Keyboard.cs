@@ -9,6 +9,10 @@ class Keyboard {
     return T;
   }
 
+  public static bool Held(uint key) {
+    return (GetKeyState(key) & 0x8000) != 0;
+  }
+
   public static uint I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
@@ -70,16 +74,11 @@ class Keyboard {
   }
 
   [DllImport("user32.dll")]
+  private static extern short GetKeyState(uint vKey);
+
+  [DllImport("user32.dll")]
   static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll")]
   static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }
-
-//public static bool Held(uint key) {
-//  return (GetKeyState(key) & 0x8000) != 0;
-//}
-
-
-//[DllImport("user32.dll")]
-//private static extern short GetKeyState(uint vKey);

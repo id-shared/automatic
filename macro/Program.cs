@@ -44,15 +44,14 @@ class Program {
 
   private static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
-
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 10;
+        int time = 2;
+        await Task.Delay(time);
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        await Task.Delay(time / 2);
         return key;
       }, key),
       _ => F,
@@ -61,14 +60,14 @@ class Program {
 
   private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
     return T switch {
-      var _ when held.ContainsKey(key) && held[key] == T => await Stop(func, await func(key)),
+      var _ when Held(key) == T => await Stop(func, await func(key)),
       _ => T,
     };
   }
 
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
-      var _ when held.ContainsKey(key_1) && held[key_1] == T => Keyboard.Hold(key, time),
+      var _ when Held(key_1) => Keyboard.Hold(key, time),
       _ => F,
     };
   }
@@ -80,6 +79,10 @@ class Program {
       var _ when key == 0x01 => Keyboard.Hold(move, 240),
       _ => F,
     };
+  }
+
+  private static bool Held(uint key) {
+    return held.ContainsKey(key) && held[key] == T;
   }
 
   private static uint To(uint key) {
