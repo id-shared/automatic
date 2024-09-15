@@ -61,14 +61,14 @@ class Program {
 
   private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
     return T switch {
-      var _ when held.TryGetValue(key, out bool _) => await Stop(func, await func(key)),
+      var _ when held.ContainsKey(key) && held[key] == T => await Stop(func, await func(key)),
       _ => T,
     };
   }
 
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
-      var _ when held.TryGetValue(key_1, out bool _) => Keyboard.Hold(key, time),
+      var _ when held.ContainsKey(key_1) && held[key_1] == T => Keyboard.Hold(key, time),
       _ => F,
     };
   }
