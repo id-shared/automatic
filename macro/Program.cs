@@ -13,9 +13,10 @@ class Program {
 
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
+
+  public static uint to = (uint)ConsoleKey.RightArrow;
   public static readonly bool F = false;
   public static readonly bool T = true;
-  public static bool A = true;
 
   private static async Task<bool> OnD2Down(uint key) {
     return T switch {
@@ -26,10 +27,10 @@ class Program {
 
   private static async Task<bool> OnD2Up(uint key) {
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => await Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => await Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-      var _ when key == (uint)ConsoleKey.W => await Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-      var _ when key == (uint)ConsoleKey.S => await Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
+      var _ when key == (uint)ConsoleKey.A => await Keyboard.Hold(To ((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => await Keyboard.Hold(To ((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => await Keyboard.Hold(To((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => await Keyboard.Hold(To((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
@@ -52,10 +53,7 @@ class Program {
 
   private static async Task<bool> OnD1Up(uint key) {
     return T switch {
-      var _ when key == 0x01 => T switch {
-        var _ when A => await Move((uint)ConsoleKey.RightArrow, 240),
-        _ => await Move((uint)ConsoleKey.LeftArrow, 240),
-      },
+      var _ when key == 0x01 => await Keyboard.Hold(to, 240),
       _ => F,
     };
   }
@@ -67,16 +65,15 @@ class Program {
     };
   }
 
-  private static async Task<bool> Move(uint key, int time) {
-    await Keyboard.Hold(key, time);
-    return A = A ? F : T;
-  }
-
   private static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
       var _ when await Keyboard.Held(key_1) => await Keyboard.Hold(key, time),
       _ => F,
     };
+  }
+  private static uint To(uint key) {
+    to = key;
+    return key;
   }
 
   private static void Subscribe(MSG msg) {
