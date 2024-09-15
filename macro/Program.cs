@@ -34,10 +34,10 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Hold(To((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => Hold(To((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => Hold(To((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => Hold(To((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(To((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(To((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(To((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(To((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
@@ -55,15 +55,9 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == 0x01 => Hold(move, 240),
+      var _ when key == 0x01 => Keyboard.Hold(move, 240),
       _ => F,
     };
-  }
-
-  public static bool Hold(uint key, int time) {
-    Keyboard.I(key, T);
-    _ = new System.Threading.Timer(_ => Keyboard.I(key, F), null, time, Timeout.Infinite);
-    return T;
   }
 
   private static uint To(uint key) {

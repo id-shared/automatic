@@ -3,6 +3,11 @@
 class Keyboard {
   static readonly bool F = false;
   static readonly bool T = true;
+  public static bool Hold(uint key, int time) {
+    Keyboard.I(key, T);
+    _ = new System.Threading.Timer(_ => Keyboard.I(key, F), null, time, Timeout.Infinite);
+    return T;
+  }
 
   public static uint I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
