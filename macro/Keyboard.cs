@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  static readonly bool F = false;
-  static readonly bool T = true;
+  public static readonly bool F = false;
+  public static readonly bool T = true;
+
   public static bool IsHeld(uint key) {
     return (GetKeyState(key) & 0x8000) != 0;
   }
@@ -28,17 +29,17 @@ class Keyboard {
     return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
   }
 
-  const uint INPUT_KEYBOARD = 1;
-  const uint KEYEVENTF_KEYUP = 0x0002;
+  private const uint INPUT_KEYBOARD = 1;
+  private const uint KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
-  struct INPUT {
+  private struct INPUT {
     public uint type;
     public MOUSEKEYBDHARDWAREINPUT mkhi;
   }
 
   [StructLayout(LayoutKind.Explicit)]
-  struct MOUSEKEYBDHARDWAREINPUT {
+  private struct MOUSEKEYBDHARDWAREINPUT {
     [FieldOffset(0)]
     public MOUSEINPUT mi;
     [FieldOffset(0)]
@@ -48,7 +49,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  struct KEYBDINPUT {
+  private struct KEYBDINPUT {
     public ushort wVk;
     public ushort wScan;
     public uint dwFlags;
@@ -57,7 +58,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  struct MOUSEINPUT {
+  private struct MOUSEINPUT {
     public int dx;
     public int dy;
     public uint mouseData;
@@ -67,7 +68,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  struct HARDWAREINPUT {
+  private struct HARDWAREINPUT {
     public uint uMsg;
     public ushort wParamL;
     public ushort wParamH;
@@ -77,8 +78,8 @@ class Keyboard {
   private static extern short GetKeyState(uint vKey);
 
   [DllImport("user32.dll")]
-  static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
   [DllImport("user32.dll")]
-  static extern uint MapVirtualKey(uint uCode, uint uMapType);
+  private static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }

@@ -16,11 +16,10 @@ class Program {
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
   public static ConcurrentDictionary<uint, bool> held = new() { };
-  public static uint move = (uint)ConsoleKey.RightArrow;
   public static readonly bool F = false;
   public static readonly bool T = true;
 
-  private static async Task<bool> OnD2Down(uint key) {
+  public static async Task<bool> OnD2Down(uint key) {
     held[key] = T;
     return T switch {
       var _ when key == 0x01 => T,
@@ -28,18 +27,18 @@ class Program {
     };
   }
 
-  private static async Task<bool> OnD2Up(uint key) {
+  public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(Move((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(Move((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(Move((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(Move((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
       _ => F,
     };
   }
 
-  private static async Task<bool> OnD1Down(uint key) {
+  public static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
@@ -56,56 +55,33 @@ class Program {
     };
   }
 
-  private static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
+  public static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
     return T switch {
       var _ when Held(key) == T => await Stop(func, await func(key)),
       _ => T,
     };
   }
 
-  private static async Task<bool> Halt(uint key_1, uint key, int time) {
+  public static async Task<bool> Halt(uint key_1, uint key, int time) {
     return T switch {
       var _ when Held(key_1) => Keyboard.Hold(key, time),
       _ => F,
     };
   }
 
-  private static async Task<bool> OnD1Up(uint key) {
+  public static async Task<bool> OnD1Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == 0x01 => Keyboard.Hold(move, 240),
+      var _ when key == 0x01 => T,
       _ => F,
     };
   }
 
-  private static bool Held(uint key) {
+  public static bool Held(uint key) {
     return held.ContainsKey(key) && held[key] == T;
   }
 
-  private static uint Move(uint key) {
-    move = T switch {
-      var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
-      var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,
-      _ => key,
-    };
-    return key;
-  }
-
-  private static void Subscribe(MSG msg) {
-    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
-      TranslateMessage(ref msg);
-      DispatchMessage(ref msg);
-    }
-  }
-
-  private static bool Detach(nint id) {
-    return T switch {
-      var _ when id == IntPtr.Zero => F,
-      _ => UnhookWindowsHookEx(id),
-    };
-  }
-
-  private static IntPtr SetHook(Delegate proc, uint hookType) {
+  public static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
 
     switch (T) {
@@ -121,7 +97,7 @@ class Program {
     }
   }
 
-  private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
@@ -145,7 +121,7 @@ class Program {
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
-  private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint act = (uint)wParam;
       switch (T) {
@@ -168,7 +144,7 @@ class Program {
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
 
-  private static void Main() {
+  public static void Main() {
     d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
     d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
 
@@ -176,6 +152,20 @@ class Program {
 
     Detach(d2_hook_id);
     Detach(d1_hook_id);
+  }
+
+  private static void Subscribe(MSG msg) {
+    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
+      TranslateMessage(ref msg);
+      DispatchMessage(ref msg);
+    }
+  }
+
+  private static bool Detach(nint id) {
+    return T switch {
+      var _ when id == IntPtr.Zero => F,
+      _ => UnhookWindowsHookEx(id),
+    };
   }
 
   private const uint WH_KEYBOARD_LL = 13;
@@ -230,3 +220,13 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
+
+//public static uint move = (uint)ConsoleKey.RightArrow;
+//public static uint Move(uint key) {
+//  move = T switch {
+//    var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
+//    var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,
+//    _ => key,
+//  };
+//  return key;
+//}
