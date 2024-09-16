@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -30,10 +31,7 @@ class Program {
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
+      var _ when key == 0x01 => T,
       _ => F,
     };
   }
@@ -230,3 +228,11 @@ class Program {
 //  };
 //  return key;
 //}
+
+//return T switch {
+//  var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
+//  var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
+//  var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
+//  var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
+//  _ => F,
+//};
