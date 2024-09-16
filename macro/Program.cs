@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 using System;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -31,12 +32,8 @@ class Program {
 
   private static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
-
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(Move((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(Move((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(Move((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(Move((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == 0x01 => T,
       _ => F,
     };
   }
@@ -45,12 +42,12 @@ class Program {
     held[key] = T;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 9;
+        int time = 20;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, (time * 2) / 3);
+        Keyboard.Hold(162, 16);
         await Task.Delay(time);
         return key;
       }, key),
@@ -233,3 +230,11 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
+
+//return T switch {
+//  var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(Move((uint)ConsoleKey.RightArrow), 100),
+//  var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(Move((uint)ConsoleKey.LeftArrow), 100),
+//  var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(Move((uint)ConsoleKey.DownArrow), 100),
+//  var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(Move((uint)ConsoleKey.UpArrow), 100),
+//  _ => F,
+//};
