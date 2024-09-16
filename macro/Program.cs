@@ -4,7 +4,6 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Threading;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -43,16 +42,15 @@ class Program {
   }
 
   private static async Task<bool> OnD1Down(uint key) {
-    await Task.Delay(1);
     held[key] = T;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 10;
+        int time = 9;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, +8);
+        Keyboard.Hold(162, 6);
         await Task.Delay(time);
         return key;
       }, key),
@@ -88,7 +86,11 @@ class Program {
   }
 
   private static uint To(uint key) {
-    move = key;
+    move = T switch {
+      var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
+      var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,
+      _ => key,
+    };
     return key;
   }
 
