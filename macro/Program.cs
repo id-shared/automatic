@@ -50,7 +50,7 @@ class Program {
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, 6);
+        Keyboard.Hold(162, (time * 2) / 3);
         await Task.Delay(time);
         return key;
       }, key),
