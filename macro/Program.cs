@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -22,7 +23,7 @@ class Program {
 
   private static async Task<bool> OnD2Down(uint key) {
     held[key] = T;
-
+    Console.WriteLine(key);
     return T switch {
       var _ when key == 0x01 => T,
       _ => F,
@@ -33,16 +34,17 @@ class Program {
     held[key] = F;
 
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(To((uint)ConsoleKey.RightArrow), 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(To((uint)ConsoleKey.LeftArrow), 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(To((uint)ConsoleKey.DownArrow), 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(To((uint)ConsoleKey.UpArrow), 100),
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold(Move((uint)ConsoleKey.RightArrow), 100),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold(Move((uint)ConsoleKey.LeftArrow), 100),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold(Move((uint)ConsoleKey.DownArrow), 100),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold(Move((uint)ConsoleKey.UpArrow), 100),
       _ => F,
     };
   }
 
   private static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
+    bool swap = F;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
         int time = 9;
@@ -50,7 +52,11 @@ class Program {
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, 6);
+        Keyboard.Hold(160, time);
+        swap = T switch {
+          var _ when swap => !swap,
+          _ => Keyboard.Hold(key, time),
+        };
         await Task.Delay(time);
         return key;
       }, key),
@@ -85,7 +91,7 @@ class Program {
     return held.ContainsKey(key) && held[key] == T;
   }
 
-  private static uint To(uint key) {
+  private static uint Move(uint key) {
     move = T switch {
       var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
       var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,

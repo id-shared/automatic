@@ -3,14 +3,14 @@
 class Keyboard {
   static readonly bool F = false;
   static readonly bool T = true;
-  public static bool Hold(uint key, int time) {
-    Keyboard.I(key, T);
-    _ = new System.Threading.Timer(_ => Keyboard.I(key, F), null, time, Timeout.Infinite);
-    return T;
+  public static bool IsHeld(uint key) {
+    return (GetKeyState(key) & 0x8000) != 0;
   }
 
-  public static bool Held(uint key) {
-    return (GetKeyState(key) & 0x8000) != 0;
+  public static bool Hold(uint key, int time) {
+    I(key, T);
+    _ = new System.Threading.Timer(_ => Keyboard.I(key, F), null, time, Timeout.Infinite);
+    return T;
   }
 
   public static uint I(uint key, bool is_pressed) {
