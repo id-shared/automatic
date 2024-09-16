@@ -43,18 +43,14 @@ class Program {
 
   private static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
-    bool swap = F;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 100;
+        int time = 9;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        swap = T switch {
-          var _ when swap => !swap,
-          _ => Keyboard.Hold(162, time),
-        };
+        Keyboard.Hold(162, 6);
         await Task.Delay(time);
         return key;
       }, key),
