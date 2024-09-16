@@ -29,12 +29,8 @@ class Program {
 
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
-
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
+      var _ when key == 0x01 => T,
       _ => F,
     };
   }
@@ -43,11 +39,12 @@ class Program {
     held[key] = T;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 5;
+        int time = 4;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+        Keyboard.Hold(162, time);
         await Task.Delay(time);
         return key;
       }, key),
@@ -72,9 +69,18 @@ class Program {
   public static async Task<bool> OnD1Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == 0x01 => T,
+      var _ when key == 0x01 => Move(move, 240),
       _ => F,
     };
+  }
+
+  public static uint move = (uint)ConsoleKey.RightArrow;
+  public static bool Move(uint key, int time) {
+    move = T switch {
+      var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.RightArrow,
+      _ => (uint)ConsoleKey.LeftArrow,
+    };
+    return Keyboard.Hold(key, time);
   }
 
   public static bool Held(uint key) {
@@ -221,12 +227,10 @@ class Program {
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
 
-//public static uint move = (uint)ConsoleKey.RightArrow;
-//public static uint Move(uint key) {
-//  move = T switch {
-//    var _ when key == (uint)ConsoleKey.DownArrow => (uint)ConsoleKey.RightArrow,
-//    var _ when key == (uint)ConsoleKey.UpArrow => (uint)ConsoleKey.LeftArrow,
-//    _ => key,
-//  };
-//  return key;
-//}
+//return T switch {
+//  var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
+//  var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
+//  var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
+//  var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
+//  _ => F,
+//};
