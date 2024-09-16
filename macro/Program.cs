@@ -23,7 +23,6 @@ class Program {
 
   private static async Task<bool> OnD2Down(uint key) {
     held[key] = T;
-    Console.WriteLine(key);
     return T switch {
       var _ when key == 0x01 => T,
       _ => F,
@@ -47,15 +46,14 @@ class Program {
     bool swap = F;
     return T switch {
       var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 9;
+        int time = 100;
         Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
         Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
         Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
         Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(160, time);
         swap = T switch {
           var _ when swap => !swap,
-          _ => Keyboard.Hold(key, time),
+          _ => Keyboard.Hold(162, time),
         };
         await Task.Delay(time);
         return key;
