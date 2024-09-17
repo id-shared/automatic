@@ -16,6 +16,7 @@ class Program {
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
   public static ConcurrentDictionary<uint, bool> held = new() { };
+  public static readonly int divisor = 2;
   public static readonly bool F = false;
   public static readonly bool T = true;
 
@@ -29,8 +30,12 @@ class Program {
 
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
+
     return T switch {
-      var _ when key == 0x01 => T,
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100 / divisor),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100 / divisor),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100 / divisor),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100 / divisor),
       _ => F,
     };
   }
@@ -62,7 +67,7 @@ class Program {
   public static async Task<bool> OnD1Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == 0x01 => Move(move, 240),
+      var _ when key == 0x01 => Move(move, 240 / divisor),
       _ => F,
     };
   }
@@ -224,11 +229,3 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
-
-//return T switch {
-//  var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-//  var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-//  var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-//  var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
-//  _ => F,
-//};
