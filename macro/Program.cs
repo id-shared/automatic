@@ -4,7 +4,6 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -39,23 +38,23 @@ class Program {
   public static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
     return T switch {
-      var _ when key == 0x01 => await Hold(key, 240),
+      var _ when key == 0x01 => await Hold(240),
       _ => F,
     };
   }
 
-  public static async Task<bool> Hold(uint key, int time) {
-    Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-    Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-    Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-    Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-    Keyboard.I((uint)ConsoleKey.V, T);
+  public static async Task<bool> Hold(int time) {
+    Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);
+    Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow);
+    Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow);
+    Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow);
+    Keyboard.I(164, T);
     return T;
   }
 
-  public static async Task<bool> Halt(uint key_1, uint key, int time) {
+  public static async Task<bool> Halt(uint key_1, uint key) {
     return T switch {
-      var _ when Held(key_1) => Keyboard.Hold(key, time),
+      var _ when Held(key_1) => Keyboard.I(key, T),
       _ => F,
     };
   }
@@ -70,7 +69,11 @@ class Program {
 
   public static uint move = (uint)ConsoleKey.RightArrow;
   public static bool Move(uint key, int time) {
-    Keyboard.I((uint)ConsoleKey.V, F);
+    Keyboard.I((uint)ConsoleKey.RightArrow, F);
+    Keyboard.I((uint)ConsoleKey.LeftArrow, F);
+    Keyboard.I((uint)ConsoleKey.DownArrow, F);
+    Keyboard.I((uint)ConsoleKey.UpArrow, F);
+    Keyboard.I(164, F);
     move = T switch {
       var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.RightArrow,
       _ => (uint)ConsoleKey.LeftArrow,
