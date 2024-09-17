@@ -16,7 +16,7 @@ class Program {
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
   public static ConcurrentDictionary<uint, bool> held = new() { };
-  public static readonly int divisor = 2;
+  public static uint move = (uint)ConsoleKey.RightArrow;
   public static readonly bool F = false;
   public static readonly bool T = true;
 
@@ -30,12 +30,17 @@ class Program {
 
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
+    move = T switch {
+      var _ when key == (uint)ConsoleKey.A => (uint)ConsoleKey.RightArrow,
+      var _ when key == (uint)ConsoleKey.D => (uint)ConsoleKey.LeftArrow,
+      _ => move,
+    };
 
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100 / divisor),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100 / divisor),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100 / divisor),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100 / divisor),
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
       _ => F,
     };
   }
@@ -43,23 +48,23 @@ class Program {
   public static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
     return T switch {
-      var _ when key == 0x01 => await Hold(240),
+      var _ when key == 0x01 => await Stop(240),
       _ => F,
     };
   }
 
-  public static async Task<bool> Hold(int time) {
-    Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);
-    Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow);
-    Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow);
-    Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow);
+  public static async Task<bool> Stop(int time) {
+    Hold((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);
+    Hold((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow);
+    Hold((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow);
+    Hold((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow);
     Keyboard.I(164, T);
     return T;
   }
 
-  public static async Task<bool> Halt(uint key_1, uint key) {
+  public static async Task<bool> Hold(uint key_1, uint key) {
     return T switch {
-      var _ when Held(key_1) => Keyboard.I(key, T),
+      var _ when IsHeld(key_1) => Keyboard.I(key, T),
       _ => F,
     };
   }
@@ -67,26 +72,21 @@ class Program {
   public static async Task<bool> OnD1Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == 0x01 => Move(move, 240 / divisor),
+      var _ when key == 0x01 => Move(move, 360),
       _ => F,
     };
   }
 
-  public static uint move = (uint)ConsoleKey.RightArrow;
   public static bool Move(uint key, int time) {
     Keyboard.I((uint)ConsoleKey.RightArrow, F);
     Keyboard.I((uint)ConsoleKey.LeftArrow, F);
     Keyboard.I((uint)ConsoleKey.DownArrow, F);
     Keyboard.I((uint)ConsoleKey.UpArrow, F);
     Keyboard.I(164, F);
-    move = T switch {
-      var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.RightArrow,
-      _ => (uint)ConsoleKey.LeftArrow,
-    };
     return Keyboard.Hold(key, time);
   }
 
-  public static bool Held(uint key) {
+  public static bool IsHeld(uint key) {
     return held.ContainsKey(key) && held[key] == T;
   }
 
