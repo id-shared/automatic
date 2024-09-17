@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -38,25 +39,18 @@ class Program {
   public static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
     return T switch {
-      var _ when key == 0x01 => await Stop(async (uint key) => {
-        int time = 4;
-        Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
-        Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
-        Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
-        Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
-        Keyboard.Hold(162, time);
-        await Task.Delay(time);
-        return key;
-      }, key),
+      var _ when key == 0x01 => await Hold(key, 240),
       _ => F,
     };
   }
 
-  public static async Task<bool> Stop(Func<uint, Task<uint>> func, uint key) {
-    return T switch {
-      var _ when Held(key) == T => await Stop(func, await func(key)),
-      _ => T,
-    };
+  public static async Task<bool> Hold(uint key, int time) {
+    Halt((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, time);
+    Halt((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, time);
+    Halt((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, time);
+    Halt((uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, time);
+    Keyboard.I((uint)ConsoleKey.V, T);
+    return T;
   }
 
   public static async Task<bool> Halt(uint key_1, uint key, int time) {
@@ -76,6 +70,7 @@ class Program {
 
   public static uint move = (uint)ConsoleKey.RightArrow;
   public static bool Move(uint key, int time) {
+    Keyboard.I((uint)ConsoleKey.V, F);
     move = T switch {
       var _ when key == (uint)ConsoleKey.LeftArrow => (uint)ConsoleKey.RightArrow,
       _ => (uint)ConsoleKey.LeftArrow,

@@ -10,11 +10,11 @@ class Keyboard {
 
   public static bool Hold(uint key, int time) {
     I(key, T);
-    _ = new System.Threading.Timer(_ => Keyboard.I(key, F), null, time, Timeout.Infinite);
+    _ = new System.Threading.Timer(_ => I(key, F), null, time, Timeout.Infinite);
     return T;
   }
 
-  public static uint I(uint key, bool is_pressed) {
+  public static bool I(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
     inputs[0].type = INPUT_KEYBOARD;
@@ -26,7 +26,9 @@ class Keyboard {
       dwExtraInfo = IntPtr.Zero
     };
 
-    return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+
+    return T;
   }
 
   private const uint INPUT_KEYBOARD = 1;
