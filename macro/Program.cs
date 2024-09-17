@@ -48,12 +48,12 @@ class Program {
   public static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
     return T switch {
-      var _ when key == 0x01 => await Stop(240),
+      var _ when key == 0x01 => await Stop(),
       _ => F,
     };
   }
 
-  public static async Task<bool> Stop(int time) {
+  public static async Task<bool> Stop() {
     Hold((uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);
     Hold((uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow);
     Hold((uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow);
