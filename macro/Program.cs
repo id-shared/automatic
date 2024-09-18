@@ -4,7 +4,6 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -31,7 +30,10 @@ class Program {
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == 0x01 => T,
+      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
+      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
+      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
       _ => F,
     };
   }
@@ -45,19 +47,19 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    Move(1, (uint)ConsoleKey.RightArrow, key);
-    //Hold(key, 162, 10);
+    await Move(1, (uint)ConsoleKey.RightArrow, key);
+    await Hold(1, key, 162);
     return T;
   }
 
-  public static async Task<bool> Hold(uint key_1, uint key, int time) {
+  public static async Task<bool> Hold(int time, uint key_1, uint key) {
     if (IsHeld(key_1)) {
       Keyboard.IO(key, T);
       await Task.Delay(time);
       return await Hold(
+        time,
         key_1,
-        key,
-        time
+        key
       );
     } else {
       Keyboard.IO(key, F);
@@ -71,7 +73,7 @@ class Program {
         Keyboard.IO(key_1, T);
         await Task.Delay(50);
         Keyboard.IO(key_1, F);
-        await Task.Delay(50);
+        await Task.Delay(40);
         return await Move(
           attempt + 1,
           key_1,
@@ -271,14 +273,6 @@ class Program {
 //    return T;
 //  }
 //}
-
-//T switch {
-//  var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-//  var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-//  var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-//  var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
-//  _ => F,
-//};
 
 //public static uint move = (uint)ConsoleKey.RightArrow;
 //move = T switch {
