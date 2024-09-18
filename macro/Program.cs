@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -21,21 +22,12 @@ class Program {
 
   public static async Task<bool> OnD2Down(uint key) {
     held[key] = T;
-    return T switch {
-      var _ when key == 0x01 => T,
-      _ => F,
-    };
+    return T;
   }
 
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
-    return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Hold((uint)ConsoleKey.LeftArrow, 100),
-      var _ when key == (uint)ConsoleKey.W => Keyboard.Hold((uint)ConsoleKey.DownArrow, 100),
-      var _ when key == (uint)ConsoleKey.S => Keyboard.Hold((uint)ConsoleKey.UpArrow, 100),
-      _ => F,
-    };
+    return T;
   }
 
   public static async Task<bool> OnD1Down(uint key) {
@@ -242,6 +234,14 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
+
+//T switch {
+//  var _ when key == (uint)ConsoleKey.A => Keyboard.Held((uint)ConsoleKey.RightArrow, 100),
+//  var _ when key == (uint)ConsoleKey.D => Keyboard.Held((uint)ConsoleKey.LeftArrow, 100),
+//  var _ when key == (uint)ConsoleKey.W => Keyboard.Held((uint)ConsoleKey.DownArrow, 100),
+//  var _ when key == (uint)ConsoleKey.S => Keyboard.Held((uint)ConsoleKey.UpArrow, 100),
+//  _ => F,
+//};
 
 //Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, 1);
 //Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, 1);
