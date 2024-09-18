@@ -44,8 +44,8 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    await Keyboard.Hold((uint)ConsoleKey.RightArrow, 100);
-    await Keyboard.Hold((uint)ConsoleKey.LeftArrow, 33);
+    await Keyboard.Hold((uint)ConsoleKey.RightArrow, 48);
+    await Keyboard.Hold((uint)ConsoleKey.LeftArrow, 12);
     Held(key, 164);
 
     Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);

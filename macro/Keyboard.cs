@@ -10,7 +10,7 @@ class Keyboard {
 
   public static async Task<bool> Hold(uint key, int time) {
     IO(key, T);
-    await Task.Delay(33);
+    await Task.Delay(time);
     IO(key, F);
     return T;
   }
