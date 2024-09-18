@@ -45,7 +45,7 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    Move((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.LeftArrow, key);
+    Move(1, (uint)ConsoleKey.RightArrow, key);
     //Hold(key, 162, 10);
     return T;
   }
@@ -65,17 +65,21 @@ class Program {
     }
   }
 
-  public static async Task<bool> Move(uint key_2, uint key_1, uint key) {
-    if (IsHeld(key)) {
-      Keyboard.IO(key_2, T);
-      await Task.Delay(50);
-      Keyboard.IO(key_2, F);
-      await Task.Delay(50);
-      return await Move(
-        key_2,
-        key_1,
-        key
-      );
+  public static async Task<bool> Move(int attempt, uint key_1, uint key) {
+    if (attempt < 5) {
+      if (IsHeld(key)) {
+        Keyboard.IO(key_1, T);
+        await Task.Delay(50);
+        Keyboard.IO(key_1, F);
+        await Task.Delay(50);
+        return await Move(
+          attempt + 1,
+          key_1,
+          key
+        );
+      } else {
+        return T;
+      }
     } else {
       return T;
     }
