@@ -44,35 +44,34 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    await Keyboard.Hold((uint)ConsoleKey.RightArrow, 48);
-    await Keyboard.Hold((uint)ConsoleKey.LeftArrow, 12);
-    Held(key, 164);
-
-    Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);
-    Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow);
-    Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow);
-    Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow);
-    Held(key, 162);
+    Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, 1);
+    Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, 1);
+    Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, 1);
+    Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, 1);
+    Held(key, 162, 10);
+    Held(key, 160, 10);
     return T;
   }
 
-  public static async Task<bool> Hold(uint key_2, uint key_1, uint key) {
+  public static async Task<bool> Hold(uint key_2, uint key_1, uint key, int time) {
     if (IsHeld(key_2)) {
       if (IsHeld(key_1)) {
         Keyboard.IO(key, T);
-        await Task.Delay(1);
+        await Task.Delay(time);
         return await Hold(
           key_2,
           key_1,
-          key
+          key,
+          time
         );
       } else {
         Keyboard.IO(key, F);
-        await Task.Delay(1);
+        await Task.Delay(time);
         return await Hold(
           key_2,
           key_1,
-          key
+          key,
+          time
         );
       }
     } else {
@@ -81,13 +80,14 @@ class Program {
     }
   }
 
-  public static async Task<bool> Held(uint key_1, uint key) {
+  public static async Task<bool> Held(uint key_1, uint key, int time) {
     if (IsHeld(key_1)) {
       Keyboard.IO(key, T);
-      await Task.Delay(1);
+      await Task.Delay(time);
       return await Held(
         key_1,
-        key
+        key,
+        time
       );
     } else {
       Keyboard.IO(key, F);
