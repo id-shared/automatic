@@ -42,20 +42,21 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    await Move(1, (uint)ConsoleKey.RightArrow, key);
+    await Move(1, 60, (uint)ConsoleKey.RightArrow, key);
     await Hold(1, key, 162);
     return T;
   }
 
-  public static async Task<bool> Move(int redo, uint key_1, uint key) {
+  public static async Task<bool> Move(int redo, int time, uint key_1, uint key) {
     if (redo <= 3) {
       if (IsHeld(key)) {
         Keyboard.IO(key_1, T);
-        await Task.Delay(60);
+        await Task.Delay(time);
         Keyboard.IO(key_1, F);
-        await Task.Delay(60);
+        await Task.Delay(time);
         return await Move(
           redo + 1,
+          time,
           key_1,
           key
         );
