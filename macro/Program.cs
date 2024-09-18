@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -44,53 +45,37 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, 1);
-    Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, 1);
-    Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, 1);
-    Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, 1);
-    Held(key, 162, 10);
-    Held(key, 160, 10);
+    Move(key, (uint)ConsoleKey.RightArrow);
+    //Hold(key, 162, 10);
     return T;
   }
 
-  public static async Task<bool> Hold(uint key_2, uint key_1, uint key, int time) {
-    if (IsHeld(key_2)) {
-      if (IsHeld(key_1)) {
-        Keyboard.IO(key, T);
-        await Task.Delay(time);
-        return await Hold(
-          key_2,
-          key_1,
-          key,
-          time
-        );
-      } else {
-        Keyboard.IO(key, F);
-        await Task.Delay(time);
-        return await Hold(
-          key_2,
-          key_1,
-          key,
-          time
-        );
-      }
-    } else {
-      Keyboard.IO(key, F);
-      return T;
-    }
-  }
-
-  public static async Task<bool> Held(uint key_1, uint key, int time) {
+  public static async Task<bool> Hold(uint key_1, uint key, int time) {
     if (IsHeld(key_1)) {
       Keyboard.IO(key, T);
       await Task.Delay(time);
-      return await Held(
+      return await Hold(
         key_1,
         key,
         time
       );
     } else {
       Keyboard.IO(key, F);
+      return T;
+    }
+  }
+
+  public static async Task<bool> Move(uint key_1, uint key) {
+    if (IsHeld(key_1)) {
+      Keyboard.IO(key, T);
+      await Task.Delay(100);
+      Keyboard.IO(key, F);
+      await Task.Delay(50);
+      return await Move(
+        key_1,
+        key
+      );
+    } else {
       return T;
     }
   }
@@ -104,7 +89,6 @@ class Program {
   }
 
   public static bool Step() {
-    //Keyboard.IO(162, F);
     return T;
   }
 
@@ -251,6 +235,37 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
+
+//Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, 1);
+//Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, 1);
+//Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, 1);
+//Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, 1);
+
+//public static async Task<bool> Hold(uint key_2, uint key_1, uint key, int time) {
+//  if (IsHeld(key_2)) {
+//    if (IsHeld(key_1)) {
+//      Keyboard.IO(key, T);
+//      await Task.Delay(time);
+//      return await Hold(
+//        key_2,
+//        key_1,
+//        key,
+//        time
+//      );
+//    } else {
+//      await Task.Delay(time);
+//      return await Hold(
+//        key_2,
+//        key_1,
+//        key,
+//        time
+//      );
+//    }
+//  } else {
+//    Keyboard.IO(key, F);
+//    return T;
+//  }
+//}
 
 //T switch {
 //  var _ when key == (uint)ConsoleKey.A => Keyboard.Hold((uint)ConsoleKey.RightArrow, 100),
