@@ -44,30 +44,15 @@ class Program {
     return T;
   }
 
-  public static async Task<bool> Hold(int time, uint key_1, uint key) {
-    if (IsHeld(key_1)) {
-      Keyboard.IO(key, T);
-      await Task.Delay(time);
-      return await Hold(
-        time,
-        key_1,
-        key
-      );
-    } else {
-      Keyboard.IO(key, F);
-      return T;
-    }
-  }
-
-  public static async Task<bool> Move(int attempt, uint key_1, uint key) {
-    if (attempt < 5) {
+  public static async Task<bool> Move(int redo, uint key_1, uint key) {
+    if (redo < 5) {
       if (IsHeld(key)) {
         Keyboard.IO(key_1, T);
-        await Task.Delay(50);
+        await Task.Delay(25);
         Keyboard.IO(key_1, F);
-        await Task.Delay(40);
+        await Task.Delay(25);
         return await Move(
-          attempt + 1,
+          redo + 1,
           key_1,
           key
         );
@@ -75,6 +60,30 @@ class Program {
         return T;
       }
     } else {
+      return T;
+    }
+  }
+
+  public static async Task<bool> Hold(int time, uint key_1, uint key) {
+    if (IsHeld(key_1)) {
+      if (IsHeld(key)) {
+        await Task.Delay(time);
+        return await Hold(
+          time,
+          key_1,
+          key
+        );
+      } else {
+        Keyboard.IO(key, T);
+        await Task.Delay(time);
+        return await Hold(
+          time,
+          key_1,
+          key
+        );
+      }
+    } else {
+      Keyboard.IO(key, F);
       return T;
     }
   }
