@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -69,23 +70,36 @@ class Program {
   }
 
   public static async Task<bool> Hold(int time, uint key_1, uint key) {
-    if (IsHeld(key_1)) {
-      if (IsHeld(key)) {
+    if (IsHeld(key)) {
+      if (IsHeld(key_1)) {
         await Task.Delay(time);
         return await Hold(
           time,
-          key_1,
-          key
+          key,
+          key_1
         );
       } else {
-        Keyboard.IO(key, T);
+        Keyboard.IO(key_1, T);
         await Task.Delay(time);
         return await Hold(
           time,
-          key_1,
-          key
+          key,
+          key_1
         );
       }
+    } else {
+      Keyboard.IO(key_1, F);
+      return T;
+    }
+  }
+
+  public static async Task<bool> Held(uint key_1, uint key) {
+    if (IsHeld(key_1)) {
+      Keyboard.IO(key, T);
+      return await Held(
+        key_1,
+        key
+      );
     } else {
       Keyboard.IO(key, F);
       return T;
@@ -252,32 +266,6 @@ class Program {
 //Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, 1);
 //Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, 1);
 //Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, 1);
-
-//public static async Task<bool> Hold(uint key_2, uint key_1, uint key, int time) {
-//  if (IsHeld(key_2)) {
-//    if (IsHeld(key_1)) {
-//      Keyboard.IO(key, T);
-//      await Task.Delay(time);
-//      return await Hold(
-//        key_2,
-//        key_1,
-//        key,
-//        time
-//      );
-//    } else {
-//      await Task.Delay(time);
-//      return await Hold(
-//        key_2,
-//        key_1,
-//        key,
-//        time
-//      );
-//    }
-//  } else {
-//    Keyboard.IO(key, F);
-//    return T;
-//  }
-//}
 
 //public static uint move = (uint)ConsoleKey.RightArrow;
 //move = T switch {
