@@ -8,14 +8,7 @@ class Keyboard {
     return (GetKeyState(key) & 0x8000) != 0;
   }
 
-  public static async Task<bool> Hold(uint key, int time) {
-    IO(key, T);
-    await Task.Delay(time);
-    IO(key, F);
-    return T;
-  }
-
-  public static bool Held(uint key, int time) {
+  public static bool Hold(uint key, int time) {
     IO(key, T);
     _ = new System.Threading.Timer(_ => IO(key, F), null, time, Timeout.Infinite);
     return T;
