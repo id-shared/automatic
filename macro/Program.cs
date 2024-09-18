@@ -48,7 +48,7 @@ class Program {
     await Task.Delay(100);
     Keyboard.IO((uint)ConsoleKey.RightArrow, F);
     Keyboard.IO((uint)ConsoleKey.LeftArrow, T);
-    await Task.Delay(25);
+    await Task.Delay(33);
     Keyboard.IO((uint)ConsoleKey.LeftArrow, F);
     Held(key, 164);
 
