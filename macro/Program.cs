@@ -28,8 +28,8 @@ class Program {
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.Held((uint)ConsoleKey.RightArrow, 100),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.Held((uint)ConsoleKey.LeftArrow, 100),
+      var _ when key == (uint)ConsoleKey.A => await Held((uint)ConsoleKey.RightArrow, 0x01),
+      var _ when key == (uint)ConsoleKey.D => await Held((uint)ConsoleKey.LeftArrow, 0x01),
       _ => F,
     };
   }
@@ -43,8 +43,10 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
-    await Move(1, 60, (uint)ConsoleKey.RightArrow, key);
-    await Hold(1, key, 162);
+    Held((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.A);
+    Held((uint)ConsoleKey.LeftArrow, (uint)ConsoleKey.D);
+    //await Move(1, 60, (uint)ConsoleKey.RightArrow, key);
+    //await Hold(1, 162, key);
     return T;
   }
 
@@ -69,40 +71,11 @@ class Program {
     }
   }
 
-  public static async Task<bool> Hold(int time, uint key_1, uint key) {
-    if (IsHeld(key)) {
-      if (IsHeld(key_1)) {
-        await Task.Delay(time);
-        return await Hold(
-          time,
-          key,
-          key_1
-        );
-      } else {
-        Keyboard.IO(key_1, T);
-        await Task.Delay(time);
-        return await Hold(
-          time,
-          key,
-          key_1
-        );
-      }
-    } else {
-      Keyboard.IO(key_1, F);
-      return T;
-    }
-  }
-
   public static async Task<bool> Held(uint key_1, uint key) {
-    if (IsHeld(key_1)) {
-      Keyboard.IO(key, T);
-      return await Held(
-        key_1,
-        key
-      );
+    if (IsHeld(key)) {
+      return Keyboard.IO(key_1, T);
     } else {
-      Keyboard.IO(key, F);
-      return T;
+      return Keyboard.IO(key_1, F);
     }
   }
 
