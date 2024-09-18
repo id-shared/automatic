@@ -44,11 +44,19 @@ class Program {
   }
 
   public static async Task<bool> Stop(uint key) {
+    Keyboard.IO((uint)ConsoleKey.RightArrow, T);
+    await Task.Delay(100);
+    Keyboard.IO((uint)ConsoleKey.RightArrow, F);
+    Keyboard.IO((uint)ConsoleKey.LeftArrow, T);
+    await Task.Delay(25);
+    Keyboard.IO((uint)ConsoleKey.LeftArrow, F);
+    Held(key, 164);
+
     Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow);
     Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow);
     Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow);
     Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow);
-    Keyboard.IO(162, T);
+    Held(key, 162);
     return T;
   }
 
@@ -77,6 +85,20 @@ class Program {
     }
   }
 
+  public static async Task<bool> Held(uint key_1, uint key) {
+    if (IsHeld(key_1)) {
+      Keyboard.IO(key, T);
+      await Task.Delay(1);
+      return await Held(
+        key_1,
+        key
+      );
+    } else {
+      Keyboard.IO(key, F);
+      return T;
+    }
+  }
+
   public static async Task<bool> OnD1Up(uint key) {
     held[key] = F;
     return T switch {
@@ -86,7 +108,7 @@ class Program {
   }
 
   public static bool Step() {
-    Keyboard.IO(162, F);
+    //Keyboard.IO(162, F);
     return T;
   }
 
