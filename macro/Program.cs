@@ -4,7 +4,6 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -211,20 +210,3 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
-
-//Hold(key, (uint)ConsoleKey.A, (uint)ConsoleKey.RightArrow, 1);
-//Hold(key, (uint)ConsoleKey.D, (uint)ConsoleKey.LeftArrow, 1);
-//Hold(key, (uint)ConsoleKey.W, (uint)ConsoleKey.DownArrow, 1);
-//Hold(key, (uint)ConsoleKey.S, (uint)ConsoleKey.UpArrow, 1);
-
-//public static uint move = (uint)ConsoleKey.RightArrow;
-//move = T switch {
-//  var _ when key == (uint)ConsoleKey.A => (uint)ConsoleKey.RightArrow,
-//  var _ when key == (uint)ConsoleKey.D => (uint)ConsoleKey.LeftArrow,
-//  _ => move,
-//};
-
-//T switch {
-//  var _ when key == 0x01 => Move(move, 240),
-//  _ => F,
-//};
