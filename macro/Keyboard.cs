@@ -9,9 +9,9 @@ class Keyboard {
   }
 
   public static async Task<bool> Hold(uint key, int time) {
-    Keyboard.IO((uint)ConsoleKey.LeftArrow, T);
+    IO(key, T);
     await Task.Delay(33);
-    Keyboard.IO((uint)ConsoleKey.LeftArrow, F);
+    IO(key, F);
     return T;
   }
 
