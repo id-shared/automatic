@@ -4,7 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -27,51 +27,25 @@ class Program {
 
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
-    return T switch {
-      var _ when key == (uint)ConsoleKey.A => await Held((uint)ConsoleKey.RightArrow, 0x01),
-      var _ when key == (uint)ConsoleKey.D => await Held((uint)ConsoleKey.LeftArrow, 0x01),
-      _ => F,
-    };
+    return T;
   }
 
   public static async Task<bool> OnD1Down(uint key) {
     held[key] = T;
     return T switch {
-      var _ when key == 0x01 => await Stop(key),
+      var _ when key == 0x01 => await D11Down(key),
       _ => F,
     };
   }
 
-  public static async Task<bool> Stop(uint key) {
-    Held((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.A);
-    Held((uint)ConsoleKey.LeftArrow, (uint)ConsoleKey.D);
-    //await Move(1, 60, (uint)ConsoleKey.RightArrow, key);
-    //await Hold(1, 162, key);
+  public static async Task<bool> D11Down(uint key) {
+    Stop((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.A);
+    Stop((uint)ConsoleKey.LeftArrow, (uint)ConsoleKey.D);
+    Keyboard.IO(162, T);
     return T;
   }
 
-  public static async Task<bool> Move(int redo, int time, uint key_1, uint key) {
-    if (redo <= 3) {
-      if (IsHeld(key)) {
-        Keyboard.IO(key_1, T);
-        await Task.Delay(time);
-        Keyboard.IO(key_1, F);
-        await Task.Delay(time);
-        return await Move(
-          redo + 1,
-          time,
-          key_1,
-          key
-        );
-      } else {
-        return T;
-      }
-    } else {
-      return T;
-    }
-  }
-
-  public static async Task<bool> Held(uint key_1, uint key) {
+  public static async Task<bool> Stop(uint key_1, uint key) {
     if (IsHeld(key)) {
       return Keyboard.IO(key_1, T);
     } else {
@@ -82,12 +56,15 @@ class Program {
   public static async Task<bool> OnD1Up(uint key) {
     held[key] = F;
     return T switch {
-      var _ when key == 0x01 => Step(),
+      var _ when key == 0x01 => D11Up(),
       _ => F,
     };
   }
 
-  public static bool Step() {
+  public static bool D11Up() {
+    Keyboard.IO((uint)ConsoleKey.RightArrow, F);
+    Keyboard.IO((uint)ConsoleKey.LeftArrow, F);
+    Keyboard.IO(162, F);
     return T;
   }
 
