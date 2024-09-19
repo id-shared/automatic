@@ -4,7 +4,6 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using Microsoft.VisualBasic.Devices;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -16,30 +15,30 @@ class Program {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  public static ConcurrentDictionary<uint, bool> held = new() { };
+  public static ConcurrentDictionary<uint, bool> Held = new() { };
   public static readonly bool F = false;
   public static readonly bool T = true;
 
   public static async Task<bool> OnD2Down(uint key) {
-    held[key] = T;
+    Held[key] = T;
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => await OnHeld((uint)ConsoleKey.RightArrow, 0x01),
-      var _ when key == (uint)ConsoleKey.D => await OnHeld((uint)ConsoleKey.LeftArrow, 0x01),
+      var _ when key == Key.A => await OnHeld(Arrow.R, 0x01),
+      var _ when key == Key.D => await OnHeld(Arrow.L, 0x01),
       _ => F,
     };
   }
 
   public static async Task<bool> OnD2Up(uint key) {
-    held[key] = F;
+    Held[key] = F;
     return T switch {
-      var _ when key == (uint)ConsoleKey.A => Keyboard.IO((uint)ConsoleKey.RightArrow, F),
-      var _ when key == (uint)ConsoleKey.D => Keyboard.IO((uint)ConsoleKey.LeftArrow, F),
+      var _ when key == Key.A => Keyboard.IO(Arrow.R, F),
+      var _ when key == Key.D => Keyboard.IO(Arrow.L, F),
       _ => F,
     };
   }
 
   public static async Task<bool> OnD1Down(uint key) {
-    held[key] = T;
+    Held[key] = T;
     return T switch {
       var _ when key == 0x01 => await D11Down(key),
       _ => F,
@@ -47,9 +46,10 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
-    OnHeld((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.A);
-    OnHeld((uint)ConsoleKey.LeftArrow, (uint)ConsoleKey.D);
-    await Task.Delay(200);
+    OnHeld(Arrow.R, Key.A);
+    OnHeld(Arrow.L, Key.D);
+    Keyboard.IO(Arrow.R, T);
+    Keyboard.IO(Arrow.R, F);
     OnHeld(162, key);
     return T;
   }
@@ -63,7 +63,7 @@ class Program {
   }
 
   public static async Task<bool> OnD1Up(uint key) {
-    held[key] = F;
+    Held[key] = F;
     return T switch {
       var _ when key == 0x01 => D11Up(),
       _ => F,
@@ -71,14 +71,14 @@ class Program {
   }
 
   public static bool D11Up() {
-    Keyboard.IO((uint)ConsoleKey.RightArrow, F);
-    Keyboard.IO((uint)ConsoleKey.LeftArrow, F);
+    Keyboard.IO(Arrow.R, F);
+    Keyboard.IO(Arrow.L, F);
     Keyboard.IO(162, F);
     return T;
   }
 
   public static bool IsHeld(uint key) {
-    return held.ContainsKey(key) && held[key] == T;
+    return Held.ContainsKey(key) && Held[key] == T;
   }
 
   public static IntPtr SetHook(Delegate proc, uint hookType) {
