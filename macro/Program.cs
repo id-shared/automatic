@@ -4,6 +4,7 @@
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using Microsoft.VisualBasic.Devices;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -21,12 +22,20 @@ class Program {
 
   public static async Task<bool> OnD2Down(uint key) {
     held[key] = T;
-    return T;
+    return T switch {
+      var _ when key == (uint)ConsoleKey.A => await OnHeld((uint)ConsoleKey.RightArrow, 0x01),
+      var _ when key == (uint)ConsoleKey.D => await OnHeld((uint)ConsoleKey.LeftArrow, 0x01),
+      _ => F,
+    };
   }
 
   public static async Task<bool> OnD2Up(uint key) {
     held[key] = F;
-    return T;
+    return T switch {
+      var _ when key == (uint)ConsoleKey.A => Keyboard.IO((uint)ConsoleKey.RightArrow, F),
+      var _ when key == (uint)ConsoleKey.D => Keyboard.IO((uint)ConsoleKey.LeftArrow, F),
+      _ => F,
+    };
   }
 
   public static async Task<bool> OnD1Down(uint key) {
@@ -38,13 +47,14 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
-    Stop((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.A);
-    Stop((uint)ConsoleKey.LeftArrow, (uint)ConsoleKey.D);
-    Keyboard.IO(162, T);
+    OnHeld((uint)ConsoleKey.RightArrow, (uint)ConsoleKey.A);
+    OnHeld((uint)ConsoleKey.LeftArrow, (uint)ConsoleKey.D);
+    await Task.Delay(200);
+    OnHeld(162, key);
     return T;
   }
 
-  public static async Task<bool> Stop(uint key_1, uint key) {
+  public static async Task<bool> OnHeld(uint key_1, uint key) {
     if (IsHeld(key)) {
       return Keyboard.IO(key_1, T);
     } else {
