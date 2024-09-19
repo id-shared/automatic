@@ -48,8 +48,7 @@ class Program {
   public static async Task<bool> D11Down(uint key) {
     AtHeld(Arrow.R, Key.A);
     AtHeld(Arrow.L, Key.D);
-    await Task.Delay(100);
-    AtHeld(Extra.C, key);
+    Hold(320, Extra.C);
     return T;
   }
 
@@ -59,6 +58,14 @@ class Program {
     } else {
       return Keyboard.IO(key_1, F);
     }
+  }
+
+  public static async Task<bool> Hold(int time, uint key) {
+    Keyboard.IO(key, T);
+    await Task.Delay(time);
+    Keyboard.IO(key, F);
+
+    return T;
   }
 
   public static async Task<bool> OnD1Up(uint key) {
@@ -72,7 +79,6 @@ class Program {
   public static bool D11Up() {
     Keyboard.IO(Arrow.R, F);
     Keyboard.IO(Arrow.L, F);
-    Keyboard.IO(Extra.C, F);
     return T;
   }
 
