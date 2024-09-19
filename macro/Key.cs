@@ -1,4 +1,9 @@
-﻿class Arrow {
+﻿
+class Extra {
+  public static readonly uint C = 162;
+}
+
+class Arrow {
   public static readonly uint U = (uint)ConsoleKey.UpArrow;
   public static readonly uint R = (uint)ConsoleKey.RightArrow;
   public static readonly uint L = (uint)ConsoleKey.LeftArrow;
