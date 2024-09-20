@@ -22,6 +22,8 @@ class Program {
   public static async Task<bool> OnD2Down(uint key) {
     Held[key] = T;
     return T switch {
+      var _ when key == Key.A => await AtHeld(Arrow.R, 0x01),
+      var _ when key == Key.D => await AtHeld(Arrow.L, 0x01),
       _ => T,
     };
   }
@@ -29,6 +31,8 @@ class Program {
   public static async Task<bool> OnD2Up(uint key) {
     Held[key] = F;
     return T switch {
+      var _ when key == Key.A => Keyboard.IO(Arrow.R, F),
+      var _ when key == Key.D => Keyboard.IO(Arrow.L, F),
       _ => T,
     };
   }
@@ -42,6 +46,8 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
+    AtHeld(Arrow.R, Key.A);
+    AtHeld(Arrow.L, Key.D);
     Hold(320, Extra.C);
     return T;
   }
@@ -71,6 +77,8 @@ class Program {
   }
 
   public static bool D11Up() {
+    Keyboard.IO(Arrow.R, F);
+    Keyboard.IO(Arrow.L, F);
     Keyboard.IO(Extra.C, F);
     return T;
   }
@@ -218,12 +226,3 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
-
-//var _ when key == Key.A => await AtHeld(Arrow.R, 0x01),
-//var _ when key == Key.D => await AtHeld(Arrow.L, 0x01),
-//var _ when key == Key.A => Keyboard.IO(Arrow.R, F),
-//var _ when key == Key.D => Keyboard.IO(Arrow.L, F),
-//AtHeld(Arrow.R, Key.A);
-//AtHeld(Arrow.L, Key.D);
-//Keyboard.IO(Arrow.R, F);
-//Keyboard.IO(Arrow.L, F);
