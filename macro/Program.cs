@@ -42,25 +42,13 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
-    AtHeld(320, Extra.C, key);
-    AsHeld(Arrow.R, Key.A);
-    AsHeld(Arrow.L, Key.D);
+    AtHeld(Arrow.R, Key.A);
+    AtHeld(Arrow.L, Key.D);
+    AtHeld(Extra.C, key);
     return T;
   }
 
-  public static async Task<bool> AtHeld(int time, uint key_1, uint key) {
-    if (IsHeld(key)) {
-      Keyboard.IO(key_1, T);
-      await Task.Delay(time);
-      Keyboard.IO(key_1, F);
-
-      return T;
-    } else {
-      return T;
-    }
-  }
-
-  public static async Task<bool> AsHeld(uint key_1, uint key) {
+  public static async Task<bool> AtHeld(uint key_1, uint key) {
     if (IsHeld(key)) {
       return Keyboard.IO(key_1, T);
     } else {
