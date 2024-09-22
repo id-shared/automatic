@@ -42,9 +42,9 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
-    AtHeld(Arrow.R, Key.A);
-    AtHeld(Arrow.L, Key.D);
-    AtHeld(Extra.C, key);
+    AtHeld(KeyA.R, Key.A);
+    AtHeld(KeyA.L, Key.D);
+    AtHeld(KeyE.C, key);
     return T;
   }
 
@@ -65,9 +65,9 @@ class Program {
   }
 
   public static bool D11Up() {
-    Keyboard.IO(Arrow.R, F);
-    Keyboard.IO(Arrow.L, F);
-    Keyboard.IO(Extra.C, F);
+    Keyboard.IO(KeyA.R, F);
+    Keyboard.IO(KeyA.L, F);
+    Keyboard.IO(KeyE.C, F);
     return T;
   }
 
