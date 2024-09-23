@@ -50,6 +50,7 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
+    await Task.Delay(100);
     AtHeld(KeyA.D, Key.W);
     AtHeld(KeyA.U, Key.S);
     AtHeld(KeyA.R, Key.A);
@@ -59,11 +60,10 @@ class Program {
   }
 
   public static async Task<bool> AtHeld(uint key_1, uint key) {
-    if (IsHeld(key)) {
-      return Keyboard.IO(key_1, T);
-    } else {
-      return Keyboard.IO(key_1, F);
-    }
+    return T switch {
+      var _ when IsHeld(key) => Keyboard.IO(key_1, T),
+      _ => T,
+    };
   }
 
   public static async Task<bool> OnD1Up(uint key) {
