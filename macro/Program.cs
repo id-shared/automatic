@@ -46,9 +46,9 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
+    await Task.Delay(100);
     AtHeld(KeyA.R, Key.A);
     AtHeld(KeyA.L, Key.D);
-    await Task.Delay(100);
     AtHeld(KeyE.C, key);
     return T;
   }
