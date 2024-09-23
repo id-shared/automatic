@@ -22,8 +22,6 @@ class Program {
   public static async Task<bool> OnD2Down(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when key == Key.W => await AtHeld(KeyA.D, KeyM.L),
-      var _ when key == Key.S => await AtHeld(KeyA.U, KeyM.L),
       var _ when key == Key.A => await AtHeld(KeyA.R, KeyM.L),
       var _ when key == Key.D => await AtHeld(KeyA.L, KeyM.L),
       _ => T,
@@ -33,8 +31,6 @@ class Program {
   public static async Task<bool> OnD2Up(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when key == Key.W => Keyboard.IO(KeyA.D, F),
-      var _ when key == Key.S => Keyboard.IO(KeyA.U, F),
       var _ when key == Key.A => Keyboard.IO(KeyA.R, F),
       var _ when key == Key.D => Keyboard.IO(KeyA.L, F),
       _ => T,
@@ -50,11 +46,9 @@ class Program {
   }
 
   public static async Task<bool> D11Down(uint key) {
-    await Task.Delay(100);
-    AtHeld(KeyA.D, Key.W);
-    AtHeld(KeyA.U, Key.S);
     AtHeld(KeyA.R, Key.A);
     AtHeld(KeyA.L, Key.D);
+    await Task.Delay(100);
     AtHeld(KeyE.C, key);
     return T;
   }
@@ -75,8 +69,6 @@ class Program {
   }
 
   public static bool D11Up() {
-    Keyboard.IO(KeyA.D, F);
-    Keyboard.IO(KeyA.U, F);
     Keyboard.IO(KeyA.R, F);
     Keyboard.IO(KeyA.L, F);
     Keyboard.IO(KeyE.C, F);
