@@ -22,10 +22,10 @@ class Program {
   public static async Task<bool> OnD2Down(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when key == Key.W => await AtHeld(KeyA.D, 0x01),
-      var _ when key == Key.S => await AtHeld(KeyA.U, 0x01),
-      var _ when key == Key.A => await AtHeld(KeyA.R, 0x01),
-      var _ when key == Key.D => await AtHeld(KeyA.L, 0x01),
+      var _ when key == Key.W => await AtHeld(KeyA.D, KeyM.L),
+      var _ when key == Key.S => await AtHeld(KeyA.U, KeyM.L),
+      var _ when key == Key.A => await AtHeld(KeyA.R, KeyM.L),
+      var _ when key == Key.D => await AtHeld(KeyA.L, KeyM.L),
       _ => T,
     };
   }
@@ -44,7 +44,7 @@ class Program {
   public static async Task<bool> OnD1Down(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when key == 0x01 => await D11Down(key),
+      var _ when key == KeyM.L => await D11Down(key),
       _ => T,
     };
   }
@@ -69,7 +69,7 @@ class Program {
   public static async Task<bool> OnD1Up(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when key == 0x01 => D11Up(),
+      var _ when key == KeyM.L => D11Up(),
       _ => T,
     };
   }
@@ -132,10 +132,10 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_LBUTTONDOWN:
-          OnD1Down(0x01);
+          OnD1Down(KeyM.L);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_LBUTTONUP:
-          OnD1Up(0x01);
+          OnD1Up(KeyM.L);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONDOWN:
           OnD1Down(0x02);

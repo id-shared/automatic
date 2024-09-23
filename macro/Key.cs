@@ -1,4 +1,7 @@
-﻿
+﻿class KeyM {
+  public static readonly uint L = 0x01;
+}
+
 class KeyE {
   public static readonly uint C = 162;
 }
