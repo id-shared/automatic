@@ -1,7 +1,4 @@
-﻿#pragma warning disable CS4014
-#pragma warning disable CS1998
-
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
 
@@ -19,54 +16,61 @@ class Program {
   public static readonly bool F = false;
   public static readonly bool T = true;
 
-  public static async Task<bool> OnD2Down(uint key) {
-    Held[key] = T;
-    return T switch {
-      var _ when key == Key.W => await AtHeld(KeyA.D, KeyM.L),
-      var _ when key == Key.S => await AtHeld(KeyA.U, KeyM.L),
-      var _ when key == Key.A => await AtHeld(KeyA.R, KeyM.L),
-      var _ when key == Key.D => await AtHeld(KeyA.L, KeyM.L),
-      _ => T,
-    };
-  }
+  public static bool OnD2U(uint key) {
+    Task.Run(() => {
+      Held[key] = F;
+      return T switch {
+        var _ when key == Key.W => Keyboard.IO(KeyA.D, F),
+        var _ when key == Key.S => Keyboard.IO(KeyA.U, F),
+        var _ when key == Key.A => Keyboard.IO(KeyA.R, F),
+        var _ when key == Key.D => Keyboard.IO(KeyA.L, F),
+        _ => T,
+      };
+    });
 
-  public static async Task<bool> OnD2Up(uint key) {
-    Held[key] = F;
-    return T switch {
-      var _ when key == Key.W => Keyboard.IO(KeyA.D, F),
-      var _ when key == Key.S => Keyboard.IO(KeyA.U, F),
-      var _ when key == Key.A => Keyboard.IO(KeyA.R, F),
-      var _ when key == Key.D => Keyboard.IO(KeyA.L, F),
-      _ => T,
-    };
-  }
-
-  public static async Task<bool> OnD1Down(uint key) {
-    Held[key] = T;
-    return T switch {
-      var _ when key == KeyM.L => await D11Down(key),
-      _ => T,
-    };
-  }
-
-  public static async Task<bool> D11Down(uint key) {
-    AtHeld(KeyA.D, Key.W);
-    AtHeld(KeyA.U, Key.S);
-    AtHeld(KeyA.R, Key.A);
-    AtHeld(KeyA.L, Key.D);
-    AtHeld(KeyE.C, key);
     return T;
   }
 
-  public static async Task<bool> OnD1Up(uint key) {
-    Held[key] = F;
-    return T switch {
-      var _ when key == KeyM.L => D11Up(),
-      _ => T,
-    };
+  public static bool OnD2D(uint key) {
+    Task.Run(() => {
+      Held[key] = T;
+      return T switch {
+        var _ when key == Key.W => AtHeld(KeyA.D, KeyM.L),
+        var _ when key == Key.S => AtHeld(KeyA.U, KeyM.L),
+        var _ when key == Key.A => AtHeld(KeyA.R, KeyM.L),
+        var _ when key == Key.D => AtHeld(KeyA.L, KeyM.L),
+        _ => T,
+      };
+    });
+
+    return T;
   }
 
-  public static bool D11Up() {
+  public static bool OnD1U(uint key) {
+    Task.Run(() => {
+      Held[key] = F;
+      return T switch {
+        var _ when key == KeyM.L => D11U(),
+        _ => T,
+      };
+    });
+
+    return T;
+  }
+
+  public static bool OnD1D(uint key) {
+    Task.Run(() => {
+      Held[key] = T;
+      return T switch {
+        var _ when key == KeyM.L => D11D(key),
+        _ => T,
+      };
+    });
+
+    return T;
+  }
+
+  public static bool D11U() {
     Keyboard.IO(KeyA.D, F);
     Keyboard.IO(KeyA.U, F);
     Keyboard.IO(KeyA.R, F);
@@ -75,7 +79,16 @@ class Program {
     return T;
   }
 
-  public static async Task<bool> AtHeld(uint key_1, uint key) {
+  public static bool D11D(uint key) {
+    AtHeld(KeyA.D, Key.W);
+    AtHeld(KeyA.U, Key.S);
+    AtHeld(KeyA.R, Key.A);
+    AtHeld(KeyA.L, Key.D);
+    AtHeld(KeyE.C, key);
+    return T;
+  }
+
+  public static bool AtHeld(uint key_1, uint key) {
     return T switch {
       var _ when IsHeld(key) => Keyboard.IO(key_1, T),
       _ => T,
@@ -83,7 +96,7 @@ class Program {
   }
 
   public static bool IsHeld(uint key) {
-    return Held.ContainsKey(key) && Held[key] == T;
+    return Held.TryGetValue(key, out var isHeld) && isHeld;
   }
 
   public static IntPtr SetHook(Delegate proc, uint hookType) {
@@ -108,16 +121,16 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_SYSKEYDOWN:
-          OnD2Down(key);
+          OnD2D(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_KEYDOWN:
-          OnD2Down(key);
+          OnD2D(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_SYSKEYUP:
-          OnD2Up(key);
+          OnD2U(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_KEYUP:
-          OnD2Up(key);
+          OnD2U(key);
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
@@ -131,16 +144,16 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_LBUTTONDOWN:
-          OnD1Down(KeyM.L);
+          OnD1D(KeyM.L);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_LBUTTONUP:
-          OnD1Up(KeyM.L);
+          OnD1U(KeyM.L);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONDOWN:
-          OnD1Down(0x02);
+          OnD1D(0x02);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONUP:
-          OnD1Up(0x02);
+          OnD1U(0x02);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         default:
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
@@ -225,8 +238,3 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
-
-//var _ when key == Key.A => await AtHeld(Arrow.R, 0x01),
-//var _ when key == Key.D => await AtHeld(Arrow.L, 0x01),
-//var _ when key == Key.A => Keyboard.IO(Arrow.R, F),
-//var _ when key == Key.D => Keyboard.IO(Arrow.L, F),
