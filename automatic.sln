@@ -8,7 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "macro", "macro\macro.csproj", "{64901314-1900-4A3C-81F6-A89628C2EB55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "macro", "macro\macro.csproj", "{64901314-1900-4A3C-81F6-A89628C2EB55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sound", "sound\sound.csproj", "{F3291709-B076-46BF-AEF9-FE8F9F296532}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{64901314-1900-4A3C-81F6-A89628C2EB55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64901314-1900-4A3C-81F6-A89628C2EB55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64901314-1900-4A3C-81F6-A89628C2EB55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3291709-B076-46BF-AEF9-FE8F9F296532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3291709-B076-46BF-AEF9-FE8F9F296532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3291709-B076-46BF-AEF9-FE8F9F296532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3291709-B076-46BF-AEF9-FE8F9F296532}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
