@@ -1,77 +1,66 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using NAudio.Wave;
+using WindowsInput;
+using WindowsInput.Native;
 
 class Program {
-  private const int WAVE_MAPPER = -1;
-  private const int CALLBACK_FUNCTION = 0x00030000;
-  private const int WIM_DATA = 0x3C0;
-
-  private delegate void WaveInProc(IntPtr hwi, uint uMsg, int dwInstance, IntPtr dwParam1, IntPtr dwParam2);
-
-  [DllImport("winmm.dll", SetLastError = true)]
-  private static extern int waveInOpen(out IntPtr hWaveIn, int uDeviceID, ref WaveFormatEx lpFormat, WaveInProc dwCallback, int dwInstance, int dwFlags);
-
-  [DllImport("winmm.dll", SetLastError = true)]
-  private static extern int waveInStart(IntPtr hWaveIn);
-
-  [DllImport("winmm.dll", SetLastError = true)]
-  private static extern int waveInClose(IntPtr hWaveIn);
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct WaveFormatEx {
-    public ushort wFormatTag;
-    public ushort nChannels;
-    public uint nSamplesPerSec;
-    public uint nAvgBytesPerSec;
-    public ushort nBlockAlign;
-    public ushort wBitsPerSample;
-    public ushort cbSize;
-  }
-
-  private static IntPtr waveInHandle;
-
-  private static void WaveInCallback(IntPtr hwi, uint uMsg, int dwInstance, IntPtr dwParam1, IntPtr dwParam2) {
-    if (uMsg == WIM_DATA) {
-      Console.WriteLine("abc");
-    }
-  }
+  static bool isKeyPressed = false; // Tracks whether the key is currently pressed
 
   static async Task Main(string[] args) {
-    // Set up wave format
-    WaveFormatEx waveFormat = new WaveFormatEx {
-      wFormatTag = 1, // PCM
-      nChannels = 1, // Mono
-      nSamplesPerSec = 44100, // 44.1 kHz
-      wBitsPerSample = 16, // 16 bits per sample
-      nBlockAlign = 2, // (nChannels * wBitsPerSample) / 8
-      nAvgBytesPerSec = 44100 * 2, // nSamplesPerSec * nBlockAlign
-      cbSize = 0
-    };
+    int thresholdDb = -50; // Set a more sensitive dB threshold
+    int bufferMilliseconds = 100; // Buffer length in milliseconds
 
-    // Open the waveIn device
-    WaveInProc callback = new WaveInProc(WaveInCallback);
-    int result = waveInOpen(out waveInHandle, WAVE_MAPPER, ref waveFormat, callback, 0, CALLBACK_FUNCTION);
+    // Create an instance of InputSimulator to simulate key presses
+    InputSimulator inputSimulator = new InputSimulator();
 
-    if (result != 0) {
-      Console.WriteLine("Error initializing audio input.");
-      return;
+    // Create a wave in event to capture microphone input
+    using (var waveIn = new WaveInEvent()) {
+      waveIn.WaveFormat = new WaveFormat(44100, 1); // Mono, 44.1kHz
+      waveIn.BufferMilliseconds = bufferMilliseconds;
+
+      waveIn.DataAvailable += (sender, e) => {
+        // Analyze the sound levels in the buffer
+        float maxVolume = GetMaxVolume(e.Buffer, e.BytesRecorded);
+        double db = 20 * Math.Log10(maxVolume); // Convert to decibels
+
+        // If the volume is higher than the threshold and key is not pressed, press "T"
+        if (db > thresholdDb && !isKeyPressed) {
+          inputSimulator.Keyboard.KeyDown(VirtualKeyCode.VK_V);
+          isKeyPressed = true; // Mark the key as pressed
+          Console.WriteLine("Pressed 'T' key");
+        }
+        // If the volume is lower than the threshold and the key is pressed, release "T"
+        else if (db <= thresholdDb && isKeyPressed) {
+          inputSimulator.Keyboard.KeyUp(VirtualKeyCode.VK_V);
+          isKeyPressed = false; // Mark the key as not pressed
+          Console.WriteLine("Released 'T' key");
+        }
+      };
+
+      waveIn.StartRecording();
+
+      Console.WriteLine("Listening for sound...");
+      await Task.Run(() => Console.ReadLine());
+
+      waveIn.StopRecording();
     }
+  }
 
-    // Start recording
-    result = waveInStart(waveInHandle);
-    if (result != 0) {
-      Console.WriteLine("Error starting audio input.");
-      return;
+  // Function to get the max volume from audio buffer
+  static float GetMaxVolume(byte[] buffer, int bytesRecorded) {
+    float maxVolume = 0;
+    for (int i = 0; i < bytesRecorded; i += 2) {
+      // Combine two bytes into one 16-bit sample
+      short sample = BitConverter.ToInt16(buffer, i);
+      float sample32 = sample / 32768f; // Normalize the sample
+
+      // Track the max sample value
+      if (sample32 < 0) {
+        sample32 = -sample32;
+      }
+      if (sample32 > maxVolume) {
+        maxVolume = sample32;
+      }
     }
-
-    Console.WriteLine("Listening for sound...");
-
-    // Keep the program running until user presses Enter
-    await Task.Run(() => Console.ReadLine());
-
-    // Stop and close the waveIn device
-    waveInClose(waveInHandle);
+    return maxVolume;
   }
 }
