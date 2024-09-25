@@ -19,6 +19,10 @@ class Program {
   public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
+      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
+      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
+      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
+      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
       _ => T,
     };
   }
@@ -33,7 +37,7 @@ class Program {
   public static bool OnD1U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when key == KeyM.L => D11U(),
+      var _ when KeyM.L == key => D11U(),
       _ => T,
     };
   }
@@ -42,7 +46,7 @@ class Program {
     Task.Run(() => {
       Held[key] = T;
       return T switch {
-        var _ when key == KeyM.L => D11D(key),
+        var _ when KeyM.L == key => D11D(key),
         _ => T,
       };
     });
