@@ -30,6 +30,10 @@ class Program {
   public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
+      var _ when Key.W == key => UnHold(KeyA.U, KeyA.U),
+      var _ when Key.S == key => UnHold(KeyA.D, KeyA.D),
+      var _ when Key.A == key => UnHold(KeyA.L, KeyA.L),
+      var _ when Key.D == key => UnHold(KeyA.R, KeyA.R),
       _ => T,
     };
   }
@@ -43,15 +47,11 @@ class Program {
   }
 
   public static bool OnD1D(uint key) {
-    Task.Run(() => {
-      Held[key] = T;
-      return T switch {
-        var _ when KeyM.L == key => D11D(key),
-        _ => T,
-      };
-    });
-
-    return T;
+    Held[key] = T;
+    return T switch {
+      var _ when KeyM.L == key => D11D(key),
+      _ => T,
+    };
   }
 
   public static bool D11U() {
@@ -73,17 +73,19 @@ class Program {
   }
 
   public static bool UnHold(uint key_1, uint key) {
-    return T switch {
-      var _ when IsHeld(key) => Keyboard.Emulate(key_1, F),
-      _ => T,
-    };
+    Task.Run(() => {
+      return IsHeld(key) ? Keyboard.Emulate(key_1, F) : T;
+    });
+
+    return T;
   }
 
   public static bool DoHold(uint key_1, uint key) {
-    return T switch {
-      var _ when IsHeld(key) => Keyboard.Emulate(key_1, T),
-      _ => T,
-    };
+    Task.Run(() => {
+      return IsHeld(key) ? Keyboard.Emulate(key_1, T) : T;
+    });
+
+    return T;
   }
 
   public static bool IsHeld(uint key) {
