@@ -9,12 +9,12 @@ class Keyboard {
   }
 
   public static bool Hold(uint key, int time) {
-    Emulate(key, T);
-    _ = new System.Threading.Timer(_ => Emulate(key, F), null, time, Timeout.Infinite);
+    Input(key, T);
+    _ = new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
     return T;
   }
 
-  public static bool Emulate(uint key, bool is_pressed) {
+  public static bool Input(uint key, bool is_pressed) {
     INPUT[] inputs = new INPUT[1];
 
     inputs[0].type = INPUT_KEYBOARD;

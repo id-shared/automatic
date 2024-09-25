@@ -74,7 +74,7 @@ class Program {
 
   public static bool UnHold(uint key_1, uint key) {
     Task.Run(() => {
-      return IsHeld(key) ? Keyboard.Emulate(key_1, F) : T;
+      return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
     });
 
     return T;
@@ -82,7 +82,7 @@ class Program {
 
   public static bool DoHold(uint key_1, uint key) {
     Task.Run(() => {
-      return IsHeld(key) ? Keyboard.Emulate(key_1, T) : T;
+      return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
     });
 
     return T;
