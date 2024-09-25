@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
-using NAudio.Wave;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -53,25 +52,32 @@ class Program {
 
   public static bool D11U() {
     Keyboard.Emulate(KeyE.C, F);
-    Keyboard.Emulate(KeyA.D, F);
-    Keyboard.Emulate(KeyA.U, F);
-    Keyboard.Emulate(KeyA.R, F);
-    Keyboard.Emulate(KeyA.L, F);
+    UnHold(KeyA.D, KeyA.D);
+    UnHold(KeyA.U, KeyA.U);
+    UnHold(KeyA.R, KeyA.R);
+    UnHold(KeyA.L, KeyA.L);
     return T;
   }
 
   public static bool D11D(uint key) {
     Keyboard.Emulate(KeyE.C, T);
-    AtHeld(KeyA.D, Key.W, 100);
-    AtHeld(KeyA.U, Key.S, 100);
-    AtHeld(KeyA.R, Key.A, 100);
-    AtHeld(KeyA.L, Key.D, 100);
+    DoHold(KeyA.D, Key.W);
+    DoHold(KeyA.U, Key.S);
+    DoHold(KeyA.R, Key.A);
+    DoHold(KeyA.L, Key.D);
     return T;
   }
 
-  public static bool AtHeld(uint key_1, uint key, int time) {
+  public static bool UnHold(uint key_1, uint key) {
     return T switch {
-      var _ when IsHeld(key) => Keyboard.Hold(key_1, time),
+      var _ when IsHeld(key) => Keyboard.Emulate(key_1, F),
+      _ => T,
+    };
+  }
+
+  public static bool DoHold(uint key_1, uint key) {
+    return T switch {
+      var _ when IsHeld(key) => Keyboard.Emulate(key_1, T),
       _ => T,
     };
   }
