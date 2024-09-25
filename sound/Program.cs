@@ -9,20 +9,17 @@ class Program {
   static int release_delay = 2000;
 
   static async Task Main(string[] args) {
-    int maximum = -50;
-    int iterate = 10;
-
     InputSimulator inputSimulator = new InputSimulator();
 
     using (var waveIn = new WaveInEvent()) {
       waveIn.WaveFormat = new WaveFormat(44100, 1);
-      waveIn.BufferMilliseconds = iterate; // Adjust this for faster processing.
+      waveIn.BufferMilliseconds = 100;
 
       waveIn.DataAvailable += (sender, e) => {
         float current = GetMaxVolume(e.Buffer, e.BytesRecorded);
         double needed = 20 * Math.Log10(current);
 
-        if (needed > maximum) {
+        if (needed > -50) {
           threshold = DateTime.Now;
 
           if (!isKeyPressed) {

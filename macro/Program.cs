@@ -17,45 +17,25 @@ class Program {
   public static readonly bool T = true;
 
   public static bool OnD2U(uint key) {
-    Task.Run(() => {
-      Held[key] = F;
-      return T switch {
-        var _ when key == Key.W => Keyboard.IO(KeyA.D, F),
-        var _ when key == Key.S => Keyboard.IO(KeyA.U, F),
-        var _ when key == Key.A => Keyboard.IO(KeyA.R, F),
-        var _ when key == Key.D => Keyboard.IO(KeyA.L, F),
-        _ => T,
-      };
-    });
-
-    return T;
+    Held[key] = F;
+    return T switch {
+      _ => T,
+    };
   }
 
   public static bool OnD2D(uint key) {
-    Task.Run(() => {
-      Held[key] = T;
-      return T switch {
-        var _ when key == Key.W => AtHeld(KeyA.D, KeyM.L),
-        var _ when key == Key.S => AtHeld(KeyA.U, KeyM.L),
-        var _ when key == Key.A => AtHeld(KeyA.R, KeyM.L),
-        var _ when key == Key.D => AtHeld(KeyA.L, KeyM.L),
-        _ => T,
-      };
-    });
-
-    return T;
+    Held[key] = T;
+    return T switch {
+      _ => T,
+    };
   }
 
   public static bool OnD1U(uint key) {
-    Task.Run(() => {
-      Held[key] = F;
-      return T switch {
-        var _ when key == KeyM.L => D11U(),
-        _ => T,
-      };
-    });
-
-    return T;
+    Held[key] = F;
+    return T switch {
+      var _ when key == KeyM.L => D11U(),
+      _ => T,
+    };
   }
 
   public static bool OnD1D(uint key) {
@@ -71,26 +51,26 @@ class Program {
   }
 
   public static bool D11U() {
-    Keyboard.IO(KeyA.D, F);
-    Keyboard.IO(KeyA.U, F);
-    Keyboard.IO(KeyA.R, F);
-    Keyboard.IO(KeyA.L, F);
-    Keyboard.IO(KeyE.C, F);
+    Keyboard.Emulate(KeyE.C, F);
+    Keyboard.Emulate(KeyA.D, F);
+    Keyboard.Emulate(KeyA.U, F);
+    Keyboard.Emulate(KeyA.R, F);
+    Keyboard.Emulate(KeyA.L, F);
     return T;
   }
 
   public static bool D11D(uint key) {
-    AtHeld(KeyA.D, Key.W);
-    AtHeld(KeyA.U, Key.S);
-    AtHeld(KeyA.R, Key.A);
-    AtHeld(KeyA.L, Key.D);
-    AtHeld(KeyE.C, key);
+    Keyboard.Emulate(KeyE.C, T);
+    AtHeld(KeyA.D, Key.W, 100);
+    AtHeld(KeyA.U, Key.S, 100);
+    AtHeld(KeyA.R, Key.A, 100);
+    AtHeld(KeyA.L, Key.D, 100);
     return T;
   }
 
-  public static bool AtHeld(uint key_1, uint key) {
+  public static bool AtHeld(uint key_1, uint key, int time) {
     return T switch {
-      var _ when IsHeld(key) => Keyboard.IO(key_1, T),
+      var _ when IsHeld(key) => Keyboard.Hold(key_1, time),
       _ => T,
     };
   }
