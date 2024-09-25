@@ -156,6 +156,7 @@ class Program {
 
   public static DateTime since = DateTime.MinValue;
   public static bool is_v_held = F;
+
   public static bool SubscribeVoice() {
     var waveIn = new WaveInEvent {
       WaveFormat = new WaveFormat(44100, 1),
@@ -166,17 +167,13 @@ class Program {
       float current = GetMaxVolume(e.Buffer, e.BytesRecorded);
       double needed = 20 * Math.Log10(current);
 
-      if (needed > -40) {
+      if (needed > -40 && !is_v_held) {
         since = DateTime.Now;
-        if (!is_v_held) {
-          Keyboard.Emulate(Key.V, T);
-          is_v_held = true;
-          Console.WriteLine("Pressed 'V' key");
-        }
+        Keyboard.Emulate(Key.V, T);
+        is_v_held = true;
       } else if (is_v_held && (DateTime.Now - since).TotalMilliseconds >= 2000) {
         Keyboard.Emulate(Key.V, F);
         is_v_held = false;
-        Console.WriteLine("Released 'V' key after delay");
       }
     };
 
