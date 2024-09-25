@@ -15,6 +15,7 @@ class KeyA {
 
 class Key {
   public static readonly uint W = (uint)ConsoleKey.W;
+  public static readonly uint V = (uint)ConsoleKey.V;
   public static readonly uint S = (uint)ConsoleKey.S;
   public static readonly uint D = (uint)ConsoleKey.D;
   public static readonly uint A = (uint)ConsoleKey.A;

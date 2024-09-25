@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using NAudio.Wave;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -146,10 +147,53 @@ class Program {
     d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
     d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
 
+    SubscribeVoice();
     Subscribe(new MSG());
 
     Detach(d2_hook_id);
     Detach(d1_hook_id);
+  }
+
+  public static DateTime since = DateTime.MinValue;
+  public static bool is_v_held = F;
+  public static bool SubscribeVoice() {
+    var waveIn = new WaveInEvent {
+      WaveFormat = new WaveFormat(44100, 1),
+      BufferMilliseconds = 100
+    };
+
+    waveIn.DataAvailable += (sender, e) => {
+      float current = GetMaxVolume(e.Buffer, e.BytesRecorded);
+      double needed = 20 * Math.Log10(current);
+
+      if (needed > -40) {
+        since = DateTime.Now;
+        if (!is_v_held) {
+          Keyboard.Emulate(Key.V, T);
+          is_v_held = true;
+          Console.WriteLine("Pressed 'V' key");
+        }
+      } else if (is_v_held && (DateTime.Now - since).TotalMilliseconds >= 2000) {
+        Keyboard.Emulate(Key.V, F);
+        is_v_held = false;
+        Console.WriteLine("Released 'V' key after delay");
+      }
+    };
+
+    waveIn.StartRecording();
+    return T;
+  }
+
+  public static float GetMaxVolume(byte[] buffer, int bytesRecorded) {
+    float maxVolume = 0;
+    for (int i = 0; i < bytesRecorded; i += 2) {
+      short sample = BitConverter.ToInt16(buffer, i);
+      float sample32 = sample / 32768f;
+
+      if (sample32 < 0) { sample32 = -sample32; }
+      if (sample32 > maxVolume) { maxVolume = sample32; }
+    }
+    return maxVolume;
   }
 
   private static void Subscribe(MSG msg) {
@@ -176,7 +220,6 @@ class Program {
   private const uint WM_LBUTTONUP = 0x0202;
   private const uint WM_RBUTTONDOWN = 0x0204;
   private const uint WM_RBUTTONUP = 0x0205;
-  private const uint KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
@@ -204,7 +247,7 @@ class Program {
   [DllImport("user32.dll")]
   private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-  [DllImport("kernel32.dll")]
+  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
   private static extern IntPtr GetModuleHandle(string lpModuleName);
 
   [DllImport("user32.dll")]
