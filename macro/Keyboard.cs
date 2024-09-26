@@ -6,8 +6,10 @@ class Keyboard {
 
   public static bool Hold(uint key, int time) {
     Input(key, T);
-    var _ = new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
-
+    Task.Run(async () => {
+      await Task.Delay(time);
+      Input(key, F);
+    });
     return T;
   }
 
