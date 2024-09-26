@@ -47,20 +47,25 @@ class Program {
   }
 
   public static bool D11U() {
+    Task.Run(() => {
       UnHold(KeyA.D, KeyA.D);
       UnHold(KeyA.U, KeyA.U);
       UnHold(KeyA.R, KeyA.R);
       UnHold(KeyA.L, KeyA.L);
       UnHold(KeyE.C, KeyE.C);
+    });
     return T;
   }
 
   public static bool D11D(uint key) {
+    Task.Run(async () => {
       DoHold(KeyA.D, Key.W);
       DoHold(KeyA.U, Key.S);
       DoHold(KeyA.R, Key.A);
       DoHold(KeyA.L, Key.D);
+      await Task.Delay(100);
       DoHold(KeyE.C, key);
+    });
     return T;
   }
 
