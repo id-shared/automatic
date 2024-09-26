@@ -5,29 +5,25 @@ class Keyboard {
   public static readonly bool T = true;
 
   public static bool Hold(uint key, int time) {
-    Task.Run(() => {
-      Input(key, T);
-      return new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
-    });
+    Input(key, T);
+    var _ = new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
 
     return T;
   }
 
   public static bool Input(uint key, bool is_pressed) {
-    Task.Run(() => {
-      INPUT[] inputs = new INPUT[1];
+    INPUT[] inputs = new INPUT[1];
 
-      inputs[0].type = INPUT_KEYBOARD;
-      inputs[0].mkhi.ki = new KEYBDINPUT {
-        wVk = (ushort)key,
-        wScan = 0,
-        dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
-        time = 0,
-        dwExtraInfo = IntPtr.Zero
-      };
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].mkhi.ki = new KEYBDINPUT {
+      wVk = (ushort)key,
+      wScan = 0,
+      dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
+      time = 0,
+      dwExtraInfo = IntPtr.Zero
+    };
 
-      return SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
-    });
+    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
 
     return T;
   }
