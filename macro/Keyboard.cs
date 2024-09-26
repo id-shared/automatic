@@ -3,6 +3,8 @@
 class Keyboard {
   public static readonly bool F = false;
   public static readonly bool T = true;
+  private static readonly INPUT[] inputs = new INPUT[1];
+  private static System.Threading.Timer? timer;
 
   public static bool IsHeld(uint key) {
     return (GetKeyState(key) & 0x8000) != 0;
@@ -10,13 +12,12 @@ class Keyboard {
 
   public static bool Hold(uint key, int time) {
     Input(key, T);
-    _ = new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
+    timer?.Dispose(); // Dispose existing timer to avoid overlap
+    timer = new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
     return T;
   }
 
   public static bool Input(uint key, bool is_pressed) {
-    INPUT[] inputs = new INPUT[1];
-
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].mkhi.ki = new KEYBDINPUT {
       wVk = (ushort)key,
