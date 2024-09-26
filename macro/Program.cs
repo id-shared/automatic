@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Collections.Concurrent;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -12,17 +11,17 @@ class Program {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  public static ConcurrentDictionary<uint, bool> Held = new() { };
+  public static Dictionary<uint, bool> Held = new() { };
   public static readonly bool F = false;
   public static readonly bool T = true;
 
   public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
-      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
+      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 100),
+      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 100),
+      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 100),
+      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 100),
       _ => T,
     };
   }
