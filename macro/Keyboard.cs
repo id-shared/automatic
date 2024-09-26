@@ -7,7 +7,7 @@ class Keyboard {
   public static bool Hold(uint key, int time) {
     Task.Run(() => {
       Input(key, T);
-      _ = new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
+      return new System.Threading.Timer(_ => Input(key, F), null, time, Timeout.Infinite);
     });
 
     return T;
