@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 class Program {
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -29,10 +30,6 @@ class Program {
   public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.S == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.A == key => UnHold(KeyA.L, KeyA.L),
-      var _ when Key.D == key => UnHold(KeyA.R, KeyA.R),
       _ => T,
     };
   }
@@ -54,20 +51,25 @@ class Program {
   }
 
   public static bool D11U() {
-    UnHold(KeyA.D, KeyA.D);
-    UnHold(KeyA.U, KeyA.U);
-    UnHold(KeyA.R, KeyA.R);
-    UnHold(KeyA.L, KeyA.L);
-    UnHold(KeyE.C, KeyE.C);
+    Task.Run(() => {
+      UnHold(KeyA.D, KeyA.D);
+      UnHold(KeyA.U, KeyA.U);
+      UnHold(KeyA.R, KeyA.R);
+      UnHold(KeyA.L, KeyA.L);
+      UnHold(KeyE.C, KeyE.C);
+    });
     return T;
   }
 
   public static bool D11D(uint key) {
-    DoHold(KeyA.D, Key.W);
-    DoHold(KeyA.U, Key.S);
-    DoHold(KeyA.R, Key.A);
-    DoHold(KeyA.L, Key.D);
-    DoHold(KeyE.C, key);
+    Task.Run(async () => {
+      DoHold(KeyA.D, Key.W);
+      DoHold(KeyA.U, Key.S);
+      DoHold(KeyA.R, Key.A);
+      DoHold(KeyA.L, Key.D);
+      await Task.Delay(100);
+      DoHold(KeyE.C, key);
+    });
     return T;
   }
 
