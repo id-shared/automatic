@@ -1,9 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  public static readonly bool F = false;
-  public static readonly bool T = true;
-
   public static bool Hold(uint key, int time) {
     Input(key, T);
     Task.Run(async () => {
@@ -14,21 +11,22 @@ class Keyboard {
   }
 
   public static bool Input(uint key, bool is_pressed) {
-    INPUT[] inputs = new INPUT[1];
+    I[0].type = INPUT_KEYBOARD;
+    I[0].mkhi.ki.wVk = (ushort)key;
+    I[0].mkhi.ki.wScan = 0;
+    I[0].mkhi.ki.dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP;
+    I[0].mkhi.ki.time = 0;
+    I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
 
-    inputs[0].type = INPUT_KEYBOARD;
-    inputs[0].mkhi.ki = new KEYBDINPUT {
-      wVk = (ushort)key,
-      wScan = 0,
-      dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP,
-      time = 0,
-      dwExtraInfo = IntPtr.Zero
-    };
-
-    SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+    SendInput((uint)I.Length, I, I_size);
 
     return T;
   }
+
+  private static readonly int I_size = Marshal.SizeOf(typeof(INPUT));
+  private static readonly INPUT[] I = new INPUT[1];
+  private static readonly bool F = false;
+  private static readonly bool T = true;
 
   private const uint INPUT_KEYBOARD = 1;
   private const uint KEYEVENTF_KEYUP = 0x0002;

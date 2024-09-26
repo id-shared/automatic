@@ -1,28 +1,14 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 class Program {
-  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-  private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
-  private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
-
-  public static IntPtr d2_hook_id = IntPtr.Zero;
-  public static IntPtr d1_hook_id = IntPtr.Zero;
-
-  public static Dictionary<uint, bool> Held = new() { };
-  public static readonly bool F = false;
-  public static readonly bool T = true;
-
   public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 100),
-      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 100),
-      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 100),
-      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 100),
+      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
+      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
+      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
+      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
       _ => T,
     };
   }
@@ -30,10 +16,10 @@ class Program {
   public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
-      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
+      var _ when Key.W == key => UnHold(KeyA.U, KeyA.U),
+      var _ when Key.S == key => UnHold(KeyA.D, KeyA.D),
+      var _ when Key.A == key => UnHold(KeyA.L, KeyA.L),
+      var _ when Key.D == key => UnHold(KeyA.R, KeyA.R),
       _ => T,
     };
   }
@@ -68,10 +54,7 @@ class Program {
     DoHold(KeyA.U, Key.S);
     DoHold(KeyA.R, Key.A);
     DoHold(KeyA.L, Key.D);
-    Task.Run(async () => {
-      await Task.Delay(100);
-      DoHold(KeyE.C, key);
-    });
+    DoHold(KeyE.C, key);
     return T;
   }
 
@@ -87,7 +70,7 @@ class Program {
     return Held.TryGetValue(key, out var isHeld) && isHeld;
   }
 
-  public static IntPtr SetHook(Delegate proc, uint hookType) {
+  private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
 
     switch (T) {
@@ -103,7 +86,7 @@ class Program {
     }
   }
 
-  public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
@@ -127,7 +110,7 @@ class Program {
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
-  public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint act = (uint)wParam;
       switch (T) {
@@ -150,16 +133,6 @@ class Program {
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
 
-  public static void Main() {
-    d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
-    d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
-
-    SubscribeKey(new MSG());
-
-    Detach(d2_hook_id);
-    Detach(d1_hook_id);
-  }
-
   private static void SubscribeKey(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
@@ -173,6 +146,29 @@ class Program {
       _ => UnhookWindowsHookEx(id),
     };
   }
+
+  private static void Main() {
+    d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
+    d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
+
+    SubscribeKey(new MSG());
+
+    Detach(d2_hook_id);
+    Detach(d1_hook_id);
+  }
+
+  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+  private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
+  private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
+
+  private static IntPtr d2_hook_id = IntPtr.Zero;
+  private static IntPtr d1_hook_id = IntPtr.Zero;
+
+  private static Dictionary<uint, bool> Held = new() { };
+  private static readonly bool F = false;
+  private static readonly bool T = true;
 
   private const uint WH_KEYBOARD_LL = 13;
   private const uint WH_MOUSE_LL = 14;
