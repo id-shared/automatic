@@ -19,6 +19,10 @@ class Program {
   public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
+      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 100),
+      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 100),
+      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 100),
+      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 100),
       _ => T,
     };
   }
@@ -26,6 +30,10 @@ class Program {
   public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
+      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
+      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
+      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
+      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
       _ => T,
     };
   }
@@ -47,22 +55,20 @@ class Program {
   }
 
   public static bool D11U() {
-    Task.Run(() => {
-      UnHold(KeyA.D, KeyA.D);
-      UnHold(KeyA.U, KeyA.U);
-      UnHold(KeyA.R, KeyA.R);
-      UnHold(KeyA.L, KeyA.L);
-      UnHold(KeyE.C, KeyE.C);
-    });
+    UnHold(KeyA.D, KeyA.D);
+    UnHold(KeyA.U, KeyA.U);
+    UnHold(KeyA.R, KeyA.R);
+    UnHold(KeyA.L, KeyA.L);
+    UnHold(KeyE.C, KeyE.C);
     return T;
   }
 
   public static bool D11D(uint key) {
+    DoHold(KeyA.D, Key.W);
+    DoHold(KeyA.U, Key.S);
+    DoHold(KeyA.R, Key.A);
+    DoHold(KeyA.L, Key.D);
     Task.Run(async () => {
-      DoHold(KeyA.D, Key.W);
-      DoHold(KeyA.U, Key.S);
-      DoHold(KeyA.R, Key.A);
-      DoHold(KeyA.L, Key.D);
       await Task.Delay(100);
       DoHold(KeyE.C, key);
     });
@@ -70,19 +76,11 @@ class Program {
   }
 
   public static bool UnHold(uint key_1, uint key) {
-    Task.Run(() => {
-      return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
-    });
-
-    return T;
+    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
   }
 
   public static bool DoHold(uint key_1, uint key) {
-    Task.Run(() => {
-      return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
-    });
-
-    return T;
+    return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
   }
 
   public static bool IsHeld(uint key) {
