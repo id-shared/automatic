@@ -5,10 +5,6 @@ class Program {
   public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
-      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
       _ => T,
     };
   }
@@ -16,10 +12,6 @@ class Program {
   public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.S == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.A == key => UnHold(KeyA.L, KeyA.L),
-      var _ when Key.D == key => UnHold(KeyA.R, KeyA.R),
       _ => T,
     };
   }
@@ -35,26 +27,26 @@ class Program {
   public static bool OnD1D(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when KeyM.L == key => D11D(key),
+      var _ when KeyM.L == key => D11D(),
       _ => T,
     };
   }
 
   public static bool D11U() {
+    Keyboard.Input(KeyE.C, F);
     UnHold(KeyA.D, KeyA.D);
     UnHold(KeyA.U, KeyA.U);
     UnHold(KeyA.R, KeyA.R);
     UnHold(KeyA.L, KeyA.L);
-    UnHold(KeyE.C, KeyE.C);
     return T;
   }
 
-  public static bool D11D(uint key) {
+  public static bool D11D() {
+    Keyboard.Input(KeyE.C, T);
     DoHold(KeyA.D, Key.W);
     DoHold(KeyA.U, Key.S);
     DoHold(KeyA.R, Key.A);
     DoHold(KeyA.L, Key.D);
-    DoHold(KeyE.C, key);
     return T;
   }
 
@@ -260,3 +252,12 @@ class Program {
 //  }
 //  return maxVolume;
 //}
+
+//var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
+//var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
+//var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
+//var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
+//var _ when Key.W == key => UnHold(KeyA.U, KeyA.U),
+//var _ when Key.S == key => UnHold(KeyA.D, KeyA.D),
+//var _ when Key.A == key => UnHold(KeyA.L, KeyA.L),
+//var _ when Key.D == key => UnHold(KeyA.R, KeyA.R),
