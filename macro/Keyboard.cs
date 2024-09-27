@@ -3,10 +3,12 @@
 class Keyboard {
   public static bool Hold(uint key, int time) {
     Input(key, T);
-    Task.Run(async () => {
-      await Task.Delay(time);
+
+    _ = Task.Run(async () => {
+      await Task.Delay(time).ConfigureAwait(false);
       Input(key, F);
     });
+
     return T;
   }
 
