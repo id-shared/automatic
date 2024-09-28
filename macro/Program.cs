@@ -5,10 +5,10 @@ class Program {
   public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
-      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
+      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 100),
+      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 100),
+      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 100),
+      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 100),
       _ => T,
     };
   }
@@ -16,10 +16,6 @@ class Program {
   public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.S == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.A == key => UnHold(KeyA.L, KeyA.L),
-      var _ when Key.D == key => UnHold(KeyA.R, KeyA.R),
       _ => T,
     };
   }
@@ -41,19 +37,11 @@ class Program {
   }
 
   public static bool D11U() {
-    UnHold(KeyA.D, KeyA.D);
-    UnHold(KeyA.U, KeyA.U);
-    UnHold(KeyA.R, KeyA.R);
-    UnHold(KeyA.L, KeyA.L);
     UnHold(KeyE.C, KeyE.C);
     return T;
   }
 
   public static bool D11D() {
-    Hold(KeyA.D, Key.W);
-    Hold(KeyA.U, Key.S);
-    Hold(KeyA.R, Key.A);
-    Hold(KeyA.L, Key.D);
     Task.Run(async () => {
       await Task.Delay(100);
       Hold(KeyE.C, KeyM.L);
