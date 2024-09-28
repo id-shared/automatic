@@ -47,12 +47,9 @@ class Program {
 
   public static bool D11D() {
     Task.Run(async () => {
-      await Task.Delay(100);
-      //await UpHold(KeyE.C, KeyM.L, 160);
-      //await Task.Delay(80);
-      //await UpHold(KeyE.C, KeyM.L, 160);
-      //await Task.Delay(80);
-      return Hold(KeyE.C, KeyM.L);
+      await UpHold(KeyE.C, KeyM.L, 320);
+      UnHold(KeyM.L, KeyM.L);
+      return T;
     });
 
     Hold(KeyA.D, Key.W);
