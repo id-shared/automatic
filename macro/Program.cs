@@ -46,21 +46,24 @@ class Program {
   }
 
   public static bool D11D() {
+    Task.Run(async () => {
+      await Task.Delay(100);
+      //await UpHold(KeyE.C, KeyM.L, 160);
+      //await Task.Delay(80);
+      //await UpHold(KeyE.C, KeyM.L, 160);
+      //await Task.Delay(80);
+      return Hold(KeyE.C, KeyM.L);
+    });
+
     Hold(KeyA.D, Key.W);
     Hold(KeyA.U, Key.S);
     Hold(KeyA.R, Key.A);
     Hold(KeyA.L, Key.D);
-
-    Task.Run(() => {
-      Thread.Sleep(100);
-      return UpHold(KeyE.C, KeyM.L, 160);
-    });
-
     return T;
   }
 
-  public static bool UpHold(uint key_1, uint key, int time) {
-    return IsHeld(key) ? Keyboard.Hold(key_1, time) : T;
+  public static Task<bool> UpHold(uint key_1, uint key, int time) {
+    return IsHeld(key) ? Keyboard.Hold(key_1, time) : Task.Run (() => T);
   }
 
   public static bool UnHold(uint key_1, uint key) {

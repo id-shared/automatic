@@ -1,14 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  public static bool Hold(uint key, int time) {
+  public async static Task<bool> Hold(uint key, int time) {
     Input(key, T);
-
-    _ = Task.Run(async () => {
-      await Task.Delay(time).ConfigureAwait(false);
-      Input(key, F);
-    });
-
+    await Task.Delay(time);
+    Input(key, F);
     return T;
   }
 
