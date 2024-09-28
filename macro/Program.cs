@@ -37,6 +37,7 @@ class Program {
   }
 
   public static bool D11U() {
+    UnHold(KeyE.C, KeyE.C);
     UnHold(KeyA.D, KeyA.D);
     UnHold(KeyA.U, KeyA.U);
     UnHold(KeyA.R, KeyA.R);
