@@ -2,21 +2,21 @@
 using System.Diagnostics;
 
 class Program {
-  public static bool OnD2U(uint key) {
+  public static Task<bool> OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => UnHold(KeyA.D, KeyA.D),
-      var _ when Key.S == key => UnHold(KeyA.U, KeyA.U),
-      var _ when Key.A == key => UnHold(KeyA.R, KeyA.R),
-      var _ when Key.D == key => UnHold(KeyA.L, KeyA.L),
-      _ => T,
+      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 100),
+      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 100),
+      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 100),
+      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 100),
+      _ => Task.Run(() => T),
     };
   }
 
-  public static bool OnD2D(uint key) {
+  public static Task<bool> OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      _ => T,
+      _ => Task.Run(() => T),
     };
   }
 
@@ -37,38 +37,38 @@ class Program {
   }
 
   public static bool D11U() {
-    UnHold(KeyE.C, KeyE.C);
-    UnHold(KeyA.D, KeyA.D);
-    UnHold(KeyA.U, KeyA.U);
-    UnHold(KeyA.R, KeyA.R);
-    UnHold(KeyA.L, KeyA.L);
+    HoldF(KeyE.C, KeyE.C);
+    HoldF(KeyA.D, KeyA.D);
+    HoldF(KeyA.U, KeyA.U);
+    HoldF(KeyA.R, KeyA.R);
+    HoldF(KeyA.L, KeyA.L);
     return T;
   }
 
   public static bool D11D() {
     Task.Run(async () => {
-      await Task.Delay(109);
-      Hold(KeyE.C, KeyM.L);
+      await Task.Delay(111);
+      HoldT(KeyE.C, KeyM.L);
       return T;
     });
 
-    Hold(KeyA.D, Key.W);
-    Hold(KeyA.U, Key.S);
-    Hold(KeyA.R, Key.A);
-    Hold(KeyA.L, Key.D);
+    HoldT(KeyA.D, Key.W);
+    HoldT(KeyA.U, Key.S);
+    HoldT(KeyA.R, Key.A);
+    HoldT(KeyA.L, Key.D);
     return T;
-  }
-
-  public static bool UnHold(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
-  }
-
-  public static bool Hold(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
   }
 
   public static bool IsHeld(uint key) {
     return Held.TryGetValue(key, out var isHeld) && isHeld;
+  }
+
+  public static bool HoldF(uint key_1, uint key) {
+    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
+  }
+
+  public static bool HoldT(uint key_1, uint key) {
+    return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
