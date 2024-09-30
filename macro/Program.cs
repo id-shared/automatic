@@ -2,21 +2,21 @@
 using System.Diagnostics;
 
 class Program {
-  public static Task<bool> OnD2U(uint key) {
+  public static bool OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 100),
-      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 100),
-      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 100),
-      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 100),
-      _ => Task.Run(() => T),
+      var _ when Key.W == key => Unhold(KeyA.D, KeyA.D),
+      var _ when Key.S == key => Unhold(KeyA.U, KeyA.U),
+      var _ when Key.A == key => Unhold(KeyA.R, KeyA.R),
+      var _ when Key.D == key => Unhold(KeyA.L, KeyA.L),
+      _ => T,
     };
   }
 
-  public static Task<bool> OnD2D(uint key) {
+  public static bool OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      _ => Task.Run(() => T),
+      _ => T,
     };
   }
 
@@ -46,12 +46,12 @@ class Program {
   }
 
   public static bool D11D() {
-    Task.Run(async () => {
-      await Task.Delay(50);
-      Hold(KeyE.C, KeyM.L);
-      return T;
-    });
+    //Task.Run(async () => {
+    //  await Task.Delay(49);
+    //  return T;
+    //});
 
+    Hold(KeyE.C, KeyM.L);
     Hold(KeyA.D, Key.W);
     Hold(KeyA.U, Key.S);
     Hold(KeyA.R, Key.A);
