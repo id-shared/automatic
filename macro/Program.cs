@@ -37,38 +37,38 @@ class Program {
   }
 
   public static bool D11U() {
-    HoldF(KeyE.C, KeyE.C);
-    HoldF(KeyA.D, KeyA.D);
-    HoldF(KeyA.U, KeyA.U);
-    HoldF(KeyA.R, KeyA.R);
-    HoldF(KeyA.L, KeyA.L);
+    Unhold(KeyE.C, KeyE.C);
+    Unhold(KeyA.D, KeyA.D);
+    Unhold(KeyA.U, KeyA.U);
+    Unhold(KeyA.R, KeyA.R);
+    Unhold(KeyA.L, KeyA.L);
     return T;
   }
 
   public static bool D11D() {
     Task.Run(async () => {
-      await Task.Delay(111);
-      HoldT(KeyE.C, KeyM.L);
+      await Task.Delay(50);
+      Hold(KeyE.C, KeyM.L);
       return T;
     });
 
-    HoldT(KeyA.D, Key.W);
-    HoldT(KeyA.U, Key.S);
-    HoldT(KeyA.R, Key.A);
-    HoldT(KeyA.L, Key.D);
+    Hold(KeyA.D, Key.W);
+    Hold(KeyA.U, Key.S);
+    Hold(KeyA.R, Key.A);
+    Hold(KeyA.L, Key.D);
     return T;
+  }
+
+  public static bool Unhold(uint key_1, uint key) {
+    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
+  }
+
+  public static bool Hold(uint key_1, uint key) {
+    return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
   }
 
   public static bool IsHeld(uint key) {
     return Held.TryGetValue(key, out var isHeld) && isHeld;
-  }
-
-  public static bool HoldF(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
-  }
-
-  public static bool HoldT(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
@@ -261,3 +261,13 @@ class Program {
 //  }
 //  return maxVolume;
 //}
+
+//HoldF(KeyA.D, KeyA.D);
+//HoldF(KeyA.U, KeyA.U);
+//HoldF(KeyA.R, KeyA.R);
+//HoldF(KeyA.L, KeyA.L);
+
+//HoldT(KeyA.D, Key.W);
+//HoldT(KeyA.U, Key.S);
+//HoldT(KeyA.R, Key.A);
+//HoldT(KeyA.L, Key.D);
