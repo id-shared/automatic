@@ -9,14 +9,18 @@ class Program {
       var _ when Key.S == key => Keyboard.Hold(KeyA.U, 99),
       var _ when Key.A == key => Keyboard.Hold(KeyA.R, 99),
       var _ when Key.D == key => Keyboard.Hold(KeyA.L, 99),
-      _ => Task.Run(() => T),
+      _ => Task.Run(() => {
+        return T;
+      }),
     };
   }
 
   public static Task<bool> OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      _ => Task.Run(() => T),
+      _ => Task.Run(() => {
+        return T;
+      }),
     };
   }
 
@@ -24,7 +28,9 @@ class Program {
     Held[key] = F;
     return T switch {
       var _ when KeyM.L == key => D11U(),
-      _ => Task.Run(() => T),
+      _ => Task.Run(() => {
+        return T;
+      }),
     };
   }
 
@@ -32,29 +38,30 @@ class Program {
     Held[key] = T;
     return T switch {
       var _ when KeyM.L == key => D11D(),
-      _ => Task.Run(() => T),
+      _ => Task.Run(() => {
+        return T;
+      }),
     };
   }
 
   public static Task<bool> D11U() {
+    Unhold(KeyE.C, KeyE.C);
     Unhold(KeyA.D, KeyA.D);
     Unhold(KeyA.U, KeyA.U);
     Unhold(KeyA.R, KeyA.R);
     Unhold(KeyA.L, KeyA.L);
     return Task.Run(() => {
-      Unhold(KeyE.C, KeyE.C);
       return T;
     });
   }
 
   public static Task<bool> D11D() {
+    Hold(KeyE.C, KeyM.L);
     Hold(KeyA.D, Key.W);
     Hold(KeyA.U, Key.S);
     Hold(KeyA.R, Key.A);
     Hold(KeyA.L, Key.D);
-    return Task.Run(async () => {
-      await Task.Delay(99);
-      Hold(KeyE.C, KeyM.L);
+    return Task.Run(() => {
       return T;
     });
   }
