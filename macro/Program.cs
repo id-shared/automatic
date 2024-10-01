@@ -33,6 +33,7 @@ class Program {
     Held[k1] = F;
     return T switch {
       var _ when KeyM.X1 == k1 => Task.Run(() => {
+        Unhold(KeyE.X2, KeyE.X2);
         Unhold(KeyE.X1, KeyE.X1);
         Unhold(KeyA.D, KeyA.D);
         Unhold(KeyA.U, KeyA.U);
@@ -51,12 +52,13 @@ class Program {
     Held[k1] = T;
     return T switch {
       var _ when KeyM.X1 == k1 => Task.Run(() => {
+        Console.WriteLine(Environment.TickCount64 - AtTime(KeyE.X2));
+        Hold(KeyE.X2, KeyM.X1);
         Hold(KeyE.X1, KeyM.X1);
         Hold(KeyA.D, Key.W);
         Hold(KeyA.U, Key.S);
         Hold(KeyA.R, Key.A);
         Hold(KeyA.L, Key.D);
-        Console.WriteLine(Environment.TickCount64 - AtTime(KeyE.X2));
         return T;
       }),
       _ => Task.Run(() => {
