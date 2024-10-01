@@ -1,9 +1,10 @@
 ﻿class KeyM {
-  public static readonly uint L = 0x01;
+  public static readonly uint _1 = 0x01;
 }
 
 class KeyE {
-  public static readonly uint C = 162;
+  public static readonly uint _2 = 164;
+  public static readonly uint _1 = 162;
 }
 
 class KeyA {
