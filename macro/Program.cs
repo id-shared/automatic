@@ -5,6 +5,12 @@ class Program {
   public static Task<bool> OnD2U(uint k1) {
     Held[k1] = F;
     return T switch {
+      var _ when Key.D == k1 => Task.Run(() => {
+        return Keyboard.Hold(99, KeyA.L);
+      }),
+      var _ when Key.A == k1 => Task.Run(() => {
+        return Keyboard.Hold(99, KeyA.R);
+      }),
       _ => Task.Run(() => {
         return T;
       }),
@@ -14,21 +20,6 @@ class Program {
   public static Task<bool> OnD2D(uint k1) {
     Held[k1] = T;
     return T switch {
-      var _ when Key.A == k1 => Move(1000, 100, KeyA.R, k1),
-      var _ when Key.D == k1 => Move(1000, 100, KeyA.L, k1),
-      _ => Task.Run(() => {
-        return T;
-      }),
-    };
-  }
-
-  public static Task<bool> Move(int t2, int t1, uint k2, uint k1) {
-    return T switch {
-      var _ when IsHeld(k1) => Task.Run(async () => {
-        await Task.Delay(t1);
-        await Keyboard.Hold(k2, t2);
-        return await Move(t2, t1, k2, k1);
-      }),
       _ => Task.Run(() => {
         return T;
       }),

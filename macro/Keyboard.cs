@@ -1,18 +1,18 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  public async static Task<bool> Hold(uint key, int time) {
-    Input(key, T);
-    await Task.Delay(time);
-    Input(key, F);
+  public async static Task<bool> Hold(int t1, uint k1) {
+    Input(k1, T);
+    await Task.Delay(t1);
+    Input(k1, F);
     return T;
   }
 
-  public static bool Input(uint key, bool is_pressed) {
+  public static bool Input(uint k1, bool @is) {
     I[0].type = INPUT_KEYBOARD;
-    I[0].mkhi.ki.wVk = (ushort)key;
+    I[0].mkhi.ki.wVk = (ushort)k1;
     I[0].mkhi.ki.wScan = 0;
-    I[0].mkhi.ki.dwFlags = is_pressed ? 0 : KEYEVENTF_KEYUP;
+    I[0].mkhi.ki.dwFlags = @is ? 0 : KEYEVENTF_KEYUP;
     I[0].mkhi.ki.time = 0;
     I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
 
