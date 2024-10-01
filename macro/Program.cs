@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 class Program {
   public static Task<bool> OnD2U(uint k1) {
+    Time[k1] = Environment.TickCount64;
     Held[k1] = F;
     return T switch {
       var _ when Key.D == k1 => Task.Run(() => {
@@ -18,7 +19,9 @@ class Program {
   }
 
   public static Task<bool> OnD2D(uint k1) {
+    Time[k1] = Environment.TickCount64;
     Held[k1] = T;
+    Console.WriteLine(k1);
     return T switch {
       _ => Task.Run(() => {
         return T;
@@ -27,6 +30,7 @@ class Program {
   }
 
   public static Task<bool> OnD1U(uint k1) {
+    Time[k1] = Environment.TickCount64;
     Held[k1] = F;
     return T switch {
       var _ when KeyM.L == k1 => D11U(),
@@ -37,6 +41,7 @@ class Program {
   }
 
   public static Task<bool> OnD1D(uint k1) {
+    Time[k1] = Environment.TickCount64;
     Held[k1] = T;
     return T switch {
       var _ when KeyM.L == k1 => D11D(),
@@ -63,6 +68,7 @@ class Program {
     Hold(KeyA.U, Key.S);
     Hold(KeyA.R, Key.A);
     Hold(KeyA.L, Key.D);
+    Console.WriteLine(Environment.TickCount64 - Since(KeyM.L));
     return Task.Run(() => {
       return T;
     });
@@ -77,7 +83,11 @@ class Program {
   }
 
   public static bool IsHeld(uint k1) {
-    return Held.TryGetValue(k1, out var isHeld) && isHeld;
+    return Held.GetValueOrDefault(k1, F);
+  }
+
+  public static long Since(uint k1) {
+    return Time.GetValueOrDefault(k1, 0);
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
@@ -176,6 +186,7 @@ class Program {
   private static IntPtr d2_hook_id = IntPtr.Zero;
   private static IntPtr d1_hook_id = IntPtr.Zero;
 
+  private static readonly Dictionary<uint, long> Time = [];
   private static readonly Dictionary<uint, bool> Held = [];
   private static readonly bool F = false;
   private static readonly bool T = true;
