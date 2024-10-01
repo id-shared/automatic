@@ -21,7 +21,6 @@ class Program {
   public static Task<bool> OnD2D(uint k1) {
     Time[k1] = Environment.TickCount64;
     Held[k1] = T;
-    Console.WriteLine(k1);
     return T switch {
       _ => Task.Run(() => {
         return T;
@@ -33,7 +32,14 @@ class Program {
     Time[k1] = Environment.TickCount64;
     Held[k1] = F;
     return T switch {
-      var _ when KeyM.X1 == k1 => D11U(),
+      var _ when KeyM.X1 == k1 => Task.Run(() => {
+        Unhold(KeyE.X1, KeyE.X1);
+        Unhold(KeyA.D, KeyA.D);
+        Unhold(KeyA.U, KeyA.U);
+        Unhold(KeyA.R, KeyA.R);
+        Unhold(KeyA.L, KeyA.L);
+        return T;
+      }),
       _ => Task.Run(() => {
         return T;
       }),
@@ -44,34 +50,19 @@ class Program {
     Time[k1] = Environment.TickCount64;
     Held[k1] = T;
     return T switch {
-      var _ when KeyM.X1 == k1 => D11D(),
+      var _ when KeyM.X1 == k1 => Task.Run(() => {
+        Hold(KeyE.X1, KeyM.X1);
+        Hold(KeyA.D, Key.W);
+        Hold(KeyA.U, Key.S);
+        Hold(KeyA.R, Key.A);
+        Hold(KeyA.L, Key.D);
+        Console.WriteLine(Environment.TickCount64 - AtTime(KeyE.X2));
+        return T;
+      }),
       _ => Task.Run(() => {
         return T;
       }),
     };
-  }
-
-  public static Task<bool> D11U() {
-    Unhold(KeyE.X1, KeyE.X1);
-    Unhold(KeyA.D, KeyA.D);
-    Unhold(KeyA.U, KeyA.U);
-    Unhold(KeyA.R, KeyA.R);
-    Unhold(KeyA.L, KeyA.L);
-    return Task.Run(() => {
-      return T;
-    });
-  }
-
-  public static Task<bool> D11D() {
-    Hold(KeyE.X1, KeyM.X1);
-    Hold(KeyA.D, Key.W);
-    Hold(KeyA.U, Key.S);
-    Hold(KeyA.R, Key.A);
-    Hold(KeyA.L, Key.D);
-    Console.WriteLine(Environment.TickCount64 - Since(KeyM.X1));
-    return Task.Run(() => {
-      return T;
-    });
   }
 
   public static bool Unhold(uint k2, uint k1) {
@@ -86,7 +77,7 @@ class Program {
     return Held.GetValueOrDefault(k1, F);
   }
 
-  public static long Since(uint k1) {
+  public static long AtTime(uint k1) {
     return Time.GetValueOrDefault(k1, 0);
   }
 
