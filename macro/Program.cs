@@ -5,10 +5,10 @@ class Program {
   public static Task<bool> OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 99),
-      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 99),
-      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 99),
-      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 99),
+      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 89),
+      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 89),
+      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 89),
+      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 89),
       _ => Task.Run(() => {
         return T;
       }),
@@ -22,6 +22,10 @@ class Program {
         return T;
       }),
     };
+  }
+
+  public static bool Uphold(uint key_1, uint key) {
+    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
   }
 
   public static Task<bool> OnD1U(uint key) {
@@ -174,7 +178,7 @@ class Program {
   private static IntPtr d2_hook_id = IntPtr.Zero;
   private static IntPtr d1_hook_id = IntPtr.Zero;
 
-  private static Dictionary<uint, bool> Held = new() { };
+  private static readonly Dictionary<uint, bool> Held = [];
   private static readonly bool F = false;
   private static readonly bool T = true;
 

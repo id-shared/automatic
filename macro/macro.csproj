@@ -9,7 +9,4 @@
     <StartupObject>Program</StartupObject>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="NAudio" Version="2.2.1" />
-  </ItemGroup>
 </Project>
