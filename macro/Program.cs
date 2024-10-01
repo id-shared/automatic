@@ -51,14 +51,18 @@ class Program {
     Time[k1] = Environment.TickCount64;
     Held[k1] = T;
     return T switch {
-      var _ when KeyM.X1 == k1 => Task.Run(() => {
-        Console.WriteLine(Environment.TickCount64 - AtTime(KeyE.X2));
-        Hold(KeyE.X2, KeyM.X1);
+      var _ when KeyM.X1 == k1 => Task.Run(async () => {
         Hold(KeyE.X1, KeyM.X1);
         Hold(KeyA.D, Key.W);
         Hold(KeyA.U, Key.S);
         Hold(KeyA.R, Key.A);
         Hold(KeyA.L, Key.D);
+        if (IsHeld(Key.A) == T && Since(Key.A) <= 100) {
+          await Task.Delay(100);
+          Hold(KeyE.X2, KeyM.X1);
+        } else {
+          Hold(KeyE.X2, KeyM.X1);
+        }
         return T;
       }),
       _ => Task.Run(() => {
@@ -77,6 +81,10 @@ class Program {
 
   public static bool IsHeld(uint k1) {
     return Held.GetValueOrDefault(k1, F);
+  }
+
+  public static long Since(uint k1) {
+    return Environment.TickCount64 - AtTime(k1);
   }
 
   public static long AtTime(uint k1) {
