@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 class Program {
   public static Task<bool> OnD2U(uint key) {
@@ -54,7 +53,7 @@ class Program {
     Hold(KeyA.R, Key.A);
     Hold(KeyA.L, Key.D);
     return Task.Run(async () => {
-      await Task.Delay(49);
+      await Task.Delay(99);
       Hold(KeyE.C, KeyM.L);
       return T;
     });
