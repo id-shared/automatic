@@ -2,21 +2,8 @@
 using System.Diagnostics;
 
 class Program {
-  public static Task<bool> OnD2U(uint key) {
-    Held[key] = F;
-    return T switch {
-      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 89),
-      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 89),
-      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 89),
-      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 89),
-      _ => Task.Run(() => {
-        return T;
-      }),
-    };
-  }
-
-  public static Task<bool> OnD2D(uint key) {
-    Held[key] = T;
+  public static Task<bool> OnD2U(uint k1) {
+    Held[k1] = F;
     return T switch {
       _ => Task.Run(() => {
         return T;
@@ -24,24 +11,44 @@ class Program {
     };
   }
 
-  public static bool Uphold(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
-  }
-
-  public static Task<bool> OnD1U(uint key) {
-    Held[key] = F;
+  public static Task<bool> OnD2D(uint k1) {
+    Held[k1] = T;
     return T switch {
-      var _ when KeyM.L == key => D11U(),
+      var _ when Key.A == k1 => Move(1000, 100, KeyA.R, k1),
+      var _ when Key.D == k1 => Move(1000, 100, KeyA.L, k1),
       _ => Task.Run(() => {
         return T;
       }),
     };
   }
 
-  public static Task<bool> OnD1D(uint key) {
-    Held[key] = T;
+  public static Task<bool> Move(int t2, int t1, uint k2, uint k1) {
     return T switch {
-      var _ when KeyM.L == key => D11D(),
+      var _ when IsHeld(k1) => Task.Run(async () => {
+        await Task.Delay(t1);
+        await Keyboard.Hold(k2, t2);
+        return await Move(t2, t1, k2, k1);
+      }),
+      _ => Task.Run(() => {
+        return T;
+      }),
+    };
+  }
+
+  public static Task<bool> OnD1U(uint k1) {
+    Held[k1] = F;
+    return T switch {
+      var _ when KeyM.L == k1 => D11U(),
+      _ => Task.Run(() => {
+        return T;
+      }),
+    };
+  }
+
+  public static Task<bool> OnD1D(uint k1) {
+    Held[k1] = T;
+    return T switch {
+      var _ when KeyM.L == k1 => D11D(),
       _ => Task.Run(() => {
         return T;
       }),
@@ -70,16 +77,16 @@ class Program {
     });
   }
 
-  public static bool Unhold(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, F) : T;
+  public static bool Unhold(uint k2, uint k1) {
+    return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
   }
 
-  public static bool Hold(uint key_1, uint key) {
-    return IsHeld(key) ? Keyboard.Input(key_1, T) : T;
+  public static bool Hold(uint k2, uint k1) {
+    return IsHeld(k1) ? Keyboard.Input(k2, T) : T;
   }
 
-  public static bool IsHeld(uint key) {
-    return Held.TryGetValue(key, out var isHeld) && isHeld;
+  public static bool IsHeld(uint k1) {
+    return Held.TryGetValue(k1, out var isHeld) && isHeld;
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
