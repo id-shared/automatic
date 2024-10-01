@@ -33,7 +33,7 @@ class Program {
     Time[k1] = Environment.TickCount64;
     Held[k1] = F;
     return T switch {
-      var _ when KeyM._1 == k1 => D11U(),
+      var _ when KeyM.X1 == k1 => D11U(),
       _ => Task.Run(() => {
         return T;
       }),
@@ -44,7 +44,7 @@ class Program {
     Time[k1] = Environment.TickCount64;
     Held[k1] = T;
     return T switch {
-      var _ when KeyM._1 == k1 => D11D(),
+      var _ when KeyM.X1 == k1 => D11D(),
       _ => Task.Run(() => {
         return T;
       }),
@@ -52,7 +52,7 @@ class Program {
   }
 
   public static Task<bool> D11U() {
-    Unhold(KeyE._1, KeyE._1);
+    Unhold(KeyE.X1, KeyE.X1);
     Unhold(KeyA.D, KeyA.D);
     Unhold(KeyA.U, KeyA.U);
     Unhold(KeyA.R, KeyA.R);
@@ -63,12 +63,12 @@ class Program {
   }
 
   public static Task<bool> D11D() {
-    Hold(KeyE._1, KeyM._1);
+    Hold(KeyE.X1, KeyM.X1);
     Hold(KeyA.D, Key.W);
     Hold(KeyA.U, Key.S);
     Hold(KeyA.R, Key.A);
     Hold(KeyA.L, Key.D);
-    Console.WriteLine(Environment.TickCount64 - Since(KeyM._1));
+    Console.WriteLine(Environment.TickCount64 - Since(KeyM.X1));
     return Task.Run(() => {
       return T;
     });
@@ -135,10 +135,10 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_LBUTTONDOWN:
-          OnD1D(KeyM._1);
+          OnD1D(KeyM.X1);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_LBUTTONUP:
-          OnD1U(KeyM._1);
+          OnD1U(KeyM.X1);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONDOWN:
           OnD1D(0x02);
