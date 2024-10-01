@@ -1,62 +1,63 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 class Program {
-  public static bool OnD2U(uint key) {
+  public static Task<bool> OnD2U(uint key) {
     Held[key] = F;
     return T switch {
-      var _ when Key.W == key => Unhold(KeyA.D, KeyA.D),
-      var _ when Key.S == key => Unhold(KeyA.U, KeyA.U),
-      var _ when Key.A == key => Unhold(KeyA.R, KeyA.R),
-      var _ when Key.D == key => Unhold(KeyA.L, KeyA.L),
-      _ => T,
+      var _ when Key.W == key => Keyboard.Hold(KeyA.D, 99),
+      var _ when Key.S == key => Keyboard.Hold(KeyA.U, 99),
+      var _ when Key.A == key => Keyboard.Hold(KeyA.R, 99),
+      var _ when Key.D == key => Keyboard.Hold(KeyA.L, 99),
+      _ => Task.Run(() => T),
     };
   }
 
-  public static bool OnD2D(uint key) {
+  public static Task<bool> OnD2D(uint key) {
     Held[key] = T;
     return T switch {
-      _ => T,
+      _ => Task.Run(() => T),
     };
   }
 
-  public static bool OnD1U(uint key) {
+  public static Task<bool> OnD1U(uint key) {
     Held[key] = F;
     return T switch {
       var _ when KeyM.L == key => D11U(),
-      _ => T,
+      _ => Task.Run(() => T),
     };
   }
 
-  public static bool OnD1D(uint key) {
+  public static Task<bool> OnD1D(uint key) {
     Held[key] = T;
     return T switch {
       var _ when KeyM.L == key => D11D(),
-      _ => T,
+      _ => Task.Run(() => T),
     };
   }
 
-  public static bool D11U() {
-    Unhold(KeyE.C, KeyE.C);
+  public static Task<bool> D11U() {
     Unhold(KeyA.D, KeyA.D);
     Unhold(KeyA.U, KeyA.U);
     Unhold(KeyA.R, KeyA.R);
     Unhold(KeyA.L, KeyA.L);
-    return T;
+    return Task.Run(() => {
+      Unhold(KeyE.C, KeyE.C);
+      return T;
+    });
   }
 
-  public static bool D11D() {
-    //Task.Run(async () => {
-    //  await Task.Delay(49);
-    //  return T;
-    //});
-
-    Hold(KeyE.C, KeyM.L);
+  public static Task<bool> D11D() {
     Hold(KeyA.D, Key.W);
     Hold(KeyA.U, Key.S);
     Hold(KeyA.R, Key.A);
     Hold(KeyA.L, Key.D);
-    return T;
+    return Task.Run(async () => {
+      await Task.Delay(49);
+      Hold(KeyE.C, KeyM.L);
+      return T;
+    });
   }
 
   public static bool Unhold(uint key_1, uint key) {
