@@ -68,27 +68,32 @@ class Program {
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.D) => Unifies([
+      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld (KeyX.W) => Unifies([
+        [KeyA.D, KeyX.W],
+        [KeyA.U, KeyX.S],
+        [KeyA.L, KeyX.D],
+        [KeyA.R, KeyX.A],
+      ], [
         [KeyE.C, KeyM.L],
         [KeyE.A, KeyM.L],
-      ], KeyA.L),
-      var _ when IsHeld(KeyX.A) => Unifies([
-        [KeyE.C, KeyM.L],
-        [KeyE.A, KeyM.L],
-      ], KeyA.R),
+      ]),
       _ => Unifier([
+        [KeyA.D, KeyX.W],
+        [KeyA.U, KeyX.S],
+        [KeyA.L, KeyX.D],
+        [KeyA.R, KeyX.A],
         [KeyE.C, KeyM.L],
         [KeyE.A, KeyM.L],
       ]),
     };
   }
 
-  public static bool Unifies(uint[][] keys, uint k2) {
+  public static bool Unifies(uint[][] keys2, uint[][] keys1) {
+    Unifier(keys2);
     Task.Run(async () => {
-      Keyboard.Input(k2, T);
       await Task.Delay(109);
       await Hold(9, KeyE.A);
-      return Unifier(keys);
+      return Unifier(keys1);
     });
     return T;
   }
@@ -97,8 +102,6 @@ class Program {
     foreach (uint[] key in keys) {
       Actor(key[0], key[1]);
     }
-    Acted(KeyA.D, KeyX.W);
-    Acted(KeyA.U, KeyX.S);
     return T;
   }
 
