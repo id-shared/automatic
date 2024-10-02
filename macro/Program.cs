@@ -44,17 +44,17 @@ class Program {
     Held[k1] = T;
     return T switch {
       var _ when KeyM.X1 == k1 => Task.Run(async () => {
-        if (IsHeld(Key.A) == T) {
+        if (IsHeld(KeyX.A) == T) {
           // (int)Math.Min(100, Since(Key.A))
-          Hold(KeyA.R, Key.A);
+          Hold(KeyA.R, KeyX.A);
           await Task.Delay(99);
         }
-        if (IsHeld(Key.D) == T) {
-          Hold(KeyA.L, Key.D);
+        if (IsHeld(KeyX.D) == T) {
+          Hold(KeyA.L, KeyX.D);
           await Task.Delay(99);
         }
-        Hold(KeyA.D, Key.W);
-        Hold(KeyA.U, Key.S);
+        Hold(KeyA.D, KeyX.W);
+        Hold(KeyA.U, KeyX.S);
         Hold(KeyE.X2, KeyM.X1);
         Hold(KeyE.X1, KeyM.X1);
         return T;
