@@ -33,8 +33,18 @@ class Program {
   public static bool OnD1U(uint k1) {
     Held[k1] = F;
     return T switch {
+      var _ when KeyM.L == k1 => D1LU(),
       _ => T,
     };
+  }
+  public static bool D1LU() {
+    Unhold(KeyE.C, KeyE.C);
+    Unhold(KeyE.A, KeyE.A);
+    Unhold(KeyA.U, KeyA.U);
+    Unhold(KeyA.R, KeyA.R);
+    Unhold(KeyA.L, KeyA.L);
+    Unhold(KeyA.D, KeyA.D);
+    return T;
   }
 
   public static bool OnD1D(uint k1) {
