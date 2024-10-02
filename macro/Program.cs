@@ -10,8 +10,21 @@ class Program {
   }
 
   public static bool OnD2D(uint k1) {
-    Console.WriteLine(k1);
     Held[k1] = T;
+    return T switch {
+      var _ when KeyX.D == k1 => D2DD(),
+      var _ when KeyX.A == k1 => D2AD(),
+      _ => T,
+    };
+  }
+
+  public static bool D2DD() {
+    return T switch {
+      _ => T,
+    };
+  }
+
+  public static bool D2AD() {
     return T switch {
       _ => T,
     };
@@ -34,24 +47,31 @@ class Program {
 
   public static bool D1LD() {
     Task.Run(async () => {
-      if (IsHeld(KeyX.D) == T) {
-        await Keyboard.Hold(99, KeyA.L);
-        await Keyboard.Hold(1, KeyE.A);
-      }
-      if (IsHeld(KeyX.A) == T) {
-        await Keyboard.Hold(99, KeyA.R);
-        await Keyboard.Hold(1, KeyE.A);
-      }
-      await Hold([
-        [KeyE.C, KeyE.C],
-        [KeyE.A, KeyE.A],
-        [KeyA.L, KeyX.D],
-        [KeyA.R, KeyX.A],
-      ], KeyM.L);
-      return T;
+      return T switch {
+        var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
+          await Keyboard.Hold(109, KeyA.L);
+          await Keyboard.Hold(1, KeyE.A);
+          return await D1L();
+        }),
+        var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
+          await Keyboard.Hold(109, KeyA.R);
+          await Keyboard.Hold(1, KeyE.A);
+          return await D1L();
+        }),
+        _ => await D1L(),
+      };
     });
 
     return T;
+  }
+
+  public static Task<bool> D1L() {
+    return Hold([
+      [KeyE.C, KeyE.C],
+      [KeyE.A, KeyE.A],
+      [KeyA.L, KeyX.D],
+      [KeyA.R, KeyX.A],
+    ], KeyM.L);
   }
 
   public static async Task<bool> Hold(uint[][] keys, uint k1) {
@@ -81,6 +101,8 @@ class Program {
   public static bool IsHeld(uint k1) {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
   }
+
+  public static readonly Dictionary<uint, bool> Held = [];
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
@@ -178,7 +200,6 @@ class Program {
   private static IntPtr d2_hook_id = IntPtr.Zero;
   private static IntPtr d1_hook_id = IntPtr.Zero;
 
-  private static readonly Dictionary<uint, bool> Held = [];
   private static readonly bool F = false;
   private static readonly bool T = true;
 
