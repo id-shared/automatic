@@ -73,7 +73,7 @@ class Program {
   }
 
   public static bool IsHeld(uint k1) {
-    return Held.GetValueOrDefault(k1, F);
+    return Held.TryGetValue(k1, out bool is_held) && is_held;
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
