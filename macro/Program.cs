@@ -56,22 +56,22 @@ class Program {
     return T switch {
       var _ when IsHeld(KeyX.D) => Unifier([
         [KeyE.C, KeyM.L],
-          [KeyE.A, KeyM.L],
-        ], KeyA.L),
+        [KeyE.A, KeyM.L],
+      ], KeyA.L),
       var _ when IsHeld(KeyX.A) => Unifier([
         [KeyE.C, KeyM.L],
-          [KeyE.A, KeyM.L],
-        ], KeyA.R),
+        [KeyE.A, KeyM.L],
+      ], KeyA.R),
       _ => Unified([
         [KeyE.C, KeyM.L],
-          [KeyE.A, KeyM.L],
-        ]),
+        [KeyE.A, KeyM.L],
+      ]),
     };
   }
 
   public static bool Unifier(uint[][] keys, uint k2) {
     Task.Run(async () => {
-      Actor(KeyA.R, k2);
+      Keyboard.Input(k2, T);
       await Task.Delay(109);
       await Hold(9, KeyE.A);
       return Unified([
