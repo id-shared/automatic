@@ -18,6 +18,22 @@ class Program {
     };
   }
 
+  public static bool OnD1U(uint k1) {
+    Held[k1] = F;
+    return T switch {
+      var _ when KeyM.L == k1 => D1LU(),
+      _ => T,
+    };
+  }
+
+  public static bool OnD1D(uint k1) {
+    Held[k1] = T;
+    return T switch {
+      var _ when KeyM.L == k1 => D1LD(),
+      _ => T,
+    };
+  }
+
   public static bool D2DD() {
     return T switch {
       _ => T,
@@ -30,13 +46,6 @@ class Program {
     };
   }
 
-  public static bool OnD1U(uint k1) {
-    Held[k1] = F;
-    return T switch {
-      var _ when KeyM.L == k1 => D1LU(),
-      _ => T,
-    };
-  }
   public static bool D1LU() {
     Unhold(KeyE.C, KeyE.C);
     Unhold(KeyE.A, KeyE.A);
@@ -47,35 +56,30 @@ class Program {
     return T;
   }
 
-  public static bool OnD1D(uint k1) {
-    Held[k1] = T;
-    return T switch {
-      var _ when KeyM.L == k1 => D1LD(),
-      _ => T,
-    };
-  }
-
   public static bool D1LD() {
     Task.Run(async () => {
       return T switch {
         var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
           await Keyboard.Hold(109, KeyA.L);
           await Keyboard.Hold(1, KeyE.A);
-          return await D1L();
+          return await D1Ld();
         }),
         var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
           await Keyboard.Hold(109, KeyA.R);
           await Keyboard.Hold(1, KeyE.A);
-          return await D1L();
+          return await D1Ld();
         }),
-        _ => await D1L(),
+        _ => await Hold([
+          [KeyE.C, KeyE.C],
+          [KeyE.A, KeyE.A],
+        ], KeyM.L),
       };
     });
 
     return T;
   }
 
-  public static Task<bool> D1L() {
+  public static Task<bool> D1Ld() {
     return Hold([
       [KeyE.C, KeyE.C],
       [KeyE.A, KeyE.A],
