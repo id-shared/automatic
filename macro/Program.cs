@@ -33,17 +33,19 @@ class Program {
 
   public static bool D1LD() {
     Task.Run(async () => {
-      if (IsHeld(KeyX.A) == T) {
-        await Keyboard.Hold(99, KeyA.R);
-        await Keyboard.Hold(1, KeyE.X2);
-      }
       if (IsHeld(KeyX.D) == T) {
         await Keyboard.Hold(99, KeyA.L);
+        await Keyboard.Hold(1, KeyE.X2);
+      }
+      if (IsHeld(KeyX.A) == T) {
+        await Keyboard.Hold(99, KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
       }
       await Hold([
         [KeyE.X2, KeyE.X2],
         [KeyE.X1, KeyE.X1],
+        [KeyA.L, KeyX.D],
+        [KeyA.R, KeyX.A],
       ], KeyM.X1);
       return T;
     });
@@ -61,18 +63,18 @@ class Program {
       return T;
     } else {
       foreach (uint[] key in keys) {
-        Unhold(key[1], key[0]);
+        Unhold(key[1], key[1]);
       }
       return T;
     }
   }
 
   public static bool Uphold(uint k2, uint k1) {
-    return IsHeld(k1) ? T : Keyboard.Input(k2, T);
+    return IsHeld(k1) ? T : (IsHeld(k2) ? T : Keyboard.Input(k2, T));
   }
 
   public static bool Unhold(uint k2, uint k1) {
-    return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
+    return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
   }
 
   public static bool IsHeld(uint k1) {
