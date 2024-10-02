@@ -79,7 +79,7 @@ class Program {
   }
 
   public static bool Strict() {
-    Stage([
+    State([
       [KeyA.D, KeyX.W],
       [KeyA.U, KeyX.S],
       [KeyA.L, KeyX.D],
@@ -90,13 +90,9 @@ class Program {
   }
 
   public static bool Player() {
-    Stage([
-      [KeyE.A, KeyM.L],
-    ]);
-
     Task.Run(async () => {
       await Task.Delay(99);
-      return Stage([
+      return State([
         [KeyE.C, KeyM.L],
       ]);
     });
@@ -104,7 +100,7 @@ class Program {
     return T;
   }
 
-  public static bool Stage(uint[][] keys) {
+  public static bool State(uint[][] keys) {
     foreach (uint[] key in keys) {
       Actor(key[0], key[1]);
     }
