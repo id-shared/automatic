@@ -36,7 +36,7 @@ class Program {
   public static bool D1LD() {
     Task.Run(async () => {
       if (IsHeld(KeyX.A) == T) {
-        //(int)Math.Min(100, Since(Key.A))
+        //(int)Math.Min(100, Since(Key.A));
         //Console.WriteLine(Since(KeyX.A));
         await Keyboard.Hold(Since(KeyX.A), KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
@@ -80,14 +80,14 @@ class Program {
     return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
   }
 
+  public static int AtTime(uint k1) {
+    return Time.TryGetValue(k1, out var _) ? Time[k1] : 0;
+  }
   public static bool IsHeld(uint k1) {
-    return Held.GetValueOrDefault(k1, F);
+    return Time.TryGetValue(k1, out var _) ? T : F;
   }
 
-  public static int AtTime(uint k1) {
-    return Time.GetValueOrDefault(k1, 0);
-  }
-    private static IntPtr SetHook(Delegate proc, uint hookType) {
+  private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
 
     switch (T) {
