@@ -35,61 +35,51 @@ class Program {
   }
 
   public static bool D2UD() {
-    Unhold(KeyA.L, KeyA.L);
-    return T;
+    return Unhold(KeyA.L, KeyA.L);
   }
 
   public static bool D2UA() {
-    Unhold(KeyA.R, KeyA.R);
-    return T;
+    return Unhold(KeyA.R, KeyA.R);
   }
 
   public static bool D1UL() {
-    Unhold(KeyE.C, KeyE.C);
-    Unhold(KeyE.A, KeyE.A);
     return T;
   }
 
   public static bool D1DL() {
-    Task.Run(() => {
-      return T switch {
-        //var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
-        //  await Keyboard.Hold(109, KeyA.L);
-        //  await Keyboard.Hold(1, KeyE.A);
-        //  return await D1Dl();
-        //}),
-        //var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
-        //  await Keyboard.Hold(109, KeyA.R);
-        //  await Keyboard.Hold(1, KeyE.A);
-        //  return await D1Dl();
-        //}),
-        _ => Hold([
-          [KeyE.C, KeyE.C],
-          [KeyE.A, KeyE.A],
-          [KeyA.L, KeyX.D],
-          [KeyA.R, KeyX.A],
-        ]),
-      };
-    });
+    //Task.Run(() => {
+    //  return T switch {
+    //    //var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
+    //    //  await Keyboard.Hold(109, KeyA.L);
+    //    //  await Keyboard.Hold(1, KeyE.A);
+    //    //  return await D1Dl();
+    //    //}),
+    //    //var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
+    //    //  await Keyboard.Hold(109, KeyA.R);
+    //    //  await Keyboard.Hold(1, KeyE.A);
+    //    //  return await D1Dl();
+    //    //}),
+    //    _ => Hold([
+    //      [KeyE.C, KeyE.C],
+    //      [KeyE.A, KeyE.A],
+    //      [KeyA.L, KeyX.D],
+    //      [KeyA.R, KeyX.A],
+    //    ]),
+    //  };
+    //});
 
-    return T;
-  }
-
-  public static bool D1Dl() {
-    return Hold([
-      [KeyE.C, KeyE.C],
-      [KeyE.A, KeyE.A],
+    return Unified([
+      //[KeyE.C, KeyE.C],
+      //[KeyE.A, KeyE.A],
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
     ]);
   }
 
-  public static bool Hold(uint[][] keys) {
+  public static bool Unified(uint[][] keys) {
     foreach (uint[] key in keys) {
       Uphold(key[1], key[0]);
     }
-    //await Task.Delay(10);
-    //await Hold(keys, k1);
     return T;
   }
 
