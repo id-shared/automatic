@@ -2,67 +2,58 @@
 using System.Diagnostics;
 
 class Program {
-  public static Task<bool> OnD2U(uint k1) {
+  public static bool OnD2U(uint k1) {
     Held[k1] = F;
     return T switch {
-      _ => Task.Run(() => {
-        return T;
-      }),
+      _ => T,
     };
   }
 
-  public static Task<bool> OnD2D(uint k1) {
+  public static bool OnD2D(uint k1) {
     Time[k1] = Environment.TickCount64;
     Held[k1] = T;
     return T switch {
-      _ => Task.Run(() => {
-        return T;
-      }),
+      _ => T,
     };
   }
 
-  public static Task<bool> OnD1U(uint k1) {
+  public static bool OnD1U(uint k1) {
     Held[k1] = F;
     return T switch {
-      var _ when KeyM.X1 == k1 => Task.Run(() => {
-        Unhold(KeyE.X2, KeyE.X2);
-        Unhold(KeyE.X1, KeyE.X1);
-        Unhold(KeyA.D, KeyA.D);
-        Unhold(KeyA.U, KeyA.U);
-        Unhold(KeyA.R, KeyA.R);
-        Unhold(KeyA.L, KeyA.L);
-        return T;
-      }),
-      _ => Task.Run(() => {
-        return T;
-      }),
+      _ => T,
     };
   }
 
-  public static Task<bool> OnD1D(uint k1) {
+  public static bool OnD1D(uint k1) {
     Time[k1] = Environment.TickCount64;
     Held[k1] = T;
     return T switch {
-      var _ when KeyM.X1 == k1 => Task.Run(async () => {
-        if (IsHeld(KeyX.A) == T) {
-          // (int)Math.Min(100, Since(Key.A))
-          Keyboard.Input(KeyA.R, T);
-          await Task.Delay(99);
-        }
-        if (IsHeld(KeyX.D) == T) {
-          Keyboard.Input(KeyA.L, T);
-          await Task.Delay(99);
-        }
-        Hold(KeyA.D, KeyX.W);
-        Hold(KeyA.U, KeyX.S);
-        Hold(KeyE.X2, KeyM.X1);
-        Hold(KeyE.X1, KeyM.X1);
-        return T;
-      }),
-      _ => Task.Run(() => {
-        return T;
-      }),
+      var _ when KeyM.X1 == k1 => D1LD(),
+      _ => T,
     };
+  }
+
+  public static bool D1LD() {
+    Task.Run(async () => {
+      if (IsHeld(KeyX.A) == T) {
+        // (int)Math.Min(100, Since(Key.A))
+        Keyboard.Input(KeyA.R, T);
+        await Task.Delay(99);
+        await Keyboard.Hold(1, KeyE.X2);
+      }
+      if (IsHeld(KeyX.D) == T) {
+        Keyboard.Input(KeyA.L, T);
+        await Task.Delay(99);
+        await Keyboard.Hold(1, KeyE.X2);
+      }
+      Hold(KeyA.D, KeyX.W);
+      Hold(KeyA.U, KeyX.S);
+      Hold(KeyE.X2, KeyM.X1);
+      Hold(KeyE.X1, KeyM.X1);
+      return T;
+    });
+
+    return T;
   }
 
   public static bool Unhold(uint k2, uint k1) {
