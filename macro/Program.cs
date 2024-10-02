@@ -68,29 +68,29 @@ class Program {
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Performance([
-        [KeyA.D, KeyX.W],
-        [KeyA.U, KeyX.S],
-        [KeyA.L, KeyX.D],
-        [KeyA.R, KeyX.A],
-      ], [
-        [KeyE.C, KeyM.L],
-      ]),
-      _ => Perform(),
+      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Player(),
+      _ => Play(),
     };
   }
 
-  public static bool Performance(uint[][] keys2, uint[][] keys1) {
-    Stage(keys2);
+  public static bool Player() {
+    Start();
+
     Task.Run(async () => {
       await Task.Delay(109);
-      await Hold(9, KeyE.A);
-      return Stage(keys1);
+      await Hold(1, KeyE.A);
+      return Play();
     });
+
     return T;
   }
 
-  public static bool Perform() {
+  public static bool Play() {
+    Start();
+
+    Stage([
+      [KeyE.A, KeyM.L],
+    ]);
     Task.Run(async () => {
       await Task.Delay(99);
       return Stage([
@@ -98,13 +98,18 @@ class Program {
       ]);
     });
 
-    return Stage([
-      [KeyE.A, KeyM.L],
+    return T;
+  }
+
+  public static bool Start() {
+    Stage([
       [KeyA.D, KeyX.W],
       [KeyA.U, KeyX.S],
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
     ]);
+
+    return T;
   }
 
   public static bool Stage(uint[][] keys) {
