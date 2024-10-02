@@ -37,46 +37,53 @@ class Program {
     Task.Run(async () => {
       if (IsHeld(KeyX.A) == T) {
         // (int)Math.Min(100, Since(Key.A))
-        Keyboard.Input(KeyA.R, T);
-        await Task.Delay(99);
+        await Keyboard.Hold(99, KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
       }
       if (IsHeld(KeyX.D) == T) {
-        Keyboard.Input(KeyA.L, T);
-        await Task.Delay(99);
+        await Keyboard.Hold(99, KeyA.L);
         await Keyboard.Hold(1, KeyE.X2);
       }
-      Hold(KeyA.D, KeyX.W);
-      Hold(KeyA.U, KeyX.S);
-      Hold(KeyE.X2, KeyM.X1);
-      Hold(KeyE.X1, KeyM.X1);
+      await Hold([KeyE.X2, KeyE.X1], KeyM.X1);
       return T;
     });
 
     return T;
   }
 
-  public static bool Unhold(uint k2, uint k1) {
-    return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
-  }
-
-  public static bool Hold(uint k2, uint k1) {
-    return IsHeld(k1) ? Keyboard.Input(k2, T) : T;
-  }
-
-  public static bool IsHeld(uint k1) {
-    return Held.GetValueOrDefault(k1, F);
+  public static async Task<bool> Hold(uint[] k2s, uint k1) {
+    if (IsHeld(k1)) {
+      foreach (uint k2 in k2s) {
+        Uphold(k2, k2);
+      }
+      await Task.Delay(10);
+      await Hold(k2s, k1);
+      return T;
+    } else {
+      return T;
+    }
   }
 
   public static long Since(uint k1) {
     return Environment.TickCount64 - AtTime(k1);
   }
 
+  public static bool Uphold(uint k2, uint k1) {
+    return IsHeld(k1) ? T : Keyboard.Input(k2, T);
+  }
+
+  public static bool Unhold(uint k2, uint k1) {
+    return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
+  }
+
+  public static bool IsHeld(uint k1) {
+    return Held.GetValueOrDefault(k1, F);
+  }
+
   public static long AtTime(uint k1) {
     return Time.GetValueOrDefault(k1, 0);
   }
-
-  private static IntPtr SetHook(Delegate proc, uint hookType) {
+    private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
 
     switch (T) {
