@@ -47,67 +47,58 @@ class Program {
   public static bool D1UL() {
     Unhold(KeyE.C, KeyE.C);
     Unhold(KeyE.A, KeyE.A);
-    Unhold(KeyA.U, KeyA.U);
-    Unhold(KeyA.R, KeyA.R);
-    Unhold(KeyA.L, KeyA.L);
-    Unhold(KeyA.D, KeyA.D);
     return T;
   }
 
   public static bool D1DL() {
-    Task.Run(async () => {
+    Task.Run(() => {
       return T switch {
-        var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
-          await Keyboard.Hold(109, KeyA.L);
-          await Keyboard.Hold(1, KeyE.A);
-          return await D1Dl();
-        }),
-        var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
-          await Keyboard.Hold(109, KeyA.R);
-          await Keyboard.Hold(1, KeyE.A);
-          return await D1Dl();
-        }),
-        _ => await Hold([
+        //var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
+        //  await Keyboard.Hold(109, KeyA.L);
+        //  await Keyboard.Hold(1, KeyE.A);
+        //  return await D1Dl();
+        //}),
+        //var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
+        //  await Keyboard.Hold(109, KeyA.R);
+        //  await Keyboard.Hold(1, KeyE.A);
+        //  return await D1Dl();
+        //}),
+        _ => Hold([
           [KeyE.C, KeyE.C],
           [KeyE.A, KeyE.A],
-        ], KeyM.L),
+          [KeyA.L, KeyX.D],
+          [KeyA.R, KeyX.A],
+        ]),
       };
     });
 
     return T;
   }
 
-  public static Task<bool> D1Dl() {
+  public static bool D1Dl() {
     return Hold([
       [KeyE.C, KeyE.C],
       [KeyE.A, KeyE.A],
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
-    ], KeyM.L);
+    ]);
   }
 
-  public static async Task<bool> Hold(uint[][] keys, uint k1) {
-    if (IsHeld(k1)) {
-      foreach (uint[] key in keys) {
-        Uphold(key[1], key[0]);
-      }
-      //await Task.Delay(10);
-      //await Hold(keys, k1);
-      return T;
-    } else {
-      //foreach (uint[] key in keys) {
-      //  Unhold(key[1], key[1]);
-      //}
-      return T;
+  public static bool Hold(uint[][] keys) {
+    foreach (uint[] key in keys) {
+      Uphold(key[1], key[0]);
     }
+    //await Task.Delay(10);
+    //await Hold(keys, k1);
+    return T;
   }
 
   public static bool Uphold(uint k2, uint k1) {
-    return IsHeld(k1) ? T : (IsHeld(k2) ? T : Keyboard.Input(k2, T));
+    return IsHeld(k1) ? T : Keyboard.Input(k2, T);
   }
 
   public static bool Unhold(uint k2, uint k1) {
-    return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
+    return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
   }
 
   public static bool IsHeld(uint k1) {
