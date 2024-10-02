@@ -68,29 +68,28 @@ class Program {
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Player(),
-      _ => Play(),
+      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Performer(),
+      _ => Perform(),
     };
   }
 
-  public static bool Player() {
+  public static bool Performer() {
     Start();
 
     Task.Run(async () => {
       await Task.Delay(109);
       await Hold(1, KeyE.A);
-      return Play();
+      return Perform();
     });
 
     return T;
   }
 
-  public static bool Play() {
-    Start();
-
+  public static bool Perform() {
     Stage([
       [KeyE.A, KeyM.L],
     ]);
+
     Task.Run(async () => {
       await Task.Delay(99);
       return Stage([
