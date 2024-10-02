@@ -57,11 +57,14 @@ class Program {
   }
 
   public static bool D1UL() {
-    Acted(KeyE.C, KeyE.C);
-    Acted(KeyA.U, KeyA.U);
-    Acted(KeyA.R, KeyA.R);
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.D, KeyA.D);
+    State([
+      [KeyE.C, KeyE.C],
+      [KeyA.U, KeyA.U],
+      [KeyA.R, KeyA.R],
+      [KeyA.L, KeyA.L],
+      [KeyA.D, KeyA.D],
+    ], F);
+    _ = IsHeld(KeyX.A) == T ? Task.Run(() => T) : Actor(249, KeyA.R);
     return T;
   }
 
@@ -84,43 +87,43 @@ class Program {
       [KeyA.U, KeyX.S],
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
-    ]);
+    ], T);
 
     return T;
   }
 
   public static bool Player() {
     Task.Run(async () => {
-      await Task.Delay(99);
+      await Task.Delay(199);
       return State([
         [KeyE.C, KeyM.L],
-      ]);
+      ], T);
     });
 
     return T;
   }
 
-  public static bool State(uint[][] keys) {
+  public static bool State(uint[][] keys, bool type) {
     foreach (uint[] key in keys) {
-      Actor(key[0], key[1]);
+      _ = type == T ? Act(key[0], key[1]) : Acted(key[0], key[1]);
     }
     return T;
+  }
+
+  public static Task<bool> Actor(int t1, uint k1) {
+    return IsHeld(k1) ? Task.Run(() => T) : Keyboard.Hold(t1, k1);
   }
 
   public static bool Acted(uint k2, uint k1) {
     return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
   }
 
-  public static bool Actor(uint k2, uint k1) {
+  public static bool Act(uint k2, uint k1) {
     return IsHeld(k1) ? (IsHeld(k2) ? T : Keyboard.Input(k2, T)) : T;
   }
 
   public static bool IsHeld(uint k1) {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
-  }
-
-  public static Task<bool> Hold(int t1, uint k1) {
-    return Keyboard.Hold(t1, k1);
   }
 
   public static readonly Dictionary<uint, bool> Held = [];
