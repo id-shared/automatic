@@ -35,14 +35,19 @@ class Program {
   }
 
   public static bool D2UD() {
-    return Unhold(KeyA.L, KeyA.L);
+    Unhold(KeyA.L, KeyA.L);
+    return T;
   }
 
   public static bool D2UA() {
-    return Unhold(KeyA.R, KeyA.R);
+    Unhold(KeyA.R, KeyA.R);
+    return T;
   }
 
   public static bool D1UL() {
+    Unhold(KeyA.R, KeyA.R);
+    Unhold(KeyA.L, KeyA.L);
+    Unhold(KeyE.C, KeyE.C);
     return T;
   }
 
@@ -69,8 +74,7 @@ class Program {
     //});
 
     return Unified([
-      //[KeyE.C, KeyE.C],
-      //[KeyE.A, KeyE.A],
+      [KeyE.C, KeyM.L],
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
     ]);
@@ -78,17 +82,17 @@ class Program {
 
   public static bool Unified(uint[][] keys) {
     foreach (uint[] key in keys) {
-      Uphold(key[1], key[0]);
+      Hold(key[0], key[1]);
     }
     return T;
   }
 
-  public static bool Uphold(uint k2, uint k1) {
-    return IsHeld(k1) ? T : Keyboard.Input(k2, T);
+  public static bool Unhold(uint k2, uint k1) {
+    return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
   }
 
-  public static bool Unhold(uint k2, uint k1) {
-    return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
+  public static bool Hold(uint k2, uint k1) {
+    return IsHeld(k1) ? (IsHeld(k2) ? T : Keyboard.Input(k2, T)) : T;
   }
 
   public static bool IsHeld(uint k1) {
