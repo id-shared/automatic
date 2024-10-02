@@ -52,32 +52,34 @@ class Program {
   }
 
   public static bool D1DL() {
-    //Task.Run(() => {
-    //  return T switch {
-    //    //var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
-    //    //  await Keyboard.Hold(109, KeyA.L);
-    //    //  await Keyboard.Hold(1, KeyE.A);
-    //    //  return await D1Dl();
-    //    //}),
-    //    //var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
-    //    //  await Keyboard.Hold(109, KeyA.R);
-    //    //  await Keyboard.Hold(1, KeyE.A);
-    //    //  return await D1Dl();
-    //    //}),
-    //    _ => Hold([
-    //      [KeyE.C, KeyE.C],
-    //      [KeyE.A, KeyE.A],
-    //      [KeyA.L, KeyX.D],
-    //      [KeyA.R, KeyX.A],
-    //    ]),
-    //  };
-    //});
+    Task.Run(async () => {
+      return T switch {
+        var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
+          await Keyboard.Hold(109, KeyA.L);
+          await Keyboard.Hold(1, KeyE.A);
+          return Unified([
+            [KeyE.C, KeyM.L],
+            [KeyE.A, KeyM.L],
+            [KeyA.L, KeyX.D],
+          ]);
+        }),
+        var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
+          await Keyboard.Hold(109, KeyA.R);
+          await Keyboard.Hold(1, KeyE.A);
+          return Unified([
+            [KeyE.C, KeyM.L],
+            [KeyE.A, KeyM.L],
+            [KeyA.R, KeyX.A],
+          ]);
+        }),
+        _ => Unified([
+          [KeyE.C, KeyM.L],
+          [KeyE.A, KeyM.L],
+        ]),
+      };
+    });
 
-    return Unified([
-      [KeyE.C, KeyM.L],
-      [KeyA.L, KeyX.D],
-      [KeyA.R, KeyX.A],
-    ]);
+    return T;
   }
 
   public static bool Unified(uint[][] keys) {
