@@ -5,6 +5,8 @@ class Program {
   public static bool OnD2U(uint k1) {
     Held[k1] = F;
     return T switch {
+      var _ when KeyX.D == k1 => D2UD(),
+      var _ when KeyX.A == k1 => D2UA(),
       _ => T,
     };
   }
@@ -12,8 +14,6 @@ class Program {
   public static bool OnD2D(uint k1) {
     Held[k1] = T;
     return T switch {
-      var _ when KeyX.D == k1 => D2DD(),
-      var _ when KeyX.A == k1 => D2AD(),
       _ => T,
     };
   }
@@ -21,7 +21,7 @@ class Program {
   public static bool OnD1U(uint k1) {
     Held[k1] = F;
     return T switch {
-      var _ when KeyM.L == k1 => D1LU(),
+      var _ when KeyM.L == k1 => D1UL(),
       _ => T,
     };
   }
@@ -29,24 +29,22 @@ class Program {
   public static bool OnD1D(uint k1) {
     Held[k1] = T;
     return T switch {
-      var _ when KeyM.L == k1 => D1LD(),
+      var _ when KeyM.L == k1 => D1DL(),
       _ => T,
     };
   }
 
-  public static bool D2DD() {
-    return T switch {
-      _ => T,
-    };
+  public static bool D2UD() {
+    Unhold(KeyA.L, KeyA.L);
+    return T;
   }
 
-  public static bool D2AD() {
-    return T switch {
-      _ => T,
-    };
+  public static bool D2UA() {
+    Unhold(KeyA.R, KeyA.R);
+    return T;
   }
 
-  public static bool D1LU() {
+  public static bool D1UL() {
     Unhold(KeyE.C, KeyE.C);
     Unhold(KeyE.A, KeyE.A);
     Unhold(KeyA.U, KeyA.U);
@@ -56,18 +54,18 @@ class Program {
     return T;
   }
 
-  public static bool D1LD() {
+  public static bool D1DL() {
     Task.Run(async () => {
       return T switch {
         var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
           await Keyboard.Hold(109, KeyA.L);
           await Keyboard.Hold(1, KeyE.A);
-          return await D1Ld();
+          return await D1Dl();
         }),
         var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
           await Keyboard.Hold(109, KeyA.R);
           await Keyboard.Hold(1, KeyE.A);
-          return await D1Ld();
+          return await D1Dl();
         }),
         _ => await Hold([
           [KeyE.C, KeyE.C],
@@ -79,7 +77,7 @@ class Program {
     return T;
   }
 
-  public static Task<bool> D1Ld() {
+  public static Task<bool> D1Dl() {
     return Hold([
       [KeyE.C, KeyE.C],
       [KeyE.A, KeyE.A],
@@ -93,13 +91,13 @@ class Program {
       foreach (uint[] key in keys) {
         Uphold(key[1], key[0]);
       }
-      await Task.Delay(10);
-      await Hold(keys, k1);
+      //await Task.Delay(10);
+      //await Hold(keys, k1);
       return T;
     } else {
-      foreach (uint[] key in keys) {
-        Unhold(key[1], key[1]);
-      }
+      //foreach (uint[] key in keys) {
+      //  Unhold(key[1], key[1]);
+      //}
       return T;
     }
   }
