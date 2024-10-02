@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 class Program {
   public static bool OnD2U(uint k1) {
@@ -58,34 +57,39 @@ class Program {
   }
 
   public static bool D1UL() {
+    Acted(KeyE.C, KeyE.C);
     Acted(KeyA.U, KeyA.U);
     Acted(KeyA.R, KeyA.R);
     Acted(KeyA.L, KeyA.L);
     Acted(KeyA.D, KeyA.D);
-    Acted(KeyE.C, KeyE.C);
     return T;
   }
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Performer(),
-      _ => Perform(),
+      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Perform(),
+      _ => Player(),
     };
   }
 
-  public static bool Performer() {
-    Start();
+  public static bool Perform() {
+    Strict();
+    Player();
+    return T;
+  }
 
-    Task.Run(async () => {
-      await Task.Delay(109);
-      await Hold(1, KeyE.A);
-      return Perform();
-    });
+  public static bool Strict() {
+    Stage([
+      [KeyA.D, KeyX.W],
+      [KeyA.U, KeyX.S],
+      [KeyA.L, KeyX.D],
+      [KeyA.R, KeyX.A],
+    ]);
 
     return T;
   }
 
-  public static bool Perform() {
+  public static bool Player() {
     Stage([
       [KeyE.A, KeyM.L],
     ]);
@@ -96,17 +100,6 @@ class Program {
         [KeyE.C, KeyM.L],
       ]);
     });
-
-    return T;
-  }
-
-  public static bool Start() {
-    Stage([
-      [KeyA.D, KeyX.W],
-      [KeyA.U, KeyX.S],
-      [KeyA.L, KeyX.D],
-      [KeyA.R, KeyX.A],
-    ]);
 
     return T;
   }
