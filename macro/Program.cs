@@ -35,70 +35,74 @@ class Program {
   }
 
   public static bool D2UD() {
-    Release(KeyA.L, KeyA.L);
+    Acted(KeyA.L, KeyA.L);
     return T;
   }
 
   public static bool D2UA() {
-    Release(KeyA.R, KeyA.R);
+    Acted(KeyA.R, KeyA.R);
     return T;
   }
 
   public static bool D1UL() {
-    Release(KeyA.R, KeyA.R);
-    Release(KeyA.L, KeyA.L);
-    Release(KeyE.C, KeyE.C);
-    Release(KeyE.A, KeyE.A);
+    Acted(KeyA.R, KeyA.R);
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyE.C, KeyE.C);
+    Acted(KeyE.A, KeyE.A);
     return T;
   }
 
   public static bool D1DL() {
-    Task.Run(async () => {
-      return T switch {
-        var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
-          //await Keyboard.Hold(109, KeyA.L);
-          //await Keyboard.Hold(9, KeyE.A);
-          return Unified([
-            [KeyE.C, KeyM.L],
-            [KeyE.A, KeyM.L],
-          ]);
-        }),
-        var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
-          Press(KeyA.R, KeyM.L);
-          await Task.Delay(109);
-          await Keyboard.Hold(9, KeyE.A);
-          return Unified([
-            [KeyE.C, KeyM.L],
-            [KeyE.A, KeyM.L],
-          ]);
-        }),
-        _ => Unified([
-          [KeyE.C, KeyM.L],
+    return T switch {
+      var _ when IsHeld(KeyX.D) => Unifier([
+        [KeyE.C, KeyM.L],
+          [KeyE.A, KeyM.L],
+        ], KeyA.L),
+      var _ when IsHeld(KeyX.A) => Unifier([
+        [KeyE.C, KeyM.L],
+          [KeyE.A, KeyM.L],
+        ], KeyA.R),
+      _ => Unified([
+        [KeyE.C, KeyM.L],
           [KeyE.A, KeyM.L],
         ]),
-      };
-    });
+    };
+  }
 
+  public static bool Unifier(uint[][] keys, uint k2) {
+    Task.Run(async () => {
+      Actor(KeyA.R, k2);
+      await Task.Delay(109);
+      await Hold(9, KeyE.A);
+      return Unified([
+        [KeyE.C, KeyM.L],
+        [KeyE.A, KeyM.L],
+      ]);
+    });
     return T;
   }
 
   public static bool Unified(uint[][] keys) {
     foreach (uint[] key in keys) {
-      Press(key[0], key[1]);
+      Actor(key[0], key[1]);
     }
     return T;
   }
 
-  public static bool Release(uint k2, uint k1) {
+  public static bool Acted(uint k2, uint k1) {
     return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
   }
 
-  public static bool Press(uint k2, uint k1) {
+  public static bool Actor(uint k2, uint k1) {
     return IsHeld(k1) ? (IsHeld(k2) ? T : Keyboard.Input(k2, T)) : T;
   }
 
   public static bool IsHeld(uint k1) {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
+  }
+
+  public static Task<bool> Hold(int t1, uint k1) {
+    return Keyboard.Hold(t1, k1);
   }
 
   public static readonly Dictionary<uint, bool> Held = [];
