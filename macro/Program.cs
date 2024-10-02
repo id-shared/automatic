@@ -35,19 +35,20 @@ class Program {
   }
 
   public static bool D2UD() {
-    Unhold(KeyA.L, KeyA.L);
+    Release(KeyA.L, KeyA.L);
     return T;
   }
 
   public static bool D2UA() {
-    Unhold(KeyA.R, KeyA.R);
+    Release(KeyA.R, KeyA.R);
     return T;
   }
 
   public static bool D1UL() {
-    Unhold(KeyA.R, KeyA.R);
-    Unhold(KeyA.L, KeyA.L);
-    Unhold(KeyE.C, KeyE.C);
+    Release(KeyA.R, KeyA.R);
+    Release(KeyA.L, KeyA.L);
+    Release(KeyE.C, KeyE.C);
+    Release(KeyE.A, KeyE.A);
     return T;
   }
 
@@ -55,21 +56,20 @@ class Program {
     Task.Run(async () => {
       return T switch {
         var _ when IsHeld(KeyX.D) => await Task.Run(async () => {
-          await Keyboard.Hold(109, KeyA.L);
-          await Keyboard.Hold(1, KeyE.A);
+          //await Keyboard.Hold(109, KeyA.L);
+          //await Keyboard.Hold(9, KeyE.A);
           return Unified([
             [KeyE.C, KeyM.L],
             [KeyE.A, KeyM.L],
-            [KeyA.L, KeyX.D],
           ]);
         }),
         var _ when IsHeld(KeyX.A) => await Task.Run(async () => {
-          await Keyboard.Hold(109, KeyA.R);
-          await Keyboard.Hold(1, KeyE.A);
+          Press(KeyA.R, KeyM.L);
+          await Task.Delay(109);
+          await Keyboard.Hold(9, KeyE.A);
           return Unified([
             [KeyE.C, KeyM.L],
             [KeyE.A, KeyM.L],
-            [KeyA.R, KeyX.A],
           ]);
         }),
         _ => Unified([
@@ -84,16 +84,16 @@ class Program {
 
   public static bool Unified(uint[][] keys) {
     foreach (uint[] key in keys) {
-      Hold(key[0], key[1]);
+      Press(key[0], key[1]);
     }
     return T;
   }
 
-  public static bool Unhold(uint k2, uint k1) {
+  public static bool Release(uint k2, uint k1) {
     return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
   }
 
-  public static bool Hold(uint k2, uint k1) {
+  public static bool Press(uint k2, uint k1) {
     return IsHeld(k1) ? (IsHeld(k2) ? T : Keyboard.Input(k2, T)) : T;
   }
 
