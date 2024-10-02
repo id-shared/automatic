@@ -41,24 +41,27 @@ class Program {
         await Keyboard.Hold(99, KeyA.L);
         await Keyboard.Hold(1, KeyE.X2);
       }
-      await Hold([KeyE.X2, KeyE.X1], KeyM.X1);
+      await Hold([
+        [KeyE.X2, KeyE.X2],
+        [KeyE.X1, KeyE.X1],
+      ], KeyM.X1);
       return T;
     });
 
     return T;
   }
 
-  public static async Task<bool> Hold(uint[] k2s, uint k1) {
+  public static async Task<bool> Hold(uint[][] keys, uint k1) {
     if (IsHeld(k1)) {
-      foreach (uint k2 in k2s) {
-        Uphold(k2, k2);
+      foreach (uint[] key in keys) {
+        Uphold(key[1], key[0]);
       }
       await Task.Delay(10);
-      await Hold(k2s, k1);
+      await Hold(keys, k1);
       return T;
     } else {
-      foreach (uint k2 in k2s) {
-        Unhold(k2, k2);
+      foreach (uint[] key in keys) {
+        Unhold(key[1], key[0]);
       }
       return T;
     }
