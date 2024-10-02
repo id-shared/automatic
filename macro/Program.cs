@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 class Program {
   public static bool OnD2U(uint k1) {
@@ -11,7 +10,6 @@ class Program {
   }
 
   public static bool OnD2D(uint k1) {
-    Time[k1] = Environment.TickCount;
     Held[k1] = T;
     return T switch {
       _ => T,
@@ -26,7 +24,6 @@ class Program {
   }
 
   public static bool OnD1D(uint k1) {
-    Time[k1] = Environment.TickCount;
     Held[k1] = T;
     return T switch {
       var _ when KeyM.X1 == k1 => D1LD(),
@@ -37,13 +34,11 @@ class Program {
   public static bool D1LD() {
     Task.Run(async () => {
       if (IsHeld(KeyX.A) == T) {
-        //(int)Math.Min(100, Since(Key.A));
-        //Console.WriteLine(Math.Min(199, OnHeld(KeyX.A)));
-        await Keyboard.Hold(Math.Min(499, OnHeld(KeyX.A)), KeyA.R);
+        await Keyboard.Hold(99, KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
       }
       if (IsHeld(KeyX.D) == T) {
-        await Keyboard.Hold(499, KeyA.L);
+        await Keyboard.Hold(99, KeyA.L);
         await Keyboard.Hold(1, KeyE.X2);
       }
       await Hold([KeyE.X2, KeyE.X1], KeyM.X1);
@@ -75,10 +70,6 @@ class Program {
 
   public static bool Unhold(uint k2, uint k1) {
     return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
-  }
-
-  public static int OnHeld(uint k1) {
-    return Environment.TickCount - Time.GetValueOrDefault(k1, 0);
   }
 
   public static bool IsHeld(uint k1) {
@@ -182,7 +173,6 @@ class Program {
   private static IntPtr d1_hook_id = IntPtr.Zero;
 
   private static readonly Dictionary<uint, bool> Held = [];
-  private static readonly Dictionary<uint, int> Time = [];
   private static readonly bool F = false;
   private static readonly bool T = true;
 
