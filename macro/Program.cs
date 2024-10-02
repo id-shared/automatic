@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 class Program {
   public static bool OnD2U(uint k1) {
@@ -37,12 +38,12 @@ class Program {
     Task.Run(async () => {
       if (IsHeld(KeyX.A) == T) {
         //(int)Math.Min(100, Since(Key.A));
-        //Console.WriteLine(Since(KeyX.A));
-        await Keyboard.Hold(Since(KeyX.A), KeyA.R);
+        //Console.WriteLine(Math.Min(199, OnHeld(KeyX.A)));
+        await Keyboard.Hold(Math.Min(499, OnHeld(KeyX.A)), KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
       }
       if (IsHeld(KeyX.D) == T) {
-        await Keyboard.Hold(99, KeyA.L);
+        await Keyboard.Hold(499, KeyA.L);
         await Keyboard.Hold(1, KeyE.X2);
       }
       await Hold([KeyE.X2, KeyE.X1], KeyM.X1);
@@ -68,10 +69,6 @@ class Program {
     }
   }
 
-  public static int Since(uint k1) {
-    return Environment.TickCount - AtTime(k1);
-  }
-
   public static bool Uphold(uint k2, uint k1) {
     return IsHeld(k1) ? T : Keyboard.Input(k2, T);
   }
@@ -80,11 +77,12 @@ class Program {
     return IsHeld(k1) ? Keyboard.Input(k2, F) : T;
   }
 
-  public static int AtTime(uint k1) {
-    return Time.TryGetValue(k1, out var _) ? Time[k1] : 0;
+  public static int OnHeld(uint k1) {
+    return Environment.TickCount - Time.GetValueOrDefault(k1, 0);
   }
+
   public static bool IsHeld(uint k1) {
-    return Time.TryGetValue(k1, out var _) ? T : F;
+    return Held.GetValueOrDefault(k1, F);
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
