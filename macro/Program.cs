@@ -10,6 +10,7 @@ class Program {
   }
 
   public static bool OnD2D(uint k1) {
+    Console.WriteLine(k1);
     Held[k1] = T;
     return T switch {
       _ => T,
@@ -26,7 +27,7 @@ class Program {
   public static bool OnD1D(uint k1) {
     Held[k1] = T;
     return T switch {
-      var _ when KeyM.X1 == k1 => D1LD(),
+      var _ when KeyM.L == k1 => D1LD(),
       _ => T,
     };
   }
@@ -35,18 +36,18 @@ class Program {
     Task.Run(async () => {
       if (IsHeld(KeyX.D) == T) {
         await Keyboard.Hold(99, KeyA.L);
-        await Keyboard.Hold(1, KeyE.X2);
+        await Keyboard.Hold(1, KeyE.A);
       }
       if (IsHeld(KeyX.A) == T) {
         await Keyboard.Hold(99, KeyA.R);
-        await Keyboard.Hold(1, KeyE.X2);
+        await Keyboard.Hold(1, KeyE.A);
       }
       await Hold([
-        [KeyE.X2, KeyE.X2],
-        [KeyE.X1, KeyE.X1],
+        [KeyE.C, KeyE.C],
+        [KeyE.A, KeyE.A],
         [KeyA.L, KeyX.D],
         [KeyA.R, KeyX.A],
-      ], KeyM.X1);
+      ], KeyM.L);
       return T;
     });
 
@@ -126,10 +127,10 @@ class Program {
       uint act = (uint)wParam;
       switch (T) {
         case var _ when act == WM_LBUTTONDOWN:
-          OnD1D(KeyM.X1);
+          OnD1D(KeyM.L);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_LBUTTONUP:
-          OnD1U(KeyM.X1);
+          OnD1U(KeyM.L);
           return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
         case var _ when act == WM_RBUTTONDOWN:
           OnD1D(0x02);

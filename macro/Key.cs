@@ -7,12 +7,12 @@
 }
 
 class KeyM {
-  public static readonly uint X1 = 0x01;
+  public static readonly uint L = 0x01;
 }
 
 class KeyE {
-  public static readonly uint X2 = 164;
-  public static readonly uint X1 = 162;
+  public static readonly uint C = 162;
+  public static readonly uint A = 164;
 }
 
 class KeyA {
