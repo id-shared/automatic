@@ -5,6 +5,8 @@ class Program {
   public static bool OnD2U(uint k1) {
     Held[k1] = F;
     return T switch {
+      var _ when KeyX.W == k1 => D2UW(),
+      var _ when KeyX.S == k1 => D2US(),
       var _ when KeyX.D == k1 => D2UD(),
       var _ when KeyX.A == k1 => D2UA(),
       _ => T,
@@ -34,6 +36,16 @@ class Program {
     };
   }
 
+  public static bool D2UW() {
+    Acted(KeyA.D, KeyA.D);
+    return T;
+  }
+
+  public static bool D2US() {
+    Acted(KeyA.U, KeyA.U);
+    return T;
+  }
+
   public static bool D2UD() {
     Acted(KeyA.L, KeyA.L);
     return T;
@@ -45,8 +57,10 @@ class Program {
   }
 
   public static bool D1UL() {
+    Acted(KeyA.U, KeyA.U);
     Acted(KeyA.R, KeyA.R);
     Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.D, KeyA.D);
     Acted(KeyE.C, KeyE.C);
     Acted(KeyE.A, KeyE.A);
     return T;
@@ -54,38 +68,37 @@ class Program {
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.D) => Unifier([
+      var _ when IsHeld(KeyX.D) => Unifies([
         [KeyE.C, KeyM.L],
         [KeyE.A, KeyM.L],
       ], KeyA.L),
-      var _ when IsHeld(KeyX.A) => Unifier([
+      var _ when IsHeld(KeyX.A) => Unifies([
         [KeyE.C, KeyM.L],
         [KeyE.A, KeyM.L],
       ], KeyA.R),
-      _ => Unified([
+      _ => Unifier([
         [KeyE.C, KeyM.L],
         [KeyE.A, KeyM.L],
       ]),
     };
   }
 
-  public static bool Unifier(uint[][] keys, uint k2) {
+  public static bool Unifies(uint[][] keys, uint k2) {
     Task.Run(async () => {
       Keyboard.Input(k2, T);
       await Task.Delay(109);
       await Hold(9, KeyE.A);
-      return Unified([
-        [KeyE.C, KeyM.L],
-        [KeyE.A, KeyM.L],
-      ]);
+      return Unifier(keys);
     });
     return T;
   }
 
-  public static bool Unified(uint[][] keys) {
+  public static bool Unifier(uint[][] keys) {
     foreach (uint[] key in keys) {
       Actor(key[0], key[1]);
     }
+    Acted(KeyA.D, KeyX.W);
+    Acted(KeyA.U, KeyX.S);
     return T;
   }
 
