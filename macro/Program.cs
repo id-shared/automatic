@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 class Program {
   public static bool OnD2U(uint k1) {
@@ -62,43 +63,51 @@ class Program {
     Acted(KeyA.L, KeyA.L);
     Acted(KeyA.D, KeyA.D);
     Acted(KeyE.C, KeyE.C);
-    Acted(KeyE.A, KeyE.A);
     return T;
   }
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld (KeyX.W) => Unifies([
+      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Performance([
         [KeyA.D, KeyX.W],
         [KeyA.U, KeyX.S],
         [KeyA.L, KeyX.D],
         [KeyA.R, KeyX.A],
       ], [
         [KeyE.C, KeyM.L],
-        [KeyE.A, KeyM.L],
       ]),
-      _ => Unifier([
-        [KeyA.D, KeyX.W],
-        [KeyA.U, KeyX.S],
-        [KeyA.L, KeyX.D],
-        [KeyA.R, KeyX.A],
-        [KeyE.C, KeyM.L],
-        [KeyE.A, KeyM.L],
-      ]),
+      _ => Perform(),
     };
   }
 
-  public static bool Unifies(uint[][] keys2, uint[][] keys1) {
-    Unifier(keys2);
+  public static bool Performance(uint[][] keys2, uint[][] keys1) {
+    Stage(keys2);
     Task.Run(async () => {
       await Task.Delay(109);
       await Hold(9, KeyE.A);
-      return Unifier(keys1);
+      return Stage(keys1);
     });
     return T;
   }
 
-  public static bool Unifier(uint[][] keys) {
+  public static bool Perform() {
+    Task.Run(async () => {
+      await Task.Delay(99);
+      return Stage([
+        [KeyE.C, KeyM.L],
+      ]);
+    });
+
+    return Stage([
+      [KeyE.A, KeyM.L],
+      [KeyA.D, KeyX.W],
+      [KeyA.U, KeyX.S],
+      [KeyA.L, KeyX.D],
+      [KeyA.R, KeyX.A],
+    ]);
+  }
+
+  public static bool Stage(uint[][] keys) {
     foreach (uint[] key in keys) {
       Actor(key[0], key[1]);
     }
