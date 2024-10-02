@@ -46,11 +46,11 @@ class Program {
       var _ when KeyM.X1 == k1 => Task.Run(async () => {
         if (IsHeld(KeyX.A) == T) {
           // (int)Math.Min(100, Since(Key.A))
-          Hold(KeyA.R, KeyX.A);
+          Keyboard.Input(KeyA.R, T);
           await Task.Delay(99);
         }
         if (IsHeld(KeyX.D) == T) {
-          Hold(KeyA.L, KeyX.D);
+          Keyboard.Input(KeyA.L, T);
           await Task.Delay(99);
         }
         Hold(KeyA.D, KeyX.W);
