@@ -3,15 +3,8 @@ using System.Diagnostics;
 
 class Program {
   public static Task<bool> OnD2U(uint k1) {
-    Time[k1] = Environment.TickCount64;
     Held[k1] = F;
     return T switch {
-      var _ when Key.D == k1 => Task.Run(() => {
-        return Keyboard.Hold(99, KeyA.L);
-      }),
-      var _ when Key.A == k1 => Task.Run(() => {
-        return Keyboard.Hold(99, KeyA.R);
-      }),
       _ => Task.Run(() => {
         return T;
       }),
@@ -29,7 +22,6 @@ class Program {
   }
 
   public static Task<bool> OnD1U(uint k1) {
-    Time[k1] = Environment.TickCount64;
     Held[k1] = F;
     return T switch {
       var _ when KeyM.X1 == k1 => Task.Run(() => {
@@ -52,17 +44,19 @@ class Program {
     Held[k1] = T;
     return T switch {
       var _ when KeyM.X1 == k1 => Task.Run(async () => {
-        Hold(KeyE.X1, KeyM.X1);
+        if (IsHeld(Key.A) == T) {
+          // (int)Math.Min(100, Since(Key.A))
+          Hold(KeyA.R, Key.A);
+          await Task.Delay(99);
+        }
+        if (IsHeld(Key.D) == T) {
+          Hold(KeyA.L, Key.D);
+          await Task.Delay(99);
+        }
         Hold(KeyA.D, Key.W);
         Hold(KeyA.U, Key.S);
-        Hold(KeyA.R, Key.A);
-        Hold(KeyA.L, Key.D);
-        if (IsHeld(Key.A) == T && Since(Key.A) <= 100) {
-          await Task.Delay(100);
-          Hold(KeyE.X2, KeyM.X1);
-        } else {
-          Hold(KeyE.X2, KeyM.X1);
-        }
+        Hold(KeyE.X2, KeyM.X1);
+        Hold(KeyE.X1, KeyM.X1);
         return T;
       }),
       _ => Task.Run(() => {
