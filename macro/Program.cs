@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 class Program {
   public static bool OnD2U(uint k1) {
@@ -11,7 +10,7 @@ class Program {
   }
 
   public static bool OnD2D(uint k1) {
-    Time[k1] = Environment.TickCount64;
+    Time[k1] = Environment.TickCount;
     Held[k1] = T;
     return T switch {
       _ => T,
@@ -26,7 +25,7 @@ class Program {
   }
 
   public static bool OnD1D(uint k1) {
-    Time[k1] = Environment.TickCount64;
+    Time[k1] = Environment.TickCount;
     Held[k1] = T;
     return T switch {
       var _ when KeyM.X1 == k1 => D1LD(),
@@ -37,8 +36,8 @@ class Program {
   public static bool D1LD() {
     Task.Run(async () => {
       if (IsHeld(KeyX.A) == T) {
-        // (int)Math.Min(100, Since(Key.A))
-        Console.WriteLine(Since(KeyX.A));
+        //(int)Math.Min(100, Since(Key.A))
+        //Console.WriteLine(Since(KeyX.A));
         await Keyboard.Hold(Since(KeyX.A), KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
       }
@@ -70,7 +69,7 @@ class Program {
   }
 
   public static int Since(uint k1) {
-    return (int)(Environment.TickCount64 - AtTime(k1));
+    return Environment.TickCount - AtTime(k1);
   }
 
   public static bool Uphold(uint k2, uint k1) {
@@ -85,7 +84,7 @@ class Program {
     return Held.GetValueOrDefault(k1, F);
   }
 
-  public static long AtTime(uint k1) {
+  public static int AtTime(uint k1) {
     return Time.GetValueOrDefault(k1, 0);
   }
     private static IntPtr SetHook(Delegate proc, uint hookType) {
@@ -184,8 +183,8 @@ class Program {
   private static IntPtr d2_hook_id = IntPtr.Zero;
   private static IntPtr d1_hook_id = IntPtr.Zero;
 
-  private static readonly Dictionary<uint, long> Time = [];
   private static readonly Dictionary<uint, bool> Held = [];
+  private static readonly Dictionary<uint, int> Time = [];
   private static readonly bool F = false;
   private static readonly bool T = true;
 
