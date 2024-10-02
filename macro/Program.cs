@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 class Program {
   public static bool OnD2U(uint k1) {
@@ -37,7 +38,8 @@ class Program {
     Task.Run(async () => {
       if (IsHeld(KeyX.A) == T) {
         // (int)Math.Min(100, Since(Key.A))
-        await Keyboard.Hold(99, KeyA.R);
+        Console.WriteLine(Since(KeyX.A));
+        await Keyboard.Hold(Since(KeyX.A), KeyA.R);
         await Keyboard.Hold(1, KeyE.X2);
       }
       if (IsHeld(KeyX.D) == T) {
@@ -60,12 +62,15 @@ class Program {
       await Hold(k2s, k1);
       return T;
     } else {
+      foreach (uint k2 in k2s) {
+        Unhold(k2, k2);
+      }
       return T;
     }
   }
 
-  public static long Since(uint k1) {
-    return Environment.TickCount64 - AtTime(k1);
+  public static int Since(uint k1) {
+    return (int)(Environment.TickCount64 - AtTime(k1));
   }
 
   public static bool Uphold(uint k2, uint k1) {
