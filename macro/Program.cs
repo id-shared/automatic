@@ -64,7 +64,7 @@ class Program {
       [KeyA.L, KeyA.L],
       [KeyA.D, KeyA.D],
     ], F);
-    _ = IsHeld(KeyX.A) == T ? Task.Run(() => T) : Keyboard.Hold(249, KeyA.R);
+    Reactor(249, KeyA.R, KeyX.A);
     return T;
   }
 
@@ -95,7 +95,7 @@ class Program {
   public static bool Player() {
     Task.Run(async () => {
       await Task.Delay(99);
-      await Actor(99, KeyE.C, KeyM.L);
+      Act(KeyE.C, KeyM.L);
       return T;
     });
 
@@ -109,8 +109,8 @@ class Program {
     return T;
   }
 
-  public static Task<bool> Actor(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? (IsHeld(k2) ? Task.Run(() => T) : Keyboard.Hold(t1, k2)) : Task.Run(() => T);
+  public static Task<bool> Reactor(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? Task.Run(() => T) : (IsHeld(k2) ? Task.Run(() => T) : Keyboard.Hold(t1, k2));
   }
 
   public static bool Acted(uint k2, uint k1) {
