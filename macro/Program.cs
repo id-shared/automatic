@@ -3,34 +3,28 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Acted(KeyA.D, KeyA.D);
     Actor(99, KeyA.R);
     return T;
   }
 
   public static bool D2UD() {
-    Acted(KeyA.D, KeyA.D);
     Actor(99, KeyA.L);
     return T;
   }
 
   public static bool D2US() {
-    Acted(KeyA.D, KeyA.D);
     return T;
   }
 
   public static bool D2UW() {
-    Acted(KeyA.D, KeyA.D);
     return T;
   }
 
   public static bool D2DA() {
-    Act(KeyA.D, KeyX.W);
     return T;
   }
 
   public static bool D2DD() {
-    Act(KeyA.D, KeyX.W);
     return T;
   }
 
