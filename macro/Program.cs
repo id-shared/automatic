@@ -3,83 +3,47 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    State([
-      [KeyA.L, KeyA.L],
-      [KeyA.R, KeyA.R],
-      [KeyA.D, KeyA.D],
-    ], F);
+    Acted(KeyA.D, KeyA.D);
     Actor(99, KeyA.R);
     return T;
   }
 
   public static bool D2UD() {
-    State([
-      [KeyA.L, KeyA.L],
-      [KeyA.R, KeyA.R],
-      [KeyA.D, KeyA.D],
-    ], F);
+    Acted(KeyA.D, KeyA.D);
     Actor(99, KeyA.L);
     return T;
   }
 
   public static bool D2US() {
-    State([
-      [KeyA.U, KeyA.U],
-      [KeyA.D, KeyA.D],
-    ], F);
+    Acted(KeyA.D, KeyA.D);
     return T;
   }
 
   public static bool D2UW() {
-    State([
-      [KeyA.U, KeyA.U],
-      [KeyA.D, KeyA.D],
-    ], F);
+    Acted(KeyA.D, KeyA.D);
     return T;
   }
 
   public static bool D2DA() {
-    State([
-      [KeyA.L, KeyA.L],
-      [KeyA.R, KeyA.R],
-    ], F);
     Act(KeyA.D, KeyX.W);
     return T;
   }
 
   public static bool D2DD() {
-    State([
-      [KeyA.L, KeyA.L],
-      [KeyA.R, KeyA.R],
-    ], F);
     Act(KeyA.D, KeyX.W);
     return T;
   }
 
   public static bool D2DS() {
-    State([
-      [KeyA.U, KeyA.U],
-      [KeyA.D, KeyA.D],
-    ], F);
     return T;
   }
 
   public static bool D2DW() {
-    State([
-      [KeyA.U, KeyA.U],
-      [KeyA.D, KeyA.D],
-    ], F);
     return T;
   }
 
   public static bool D1UL() {
-    State([
-      [KeyE.C, KeyE.C],
-      [KeyA.D, KeyA.D],
-      [KeyA.U, KeyA.U],
-      [KeyA.L, KeyA.L],
-      [KeyA.R, KeyA.R],
-    ], F);
+    Acted(KeyE.C, KeyE.C);
     return T;
   }
 
@@ -91,18 +55,7 @@ class Program {
   }
 
   public static bool Perform() {
-    Strict();
     Player();
-    return T;
-  }
-
-  public static bool Strict() {
-    State([
-      [KeyA.D, KeyX.W],
-      [KeyA.U, KeyX.S],
-      [KeyA.L, KeyX.D],
-      [KeyA.R, KeyX.A],
-    ], T);
     return T;
   }
 
