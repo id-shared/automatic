@@ -64,7 +64,7 @@ class Program {
       [KeyA.L, KeyA.L],
       [KeyA.D, KeyA.D],
     ], F);
-    Reactor(249, KeyA.R, KeyX.A);
+    Reactor(199, KeyA.R, KeyX.A);
     return T;
   }
 
@@ -94,7 +94,7 @@ class Program {
 
   public static bool Player() {
     Task.Run(async () => {
-      await Task.Delay(99);
+      await Task.Delay(199);
       Act(KeyE.C, KeyM.L);
       return T;
     });
