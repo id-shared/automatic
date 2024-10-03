@@ -48,29 +48,17 @@ class Program {
   }
 
   public static bool D1DL() {
-    return T switch {
-      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Perform(),
-      _ => Player(),
-    };
-  }
-
-  public static bool Perform() {
-    Player();
-    return T;
-  }
-
-  public static bool Player() {
     React(99, KeyE.C, KeyM.L);
     return T;
   }
 
-  public static bool State(uint[][] keys, bool type) {
+  public static Task<bool> State(uint[][] keys, bool type) {
     foreach (uint[] key in keys) {
       Task.Run(() => {
         return type == T ? Act(key[0], key[1]) : Acted(key[0], key[1]);
       });
     }
-    return T;
+    return Task.Run(() => T);
   }
 
   public static Task<bool> React(int t1, uint k2, uint k1) {
