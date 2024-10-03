@@ -2,9 +2,19 @@
 using System.Diagnostics;
 
 class Program {
-  public static bool D2UW() {
-    Acted(KeyA.U, KeyA.U);
+  public static bool D2UA() {
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.R, KeyA.R);
     Acted(KeyA.D, KeyA.D);
+    Hint = KeyA.R;
+    return T;
+  }
+
+  public static bool D2UD() {
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.R, KeyA.R);
+    Acted(KeyA.D, KeyA.D);
+    Hint = KeyA.L;
     return T;
   }
 
@@ -14,29 +24,16 @@ class Program {
     return T;
   }
 
-  public static bool D2UD() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
-    Acted(KeyA.D, KeyA.D);
-    return T;
-  }
-
-  public static bool D2UA() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
-    Acted(KeyA.D, KeyA.D);
-    return T;
-  }
-
-  public static bool D2DW() {
+  public static bool D2UW() {
     Acted(KeyA.U, KeyA.U);
     Acted(KeyA.D, KeyA.D);
     return T;
   }
 
-  public static bool D2DS() {
-    Acted(KeyA.U, KeyA.U);
-    Acted(KeyA.D, KeyA.D);
+  public static bool D2DA() {
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.R, KeyA.R);
+    Act(KeyA.D, KeyX.W);
     return T;
   }
 
@@ -47,10 +44,15 @@ class Program {
     return T;
   }
 
-  public static bool D2DA() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
-    Act(KeyA.D, KeyX.W);
+  public static bool D2DS() {
+    Acted(KeyA.U, KeyA.U);
+    Acted(KeyA.D, KeyA.D);
+    return T;
+  }
+
+  public static bool D2DW() {
+    Acted(KeyA.U, KeyA.U);
+    Acted(KeyA.D, KeyA.D);
     return T;
   }
 
@@ -62,6 +64,7 @@ class Program {
       [KeyA.L, KeyA.L],
       [KeyA.R, KeyA.R],
     ], F);
+    Actor(249, Hint);
     return T;
   }
 
@@ -85,7 +88,6 @@ class Program {
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
     ], T);
-
     return T;
   }
 
@@ -114,8 +116,8 @@ class Program {
     return T;
   }
 
-  public static Task<bool> Reactor(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? Task.Run(() => T) : (IsHeld(k2) ? Task.Run(() => T) : Keyboard.Hold(t1, k2));
+  public static Task<bool> Actor(int t1, uint k1) {
+    return IsHeld(k1) ? Task.Run(() => T) : Keyboard.Hold(t1, k1);
   }
 
   public static bool Acted(uint k2, uint k1) {
@@ -169,6 +171,7 @@ class Program {
   }
 
   public static readonly Dictionary<uint, bool> Held = [];
+  public static uint Hint = KeyA.R;
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
