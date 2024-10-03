@@ -3,56 +3,72 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
-    Acted(KeyA.D, KeyA.D);
-    Hint = KeyA.R;
+    State([
+      [KeyA.L, KeyA.L],
+      [KeyA.R, KeyA.R],
+      [KeyA.D, KeyA.D],
+    ], F);
+    Actor(99, KeyA.R);
     return T;
   }
 
   public static bool D2UD() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
-    Acted(KeyA.D, KeyA.D);
-    Hint = KeyA.L;
+    State([
+      [KeyA.L, KeyA.L],
+      [KeyA.R, KeyA.R],
+      [KeyA.D, KeyA.D],
+    ], F);
+    Actor(99, KeyA.L);
     return T;
   }
 
   public static bool D2US() {
-    Acted(KeyA.U, KeyA.U);
-    Acted(KeyA.D, KeyA.D);
+    State([
+      [KeyA.U, KeyA.U],
+      [KeyA.D, KeyA.D],
+    ], F);
     return T;
   }
 
   public static bool D2UW() {
-    Acted(KeyA.U, KeyA.U);
-    Acted(KeyA.D, KeyA.D);
+    State([
+      [KeyA.U, KeyA.U],
+      [KeyA.D, KeyA.D],
+    ], F);
     return T;
   }
 
   public static bool D2DA() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
+    State([
+      [KeyA.L, KeyA.L],
+      [KeyA.R, KeyA.R],
+    ], F);
     Act(KeyA.D, KeyX.W);
     return T;
   }
 
   public static bool D2DD() {
-    Acted(KeyA.L, KeyA.L);
-    Acted(KeyA.R, KeyA.R);
+    State([
+      [KeyA.L, KeyA.L],
+      [KeyA.R, KeyA.R],
+    ], F);
     Act(KeyA.D, KeyX.W);
     return T;
   }
 
   public static bool D2DS() {
-    Acted(KeyA.U, KeyA.U);
-    Acted(KeyA.D, KeyA.D);
+    State([
+      [KeyA.U, KeyA.U],
+      [KeyA.D, KeyA.D],
+    ], F);
     return T;
   }
 
   public static bool D2DW() {
-    Acted(KeyA.U, KeyA.U);
-    Acted(KeyA.D, KeyA.D);
+    State([
+      [KeyA.U, KeyA.U],
+      [KeyA.D, KeyA.D],
+    ], F);
     return T;
   }
 
@@ -64,7 +80,6 @@ class Program {
       [KeyA.L, KeyA.L],
       [KeyA.R, KeyA.R],
     ], F);
-    Actor(249, Hint);
     return T;
   }
 
@@ -92,28 +107,24 @@ class Program {
   }
 
   public static bool Player() {
-    Fabian(1, 1, KeyE.C, KeyM.L);
+    React(99, KeyE.C, KeyM.L);
     return T;
-  }
-
-  public static Task<bool> Fabian(int n2, int n1, uint k2, uint k1) {
-    return IsHeld(k1) ? Task.Run(async () => {
-      await Keyboard.Hold(n2, k2);
-      await Task.Delay(n1);
-      return await Fabian(
-        n2 + n1,
-        n2,
-        k2,
-        k1
-      );
-    }) : Task.Run(() => T);
   }
 
   public static bool State(uint[][] keys, bool type) {
     foreach (uint[] key in keys) {
-      _ = type == T ? Act(key[0], key[1]) : Acted(key[0], key[1]);
+      Task.Run(() => {
+        return type == T ? Act(key[0], key[1]) : Acted(key[0], key[1]);
+      });
     }
     return T;
+  }
+
+  public static Task<bool> React(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? Task.Run(async () => {
+      await Task.Delay(t1);
+      return Act(k2, k1);
+    }) : Task.Run(() => T);
   }
 
   public static Task<bool> Actor(int t1, uint k1) {
@@ -171,7 +182,6 @@ class Program {
   }
 
   public static readonly Dictionary<uint, bool> Held = [];
-  public static uint Hint = KeyA.R;
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
