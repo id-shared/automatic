@@ -90,12 +90,6 @@ class Program {
   }
 
   public static bool Player() {
-    //Task.Run(async () => {
-    //  await Task.Delay(99);
-    //  await Fabian(KeyE.C, KeyM.L);
-    //  return T;
-    //});
-
     Fabian(1, 1, KeyE.C, KeyM.L);
     return T;
   }
