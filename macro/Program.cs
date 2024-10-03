@@ -54,24 +54,14 @@ class Program {
     return T;
   }
 
-  //public static Task<bool> Move() {
-  //  return T switch {
-  //    var _ when IsHeld(KeyX.W) => Task.Run(async () => {
-  //      await Keyboard.Hold(81, KeyA.U);
-  //      await Task.Delay(27);
-  //      return await Move();
-  //    }),
-  //    _ => Task.Run(() => T),
-  //  };
-  //}
-
   public static bool D1UL() {
     State([
       [KeyE.C, KeyE.C],
-      [KeyA.R, KeyA.R],
+      [KeyA.D, KeyA.D],
+      [KeyA.U, KeyA.U],
       [KeyA.L, KeyA.L],
+      [KeyA.R, KeyA.R],
     ], F);
-    Reactor(249, KeyA.R, KeyX.A);
     return T;
   }
 
