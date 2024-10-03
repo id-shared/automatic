@@ -46,7 +46,7 @@ class Program {
     Act(KeyA.D, KeyX.W);
     return T;
   }
-  
+
   public static bool D2DA() {
     Acted(KeyA.L, KeyA.L);
     Acted(KeyA.R, KeyA.R);
@@ -90,13 +90,22 @@ class Program {
   }
 
   public static bool Player() {
-    Task.Run(async () => {
-      await Task.Delay(99);
-      Act(KeyE.C, KeyM.L);
-      return T;
-    });
+    //Task.Run(async () => {
+    //  await Task.Delay(99);
+    //  await Fabian(KeyE.C, KeyM.L);
+    //  return T;
+    //});
 
+    Fabian(1, 1, KeyE.C, KeyM.L);
     return T;
+  }
+
+  public static Task<bool> Fabian(int n2, int n1, uint k2, uint k1) {
+    return IsHeld(k1) ? Task.Run(async () => {
+      await Keyboard.Hold(n2, k2);
+      await Task.Delay(n1);
+      return await Fabian(n2 + n1, n2, k2, k1);
+    }) : Task.Run(() => T);
   }
 
   public static bool State(uint[][] keys, bool type) {
