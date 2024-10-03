@@ -2,38 +2,68 @@
 using System.Diagnostics;
 
 class Program {
-  public static bool D2UD() {
-    Acted(KeyA.L, KeyA.L);
+  public static bool D2UW() {
+    Acted(KeyA.U, KeyA.U);
     Acted(KeyA.D, KeyA.D);
     return T;
   }
 
-  public static bool D2UA() {
+  public static bool D2US() {
+    Acted(KeyA.U, KeyA.U);
+    Acted(KeyA.D, KeyA.D);
+    return T;
+  }
+
+  public static bool D2UD() {
+    Acted(KeyA.L, KeyA.L);
     Acted(KeyA.R, KeyA.R);
     Acted(KeyA.D, KeyA.D);
     return T;
   }
 
+  public static bool D2UA() {
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.R, KeyA.R);
+    Acted(KeyA.D, KeyA.D);
+    return T;
+  }
+
+  public static bool D2DW() {
+    Acted(KeyA.U, KeyA.U);
+    Acted(KeyA.D, KeyA.D);
+    return T;
+  }
+
+  public static bool D2DS() {
+    Acted(KeyA.U, KeyA.U);
+    Acted(KeyA.D, KeyA.D);
+    return T;
+  }
+
   public static bool D2DD() {
-    Move();
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.R, KeyA.R);
+    Act(KeyA.D, KeyX.W);
     return T;
   }
-
+  
   public static bool D2DA() {
-    Move();
+    Acted(KeyA.L, KeyA.L);
+    Acted(KeyA.R, KeyA.R);
+    Act(KeyA.D, KeyX.W);
     return T;
   }
 
-  public static Task<bool> Move() {
-    return T switch {
-      var _ when IsHeld(KeyX.V) => Task.Run(async () => {
-        await Keyboard.Hold(81, KeyA.U);
-        await Task.Delay(27);
-        return await Move();
-      }),
-      _ => Task.Run(() => T),
-    };
-  }
+  //public static Task<bool> Move() {
+  //  return T switch {
+  //    var _ when IsHeld(KeyX.W) => Task.Run(async () => {
+  //      await Keyboard.Hold(81, KeyA.U);
+  //      await Task.Delay(27);
+  //      return await Move();
+  //    }),
+  //    _ => Task.Run(() => T),
+  //  };
+  //}
 
   public static bool D1UL() {
     State([
@@ -47,7 +77,7 @@ class Program {
 
   public static bool D1DL() {
     return T switch {
-      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) => Perform(),
+      var _ when IsHeld(KeyX.A) || IsHeld(KeyX.D) || IsHeld(KeyX.S) || IsHeld(KeyX.W) => Perform(),
       _ => Player(),
     };
   }
@@ -60,6 +90,8 @@ class Program {
 
   public static bool Strict() {
     State([
+      [KeyA.D, KeyX.W],
+      [KeyA.U, KeyX.S],
       [KeyA.L, KeyX.D],
       [KeyA.R, KeyX.A],
     ], T);
@@ -103,6 +135,8 @@ class Program {
   public static bool OnD2U(uint k1) {
     Held[k1] = F;
     return T switch {
+      var _ when KeyX.W == k1 => D2UW(),
+      var _ when KeyX.S == k1 => D2US(),
       var _ when KeyX.D == k1 => D2UD(),
       var _ when KeyX.A == k1 => D2UA(),
       _ => T,
@@ -112,6 +146,8 @@ class Program {
   public static bool OnD2D(uint k1) {
     Held[k1] = T;
     return T switch {
+      var _ when KeyX.W == k1 => D2DW(),
+      var _ when KeyX.S == k1 => D2DS(),
       var _ when KeyX.D == k1 => D2DD(),
       var _ when KeyX.A == k1 => D2DA(),
       _ => T,
