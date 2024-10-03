@@ -98,7 +98,12 @@ class Program {
     return IsHeld(k1) ? Task.Run(async () => {
       await Keyboard.Hold(n2, k2);
       await Task.Delay(n1);
-      return await Fabian(n2 + n1, n2, k2, k1);
+      return await Fabian(
+        n2 + n1,
+        n2,
+        k2,
+        k1
+      );
     }) : Task.Run(() => T);
   }
 
