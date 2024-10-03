@@ -94,7 +94,7 @@ class Program {
 
   public static bool Player() {
     Task.Run(async () => {
-      await Task.Delay(199);
+      await Task.Delay(99);
       return State([
         [KeyE.C, KeyM.L],
       ], T);
