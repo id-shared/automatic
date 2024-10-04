@@ -19,16 +19,18 @@ class Program {
   }
 
   public static bool D2DA() {
+    Task.Run(() => Abc(KeyA.R, KeyM.L, KeyX.A));
     return T;
   }
 
-  public static async Task<bool> Abc() {
-    if (IsHeld(KeyX.A)) {
-      if (IsHeld(KeyM.L)) {
-        IO(10, KeyA.R);
-        return T;
+  public static async Task<bool> Abc(uint k3, uint k2, uint k1) {
+    if (IsHeld(k1)) {
+      if (IsHeld(k2)) {
+        await IO(10, k3);
+        return await Abc(k3, k2, k1);
       } else {
-        return T;
+        await AA(10);
+        return await Abc(k3, k2, k1);
       }
     } else {
       return T;
@@ -56,7 +58,7 @@ class Program {
 
   public static bool D1DL() {
     Task.Run(async () => {
-      await Wait(99);
+      await AA(99);
       Act(KeyE.C, KeyM.L);
     });
     return T;
@@ -72,7 +74,7 @@ class Program {
 
   public static async Task<bool> IO(int t1, uint k1) {
     I(k1);
-    await Wait(t1);
+    await AA(t1);
     O(k1);
     return T;
   }
@@ -89,7 +91,7 @@ class Program {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
   }
 
-  public static Task Wait(int i1) {
+  public static Task AA(int i1) {
     return Task.Delay(i1);
   }
 
