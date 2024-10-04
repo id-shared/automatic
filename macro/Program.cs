@@ -3,10 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
+    Task.Run(() => IO(99, KeyA.R));
     return T;
   }
 
   public static bool D2UD() {
+    Task.Run(() => IO(99, KeyA.L));
     return T;
   }
 
@@ -35,33 +37,22 @@ class Program {
   }
 
   public static bool D1UL() {
-    O(KeyE.A);
     return T;
   }
 
   public static bool D1DL() {
-    I(KeyE.A);
-    Task.Run(async () => {
-      await AA(329);
-      O(KeyE.A);
-      await Actor(199, KeyA.R, KeyM.L);
-      await Actor(99, KeyA.L, KeyM.L);
-      await Actor(329, KeyE.A, KeyM.L);
-      //Act(KeyE.C, KeyM.L);
-      return ;
-    });
     return T;
   }
 
-  public static Task<bool> Strafe(uint k3, uint k2, uint k1) {
-    return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
-  }
+  //public static Task<bool> Strafe(uint k3, uint k2, uint k1) {
+  //  return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
+  //}
 
-  public static async Task<bool> Shoot(uint k2, uint k1) {
-    await IO(99, k2);
-    await IO(399, k1);
-    return T;
-  }
+  //public static async Task<bool> Shoot(uint k2, uint k1) {
+  //  await IO(99, k2);
+  //  await IO(399, k1);
+  //  return T;
+  //}
 
   public static Task<bool> Actor(int t1, uint k2, uint k1) {
     return IsHeld(k1) ? IO(t1, k2) : Task.Run(() => T);
