@@ -3,12 +3,10 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Task.Run(() => IO(109, KeyA.R));
     return T;
   }
 
   public static bool D2UD() {
-    Task.Run(() => IO(109, KeyA.L));
     return T;
   }
 
@@ -24,6 +22,19 @@ class Program {
     return T;
   }
 
+  public static async Task<bool> Abc() {
+    if (IsHeld(KeyX.A)) {
+      if (IsHeld(KeyM.L)) {
+        IO(10, KeyA.R);
+        return T;
+      } else {
+        return T;
+      }
+    } else {
+      return T;
+    }
+  }
+
   public static bool D2DD() {
     return T;
   }
@@ -37,21 +48,22 @@ class Program {
   }
 
   public static bool D1UL() {
-    Keyboard.Input(KeyA.L, F);
-    Keyboard.Input(KeyA.R, F);
-    Keyboard.Input(KeyE.C, F);
+    Task.Run(() => {
+      React(KeyE.C, KeyM.L);
+    });
     return T;
   }
 
   public static bool D1DL() {
-    Act(KeyA.L, KeyX.D);
-    Act(KeyA.R, KeyX.A);
-    I(KeyE.C);
+    Task.Run(async () => {
+      await Wait(99);
+      Act(KeyE.C, KeyM.L);
+    });
     return T;
   }
 
   public static bool React(uint k2, uint k1) {
-    return IsHeld(k1) ? O(k2) : T;
+    return IsHeld(k1) ? T : O(k2);
   }
 
   public static bool Act(uint k2, uint k1) {
@@ -60,7 +72,7 @@ class Program {
 
   public static async Task<bool> IO(int t1, uint k1) {
     I(k1);
-    await A(t1);
+    await Wait(t1);
     O(k1);
     return T;
   }
@@ -73,12 +85,12 @@ class Program {
     return IsHeld(k1) ? T : Keyboard.Input(k1, T);
   }
 
-  public static Task A(int i1) {
-    return Task.Delay(i1);
-  }
-
   public static bool IsHeld(uint k1) {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
+  }
+
+  public static Task Wait(int i1) {
+    return Task.Delay(i1);
   }
 
   public static bool OnD2U(uint k1) {
