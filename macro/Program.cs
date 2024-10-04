@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Actor(99, KeyA.R);
+    Actor(109, KeyA.R);
     return T;
   }
 
   public static bool D2UD() {
-    Actor(99, KeyA.L);
+    Actor(109, KeyA.L);
     return T;
   }
 
@@ -42,7 +42,7 @@ class Program {
   }
 
   public static bool D1DL() {
-    React(99, KeyE.C, KeyM.L);
+    React(199, KeyE.C, KeyM.L);
     return T;
   }
 
