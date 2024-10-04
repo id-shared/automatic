@@ -37,42 +37,51 @@ class Program {
   }
 
   public static bool D1UL() {
+    ReactO(KeyE.C, KeyM.L);
     return T;
   }
 
   public static bool D1DL() {
+    ActI(KeyE.C, KeyM.L);
+    Task.Run(async () => {
+      await DoWait(319);
+      ActO(KeyE.C, KeyM.L);
+      ActO(KeyM.L, KeyM.L);
+    });
     return T;
   }
 
-  //public static Task<bool> Strafe(uint k3, uint k2, uint k1) {
-  //  return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
-  //}
-
-  //public static async Task<bool> Shoot(uint k2, uint k1) {
-  //  await IO(99, k2);
-  //  await IO(399, k1);
-  //  return T;
-  //}
-
-  public static Task<bool> Actor(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? IO(t1, k2) : Task.Run(() => T);
+  public static Task<bool> ReactIO(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? Task.Run(() => T) : IO(t1, k2);
   }
 
-  public static bool React(uint k2, uint k1) {
+  public static bool ReactO(uint k2, uint k1) {
     return IsHeld(k1) ? T : O(k2);
   }
 
-  public static bool Act(uint k2, uint k1) {
+  public static bool ReactI(uint k2, uint k1) {
+    return IsHeld(k1) ? T : I(k2);
+  }
+
+  public static Task<bool> ActIO(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? IO(t1, k2) : Task.Run(() => T);
+  }
+
+  public static bool ActO(uint k2, uint k1) {
+    return IsHeld(k1) ? O(k2) : T;
+  }
+
+  public static bool ActI(uint k2, uint k1) {
     return IsHeld(k1) ? I(k2) : T;
   }
 
   public static async Task<bool> IO(int t1, uint k1) {
     I(k1);
-    await AA(t1);
+    await DoWait(t1);
     O(k1);
     return T;
   }
-
+  
   public static bool O(uint k1) {
     return IsHeld(k1) ? Keyboard.Input(k1, F) : T;
   }
@@ -85,7 +94,7 @@ class Program {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
   }
 
-  public static Task AA(int i1) {
+  public static Task DoWait(int i1) {
     return Task.Delay(i1);
   }
 
@@ -319,12 +328,12 @@ class Program {
 //  return maxVolume;
 //}
 
-//HoldF(KeyA.D, KeyA.D);
-//HoldF(KeyA.U, KeyA.U);
-//HoldF(KeyA.R, KeyA.R);
-//HoldF(KeyA.L, KeyA.L);
+//public static Task<bool> Strafe(uint k3, uint k2, uint k1) {
+//  return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
+//}
 
-//HoldT(KeyA.D, Key.W);
-//HoldT(KeyA.U, Key.S);
-//HoldT(KeyA.R, Key.A);
-//HoldT(KeyA.L, Key.D);
+//public static async Task<bool> Shoot(uint k2, uint k1) {
+//  await IO(99, k2);
+//  await IO(399, k1);
+//  return T;
+//}
