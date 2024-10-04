@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Task.Run(() => Abc(KeyA.R, KeyM.L));
+    Strafe(KeyA.R, KeyE.A, KeyM.L);
     return T;
   }
 
   public static bool D2UD() {
-    Task.Run(() => Abc(KeyA.L, KeyM.L));
+    Strafe(KeyA.L, KeyE.A, KeyM.L);
     return T;
   }
 
@@ -20,10 +20,16 @@ class Program {
     return T;
   }
 
-  public static async Task<bool> Abc(uint k2, uint k1) {
-    await IO(99, k2);
-    await IO(19, k1);
-    return T;
+  public static Task<bool> Strafe(uint k3, uint k2, uint k1) {
+    return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
+  }
+
+  public static Task<bool> Shoot(uint k2, uint k1) {
+    return Task.Run(async () => {
+      await IO(99, k2);
+      await IO(99, k1);
+      return T;
+    });
   }
 
   public static bool D2DA() {
@@ -43,16 +49,14 @@ class Program {
   }
 
   public static bool D1UL() {
-    Task.Run(() => {
-      React(KeyE.C, KeyM.L);
-    });
+    Task.Run(() => React(KeyE.C, KeyM.L));
     return T;
   }
 
   public static bool D1DL() {
     Task.Run(async () => {
       await AA(99);
-      Act(KeyE.C, KeyM.L);
+      return Act(KeyE.C, KeyM.L);
     });
     return T;
   }
