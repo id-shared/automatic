@@ -50,13 +50,6 @@ class Program {
     return T;
   }
 
-  public static Task<bool> React(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? Task.Run(async () => {
-      await A(t1);
-      return Act(k2, k1);
-    }) : Task.Run(() => T);
-  }
-
   public static bool Acted(uint k2, uint k1) {
     return IsHeld(k1) ? O(k2) : T;
   }
