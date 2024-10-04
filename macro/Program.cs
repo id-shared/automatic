@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    IO(99, KeyA.R);
+    Task.Run(() => IO(49, KeyA.R));
     return T;
   }
 
   public static bool D2UD() {
-    IO(99, KeyA.L);
+    Task.Run(() => IO(49, KeyA.L));
     return T;
   }
 
@@ -37,57 +37,51 @@ class Program {
   }
 
   public static bool D1UL() {
-    Acted(KeyA.L, KeyX.D);
-    Acted(KeyA.R, KeyX.A);
-    O(KeyE.C);
+    Task.Run(() => O(KeyA.L));
+    Task.Run(() => O(KeyA.R));
+    Task.Run(() => O(KeyE.C));
     return T;
   }
 
   public static bool D1DL() {
-    Act(KeyA.L, KeyX.D);
-    Act(KeyA.R, KeyX.A);
-    I(KeyE.C);
+    Task.Run(() => Act(KeyA.L, KeyX.D));
+    Task.Run(() => Act(KeyA.R, KeyX.A));
+    Task.Run(() => I(KeyE.C));
     return T;
-  }
-
-  public static Task<bool> State(uint[][] keys, bool type) {
-    foreach (uint[] key in keys) {
-      Task.Run(() => {
-        return type == T ? Act(key[0], key[1]) : Acted(key[0], key[1]);
-      });
-    }
-    return Task.Run(() => T);
   }
 
   public static Task<bool> React(int t1, uint k2, uint k1) {
     return IsHeld(k1) ? Task.Run(async () => {
-      await Task.Delay(t1);
+      await A(t1);
       return Act(k2, k1);
     }) : Task.Run(() => T);
   }
 
-  public static Task<bool> Actor(int t1, uint k1) {
-    return IsHeld(k1) ? Task.Run(() => T) : IO(t1, k1);
-  }
-
   public static bool Acted(uint k2, uint k1) {
-    return IsHeld(k1) ? (IsHeld(k2) ? O(k2) : T) : T;
+    return IsHeld(k1) ? O(k2) : T;
   }
 
   public static bool Act(uint k2, uint k1) {
-    return IsHeld(k1) ? (IsHeld(k2) ? T : I(k2)) : T;
+    return IsHeld(k1) ? I(k2) : T;
   }
 
-  public static Task<bool> IO(int t1, uint k1) {
-    return Keyboard.Hold(t1, k1);
+  public static async Task<bool> IO(int t1, uint k1) {
+    I(k1);
+    await A(t1);
+    O(k1);
+    return T;
   }
 
-  public static bool O(uint k2) {
-    return Keyboard.Input(k2, F);
+  public static bool O(uint k1) {
+    return IsHeld(k1) ? Keyboard.Input(k1, F) : T;
   }
 
-  public static bool I(uint k2) {
-    return Keyboard.Input(k2, T);
+  public static bool I(uint k1) {
+    return IsHeld(k1) ? T : Keyboard.Input(k1, T);
+  }
+
+  public static Task A(int i1) {
+    return Task.Delay(i1);
   }
 
   public static bool IsHeld(uint k1) {
