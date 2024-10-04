@@ -8,6 +8,7 @@ class Program {
   }
 
   public static bool D2UD() {
+    Task.Run(() => Abc(KeyA.L, KeyM.L));
     return T;
   }
 
