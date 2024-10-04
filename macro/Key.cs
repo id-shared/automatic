@@ -11,6 +11,7 @@ class KeyM {
 }
 
 class KeyE {
+  public static readonly uint S = 160;
   public static readonly uint C = 162;
   public static readonly uint A = 164;
 }

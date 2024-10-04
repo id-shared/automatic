@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Strafe(KeyA.R, KeyE.A, KeyM.L);
+    Strafe(KeyA.R, KeyM.L, KeyE.S);
     return T;
   }
 
   public static bool D2UD() {
-    Strafe(KeyA.L, KeyE.A, KeyM.L);
+    Strafe(KeyA.L, KeyM.L, KeyE.S);
     return T;
   }
 
@@ -24,12 +24,10 @@ class Program {
     return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
   }
 
-  public static Task<bool> Shoot(uint k2, uint k1) {
-    return Task.Run(async () => {
-      await IO(99, k2);
-      await IO(99, k1);
-      return T;
-    });
+  public static async Task<bool> Shoot(uint k2, uint k1) {
+    await IO(99, k2);
+    await IO(99, k1);
+    return T;
   }
 
   public static bool D2DA() {
