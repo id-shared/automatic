@@ -42,8 +42,11 @@ class Program {
   public static bool D1DL() {
     I(KeyE.A);
     Task.Run(async () => {
-      await AA(99);
+      await AA(329);
       O(KeyE.A);
+      await Actor(199, KeyA.R, KeyM.L);
+      await Actor(99, KeyA.L, KeyM.L);
+      await Actor(329, KeyE.A, KeyM.L);
       //Act(KeyE.C, KeyM.L);
       return ;
     });
@@ -58,6 +61,10 @@ class Program {
     await IO(99, k2);
     await IO(399, k1);
     return T;
+  }
+
+  public static Task<bool> Actor(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? IO(t1, k2) : Task.Run(() => T);
   }
 
   public static bool React(uint k2, uint k1) {
