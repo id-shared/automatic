@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
+    Task.Run(() => Abc(KeyA.R, KeyM.L));
     return T;
   }
 
@@ -18,23 +19,14 @@ class Program {
     return T;
   }
 
-  public static bool D2DA() {
-    Task.Run(() => Abc(KeyA.R, KeyM.L, KeyX.A));
+  public static async Task<bool> Abc(uint k2, uint k1) {
+    await IO(99, k2);
+    await IO(+9, k1);
     return T;
   }
 
-  public static async Task<bool> Abc(uint k3, uint k2, uint k1) {
-    if (IsHeld(k1)) {
-      if (IsHeld(k2)) {
-        await IO(10, k3);
-        return await Abc(k3, k2, k1);
-      } else {
-        await AA(10);
-        return await Abc(k3, k2, k1);
-      }
-    } else {
-      return T;
-    }
+  public static bool D2DA() {
+    return T;
   }
 
   public static bool D2DD() {
