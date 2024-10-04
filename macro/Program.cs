@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Actor(109, KeyA.R);
+    IO(99, KeyA.R);
     return T;
   }
 
   public static bool D2UD() {
-    Actor(109, KeyA.L);
+    IO(99, KeyA.L);
     return T;
   }
 
@@ -37,12 +37,16 @@ class Program {
   }
 
   public static bool D1UL() {
-    Acted(KeyE.C, KeyE.C);
+    Acted(KeyA.L, KeyX.D);
+    Acted(KeyA.R, KeyX.A);
+    O(KeyE.C);
     return T;
   }
 
   public static bool D1DL() {
-    React(199, KeyE.C, KeyM.L);
+    Act(KeyA.L, KeyX.D);
+    Act(KeyA.R, KeyX.A);
+    I(KeyE.C);
     return T;
   }
 
@@ -63,15 +67,27 @@ class Program {
   }
 
   public static Task<bool> Actor(int t1, uint k1) {
-    return IsHeld(k1) ? Task.Run(() => T) : Keyboard.Hold(t1, k1);
+    return IsHeld(k1) ? Task.Run(() => T) : IO(t1, k1);
   }
 
   public static bool Acted(uint k2, uint k1) {
-    return IsHeld(k1) ? (IsHeld(k2) ? Keyboard.Input(k2, F) : T) : T;
+    return IsHeld(k1) ? (IsHeld(k2) ? O(k2) : T) : T;
   }
 
   public static bool Act(uint k2, uint k1) {
-    return IsHeld(k1) ? (IsHeld(k2) ? T : Keyboard.Input(k2, T)) : T;
+    return IsHeld(k1) ? (IsHeld(k2) ? T : I(k2)) : T;
+  }
+
+  public static Task<bool> IO(int t1, uint k1) {
+    return Keyboard.Hold(t1, k1);
+  }
+
+  public static bool O(uint k2) {
+    return Keyboard.Input(k2, F);
+  }
+
+  public static bool I(uint k2) {
+    return Keyboard.Input(k2, T);
   }
 
   public static bool IsHeld(uint k1) {
