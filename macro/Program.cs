@@ -43,11 +43,6 @@ class Program {
 
   public static bool D1DL() {
     ActI(KeyE.C, KeyM.L);
-    //Task.Run(async () => {
-    //  await DoWait(319);
-    //  ActO(KeyE.C, KeyM.L);
-    //  //ActO(KeyM.L, KeyM.L);
-    //});
     return T;
   }
 
@@ -337,3 +332,10 @@ class Program {
 //  await IO(399, k1);
 //  return T;
 //}
+
+//Task.Run(async () => {
+//  await DoWait(319);
+//  ActO(KeyE.C, KeyM.L);
+//  //await DoWait(319);
+//  //ActO(KeyM.L, KeyM.L);
+//});
