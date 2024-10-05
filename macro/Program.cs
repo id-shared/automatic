@@ -151,8 +151,8 @@ class Program {
   }
 
   private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0) {
-      ThreadPool.UnsafeQueueUserWorkItem(_ => {
+    ThreadPool.UnsafeQueueUserWorkItem(_ => {
+      if (nCode >= 0) {
         uint key = (uint)Marshal.ReadInt32(lParam);
         uint act = (uint)wParam;
         _ = T switch {
@@ -162,14 +162,14 @@ class Program {
           var _ when act == WM_KEYUP => OnD2U(key),
           _ => T,
         };
-      }, null);
-    }
+      }
+    }, null);
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0) {
-      ThreadPool.UnsafeQueueUserWorkItem(_ => {
+    ThreadPool.UnsafeQueueUserWorkItem(_ => {
+      if (nCode >= 0) {
         uint act = (uint)wParam;
         _ = T switch {
           var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
@@ -178,8 +178,8 @@ class Program {
           var _ when act == WM_RBUTTONUP => OnD1U(0x02),
           _ => T,
         };
-      }, null);
-    }
+      }
+    }, null);
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
 
