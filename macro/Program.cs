@@ -40,7 +40,7 @@ class Program {
 
   public static bool D1DL() {
     Task.Run(() => {
-      W(199);
+      C(99);
       ActIO(319, KeyM.L, KeyE.C);
       return T;
     });
@@ -71,19 +71,11 @@ class Program {
     return IsHeld(k1) ? I(k) : T;
   }
 
-  public static Task WO(int i) {
-    return Task.Delay(i);
-  }
-
   public static bool IO(int t, uint k) {
     I(k);
-    W(t);
+    C(t);
     O(k);
     return T;
-  }
-
-  public static void W(int i) {
-    Thread.Sleep(i);
   }
 
   public static bool O(uint k) {
@@ -92,6 +84,10 @@ class Program {
 
   public static bool I(uint k) {
     return IsHeld(k) ? T : Keyboard.Input(k, T);
+  }
+
+  public static void C(int i) {
+    Thread.Sleep(i);
   }
 
   public static bool IsHeld(uint k) {
@@ -156,47 +152,43 @@ class Program {
 
   private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      uint key = (uint)Marshal.ReadInt32(lParam);
-      uint act = (uint)wParam;
-      switch (T) {
-        case var _ when act == WM_SYSKEYDOWN:
-          OnD2D(key);
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_KEYDOWN:
-          OnD2D(key);
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_SYSKEYUP:
-          OnD2U(key);
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_KEYUP:
-          OnD2U(key);
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-        default:
-          return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
-      }
+      Task.Run(() => {
+        uint key = (uint)Marshal.ReadInt32(lParam);
+        uint act = (uint)wParam;
+        switch (T) {
+          case var _ when act == WM_SYSKEYDOWN:
+            return OnD2D(key);
+          case var _ when act == WM_KEYDOWN:
+            return OnD2D(key);
+          case var _ when act == WM_SYSKEYUP:
+            return OnD2U(key);
+          case var _ when act == WM_KEYUP:
+            return OnD2U(key);
+          default:
+            return T;
+        }
+      });
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      uint act = (uint)wParam;
-      switch (T) {
-        case var _ when act == WM_LBUTTONDOWN:
-          OnD1D(KeyM.L);
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_LBUTTONUP:
-          OnD1U(KeyM.L);
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_RBUTTONDOWN:
-          OnD1D(0x02);
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        case var _ when act == WM_RBUTTONUP:
-          OnD1U(0x02);
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-        default:
-          return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
-      }
+      Task.Run(() => {
+        uint act = (uint)wParam;
+        switch (T) {
+          case var _ when act == WM_LBUTTONDOWN:
+            return OnD1D(KeyM.L);
+          case var _ when act == WM_LBUTTONUP:
+            return OnD1U(KeyM.L);
+          case var _ when act == WM_RBUTTONDOWN:
+            return OnD1D(0x02);
+          case var _ when act == WM_RBUTTONUP:
+            return OnD1U(0x02);
+          default:
+            return T;
+        }
+      });
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
