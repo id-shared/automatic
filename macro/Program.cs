@@ -37,12 +37,12 @@ class Program {
   }
 
   public static bool D1UL() {
-    ReactO(KeyE.C, KeyM.L);
+    O(KeyE.C);
     return T;
   }
 
   public static bool D1DL() {
-    ActI(KeyE.C, KeyM.L);
+    I(KeyE.C);
     return T;
   }
 
@@ -72,11 +72,11 @@ class Program {
 
   public static async Task<bool> IO(int t1, uint k1) {
     I(k1);
-    await DoWait(t1);
+    await Interval(t1);
     O(k1);
     return T;
   }
-  
+
   public static bool O(uint k1) {
     return IsHeld(k1) ? Keyboard.Input(k1, F) : T;
   }
@@ -89,7 +89,7 @@ class Program {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
   }
 
-  public static Task DoWait(int i1) {
+  public static Task Interval(int i1) {
     return Task.Delay(i1);
   }
 
@@ -332,10 +332,3 @@ class Program {
 //  await IO(399, k1);
 //  return T;
 //}
-
-//Task.Run(async () => {
-//  await DoWait(319);
-//  ActO(KeyE.C, KeyM.L);
-//  //await DoWait(319);
-//  //ActO(KeyM.L, KeyM.L);
-//});
