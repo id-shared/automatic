@@ -152,43 +152,33 @@ class Program {
 
   private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      Task.Run(() => {
+      ThreadPool.UnsafeQueueUserWorkItem(_ => {
         uint key = (uint)Marshal.ReadInt32(lParam);
         uint act = (uint)wParam;
-        switch (T) {
-          case var _ when act == WM_SYSKEYDOWN:
-            return OnD2D(key);
-          case var _ when act == WM_KEYDOWN:
-            return OnD2D(key);
-          case var _ when act == WM_SYSKEYUP:
-            return OnD2U(key);
-          case var _ when act == WM_KEYUP:
-            return OnD2U(key);
-          default:
-            return T;
-        }
-      });
+        _ = T switch {
+          var _ when act == WM_SYSKEYDOWN => OnD2D(key),
+          var _ when act == WM_KEYDOWN => OnD2D(key),
+          var _ when act == WM_SYSKEYUP => OnD2U(key),
+          var _ when act == WM_KEYUP => OnD2U(key),
+          _ => T,
+        };
+      }, null);
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      Task.Run(() => {
+      ThreadPool.UnsafeQueueUserWorkItem(_ => {
         uint act = (uint)wParam;
-        switch (T) {
-          case var _ when act == WM_LBUTTONDOWN:
-            return OnD1D(KeyM.L);
-          case var _ when act == WM_LBUTTONUP:
-            return OnD1U(KeyM.L);
-          case var _ when act == WM_RBUTTONDOWN:
-            return OnD1D(0x02);
-          case var _ when act == WM_RBUTTONUP:
-            return OnD1U(0x02);
-          default:
-            return T;
-        }
-      });
+        _ = T switch {
+          var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
+          var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
+          var _ when act == WM_RBUTTONDOWN => OnD1D(0x02),
+          var _ when act == WM_RBUTTONUP => OnD1U(0x02),
+          _ => T,
+        };
+      }, null);
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
