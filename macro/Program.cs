@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    _ = IO(99, KeyA.R);
+    Task.Run(() => IO(99, KeyA.R));
     return T;
   }
 
   public static bool D2UD() {
-    _ = IO(99, KeyA.L);
+    Task.Run (() => IO(99, KeyA.L));
     return T;
   }
 
@@ -37,12 +37,22 @@ class Program {
   }
 
   public static bool D1UL() {
-    return O(KeyE.C);
+    Task.Run(() => {
+      O(KeyA.L);
+      O(KeyA.R);
+      O(KeyE.C);
+    });
+    return T;
   }
 
   public static bool D1DL() {
-    N(99);
-    return I(KeyE.C);
+    Task.Run(() => {
+      ActI(KeyA.L, KeyX.D);
+      ActI(KeyA.R, KeyX.A);
+      N(99);
+      ActI(KeyE.C, KeyM.L);
+    });
+    return T;
   }
 
   public static bool ReactIO(int t1, uint k2, uint k1) {
