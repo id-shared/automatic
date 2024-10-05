@@ -35,16 +35,12 @@ class Program {
   }
 
   public static bool D1UL() {
-    return O(KeyE.C);
+    return ReactO(KeyM.L, KeyE.C);
   }
 
   public static bool D1DL() {
-    Task.Run(() => {
-      C(99);
-      ActIO(319, KeyM.L, KeyE.C);
-      return T;
-    });
-    return T;
+    C(99);
+    return ActI(KeyM.L, KeyE.C);
   }
 
   public static bool ReactIO(int t, uint k1, uint k) {
@@ -308,14 +304,4 @@ class Program {
 //    if (sample32 > maxVolume) { maxVolume = sample32; }
 //  }
 //  return maxVolume;
-//}
-
-//public static Task<bool> Strafe(uint k3, uint k2, uint k1) {
-//  return IsHeld(k1) ? Shoot(k3, k2) : Task.Run(() => T);
-//}
-
-//public static async Task<bool> Shoot(uint k2, uint k1) {
-//  await IO(99, k2);
-//  await IO(399, k1);
-//  return T;
 //}
