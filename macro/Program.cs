@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Task.Run(() => IO(99, KeyA.R));
+    _ = IO(99, KeyA.R);
     return T;
   }
 
   public static bool D2UD() {
-    Task.Run(() => IO(99, KeyA.L));
+    _ = IO(99, KeyA.L);
     return T;
   }
 
@@ -37,17 +37,16 @@ class Program {
   }
 
   public static bool D1UL() {
-    O(KeyE.C);
-    return T;
+    return O(KeyE.C);
   }
 
   public static bool D1DL() {
-    I(KeyE.C);
-    return T;
+    N(99);
+    return I(KeyE.C);
   }
 
-  public static Task<bool> ReactIO(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? Task.Run(() => T) : IO(t1, k2);
+  public static bool ReactIO(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? T : IO(t1, k2);
   }
 
   public static bool ReactO(uint k2, uint k1) {
@@ -58,8 +57,8 @@ class Program {
     return IsHeld(k1) ? T : I(k2);
   }
 
-  public static Task<bool> ActIO(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? IO(t1, k2) : Task.Run(() => T);
+  public static bool ActIO(int t1, uint k2, uint k1) {
+    return IsHeld(k1) ? IO(t1, k2) : T;
   }
 
   public static bool ActO(uint k2, uint k1) {
@@ -70,9 +69,9 @@ class Program {
     return IsHeld(k1) ? I(k2) : T;
   }
 
-  public static async Task<bool> IO(int t1, uint k1) {
+  public static bool IO(int t1, uint k1) {
     I(k1);
-    await Interval(t1);
+    N(t1);
     O(k1);
     return T;
   }
@@ -89,8 +88,8 @@ class Program {
     return Held.TryGetValue(k1, out bool is_held) && is_held;
   }
 
-  public static Task Interval(int i1) {
-    return Task.Delay(i1);
+  public static void N(int i1) {
+    Thread.Sleep(i1);
   }
 
   public static bool OnD2U(uint k1) {
