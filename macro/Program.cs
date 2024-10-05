@@ -3,13 +3,11 @@ using System.Diagnostics;
 
 class Program {
   public static bool D2UA() {
-    Task.Run(() => IO(99, KeyA.R));
-    return T;
+    return IO(99, KeyA.R);
   }
 
   public static bool D2UD() {
-    Task.Run (() => IO(99, KeyA.L));
-    return T;
+    return IO(99, KeyA.L);
   }
 
   public static bool D2US() {
@@ -37,105 +35,103 @@ class Program {
   }
 
   public static bool D1UL() {
-    Task.Run(() => {
-      O(KeyA.L);
-      O(KeyA.R);
-      O(KeyE.C);
-    });
-    return T;
+    return O(KeyE.C);
   }
 
   public static bool D1DL() {
     Task.Run(() => {
-      ActI(KeyA.L, KeyX.D);
-      ActI(KeyA.R, KeyX.A);
-      N(99);
-      ActI(KeyE.C, KeyM.L);
+      W(199);
+      ActIO(319, KeyM.L, KeyE.C);
+      return T;
     });
     return T;
   }
 
-  public static bool ReactIO(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? T : IO(t1, k2);
+  public static bool ReactIO(int t, uint k1, uint k) {
+    return IsHeld(k1) ? T : IO(t, k);
   }
 
-  public static bool ReactO(uint k2, uint k1) {
-    return IsHeld(k1) ? T : O(k2);
+  public static bool ReactO(uint k1, uint k) {
+    return IsHeld(k1) ? T : O(k);
   }
 
-  public static bool ReactI(uint k2, uint k1) {
-    return IsHeld(k1) ? T : I(k2);
+  public static bool ReactI(uint k1, uint k) {
+    return IsHeld(k1) ? T : I(k);
   }
 
-  public static bool ActIO(int t1, uint k2, uint k1) {
-    return IsHeld(k1) ? IO(t1, k2) : T;
+  public static bool ActIO(int t, uint k1, uint k) {
+    return IsHeld(k1) ? IO(t, k) : T;
   }
 
-  public static bool ActO(uint k2, uint k1) {
-    return IsHeld(k1) ? O(k2) : T;
+  public static bool ActO(uint k1, uint k) {
+    return IsHeld(k1) ? O(k) : T;
   }
 
-  public static bool ActI(uint k2, uint k1) {
-    return IsHeld(k1) ? I(k2) : T;
+  public static bool ActI(uint k1, uint k) {
+    return IsHeld(k1) ? I(k) : T;
   }
 
-  public static bool IO(int t1, uint k1) {
-    I(k1);
-    N(t1);
-    O(k1);
+  public static Task WO(int i) {
+    return Task.Delay(i);
+  }
+
+  public static bool IO(int t, uint k) {
+    I(k);
+    W(t);
+    O(k);
     return T;
   }
 
-  public static bool O(uint k1) {
-    return IsHeld(k1) ? Keyboard.Input(k1, F) : T;
+  public static void W(int i) {
+    Thread.Sleep(i);
   }
 
-  public static bool I(uint k1) {
-    return IsHeld(k1) ? T : Keyboard.Input(k1, T);
+  public static bool O(uint k) {
+    return IsHeld(k) ? Keyboard.Input(k, F) : T;
   }
 
-  public static bool IsHeld(uint k1) {
-    return Held.TryGetValue(k1, out bool is_held) && is_held;
+  public static bool I(uint k) {
+    return IsHeld(k) ? T : Keyboard.Input(k, T);
   }
 
-  public static void N(int i1) {
-    Thread.Sleep(i1);
+  public static bool IsHeld(uint k) {
+    return Held.TryGetValue(k, out bool is_held) && is_held;
   }
 
-  public static bool OnD2U(uint k1) {
-    Held[k1] = F;
+  public static bool OnD2U(uint k) {
+    Held[k] = F;
     return T switch {
-      var _ when KeyX.W == k1 => D2UW(),
-      var _ when KeyX.S == k1 => D2US(),
-      var _ when KeyX.D == k1 => D2UD(),
-      var _ when KeyX.A == k1 => D2UA(),
+      var _ when KeyX.W == k => D2UW(),
+      var _ when KeyX.S == k => D2US(),
+      var _ when KeyX.D == k => D2UD(),
+      var _ when KeyX.A == k => D2UA(),
       _ => T,
     };
   }
 
-  public static bool OnD2D(uint k1) {
-    Held[k1] = T;
+  public static bool OnD2D(uint k) {
+    Held[k] = T;
     return T switch {
-      var _ when KeyX.W == k1 => D2DW(),
-      var _ when KeyX.S == k1 => D2DS(),
-      var _ when KeyX.D == k1 => D2DD(),
-      var _ when KeyX.A == k1 => D2DA(),
+      var _ when KeyX.W == k => D2DW(),
+      var _ when KeyX.S == k => D2DS(),
+      var _ when KeyX.D == k => D2DD(),
+      var _ when KeyX.A == k => D2DA(),
       _ => T,
     };
   }
 
-  public static bool OnD1U(uint k1) {
-    Held[k1] = F;
+  public static bool OnD1U(uint k) {
+    Held[k] = F;
     return T switch {
-      var _ when KeyM.L == k1 => D1UL(),
+      var _ when KeyM.L == k => D1UL(),
       _ => T,
     };
   }
 
-  public static bool OnD1D(uint k1) {
-    Held[k1] = T;
+  public static bool OnD1D(uint k) {
+    Held[k] = T;
     return T switch {
-      var _ when KeyM.L == k1 => D1DL(),
+      var _ when KeyM.L == k => D1DL(),
       _ => T,
     };
   }
