@@ -1,6 +1,6 @@
-﻿public class Perform {
-  private static Thread[] workerThreads;
-  private static CancellationTokenSource cancellationTokenSource;
+﻿class Perform {
+  private static readonly Thread[] workerThreads = new Thread[4];
+  private static readonly CancellationTokenSource cancellationTokenSource = new();
 
   private static void ProcessTasks(CancellationToken cancellationToken) {
     while (!cancellationToken.IsCancellationRequested) {
@@ -8,7 +8,7 @@
         try {
           task();
         } catch (Exception ex) {
-          Console.WriteLine($"Task execution failed: {ex.Message}");
+          Console.WriteLine($"Task execution failed: {ex.Message} {ex.Source} {ex.StackTrace}");
         }
       } else {
         Thread.Sleep(1);
@@ -30,9 +30,6 @@
   }
 
   public static void A(int workerCount) {
-    cancellationTokenSource = new CancellationTokenSource();
-    workerThreads = new Thread[workerCount];
-
     for (int i = 0; i < workerCount; i++) {
       workerThreads[i] = new Thread(() => ProcessTasks(cancellationTokenSource.Token)) {
         IsBackground = true

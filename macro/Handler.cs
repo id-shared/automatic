@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
 
-public class Handler {
+class Handler {
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       Perform.EnqueueTask(() => {
@@ -58,20 +57,19 @@ public class Handler {
   }
 
   private static bool D1UL() {
+    ReactO(KeyM.L, KeyX.V);
+    ReactO(KeyM.L, KeyE.C);
     ReactO(KeyM.L, KeyA.R);
     ReactO(KeyM.L, KeyA.L);
-    ReactO(KeyM.L, KeyE.C);
-    ReactO(KeyM.L, KeyE.A);
     return T;
   }
 
   private static bool D1DL() {
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
-    IO(1, KeyE.A);
-    C(9);
-    ActI(KeyM.L, KeyE.A);
-    C(39);
+    //IO(1, KeyE.A);
+    ActI(KeyM.L, KeyX.V);
+    C(49);
     ActI(KeyM.L, KeyE.C);
     return T;
   }
