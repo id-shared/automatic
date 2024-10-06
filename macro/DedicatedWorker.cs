@@ -4,7 +4,7 @@
   private readonly LockFreeRingBuffer<Action> _taskQueue;
   private volatile bool _running;
 
-  public DedicatedWorker(int workerCount = 4) {
+  public DedicatedWorker(int workerCount = 16) {
     _workerCount = workerCount;
     _taskQueue = new LockFreeRingBuffer<Action>(1024);
     _workers = new Thread[_workerCount];
