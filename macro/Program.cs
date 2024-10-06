@@ -1,7 +1,7 @@
 ﻿class Program {
   private static void Main() {
+    Performer.A();
     Perform.A();
-    Handler.A();
   }
 
   private const bool F = false;
