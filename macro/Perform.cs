@@ -1,6 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 class Perform {
   private static DedicatedWorker worker = new DedicatedWorker();

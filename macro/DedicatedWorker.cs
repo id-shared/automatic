@@ -4,20 +4,6 @@
   private readonly LockFreeRingBuffer<Action> _taskQueue;
   private volatile bool _running;
 
-  public DedicatedWorker(int workerCount = 16) {
-    _workerCount = workerCount;
-    _taskQueue = new LockFreeRingBuffer<Action>(1024);
-    _workers = new Thread[_workerCount];
-    _running = true;
-
-    for (int i = 0; i < _workerCount; i++) {
-      _workers[i] = new Thread(WorkerLoop) {
-        IsBackground = true
-      };
-      _workers[i].Start();
-    }
-  }
-
   private void WorkerLoop() {
     while (_running) {
       if (_taskQueue.TryDequeue(out var action)) {
@@ -33,30 +19,40 @@
     }
   }
 
-  public void Enqueue(Action action) {
+  public bool Enqueue(Action action) {
     if (!_running) throw new InvalidOperationException("Worker is not running.");
     _taskQueue.Enqueue(action);
+    return T;
   }
 
-  public void Stop() {
+  public bool Stop() {
     _running = false;
     foreach (var worker in _workers) {
       worker.Join(); // Wait for workers to finish
     }
+
+    return T;
   }
+
+  public DedicatedWorker(int workerCount = 16) {
+    _workerCount = workerCount;
+    _taskQueue = new LockFreeRingBuffer<Action>(1024);
+    _workers = new Thread[_workerCount];
+    _running = true;
+
+    for (int i = 0; i < _workerCount; i++) {
+      _workers[i] = new Thread(WorkerLoop) {
+        IsBackground = true
+      };
+      _workers[i].Start();
+    }
+  }
+
+  private const bool F = false;
+  private const bool T = true;
 }
 
 public class LockFreeRingBuffer<T> {
-  private readonly T[] _buffer;
-  private int _head;
-  private int _tail;
-
-  public LockFreeRingBuffer(int size) {
-    _buffer = new T[size];
-    _head = 0;
-    _tail = 0;
-  }
-
   public bool TryDequeue(out T item) {
     lock (_buffer) {
       if (_head == _tail) {
@@ -77,4 +73,14 @@ public class LockFreeRingBuffer<T> {
       _tail = (_tail + 1) % _buffer.Length;
     }
   }
+
+  public LockFreeRingBuffer(int size) {
+    _buffer = new T[size];
+    _head = 0;
+    _tail = 0;
+  }
+
+  private readonly T[] _buffer;
+  private static int _head;
+  private static int _tail;
 }
