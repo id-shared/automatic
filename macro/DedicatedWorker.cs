@@ -1,4 +1,4 @@
-﻿public class DedicatedWorker {
+﻿class DedicatedWorker {
   private readonly int _workerCount;
   private readonly Thread[] _workers;
   private readonly LockFreeRingBuffer<Action> _taskQueue;
@@ -8,30 +8,25 @@
     while (_running) {
       if (_taskQueue.TryDequeue(out var action)) {
         try {
-          action?.Invoke(); // Execute the action
+          action?.Invoke();
         } catch (Exception ex) {
-          // Handle exceptions if necessary
           Console.WriteLine($"Error executing action: {ex}");
         }
       } else {
-        Thread.Yield(); // Yield CPU time if no task is available
+        Thread.Yield();
       }
     }
   }
 
-  public bool Enqueue(Action action) {
-    if (!_running) throw new InvalidOperationException("Worker is not running.");
+  public void Enqueue(Action action) {
     _taskQueue.Enqueue(action);
-    return T;
   }
 
-  public bool Stop() {
+  public void Stop() {
     _running = false;
     foreach (var worker in _workers) {
-      worker.Join(); // Wait for workers to finish
+      worker.Join();
     }
-
-    return T;
   }
 
   public DedicatedWorker(int workerCount = 16) {
@@ -52,7 +47,7 @@
   private const bool T = true;
 }
 
-public class LockFreeRingBuffer<T> {
+class LockFreeRingBuffer<T> {
   public bool TryDequeue(out T item) {
     lock (_buffer) {
       if (_head == _tail) {
