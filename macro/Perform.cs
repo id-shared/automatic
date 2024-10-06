@@ -202,7 +202,7 @@ class Perform {
     Detach(d1_hook_id);
   }
 
-  private static readonly ConcurrentDictionary<uint, bool> Unit = [];
+  private static readonly Dictionary<uint, bool> Unit = [];
   private static int TimeD = 0;
   private static int TimeA = 0;
 
