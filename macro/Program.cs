@@ -95,6 +95,7 @@ class Program {
 }
 
 public class Handler {
+
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       TaskProcessor.EnqueueTask(() => {
@@ -132,6 +133,7 @@ public class Handler {
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
   private static bool D2UA() {
+    TimeA = Environment.TickCount64;
     return IO(99, KeyA.R);
   }
 
@@ -168,6 +170,8 @@ public class Handler {
   }
 
   private static bool D1DL() {
+    long calc = Environment.TickCount64 - TimeA;
+    Console.WriteLine(calc);
     C(49);
     return ActI(KeyM.L, KeyE.C);
   }
@@ -216,11 +220,11 @@ public class Handler {
   }
 
   private static bool IsHeld(uint k) {
-    return Held.TryGetValue(k, out bool is_held) && is_held;
+    return Unit.TryGetValue(k, out bool is_held) && is_held;
   }
 
   private static bool OnD2U(uint k) {
-    Held[k] = F;
+    Unit[k] = F;
     return T switch {
       var _ when KeyX.W == k => D2UW(),
       var _ when KeyX.S == k => D2US(),
@@ -231,7 +235,7 @@ public class Handler {
   }
 
   private static bool OnD2D(uint k) {
-    Held[k] = T;
+    Unit[k] = T;
     return T switch {
       var _ when KeyX.W == k => D2DW(),
       var _ when KeyX.S == k => D2DS(),
@@ -242,7 +246,7 @@ public class Handler {
   }
 
   private static bool OnD1U(uint k) {
-    Held[k] = F;
+    Unit[k] = F;
     return T switch {
       var _ when KeyM.L == k => D1UL(),
       _ => T,
@@ -250,14 +254,15 @@ public class Handler {
   }
 
   private static bool OnD1D(uint k) {
-    Held[k] = T;
+    Unit[k] = T;
     return T switch {
       var _ when KeyM.L == k => D1DL(),
       _ => T,
     };
   }
 
-  private static readonly Dictionary<uint, bool> Held = [];
+  private static readonly Dictionary<uint, bool> Unit = [];
+  private static long TimeA = 0;
 
   private const uint WM_KEYDOWN = 0x0100;
   private const uint WM_SYSKEYDOWN = 0x0104;
@@ -313,8 +318,3 @@ public class Handler {
 //  }
 //  return maxVolume;
 //}
-
-//public static long A = 0;
-//A = Environment.TickCount64;
-//long calc = Environment.TickCount64 - A;
-//Console.WriteLine(calc);
