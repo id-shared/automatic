@@ -5,33 +5,33 @@ using System.Runtime.InteropServices;
 class Handler {
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      Perform.EnqueueTask(() => {
-        uint key = (uint)Marshal.ReadInt32(lParam);
-        uint act = (uint)wParam;
-        _ = T switch {
-          var _ when act == WM_SYSKEYDOWN => OnD2D(key),
-          var _ when act == WM_KEYDOWN => OnD2D(key),
-          var _ when act == WM_SYSKEYUP => OnD2U(key),
-          var _ when act == WM_KEYUP => OnD2U(key),
-          _ => T,
-        };
-      });
+      //Perform.EnqueueTask(() => {
+      uint key = (uint)Marshal.ReadInt32(lParam);
+      uint act = (uint)wParam;
+      _ = T switch {
+        var _ when act == WM_SYSKEYDOWN => OnD2D(key),
+        var _ when act == WM_KEYDOWN => OnD2D(key),
+        var _ when act == WM_SYSKEYUP => OnD2U(key),
+        var _ when act == WM_KEYUP => OnD2U(key),
+        _ => T,
+      };
+      //});
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      Perform.EnqueueTask(() => {
-        uint act = (uint)wParam;
-        _ = T switch {
-          var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
-          var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
-          var _ when act == WM_RBUTTONDOWN => OnD1D(0x02),
-          var _ when act == WM_RBUTTONUP => OnD1U(0x02),
-          _ => T,
-        };
-      });
+      //Perform.EnqueueTask(() => {
+      uint act = (uint)wParam;
+      _ = T switch {
+        var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
+        var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
+        var _ when act == WM_RBUTTONDOWN => OnD1D(0x02),
+        var _ when act == WM_RBUTTONUP => OnD1U(0x02),
+        _ => T,
+      };
+      //});
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
