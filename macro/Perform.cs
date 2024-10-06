@@ -1,5 +1,5 @@
 ﻿class Perform {
-  private static readonly Thread[] workerThreads = new Thread[4];
+  private static readonly Thread[] workerThreads = new Thread[16];
   private static readonly CancellationTokenSource cancellationTokenSource = new();
 
   private static void ProcessTasks(CancellationToken cancellationToken) {
@@ -29,8 +29,8 @@
     }
   }
 
-  public static void A(int workerCount) {
-    for (int i = 0; i < workerCount; i++) {
+  public static void A() {
+    for (int i = 0; i < workerThreads.Length; i++) {
       workerThreads[i] = new Thread(() => ProcessTasks(cancellationTokenSource.Token)) {
         IsBackground = true
       };

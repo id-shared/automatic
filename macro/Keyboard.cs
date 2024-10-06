@@ -2,6 +2,8 @@
 
 class Keyboard {
   public async static Task<bool> Hold(int t1, uint k1) {
+    if (t1 <= 0) throw new ArgumentOutOfRangeException(nameof(t1), "Delay must be positive.");
+
     Input(k1, T);
     await Task.Delay(t1);
     Input(k1, F);
@@ -9,6 +11,10 @@ class Keyboard {
   }
 
   public static bool Input(uint k1, bool @is) {
+    if (I == null || I.Length == 0) {
+      throw new InvalidOperationException("Input array not initialized.");
+    }
+
     I[0].type = INPUT_KEYBOARD;
     I[0].mkhi.ki.wVk = (ushort)k1;
     I[0].mkhi.ki.wScan = 0;
@@ -16,9 +22,7 @@ class Keyboard {
     I[0].mkhi.ki.time = 0;
     I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
 
-    SendInput((uint)I.Length, I, I_size);
-
-    return T;
+    return SendInput((uint)I.Length, I, I_size) == 0 ? throw new ExternalException("SendInput failed.") : T;
   }
 
   private static readonly int I_size = Marshal.SizeOf(typeof(INPUT));

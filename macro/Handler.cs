@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Handler {
@@ -57,10 +58,10 @@ class Handler {
   }
 
   private static bool D1UL() {
-    ReactO(KeyM.L, KeyX.V);
-    ReactO(KeyM.L, KeyE.C);
-    ReactO(KeyM.L, KeyA.R);
-    ReactO(KeyM.L, KeyA.L);
+    O(KeyX.V);
+    O(KeyE.C);
+    O(KeyA.R);
+    O(KeyA.L);
     return T;
   }
 
@@ -71,6 +72,7 @@ class Handler {
     ActI(KeyM.L, KeyX.V);
     C(49);
     ActI(KeyM.L, KeyE.C);
+    C(2000);
     return T;
   }
 
@@ -199,7 +201,7 @@ class Handler {
     Detach(d1_hook_id);
   }
 
-  private static readonly Dictionary<uint, bool> Unit = [];
+  private static readonly ConcurrentDictionary<uint, bool> Unit = [];
   private static int TimeD = 0;
   private static int TimeA = 0;
 
