@@ -1,35 +1,47 @@
 ﻿public class Perform {
-  public static void Initialize(int workerCount) {
-    workerThreads = new Thread[workerCount];
-    for (int i = 0; i < workerCount; i++) {
-      workerThreads[i] = new Thread(ProcessTasks) {
-        IsBackground = true // Ensure worker threads don't block the app from exiting
-      };
-      workerThreads[i].Start();
-    }
-  }
+  private static Thread[] workerThreads;
+  private static CancellationTokenSource cancellationTokenSource;
 
-  private static void ProcessTasks() {
-    SpinWait spinner = new SpinWait();
-    while (true) {
+  private static void ProcessTasks(CancellationToken cancellationToken) {
+    while (!cancellationToken.IsCancellationRequested) {
       if (taskQueue.TryDequeue(out Action task)) {
-        task(); // Execute the task directly
+        try {
+          task();
+        } catch (Exception ex) {
+          Console.WriteLine($"Task execution failed: {ex.Message}");
+        }
       } else {
-        // Use Sleep(0) to yield the processor for better efficiency
-        spinner.SpinOnce();
-        Thread.Sleep(0); // Yield control to other threads
+        Thread.Sleep(1);
       }
     }
   }
 
   public static void EnqueueTask(Action task) {
     if (!taskQueue.TryEnqueue(task)) {
-      // Handle queue overflow (e.g., logging or retry logic)
+      Console.WriteLine("Task queue is full, task was not enqueued.");
+    }
+  }
+
+  public static void Shutdown() {
+    cancellationTokenSource.Cancel();
+    foreach (var thread in workerThreads) {
+      thread.Join();
+    }
+  }
+
+  public static void A(int workerCount) {
+    cancellationTokenSource = new CancellationTokenSource();
+    workerThreads = new Thread[workerCount];
+
+    for (int i = 0; i < workerCount; i++) {
+      workerThreads[i] = new Thread(() => ProcessTasks(cancellationTokenSource.Token)) {
+        IsBackground = true
+      };
+      workerThreads[i].Start();
     }
   }
 
   private static readonly LockFreeRingBuffer<Action> taskQueue = new(1024);
-  private static Thread[] workerThreads = Array.Empty<Thread>();
 }
 
 public class LockFreeRingBuffer<T> {

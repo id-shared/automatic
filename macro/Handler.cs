@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 public class Handler {
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
@@ -160,10 +162,57 @@ public class Handler {
     };
   }
 
+  private static IntPtr SetHook(Delegate proc, uint hookType) {
+    using ProcessModule? module = Process.GetCurrentProcess().MainModule;
+
+    switch (T) {
+      case var _ when module == null:
+        return IntPtr.Zero;
+      default:
+        IntPtr handle = GetModuleHandle(module.ModuleName);
+
+        return T switch {
+          var _ when handle == IntPtr.Zero => IntPtr.Zero,
+          _ => SetWindowsHookEx((int)hookType, proc, handle, 0),
+        };
+    }
+  }
+
+  private static void SubscribeKey(MSG msg) {
+    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
+      TranslateMessage(ref msg);
+      DispatchMessage(ref msg);
+    }
+  }
+
+  private static bool Detach(nint id) {
+    return T switch {
+      var _ when id == IntPtr.Zero => F,
+      _ => UnhookWindowsHookEx(id),
+    };
+  }
+  public static void A() {
+    d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
+    d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
+
+    SubscribeKey(new MSG());
+
+    Detach(d2_hook_id);
+    Detach(d1_hook_id);
+  }
+
   private static readonly Dictionary<uint, bool> Unit = [];
   private static int TimeD = 0;
   private static int TimeA = 0;
 
+  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+  private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
+  private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
+
+  private const uint WH_KEYBOARD_LL = 13;
+  private const uint WH_MOUSE_LL = 14;
   private const uint WM_KEYDOWN = 0x0100;
   private const uint WM_SYSKEYDOWN = 0x0104;
   private const uint WM_KEYUP = 0x0101;
@@ -175,6 +224,43 @@ public class Handler {
   private const bool F = false;
   private const bool T = true;
 
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSG {
+    public IntPtr hWnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
+  }
+
+  [DllImport("user32.dll")]
+  private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
+
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+  private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool TranslateMessage(ref MSG lpMsg);
+
+  [DllImport("user32.dll")]
+  private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 
   [DllImport("user32.dll")]
   private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
