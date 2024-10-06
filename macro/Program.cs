@@ -2,6 +2,98 @@
 using System.Diagnostics;
 
 class Program {
+  private static IntPtr SetHook(Delegate proc, uint hookType) {
+    using ProcessModule? module = Process.GetCurrentProcess().MainModule;
+
+    switch (T) {
+      case var _ when module == null:
+        return IntPtr.Zero;
+      default:
+        IntPtr handle = GetModuleHandle(module.ModuleName);
+
+        return T switch {
+          var _ when handle == IntPtr.Zero => IntPtr.Zero,
+          _ => SetWindowsHookEx((int)hookType, proc, handle, 0),
+        };
+    }
+  }
+
+  private static void SubscribeKey(MSG msg) {
+    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
+      TranslateMessage(ref msg);
+      DispatchMessage(ref msg);
+    }
+  }
+
+  private static bool Detach(nint id) {
+    return T switch {
+      var _ when id == IntPtr.Zero => F,
+      _ => UnhookWindowsHookEx(id),
+    };
+  }
+
+  private static void Main() {
+    TaskProcessor.Initialize(16);
+    Handler.d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
+    Handler.d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
+
+    SubscribeKey(new MSG());
+
+    Detach(Handler.d2_hook_id);
+    Detach(Handler.d1_hook_id);
+  }
+
+  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+  private static readonly LowLevelKeyboardProc d2_hook = Handler.D2HookCallback;
+  private static readonly LowLevelMouseProc d1_hook = Handler.D1HookCallback;
+
+  private const uint WH_KEYBOARD_LL = 13;
+  private const uint WH_MOUSE_LL = 14;
+  private const bool F = false;
+  private const bool T = true;
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSG {
+    public IntPtr hWnd;
+    public uint message;
+    public IntPtr wParam;
+    public IntPtr lParam;
+    public uint time;
+    public POINT pt;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct POINT {
+    public int x;
+    public int y;
+  }
+
+  [DllImport("user32.dll")]
+  private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
+
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+  private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+  [DllImport("user32.dll")]
+  [return: MarshalAs(UnmanagedType.Bool)]
+  private static extern bool TranslateMessage(ref MSG lpMsg);
+
+  [DllImport("user32.dll")]
+  private static extern IntPtr DispatchMessage(ref MSG lpMsg);
+}
+
+public class Handler {
   public static bool D2UA() {
     return IO(99, KeyA.R);
   }
@@ -35,7 +127,7 @@ class Program {
   }
 
   public static bool D1UL() {
-    return ReactO(KeyM.L, KeyE.C);
+    return O(KeyE.C);
   }
 
   public static bool D1DL() {
@@ -130,23 +222,7 @@ class Program {
 
   public static readonly Dictionary<uint, bool> Held = [];
 
-  private static IntPtr SetHook(Delegate proc, uint hookType) {
-    using ProcessModule? module = Process.GetCurrentProcess().MainModule;
-
-    switch (T) {
-      case var _ when module == null:
-        return IntPtr.Zero;
-      default:
-        IntPtr handle = GetModuleHandle(module.ModuleName);
-
-        return T switch {
-          var _ when handle == IntPtr.Zero => IntPtr.Zero,
-          _ => SetWindowsHookEx((int)hookType, proc, handle, 0),
-        };
-    }
-  }
-
-  private static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       ThreadPool.UnsafeQueueUserWorkItem(_ => {
         uint key = (uint)Marshal.ReadInt32(lParam);
@@ -163,7 +239,7 @@ class Program {
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
-  private static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       ThreadPool.UnsafeQueueUserWorkItem(_ => {
         uint act = (uint)wParam;
@@ -179,44 +255,9 @@ class Program {
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
 
-  private static void SubscribeKey(MSG msg) {
-    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
-      TranslateMessage(ref msg);
-      DispatchMessage(ref msg);
-    }
-  }
+  public static IntPtr d2_hook_id = IntPtr.Zero;
+  public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  private static bool Detach(nint id) {
-    return T switch {
-      var _ when id == IntPtr.Zero => F,
-      _ => UnhookWindowsHookEx(id),
-    };
-  }
-
-  private static void Main() {
-    d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
-    d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
-
-    SubscribeKey(new MSG());
-
-    Detach(d2_hook_id);
-    Detach(d1_hook_id);
-  }
-
-  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-  private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
-  private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
-
-  private static IntPtr d2_hook_id = IntPtr.Zero;
-  private static IntPtr d1_hook_id = IntPtr.Zero;
-
-  private static readonly bool F = false;
-  private static readonly bool T = true;
-
-  private const uint WH_KEYBOARD_LL = 13;
-  private const uint WH_MOUSE_LL = 14;
   private const uint WM_KEYDOWN = 0x0100;
   private const uint WM_SYSKEYDOWN = 0x0104;
   private const uint WM_KEYUP = 0x0101;
@@ -225,46 +266,12 @@ class Program {
   private const uint WM_LBUTTONUP = 0x0202;
   private const uint WM_RBUTTONDOWN = 0x0204;
   private const uint WM_RBUTTONUP = 0x0205;
+  private const bool F = false;
+  private const bool T = true;
 
-  [StructLayout(LayoutKind.Sequential)]
-  private struct MSG {
-    public IntPtr hWnd;
-    public uint message;
-    public IntPtr wParam;
-    public IntPtr lParam;
-    public uint time;
-    public POINT pt;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  private struct POINT {
-    public int x;
-    public int y;
-  }
-
-  [DllImport("user32.dll")]
-  private static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
-
-  [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
   [DllImport("user32.dll")]
   private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-  private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-  [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  private static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-  [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  private static extern bool TranslateMessage(ref MSG lpMsg);
-
-  [DllImport("user32.dll")]
-  private static extern IntPtr DispatchMessage(ref MSG lpMsg);
 }
 
 //public static DateTime since = DateTime.MinValue;
@@ -305,3 +312,8 @@ class Program {
 //  }
 //  return maxVolume;
 //}
+
+//public static long A = 0;
+//A = Environment.TickCount64;
+//long calc = Environment.TickCount64 - A;
+//Console.WriteLine(calc);

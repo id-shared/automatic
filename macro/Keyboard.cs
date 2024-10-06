@@ -23,11 +23,11 @@ class Keyboard {
 
   private static readonly int I_size = Marshal.SizeOf(typeof(INPUT));
   private static readonly INPUT[] I = new INPUT[1];
-  private static readonly bool F = false;
-  private static readonly bool T = true;
 
   private const uint INPUT_KEYBOARD = 1;
   private const uint KEYEVENTF_KEYUP = 0x0002;
+  private const bool F = false;
+  private const bool T = true;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct INPUT {
