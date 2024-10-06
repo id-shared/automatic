@@ -66,9 +66,10 @@ public class Handler {
   private static bool D1DL() {
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
-    IO(9, KeyE.A);
+    IO(1, KeyE.A);
+    C(9);
     ActI(KeyM.L, KeyE.A);
-    C(49);
+    C(39);
     ActI(KeyM.L, KeyE.C);
     return T;
   }
