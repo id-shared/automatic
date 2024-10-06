@@ -1,20 +1,7 @@
 ﻿class DedicatedWorker {
-  private readonly int _workerCount;
-  private readonly Thread[] _workers;
-  private readonly LockFreeRingBuffer<Action> _taskQueue;
-  private volatile bool _running;
-
   private void WorkerLoop() {
     while (_running) {
-      if (_taskQueue.TryDequeue(out var action)) {
-        try {
-          action?.Invoke();
-        } catch (Exception ex) {
-          Console.WriteLine($"Error executing action: {ex}");
-        }
-      } else {
-        Thread.Yield();
-      }
+      (_taskQueue.TryDequeue(out Action action) ? action.Invoke : (Action)(() => Thread.Yield()))();
     }
   }
 
@@ -43,6 +30,10 @@
     }
   }
 
+  private volatile bool _running;
+  private readonly int _workerCount;
+  private readonly Thread[] _workers;
+  private readonly LockFreeRingBuffer<Action> _taskQueue;
   private const bool F = false;
   private const bool T = true;
 }
