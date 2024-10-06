@@ -46,7 +46,6 @@
   }
 }
 
-// Example of LockFreeRingBuffer implementation
 public class LockFreeRingBuffer<T> {
   private readonly T[] _buffer;
   private int _head;
@@ -62,11 +61,11 @@ public class LockFreeRingBuffer<T> {
     lock (_buffer) {
       if (_head == _tail) {
         item = default!;
-        return false; // Buffer is empty
+        return false;
       }
 
       item = _buffer[_head];
-      _buffer[_head] = default!; // Clear reference
+      _buffer[_head] = default!;
       _head = (_head + 1) % _buffer.Length;
       return true;
     }
