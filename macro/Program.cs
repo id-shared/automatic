@@ -1,6 +1,6 @@
 ﻿class Program {
   private static void Main() {
-    Performer.A();
+    DedicatedWorker.A();
     Perform.A();
   }
 
