@@ -1,6 +1,4 @@
 ﻿public class Perform {
-  private static volatile bool shutdown = false;
-
   public static void Initialize(int workerCount) {
     workerThreads = new Thread[workerCount];
     for (int i = 0; i < workerCount; i++) {
@@ -11,21 +9,15 @@
     }
   }
 
-  public static void Shutdown() {
-    shutdown = true;
-    foreach (var thread in workerThreads) {
-      thread.Join(); // Ensure all worker threads exit properly
-    }
-  }
-
   private static void ProcessTasks() {
     SpinWait spinner = new SpinWait();
-    while (!shutdown) {
+    while (true) {
       if (taskQueue.TryDequeue(out Action task)) {
         task(); // Execute the task directly
-        spinner.Reset(); // Reset SpinWait after task is dequeued
       } else {
-        spinner.SpinOnce(); // Backoff for a very short duration if the queue is empty
+        // Use Sleep(0) to yield the processor for better efficiency
+        spinner.SpinOnce();
+        Thread.Sleep(0); // Yield control to other threads
       }
     }
   }
@@ -37,7 +29,7 @@
   }
 
   private static readonly LockFreeRingBuffer<Action> taskQueue = new(1024);
-  private static Thread[] workerThreads = [];
+  private static Thread[] workerThreads = Array.Empty<Thread>();
 }
 
 public class LockFreeRingBuffer<T> {
