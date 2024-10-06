@@ -37,14 +37,6 @@ public class Handler {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  private static bool D2UW() {
-    return T;
-  }
-
-  private static bool D2US() {
-    return T;
-  }
-
   private static bool D2UD() {
     TimeD = Environment.TickCount64;
     return O(KeyA.L);
@@ -53,14 +45,6 @@ public class Handler {
   private static bool D2UA() {
     TimeA = Environment.TickCount64;
     return O(KeyA.R);
-  }
-
-  private static bool D2DW() {
-    return T;
-  }
-
-  private static bool D2DS() {
-    return T;
   }
 
   private static bool D2DD() {
@@ -140,8 +124,6 @@ public class Handler {
   private static bool OnD2U(uint k) {
     Unit[k] = F;
     return T switch {
-      var _ when KeyX.W == k => D2UW(),
-      var _ when KeyX.S == k => D2US(),
       var _ when KeyX.D == k => D2UD(),
       var _ when KeyX.A == k => D2UA(),
       _ => T,
@@ -151,8 +133,6 @@ public class Handler {
   private static bool OnD2D(uint k) {
     Unit[k] = T;
     return T switch {
-      var _ when KeyX.W == k => D2DW(),
-      var _ when KeyX.S == k => D2DS(),
       var _ when KeyX.D == k => D2DD(),
       var _ when KeyX.A == k => D2DA(),
       _ => T,
