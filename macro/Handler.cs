@@ -38,12 +38,12 @@ public class Handler {
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
   private static bool D2UD() {
-    TimeD = Environment.TickCount64;
+    TimeD = (int)Environment.TickCount64;
     return O(KeyA.L);
   }
 
   private static bool D2UA() {
-    TimeA = Environment.TickCount64;
+    TimeA = (int)Environment.TickCount64;
     return O(KeyA.R);
   }
 
@@ -56,22 +56,26 @@ public class Handler {
   }
 
   private static bool D1UL() {
-    //O(KeyA.R);
-    //O(KeyA.L);
-    //O(KeyE.A);
-    return O(KeyE.C);
+    ReactO(KeyM.L, KeyA.R);
+    ReactO(KeyM.L, KeyA.L);
+    ReactO(KeyM.L, KeyE.C);
+    ReactO(KeyM.L, KeyE.A);
+    return T;
   }
 
   private static bool D1DL() {
-    //long timeD = Environment.TickCount64 - TimeD;
-    //long timeA = Environment.TickCount64 - TimeA;
-    //_ = timeD > 99 ? ActIO(99, KeyX.D, KeyA.L) : IO(99 - (int)timeD, KeyA.L);
-    //_ = timeA > 99 ? ActIO(99, KeyX.A, KeyA.R) : IO(99 - (int)timeA, KeyA.R);
-    //IO(1, KeyE.A);
-    //ActI(KeyM.L, KeyE.A);
+    Reactor(109, TimeD, KeyA.L);
+    Reactor(109, TimeA, KeyA.R);
+    IO(9, KeyE.A);
+    ActI(KeyM.L, KeyE.A);
     C(49);
     ActI(KeyM.L, KeyE.C);
     return T;
+  }
+
+  private static bool Reactor(int t1, int t, uint k) {
+    int time = (int)Environment.TickCount64 - t;
+    return t1 > time ? IO(t1, k) : T;
   }
 
   private static bool ReactIO(int t, uint k1, uint k) {
@@ -156,8 +160,8 @@ public class Handler {
   }
 
   private static readonly Dictionary<uint, bool> Unit = [];
-  private static long TimeD = 0;
-  private static long TimeA = 0;
+  private static int TimeD = 0;
+  private static int TimeA = 0;
 
   private const uint WM_KEYDOWN = 0x0100;
   private const uint WM_SYSKEYDOWN = 0x0104;
