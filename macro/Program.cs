@@ -33,7 +33,7 @@ class Program {
   }
 
   private static void Main() {
-    Perform.Initialize(256);
+    Perform.Initialize(16);
 
     Handler.d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
     Handler.d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);

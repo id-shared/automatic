@@ -37,13 +37,7 @@ public class Handler {
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
 
-  private static bool D2UA() {
-    TimeA = Environment.TickCount64;
-    return T;
-  }
-
-  private static bool D2UD() {
-    TimeD = Environment.TickCount64;
+  private static bool D2UW() {
     return T;
   }
 
@@ -51,15 +45,17 @@ public class Handler {
     return T;
   }
 
-  private static bool D2UW() {
-    return T;
+  private static bool D2UD() {
+    TimeD = Environment.TickCount64;
+    return O(KeyA.L);
   }
 
-  private static bool D2DA() {
-    return T;
+  private static bool D2UA() {
+    TimeA = Environment.TickCount64;
+    return O(KeyA.R);
   }
 
-  private static bool D2DD() {
+  private static bool D2DW() {
     return T;
   }
 
@@ -67,23 +63,28 @@ public class Handler {
     return T;
   }
 
-  private static bool D2DW() {
+  private static bool D2DD() {
+    return T;
+  }
+
+  private static bool D2DA() {
     return T;
   }
 
   private static bool D1UL() {
-    O(KeyA.R);
-    O(KeyA.L);
-    O(KeyE.C);
-    O(KeyE.A);
-    return T;
+    //O(KeyA.R);
+    //O(KeyA.L);
+    //O(KeyE.A);
+    return O(KeyE.C);
   }
 
   private static bool D1DL() {
-    long timeA = Environment.TickCount64 - TimeA;
-    _ = timeA > 99 ? ActIO(99, KeyX.A, KeyA.R) : IO(99, KeyA.R);
-    IO(1, KeyE.A);
-    ActI(KeyM.L, KeyE.A);
+    //long timeD = Environment.TickCount64 - TimeD;
+    //long timeA = Environment.TickCount64 - TimeA;
+    //_ = timeD > 99 ? ActIO(99, KeyX.D, KeyA.L) : IO(99 - (int)timeD, KeyA.L);
+    //_ = timeA > 99 ? ActIO(99, KeyX.A, KeyA.R) : IO(99 - (int)timeA, KeyA.R);
+    //IO(1, KeyE.A);
+    //ActI(KeyM.L, KeyE.A);
     C(49);
     ActI(KeyM.L, KeyE.C);
     return T;
