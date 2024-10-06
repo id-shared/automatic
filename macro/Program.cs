@@ -94,134 +94,6 @@ class Program {
 }
 
 public class Handler {
-  public static bool D2UA() {
-    return IO(99, KeyA.R);
-  }
-
-  public static bool D2UD() {
-    return IO(99, KeyA.L);
-  }
-
-  public static bool D2US() {
-    return T;
-  }
-
-  public static bool D2UW() {
-    return T;
-  }
-
-  public static bool D2DA() {
-    return T;
-  }
-
-  public static bool D2DD() {
-    return T;
-  }
-
-  public static bool D2DS() {
-    return T;
-  }
-
-  public static bool D2DW() {
-    return T;
-  }
-
-  public static bool D1UL() {
-    return O(KeyE.C);
-  }
-
-  public static bool D1DL() {
-    C(49);
-    return ActI(KeyM.L, KeyE.C);
-  }
-
-  public static bool ReactIO(int t, uint k1, uint k) {
-    return IsHeld(k1) ? T : IO(t, k);
-  }
-
-  public static bool ReactO(uint k1, uint k) {
-    return IsHeld(k1) ? T : O(k);
-  }
-
-  public static bool ReactI(uint k1, uint k) {
-    return IsHeld(k1) ? T : I(k);
-  }
-
-  public static bool ActIO(int t, uint k1, uint k) {
-    return IsHeld(k1) ? IO(t, k) : T;
-  }
-
-  public static bool ActO(uint k1, uint k) {
-    return IsHeld(k1) ? O(k) : T;
-  }
-
-  public static bool ActI(uint k1, uint k) {
-    return IsHeld(k1) ? I(k) : T;
-  }
-
-  public static bool IO(int t, uint k) {
-    I(k);
-    C(t);
-    O(k);
-    return T;
-  }
-
-  public static bool O(uint k) {
-    return IsHeld(k) ? Keyboard.Input(k, F) : T;
-  }
-
-  public static bool I(uint k) {
-    return IsHeld(k) ? T : Keyboard.Input(k, T);
-  }
-
-  public static void C(int i) {
-    Thread.Sleep(i);
-  }
-
-  public static bool IsHeld(uint k) {
-    return Held.TryGetValue(k, out bool is_held) && is_held;
-  }
-
-  public static bool OnD2U(uint k) {
-    Held[k] = F;
-    return T switch {
-      var _ when KeyX.W == k => D2UW(),
-      var _ when KeyX.S == k => D2US(),
-      var _ when KeyX.D == k => D2UD(),
-      var _ when KeyX.A == k => D2UA(),
-      _ => T,
-    };
-  }
-
-  public static bool OnD2D(uint k) {
-    Held[k] = T;
-    return T switch {
-      var _ when KeyX.W == k => D2DW(),
-      var _ when KeyX.S == k => D2DS(),
-      var _ when KeyX.D == k => D2DD(),
-      var _ when KeyX.A == k => D2DA(),
-      _ => T,
-    };
-  }
-
-  public static bool OnD1U(uint k) {
-    Held[k] = F;
-    return T switch {
-      var _ when KeyM.L == k => D1UL(),
-      _ => T,
-    };
-  }
-
-  public static bool OnD1D(uint k) {
-    Held[k] = T;
-    return T switch {
-      var _ when KeyM.L == k => D1DL(),
-      _ => T,
-    };
-  }
-
-  public static readonly Dictionary<uint, bool> Held = [];
-
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       ThreadPool.UnsafeQueueUserWorkItem(_ => {
@@ -257,6 +129,134 @@ public class Handler {
 
   public static IntPtr d2_hook_id = IntPtr.Zero;
   public static IntPtr d1_hook_id = IntPtr.Zero;
+
+  private static bool D2UA() {
+    return IO(99, KeyA.R);
+  }
+
+  private static bool D2UD() {
+    return IO(99, KeyA.L);
+  }
+
+  private static bool D2US() {
+    return T;
+  }
+
+  private static bool D2UW() {
+    return T;
+  }
+
+  private static bool D2DA() {
+    return T;
+  }
+
+  private static bool D2DD() {
+    return T;
+  }
+
+  private static bool D2DS() {
+    return T;
+  }
+
+  private static bool D2DW() {
+    return T;
+  }
+
+  private static bool D1UL() {
+    return O(KeyE.C);
+  }
+
+  private static bool D1DL() {
+    C(49);
+    return ActI(KeyM.L, KeyE.C);
+  }
+
+  private static bool ReactIO(int t, uint k1, uint k) {
+    return IsHeld(k1) ? T : IO(t, k);
+  }
+
+  private static bool ReactO(uint k1, uint k) {
+    return IsHeld(k1) ? T : O(k);
+  }
+
+  private static bool ReactI(uint k1, uint k) {
+    return IsHeld(k1) ? T : I(k);
+  }
+
+  private static bool ActIO(int t, uint k1, uint k) {
+    return IsHeld(k1) ? IO(t, k) : T;
+  }
+
+  private static bool ActO(uint k1, uint k) {
+    return IsHeld(k1) ? O(k) : T;
+  }
+
+  private static bool ActI(uint k1, uint k) {
+    return IsHeld(k1) ? I(k) : T;
+  }
+
+  private static bool IO(int t, uint k) {
+    I(k);
+    C(t);
+    O(k);
+    return T;
+  }
+
+  private static bool O(uint k) {
+    return IsHeld(k) ? Keyboard.Input(k, F) : T;
+  }
+
+  private static bool I(uint k) {
+    return IsHeld(k) ? T : Keyboard.Input(k, T);
+  }
+
+  private static void C(int i) {
+    Thread.Sleep(i);
+  }
+
+  private static bool IsHeld(uint k) {
+    return Held.TryGetValue(k, out bool is_held) && is_held;
+  }
+
+  private static bool OnD2U(uint k) {
+    Held[k] = F;
+    return T switch {
+      var _ when KeyX.W == k => D2UW(),
+      var _ when KeyX.S == k => D2US(),
+      var _ when KeyX.D == k => D2UD(),
+      var _ when KeyX.A == k => D2UA(),
+      _ => T,
+    };
+  }
+
+  private static bool OnD2D(uint k) {
+    Held[k] = T;
+    return T switch {
+      var _ when KeyX.W == k => D2DW(),
+      var _ when KeyX.S == k => D2DS(),
+      var _ when KeyX.D == k => D2DD(),
+      var _ when KeyX.A == k => D2DA(),
+      _ => T,
+    };
+  }
+
+  private static bool OnD1U(uint k) {
+    Held[k] = F;
+    return T switch {
+      var _ when KeyM.L == k => D1UL(),
+      _ => T,
+    };
+  }
+
+  private static bool OnD1D(uint k) {
+    Held[k] = T;
+    return T switch {
+      var _ when KeyM.L == k => D1DL(),
+      _ => T,
+    };
+  }
+
+  private static readonly Dictionary<uint, bool> Held = [];
 
   private const uint WM_KEYDOWN = 0x0100;
   private const uint WM_SYSKEYDOWN = 0x0104;
