@@ -1,6 +1,6 @@
 ﻿public class TaskProcessor {
-  private static LockFreeRingBuffer<Action> taskQueue = new(1024);
-  private static Thread[] workerThreads;
+  private static readonly LockFreeRingBuffer<Action> taskQueue = new(1024);
+  private static Thread[] workerThreads = [];
 
   public static void Initialize(int workerCount) {
     workerThreads = new Thread[workerCount];

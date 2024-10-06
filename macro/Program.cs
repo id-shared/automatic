@@ -34,6 +34,7 @@ class Program {
 
   private static void Main() {
     TaskProcessor.Initialize(16);
+
     Handler.d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
     Handler.d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
 
@@ -96,7 +97,7 @@ class Program {
 public class Handler {
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      ThreadPool.UnsafeQueueUserWorkItem(_ => {
+      TaskProcessor.EnqueueTask(() => {
         uint key = (uint)Marshal.ReadInt32(lParam);
         uint act = (uint)wParam;
         _ = T switch {
@@ -106,14 +107,14 @@ public class Handler {
           var _ when act == WM_KEYUP => OnD2U(key),
           _ => T,
         };
-      }, null);
+      });
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      ThreadPool.UnsafeQueueUserWorkItem(_ => {
+      TaskProcessor.EnqueueTask(() => {
         uint act = (uint)wParam;
         _ = T switch {
           var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
@@ -122,7 +123,7 @@ public class Handler {
           var _ when act == WM_RBUTTONUP => OnD1U(0x02),
           _ => T,
         };
-      }, null);
+      });
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
