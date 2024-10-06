@@ -3,9 +3,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 class Perform {
+  private static DedicatedWorker worker = new DedicatedWorker();
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      Task.Run(() => {
+      worker.Enqueue(() => {
         uint key = (uint)Marshal.ReadInt32(lParam);
         uint act = (uint)wParam;
         _ = T switch {
@@ -22,7 +23,7 @@ class Perform {
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      Task.Run(() => {
+      worker.Enqueue(() => {
         uint act = (uint)wParam;
         _ = T switch {
           var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
@@ -58,7 +59,7 @@ class Perform {
   }
 
   private static bool D1UL() {
-    O(KeyX.V);
+    O(KeyE.A);
     O(KeyE.C);
     O(KeyA.R);
     O(KeyA.L);
@@ -68,8 +69,8 @@ class Perform {
   private static bool D1DL() {
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
-    IO(1, KeyX.V);
-    ActI(KeyM.L, KeyX.V);
+    IO(1, KeyE.A);
+    ActI(KeyM.L, KeyE.A);
     C(49);
     ActI(KeyM.L, KeyE.C);
     C(2000);

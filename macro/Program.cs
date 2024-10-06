@@ -1,6 +1,5 @@
 ﻿class Program {
   private static void Main() {
-    DedicatedWorker.A();
     Perform.A();
   }
 
