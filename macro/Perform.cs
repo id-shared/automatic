@@ -36,8 +36,8 @@
     }
   }
 
-  private static readonly LockFreeRingBuffer<Action> taskQueue = new(65536);
-  private static Thread[] workerThreads = Array.Empty<Thread>();
+  private static readonly LockFreeRingBuffer<Action> taskQueue = new(1024);
+  private static Thread[] workerThreads = [];
 }
 
 public class LockFreeRingBuffer<T> {
