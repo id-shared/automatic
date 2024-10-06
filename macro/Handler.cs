@@ -3,7 +3,7 @@
 public class Handler {
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      TaskProcessor.EnqueueTask(() => {
+      Perform.EnqueueTask(() => {
         uint key = (uint)Marshal.ReadInt32(lParam);
         uint act = (uint)wParam;
         _ = T switch {
@@ -20,7 +20,7 @@ public class Handler {
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      TaskProcessor.EnqueueTask(() => {
+      Perform.EnqueueTask(() => {
         uint act = (uint)wParam;
         _ = T switch {
           var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),

@@ -1,7 +1,4 @@
-﻿public class TaskProcessor {
-  private static readonly LockFreeRingBuffer<Action> taskQueue = new(1024);
-  private static Thread[] workerThreads = [];
-
+﻿public class Perform {
   public static void Initialize(int workerCount) {
     workerThreads = new Thread[workerCount];
     for (int i = 0; i < workerCount; i++) {
@@ -26,14 +23,12 @@
       // Handle queue overflow
     }
   }
+
+  private static readonly LockFreeRingBuffer<Action> taskQueue = new(1024);
+  private static Thread[] workerThreads = [];
 }
 
 public class LockFreeRingBuffer<T> {
-  private readonly T[] buffer;
-  private readonly int mask;
-  private int head;
-  private int tail;
-
   public LockFreeRingBuffer(int capacity) {
     if (capacity <= 0 || (capacity & (capacity - 1)) != 0) {
       throw new ArgumentException("Capacity must be a positive power of 2.");
@@ -68,4 +63,9 @@ public class LockFreeRingBuffer<T> {
     Interlocked.Exchange(ref tail, currentTail + 1);
     return true;
   }
+
+  private readonly T[] buffer;
+  private readonly int mask;
+  private int head;
+  private int tail;
 }
