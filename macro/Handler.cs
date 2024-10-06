@@ -39,11 +39,12 @@ public class Handler {
 
   private static bool D2UA() {
     TimeA = Environment.TickCount64;
-    return IO(99, KeyA.R);
+    return T;
   }
 
   private static bool D2UD() {
-    return IO(99, KeyA.L);
+    TimeD = Environment.TickCount64;
+    return T;
   }
 
   private static bool D2US() {
@@ -71,14 +72,21 @@ public class Handler {
   }
 
   private static bool D1UL() {
-    return O(KeyE.C);
+    O(KeyA.R);
+    O(KeyA.L);
+    O(KeyE.C);
+    O(KeyE.A);
+    return T;
   }
 
   private static bool D1DL() {
-    long calc = Environment.TickCount64 - TimeA;
-    Console.WriteLine(calc);
+    long timeA = Environment.TickCount64 - TimeA;
+    _ = timeA > 99 ? ActIO(99, KeyX.A, KeyA.R) : IO(99, KeyA.R);
+    IO(1, KeyE.A);
+    ActI(KeyM.L, KeyE.A);
     C(49);
-    return ActI(KeyM.L, KeyE.C);
+    ActI(KeyM.L, KeyE.C);
+    return T;
   }
 
   private static bool ReactIO(int t, uint k1, uint k) {
@@ -167,6 +175,7 @@ public class Handler {
   }
 
   private static readonly Dictionary<uint, bool> Unit = [];
+  private static long TimeD = 0;
   private static long TimeA = 0;
 
   private const uint WM_KEYDOWN = 0x0100;
