@@ -1,12 +1,11 @@
 ﻿public class Perform {
-  private static ManualResetEventSlim taskAvailable = new ManualResetEventSlim(false); // For signaling tasks
   private static volatile bool shutdown = false;
 
   public static void Initialize(int workerCount) {
     workerThreads = new Thread[workerCount];
     for (int i = 0; i < workerCount; i++) {
       workerThreads[i] = new Thread(ProcessTasks) {
-        IsBackground = true // Keep background threads but manage shutdown
+        IsBackground = true // Ensure worker threads don't block the app from exiting
       };
       workerThreads[i].Start();
     }
@@ -14,26 +13,25 @@
 
   public static void Shutdown() {
     shutdown = true;
-    taskAvailable.Set(); // Ensure workers exit
     foreach (var thread in workerThreads) {
-      thread.Join(); // Wait for all worker threads to finish
+      thread.Join(); // Ensure all worker threads exit properly
     }
   }
 
   private static void ProcessTasks() {
+    SpinWait spinner = new SpinWait();
     while (!shutdown) {
       if (taskQueue.TryDequeue(out Action task)) {
-        task();
+        task(); // Execute the task directly
+        spinner.Reset(); // Reset SpinWait after task is dequeued
       } else {
-        taskAvailable.Wait(100); // Wait up to 100 ms or until signaled
+        spinner.SpinOnce(); // Backoff for a very short duration if the queue is empty
       }
     }
   }
 
   public static void EnqueueTask(Action task) {
-    if (taskQueue.TryEnqueue(task)) {
-      taskAvailable.Set(); // Signal that a new task is available
-    } else {
+    if (!taskQueue.TryEnqueue(task)) {
       // Handle queue overflow (e.g., logging or retry logic)
     }
   }
