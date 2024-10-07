@@ -4,17 +4,15 @@ using System.Diagnostics;
 class Perform {
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      worker.Enqueue(() => {
-        uint key = (uint)Marshal.ReadInt32(lParam);
-        uint act = (uint)wParam;
-        _ = T switch {
-          var _ when act == WM_SYSKEYDOWN => OnD2D(key),
-          var _ when act == WM_KEYDOWN => OnD2D(key),
-          var _ when act == WM_SYSKEYUP => OnD2U(key),
-          var _ when act == WM_KEYUP => OnD2U(key),
-          _ => T,
-        };
-      });
+      uint key = (uint)Marshal.ReadInt32(lParam);
+      uint act = (uint)wParam;
+      _ = T switch {
+        var _ when act == WM_SYSKEYDOWN => OnD2D(key),
+        var _ when act == WM_KEYDOWN => OnD2D(key),
+        var _ when act == WM_SYSKEYUP => OnD2U(key),
+        var _ when act == WM_KEYUP => OnD2U(key),
+        _ => T,
+      };
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
@@ -65,30 +63,17 @@ class Perform {
   }
 
   private static bool D1DL() {
-    if (Lock == F) {
-      Lock = T;
-      TimeD = IsHeld(KeyX.D) ? (int)Environment.TickCount64 : TimeD;
-      TimeA = IsHeld(KeyX.A) ? (int)Environment.TickCount64 : TimeA;
-      Reactor(109, TimeD, KeyA.L);
-      Reactor(109, TimeA, KeyA.R);
-      ReactI([
-        KeyE.A,
-      ], KeyE.A);
-      ReactO([
-        KeyM.L,
-      ], KeyE.A);
-      C(109);
-      ActI([
-        KeyM.L
-      ], KeyE.C);
-      Lock = F;
-    }
+    Reactor(109, TimeD, KeyA.L);
+    Reactor(109, TimeA, KeyA.R);
+    ReactI([KeyE.A], KeyE.A);
+    ReactO([KeyM.L], KeyE.A);
+    ActI([KeyM.L], KeyE.C);
     return T;
   }
 
   private static bool Reactor(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
-    return t1 > time && IO(t1 - time, k);
+    return t1 > time && IO(t1 - (time / 4), k);
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
@@ -215,7 +200,6 @@ class Perform {
   private static readonly Dictionary<uint, bool> Unit = [];
   private static int TimeD = 0;
   private static int TimeA = 0;
-  private static bool Lock = F;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
