@@ -68,41 +68,43 @@ class Perform {
   private static bool D1DL() {
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
-    IO(1, KeyE.A);
-    ActI(KeyM.L, KeyE.A);
+    ReactIO(1, [
+      KeyX.A,
+      KeyX.D,
+    ], KeyE.A);
+    //ActI(KeyM.L, KeyE.A);
     C(49);
     ActI(KeyM.L, KeyE.C);
-    C(2000);
     return T;
   }
 
   private static bool Reactor(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
-    return t1 > time ? IO(t1, k) : T;
+    return t1 > time ? IO(t1 - time, k) : T;
   }
 
-  private static bool ReactIO(int t, uint k1, uint k) {
-    return IsHeld(k1) ? T : IO(t, k);
+  private static bool ReactIO(int t, uint[] n, uint k) {
+    return n.All(_ => !IsHeld(_)) ? IO(t, k) : T;
   }
 
-  private static bool ReactO(uint k1, uint k) {
-    return IsHeld(k1) ? T : O(k);
+  private static bool ReactO(uint[] n, uint k) {
+    return n.All(_ => !IsHeld(_)) ? T : O(k);
   }
 
-  private static bool ReactI(uint k1, uint k) {
-    return IsHeld(k1) ? T : I(k);
+  private static bool ReactI(uint[] n, uint k) {
+    return n.All(_ => !IsHeld(_)) ? T : I(k);
   }
 
-  private static bool ActIO(int t, uint k1, uint k) {
-    return IsHeld(k1) ? IO(t, k) : T;
+  private static bool ActIO(int t, uint[] n, uint k) {
+    return n.All(IsHeld) ? IO(t, k) : T;
   }
 
-  private static bool ActO(uint k1, uint k) {
-    return IsHeld(k1) ? O(k) : T;
+  private static bool ActO(uint[] n, uint k) {
+    return n.All(IsHeld) ? O(k) : T;
   }
 
-  private static bool ActI(uint k1, uint k) {
-    return IsHeld(k1) ? I(k) : T;
+  private static bool ActI(uint[] n, uint k) {
+    return n.All(IsHeld) ? I(k) : T;
   }
 
   private static bool IO(int t, uint k) {
