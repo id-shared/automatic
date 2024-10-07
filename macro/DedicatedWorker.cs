@@ -1,6 +1,6 @@
 ﻿class DedicatedWorker {
   private void WorkerLoop() {
-    while (IsWork) {
+    while (T) {
       (TaskQueue.TryDequeue(out Action action) ? action.Invoke : (Action)(() => Spinner.SpinOnce()))();
     }
   }
@@ -9,17 +9,9 @@
     TaskQueue.Enqueue(action);
   }
 
-  public void Stop() {
-    IsWork = F;
-    foreach (var worker in Workers) {
-      worker.Join();
-    }
-  }
-
   public DedicatedWorker(int k) {
     TaskQueue = new LockFreeRingBuffer<Action>(1024);
     Workers = new Thread[k];
-    IsWork = T;
 
     for (int i = 0; i < k; i++) {
       Workers[i] = new Thread(WorkerLoop) {
@@ -32,7 +24,6 @@
   private readonly LockFreeRingBuffer<Action> TaskQueue;
   private readonly SpinWait Spinner = new SpinWait();
   private readonly Thread[] Workers;
-  private volatile bool IsWork;
   private const bool F = false;
   private const bool T = true;
 }
