@@ -38,22 +38,22 @@
   private const bool T = true;
 }
 
-class LockFreeRingBuffer<T> {
-  public bool TryDequeue(out T item) {
+class LockFreeRingBuffer<Item> {
+  public bool TryDequeue(out Item item) {
     lock (_buffer) {
       if (_head == _tail) {
         item = default!;
-        return false;
+        return F;
       }
 
       item = _buffer[_head];
       _buffer[_head] = default!;
       _head = (_head + 1) % _buffer.Length;
-      return true;
+      return T;
     }
   }
 
-  public void Enqueue(T item) {
+  public void Enqueue(Item item) {
     lock (_buffer) {
       _buffer[_tail] = item;
       _tail = (_tail + 1) % _buffer.Length;
@@ -61,12 +61,14 @@ class LockFreeRingBuffer<T> {
   }
 
   public LockFreeRingBuffer(int size) {
-    _buffer = new T[size];
+    _buffer = new Item[size];
     _head = 0;
     _tail = 0;
   }
 
-  private readonly T[] _buffer;
+  private readonly Item[] _buffer;
   private static int _head;
   private static int _tail;
+  private const bool F = false;
+  private const bool T = true;
 }
