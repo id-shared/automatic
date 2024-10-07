@@ -7,6 +7,7 @@
 }
 
 class KeyM {
+  public static readonly uint R = 0x02;
   public static readonly uint L = 0x01;
 }
 
