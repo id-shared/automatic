@@ -86,7 +86,7 @@ class Perform {
 
   private static bool Reactor(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
-    return t1 > time ? IO(t1 - time, k) : T;
+    return t1 > time && IO(t1 - (time / 4), k);
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
@@ -209,7 +209,7 @@ class Perform {
     Detach(d1_hook_id);
   }
 
-  private static readonly DedicatedWorker worker = new(64);
+  private static readonly DedicatedWorker worker = new(16);
   private static readonly Dictionary<uint, bool> Unit = [];
   private static int TimeD = 0;
   private static int TimeA = 0;
