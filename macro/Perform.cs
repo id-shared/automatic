@@ -68,13 +68,17 @@ class Perform {
   private static bool D1DL() {
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
-    ReactIO(1, [
-      KeyX.A,
+    ReactI([
       KeyX.D,
+      KeyX.A,
     ], KeyE.A);
-    //ActI(KeyM.L, KeyE.A);
+    ReactO([
+      KeyM.L,
+    ], KeyE.A);
     C(49);
-    ActI(KeyM.L, KeyE.C);
+    ActI([
+      KeyM.L
+    ], KeyE.C);
     return T;
   }
 
@@ -84,15 +88,15 @@ class Perform {
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
-    return n.All(_ => !IsHeld(_)) ? IO(t, k) : T;
+    return n.Any(IsHeld) ? IO(t, k) : T;
   }
 
   private static bool ReactO(uint[] n, uint k) {
-    return n.All(_ => !IsHeld(_)) ? T : O(k);
+    return n.Any(IsHeld) ? T : O(k);
   }
 
   private static bool ReactI(uint[] n, uint k) {
-    return n.All(_ => !IsHeld(_)) ? T : I(k);
+    return n.Any(IsHeld) ? T : I(k);
   }
 
   private static bool ActIO(int t, uint[] n, uint k) {
