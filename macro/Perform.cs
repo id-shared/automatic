@@ -75,7 +75,7 @@ class Perform {
 
   private static bool Reactor(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
-    return t1 > time && IO(t1 - (time / 2), k);
+    return t1 > time && IO(t1 - time, k);
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
