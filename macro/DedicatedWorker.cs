@@ -1,12 +1,12 @@
 ﻿class DedicatedWorker {
-  private void WorkerLoop() {
+  public bool Enqueue(Action action) {
+    return TaskQueue.Enqueue(action);
+  }
+
+  private void Loop() {
     while (T) {
       (TaskQueue.TryDequeue(out Action action) ? action.Invoke : (Action)(() => Spinner.SpinOnce()))();
     }
-  }
-
-  public void Enqueue(Action action) {
-    TaskQueue.Enqueue(action);
   }
 
   public DedicatedWorker(int k) {
@@ -14,7 +14,7 @@
     Workers = new Thread[k];
 
     for (int i = 0; i < k; i++) {
-      Workers[i] = new Thread(WorkerLoop) {
+      Workers[i] = new Thread(Loop) {
         IsBackground = T
       };
       Workers[i].Start();
@@ -22,7 +22,7 @@
   }
 
   private readonly LockFreeRingBuffer<Action> TaskQueue;
-  private readonly SpinWait Spinner = new SpinWait();
+  private readonly SpinWait Spinner = new();
   private readonly Thread[] Workers;
   private const bool F = false;
   private const bool T = true;
@@ -43,11 +43,12 @@ class LockFreeRingBuffer<Action> {
     }
   }
 
-  public void Enqueue(Action z) {
+  public bool Enqueue(Action z) {
     lock (_buffer) {
       _buffer[_tail] = z;
       _tail = (_tail + 1) % _buffer.Length;
     }
+    return T;
   }
 
   public LockFreeRingBuffer(int k) {

@@ -19,16 +19,14 @@ class Perform {
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
-      worker.Enqueue(() => {
-        uint act = (uint)wParam;
-        _ = T switch {
-          var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
-          var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
-          var _ when act == WM_RBUTTONDOWN => OnD1D(0x02),
-          var _ when act == WM_RBUTTONUP => OnD1U(0x02),
-          _ => T,
-        };
-      });
+      uint act = (uint)wParam;
+      _ = T switch {
+        var _ when act == WM_LBUTTONDOWN => worker.Enqueue(() => OnD1D(KeyM.L)),
+        var _ when act == WM_LBUTTONUP => worker.Enqueue(() => OnD1U(KeyM.L)),
+        var _ when act == WM_RBUTTONDOWN => OnD1D(0x02),
+        var _ when act == WM_RBUTTONUP => OnD1U(0x02),
+        _ => T,
+      };
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
   }
