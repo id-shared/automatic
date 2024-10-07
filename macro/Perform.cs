@@ -63,8 +63,6 @@ class Perform {
   }
 
   private static bool D1DL() {
-    TimeD = IsHeld(KeyX.D) ? (int)Environment.TickCount64 : TimeD;
-    TimeA = IsHeld(KeyX.A) ? (int)Environment.TickCount64 : TimeA;
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
     ReactI([KeyE.A], KeyE.A);
