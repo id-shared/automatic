@@ -69,13 +69,15 @@ class Perform {
       Lock = T;
       TimeD = IsHeld(KeyX.D) ? (int)Environment.TickCount64 : TimeD;
       TimeA = IsHeld(KeyX.A) ? (int)Environment.TickCount64 : TimeA;
-      Reactor(110, TimeD, KeyA.L);
-      Reactor(110, TimeA, KeyA.R);
-      ReactI([], KeyE.A);
+      Reactor(109, TimeD, KeyA.L);
+      Reactor(109, TimeA, KeyA.R);
+      ReactI([
+        KeyE.A,
+      ], KeyE.A);
       ReactO([
         KeyM.L,
       ], KeyE.A);
-      C(20);
+      C(109);
       ActI([
         KeyM.L
       ], KeyE.C);
@@ -86,7 +88,7 @@ class Perform {
 
   private static bool Reactor(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
-    return t1 > time && IO(t1 - (time / 4), k);
+    return t1 > time && IO(t1 - time, k);
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
@@ -121,11 +123,11 @@ class Perform {
   }
 
   private static bool O(uint k) {
-    return IsHeld(k) ? Keyboard.Input(k, F) : T;
+    return Keyboard.Input(k, F);
   }
 
   private static bool I(uint k) {
-    return IsHeld(k) ? T : Keyboard.Input(k, T);
+    return Keyboard.Input(k, T);
   }
 
   private static void C(int i) {
