@@ -1,39 +1,38 @@
 ﻿class DedicatedWorker {
   private void WorkerLoop() {
-    while (_running) {
-      (_taskQueue.TryDequeue(out Action action) ? action.Invoke : (Action)(() => Thread.Yield()))();
+    while (IsWork) {
+      (TaskQueue.TryDequeue(out Action action) ? action.Invoke : (Action)(() => Spinner.SpinOnce()))();
     }
   }
 
   public void Enqueue(Action action) {
-    _taskQueue.Enqueue(action);
+    TaskQueue.Enqueue(action);
   }
 
   public void Stop() {
-    _running = false;
-    foreach (var worker in _workers) {
+    IsWork = F;
+    foreach (var worker in Workers) {
       worker.Join();
     }
   }
 
-  public DedicatedWorker(int n) {
-    _workerCount = n;
-    _taskQueue = new LockFreeRingBuffer<Action>(1024);
-    _workers = new Thread[_workerCount];
-    _running = true;
+  public DedicatedWorker(int k) {
+    TaskQueue = new LockFreeRingBuffer<Action>(1024);
+    Workers = new Thread[k];
+    IsWork = T;
 
-    for (int i = 0; i < _workerCount; i++) {
-      _workers[i] = new Thread(WorkerLoop) {
-        IsBackground = true
+    for (int i = 0; i < k; i++) {
+      Workers[i] = new Thread(WorkerLoop) {
+        IsBackground = T
       };
-      _workers[i].Start();
+      Workers[i].Start();
     }
   }
 
-  private volatile bool _running;
-  private readonly int _workerCount;
-  private readonly Thread[] _workers;
-  private readonly LockFreeRingBuffer<Action> _taskQueue;
+  private readonly LockFreeRingBuffer<Action> TaskQueue;
+  private readonly SpinWait Spinner = new SpinWait();
+  private readonly Thread[] Workers;
+  private volatile bool IsWork;
   private const bool F = false;
   private const bool T = true;
 }
