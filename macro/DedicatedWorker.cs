@@ -16,8 +16,8 @@
     }
   }
 
-  public DedicatedWorker(int workerCount = 16) {
-    _workerCount = workerCount;
+  public DedicatedWorker(int n) {
+    _workerCount = n;
     _taskQueue = new LockFreeRingBuffer<Action>(1024);
     _workers = new Thread[_workerCount];
     _running = true;

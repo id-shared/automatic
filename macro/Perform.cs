@@ -2,7 +2,6 @@
 using System.Diagnostics;
 
 class Perform {
-  private static DedicatedWorker worker = new DedicatedWorker();
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       worker.Enqueue(() => {
@@ -66,19 +65,22 @@ class Perform {
   }
 
   private static bool D1DL() {
-    Reactor(110, TimeD, KeyA.L);
-    Reactor(110, TimeA, KeyA.R);
-    ReactI([
-      KeyX.D,
-      KeyX.A,
-    ], KeyE.A);
-    ReactO([
-      KeyM.L,
-    ], KeyE.A);
-    C(20);
-    ActI([
-      KeyM.L
-    ], KeyE.C);
+    if (Lock == F) {
+      Lock = T;
+      TimeD = IsHeld(KeyX.D) ? (int)Environment.TickCount64 : TimeD;
+      TimeA = IsHeld(KeyX.A) ? (int)Environment.TickCount64 : TimeA;
+      Reactor(110, TimeD, KeyA.L);
+      Reactor(110, TimeA, KeyA.R);
+      ReactI([], KeyE.A);
+      ReactO([
+        KeyM.L,
+      ], KeyE.A);
+      C(20);
+      ActI([
+        KeyM.L
+      ], KeyE.C);
+      Lock = F;
+    }
     return T;
   }
 
@@ -88,27 +90,27 @@ class Perform {
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
-    return n.Any(IsHeld) ? IO(t, k) : T;
+    return !n.Any(IsHeld) && IO(t, k);
   }
 
   private static bool ReactO(uint[] n, uint k) {
-    return n.Any(IsHeld) ? T : O(k);
+    return !n.Any(IsHeld) && O(k);
   }
 
   private static bool ReactI(uint[] n, uint k) {
-    return n.Any(IsHeld) ? T : I(k);
+    return !n.Any(IsHeld) && I(k);
   }
 
   private static bool ActIO(int t, uint[] n, uint k) {
-    return n.All(IsHeld) ? IO(t, k) : T;
+    return n.All(IsHeld) && IO(t, k);
   }
 
   private static bool ActO(uint[] n, uint k) {
-    return n.All(IsHeld) ? O(k) : T;
+    return n.All(IsHeld) && O(k);
   }
 
   private static bool ActI(uint[] n, uint k) {
-    return n.All(IsHeld) ? I(k) : T;
+    return n.All(IsHeld) && I(k);
   }
 
   private static bool IO(int t, uint k) {
@@ -207,9 +209,11 @@ class Perform {
     Detach(d1_hook_id);
   }
 
+  private static readonly DedicatedWorker worker = new(64);
   private static readonly Dictionary<uint, bool> Unit = [];
   private static int TimeD = 0;
   private static int TimeA = 0;
+  private static bool Lock = F;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
