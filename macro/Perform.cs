@@ -66,8 +66,8 @@ class Perform {
   }
 
   private static bool D1DL() {
-    Reactor(109, TimeD, KeyA.L);
-    Reactor(109, TimeA, KeyA.R);
+    Reactor(110, TimeD, KeyA.L);
+    Reactor(110, TimeA, KeyA.R);
     ReactI([
       KeyX.D,
       KeyX.A,
@@ -75,7 +75,7 @@ class Perform {
     ReactO([
       KeyM.L,
     ], KeyE.A);
-    C(49);
+    C(20);
     ActI([
       KeyM.L
     ], KeyE.C);
