@@ -34,16 +34,17 @@ class Perform {
   }
 
   private static bool D1DR() {
+    Console.WriteLine("abc");
     return T;
   }
 
   private static bool D1DL() {
+    I(KeyM.R);
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
     ReactI([KeyE.A], KeyE.A);
     ReactO([KeyM.L], KeyE.A);
     ActI([KeyM.L], KeyE.C);
-    I(KeyM.R);
     return T;
   }
 
