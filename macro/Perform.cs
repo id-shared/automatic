@@ -37,8 +37,8 @@ class Perform {
 
   private static bool D1DL() {
     return worker.Enqueue(() => {
-      Reacted(109, TimeD, KeyA.L);
-      Reacted(109, TimeA, KeyA.R);
+      Reacted(WaitD, TimeD, KeyA.L);
+      Reacted(WaitA, TimeA, KeyA.R);
       ActI([KeyM.L], KeyE.A);
       ActI([KeyM.L], KeyE.C);
     });
@@ -208,6 +208,8 @@ class Perform {
 
   private static readonly DedicatedWorker worker = new(16);
   private static readonly Dictionary<uint, bool> Unit = [];
+  private static int WaitD = 109;
+  private static int WaitA = 109;
   private static int TimeD = 0;
   private static int TimeA = 0;
 
