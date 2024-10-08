@@ -44,7 +44,7 @@ class Perform {
     worker.Enqueue(() => {
       Reacted(109, TimeD, KeyA.L);
       Reacted(109, TimeA, KeyA.R);
-      Reactor(0, 80, KeyM.L);
+      Reactor(109, 54, KeyM.L);
     });
     return T;
   }
@@ -55,17 +55,15 @@ class Perform {
   }
 
   private static bool Reactor(int t1, int t, uint k) {
-    int sum = t1 + t;
     if (IsHeld(k)) {
-      _ = sum > 320 && I(KeyM.R);
-      I(KeyE.C);
       I(KeyE.A);
+      I(KeyE.C);
+      C(t1);
+      O(KeyE.C);
       C(t);
       O(KeyE.A);
-      O(KeyE.C);
-      return Reactor(t1 + t, t, k);
+      return Reactor(t1, t, k);
     } else {
-      _ = sum > 320 && O(KeyM.R);
       return T;
     }
   }
