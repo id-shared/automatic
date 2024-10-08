@@ -34,18 +34,54 @@ class Perform {
   }
 
   private static bool D1DR() {
-    Console.WriteLine("abc");
     return T;
   }
 
   private static bool D1DL() {
-    I(KeyM.R);
     Reactor(109, TimeD, KeyA.L);
     Reactor(109, TimeA, KeyA.R);
+    ReactI([KeyM.R], KeyM.R);
     ReactI([KeyE.A], KeyE.A);
     ReactO([KeyM.L], KeyE.A);
     ActI([KeyM.L], KeyE.C);
     return T;
+  }
+
+  private static bool OnD2U(uint k) {
+    Unit[k] = F;
+    return T switch {
+      var _ when KeyX.D == k => D2UD(),
+      var _ when KeyX.A == k => D2UA(),
+      _ => T,
+    };
+  }
+
+  private static bool OnD2D(uint k) {
+    Unit[k] = T;
+    return T switch {
+      var _ when KeyX.D == k => D2DD(),
+      var _ when KeyX.A == k => D2DA(),
+      var _ when KeyE.W == k => Exit(),
+      _ => T,
+    };
+  }
+
+  private static bool OnD1U(uint k) {
+    Unit[k] = F;
+    return T switch {
+      var _ when KeyM.R == k => D1UR(),
+      var _ when KeyM.L == k => D1UL(),
+      _ => T,
+    };
+  }
+
+  private static bool OnD1D(uint k) {
+    Unit[k] = T;
+    return T switch {
+      var _ when KeyM.R == k => D1DR(),
+      var _ when KeyM.L == k => D1DL(),
+      _ => T,
+    };
   }
 
   private static bool Reactor(int t1, int t, uint k) {
@@ -100,41 +136,11 @@ class Perform {
     return Unit.TryGetValue(k, out bool is_held) && is_held;
   }
 
-  private static bool OnD2U(uint k) {
-    Unit[k] = F;
-    return T switch {
-      var _ when KeyX.D == k => D2UD(),
-      var _ when KeyX.A == k => D2UA(),
-      _ => T,
-    };
+  private static bool Exit() {
+    Environment.Exit(0);
+    return T;
   }
 
-  private static bool OnD2D(uint k) {
-    Unit[k] = T;
-    return T switch {
-      var _ when KeyX.D == k => D2DD(),
-      var _ when KeyX.A == k => D2DA(),
-      _ => T,
-    };
-  }
-
-  private static bool OnD1U(uint k) {
-    Unit[k] = F;
-    return T switch {
-      var _ when KeyM.R == k => D1UR(),
-      var _ when KeyM.L == k => D1UL(),
-      _ => T,
-    };
-  }
-
-  private static bool OnD1D(uint k) {
-    Unit[k] = T;
-    return T switch {
-      var _ when KeyM.R == k => D1DR(),
-      var _ when KeyM.L == k => D1DL(),
-      _ => T,
-    };
-  }
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);

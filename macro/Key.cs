@@ -1,6 +1,5 @@
 ﻿class KeyX {
   public static readonly uint W = (uint)ConsoleKey.W;
-  public static readonly uint V = (uint)ConsoleKey.V;
   public static readonly uint S = (uint)ConsoleKey.S;
   public static readonly uint D = (uint)ConsoleKey.D;
   public static readonly uint A = (uint)ConsoleKey.A;
@@ -12,6 +11,7 @@ class KeyM {
 }
 
 class KeyE {
+  public static readonly uint W = (uint)ConsoleKey.LeftWindows;
   public static readonly uint S = 160;
   public static readonly uint C = 162;
   public static readonly uint A = 164;
