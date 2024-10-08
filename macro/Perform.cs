@@ -26,13 +26,8 @@ class Perform {
   }
 
   private static bool D1UL() {
-    //ReactI([KeyM.R], KeyM.R);
-    //ReactI([KeyE.A], KeyE.A);
-    //ReactO([KeyM.L], KeyE.A);
-    //ActI([KeyM.L], KeyE.C);
-    //O(KeyM.R);
-    //O(KeyE.A);
-    //O(KeyE.C);
+    ActO([KeyE.C], KeyE.C);
+    ActO([KeyE.A], KeyE.A);
     return T;
   }
 
@@ -44,7 +39,8 @@ class Perform {
     worker.Enqueue(() => {
       Reacted(109, TimeD, KeyA.L);
       Reacted(109, TimeA, KeyA.R);
-      Reactor(109, 54, KeyM.L);
+      ActI([KeyM.L], KeyE.A);
+      ActI([KeyM.L], KeyE.C);
     });
     return T;
   }
@@ -52,20 +48,6 @@ class Perform {
   private static bool Reacted(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
     return t1 > time && IO(t1 - time, k);
-  }
-
-  private static bool Reactor(int t1, int t, uint k) {
-    if (IsHeld(k)) {
-      I(KeyE.A);
-      I(KeyE.C);
-      C(t1);
-      O(KeyE.C);
-      C(t);
-      O(KeyE.A);
-      return Reactor(t1, t, k);
-    } else {
-      return T;
-    }
   }
 
   private static bool OnD2U(uint k) {
