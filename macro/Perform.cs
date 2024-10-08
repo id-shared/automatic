@@ -4,12 +4,12 @@ using System.Diagnostics;
 class Perform {
   private static bool D2UD() {
     TimeD = (int)Environment.TickCount64;
-    return O(KeyA.L);
+    return T;
   }
 
   private static bool D2UA() {
     TimeA = (int)Environment.TickCount64;
-    return O(KeyA.R);
+    return T;
   }
 
   private static bool D2DD() {
@@ -25,11 +25,13 @@ class Perform {
   }
 
   private static bool D1UL() {
-    O(KeyM.R);
-    O(KeyE.A);
-    O(KeyE.C);
-    O(KeyA.R);
-    O(KeyA.L);
+    //ReactI([KeyM.R], KeyM.R);
+    //ReactI([KeyE.A], KeyE.A);
+    //ReactO([KeyM.L], KeyE.A);
+    //ActI([KeyM.L], KeyE.C);
+    //O(KeyM.R);
+    //O(KeyE.A);
+    //O(KeyE.C);
     return T;
   }
 
@@ -38,13 +40,30 @@ class Perform {
   }
 
   private static bool D1DL() {
-    Reactor(109, TimeD, KeyA.L);
-    Reactor(109, TimeA, KeyA.R);
-    ReactI([KeyM.R], KeyM.R);
-    ReactI([KeyE.A], KeyE.A);
-    ReactO([KeyM.L], KeyE.A);
-    ActI([KeyM.L], KeyE.C);
+    Reacted(109, TimeD, KeyA.L);
+    Reacted(109, TimeA, KeyA.R);
+    Reactor(KeyM.L);
     return T;
+  }
+
+  private static bool Reacted(int t1, int t, uint k) {
+    int time = (int)Environment.TickCount64 - t;
+    return t1 > time && IO(t1 - time, k);
+  }
+
+  private static bool Reactor(uint k) {
+    if (IsHeld(k)) {
+      I(KeyM.R);
+      I(KeyE.C);
+      I(KeyE.A);
+      C(49);
+      O(KeyE.A);
+      O(KeyE.C);
+      O(KeyM.R);
+      return Reactor(k);
+    } else {
+      return T;
+    }
   }
 
   private static bool OnD2U(uint k) {
@@ -82,11 +101,6 @@ class Perform {
       var _ when KeyM.L == k => D1DL(),
       _ => T,
     };
-  }
-
-  private static bool Reactor(int t1, int t, uint k) {
-    int time = (int)Environment.TickCount64 - t;
-    return t1 > time && IO(t1 - time, k);
   }
 
   private static bool ReactIO(int t, uint[] n, uint k) {
