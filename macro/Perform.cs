@@ -26,8 +26,8 @@ class Perform {
 
   private static bool D1UL() {
     return worker.Enqueue(() => {
-      ActO([KeyE.C], KeyE.C);
       ActO([KeyE.A], KeyE.A);
+      ActO([KeyE.C], KeyE.C);
     });
   }
 
