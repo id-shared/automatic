@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 class Perform {
   private static bool D2UD() {
@@ -26,9 +25,10 @@ class Perform {
   }
 
   private static bool D1UL() {
-    ActO([KeyE.C], KeyE.C);
-    ActO([KeyE.A], KeyE.A);
-    return T;
+    return worker.Enqueue(() => {
+      ActO([KeyE.C], KeyE.C);
+      ActO([KeyE.A], KeyE.A);
+    });
   }
 
   private static bool D1DR() {
@@ -36,13 +36,12 @@ class Perform {
   }
 
   private static bool D1DL() {
-    worker.Enqueue(() => {
+    return worker.Enqueue(() => {
       Reacted(109, TimeD, KeyA.L);
       Reacted(109, TimeA, KeyA.R);
       ActI([KeyM.L], KeyE.A);
       ActI([KeyM.L], KeyE.C);
     });
-    return T;
   }
 
   private static bool Reacted(int t1, int t, uint k) {
