@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 class Perform {
   private static bool D2UD() {
@@ -40,9 +41,11 @@ class Perform {
   }
 
   private static bool D1DL() {
-    Reacted(109, TimeD, KeyA.L);
-    Reacted(109, TimeA, KeyA.R);
-    Reactor(KeyM.L);
+    worker.Enqueue(() => {
+      Reacted(109, TimeD, KeyA.L);
+      Reacted(109, TimeA, KeyA.R);
+      Reactor(0, 80, KeyM.L);
+    });
     return T;
   }
 
@@ -51,17 +54,18 @@ class Perform {
     return t1 > time && IO(t1 - time, k);
   }
 
-  private static bool Reactor(uint k) {
+  private static bool Reactor(int t1, int t, uint k) {
+    int sum = t1 + t;
     if (IsHeld(k)) {
-      I(KeyM.R);
+      _ = sum > 320 && I(KeyM.R);
       I(KeyE.C);
       I(KeyE.A);
-      C(49);
+      C(t);
       O(KeyE.A);
       O(KeyE.C);
-      O(KeyM.R);
-      return Reactor(k);
+      return Reactor(t1 + t, t, k);
     } else {
+      _ = sum > 320 && O(KeyM.R);
       return T;
     }
   }
@@ -174,10 +178,10 @@ class Perform {
     if (nCode >= 0) {
       uint act = (uint)wParam;
       _ = T switch {
-        var _ when act == WM_LBUTTONDOWN => worker.Enqueue(() => OnD1D(KeyM.L)),
-        var _ when act == WM_LBUTTONUP => worker.Enqueue(() => OnD1U(KeyM.L)),
-        var _ when act == WM_RBUTTONDOWN => worker.Enqueue(() => OnD1D(KeyM.R)),
-        var _ when act == WM_RBUTTONUP => worker.Enqueue(() => OnD1U(KeyM.R)),
+        var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
+        var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
+        var _ when act == WM_RBUTTONDOWN => OnD1D(KeyM.R),
+        var _ when act == WM_RBUTTONUP => OnD1U(KeyM.R),
         _ => T,
       };
     }
