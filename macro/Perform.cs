@@ -36,8 +36,7 @@ class Perform {
     return Do(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
-      //ActIO(HoldA, [KeyM.L], KeyE.A);
-      AceIO(HoldC, [KeyM.L], KeyE.A);
+      ReIO(HoldC, [KeyM.L], KeyE.A);
     });
   }
 
@@ -53,12 +52,12 @@ class Perform {
     return t > time && IO(t - time, k);
   }
 
-  private static bool AceIO(int t, uint[] n, uint k) {
+  private static bool ReIO(int t, uint[] n, uint k) {
     if (n.All(IsHeld)) {
       I(k);
       O(k);
       Wait(t);
-      return AceIO(t, n, k);
+      return ReIO(t, n, k);
     } else {
       return T;
     }
