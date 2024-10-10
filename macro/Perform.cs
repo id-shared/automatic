@@ -39,6 +39,7 @@ class Perform {
     return worker.Enqueue(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
+      Wait(160);
       ActI([KeyM.L], KeyE.A);
       ActI([KeyM.L], KeyE.C);
     });
@@ -112,7 +113,7 @@ class Perform {
 
   private static bool IO(int t, uint k) {
     I(k);
-    C(t);
+    Wait(t);
     O(k);
     return T;
   }
@@ -125,12 +126,12 @@ class Perform {
     return Keyboard.Input(k, T);
   }
 
-  private static void C(int i) {
-    Thread.Sleep(i);
-  }
-
   private static bool IsHeld(uint k) {
     return Unit.TryGetValue(k, out bool is_held) && is_held;
+  }
+
+  private static void Wait(int i) {
+    Thread.Sleep(i);
   }
 
   private static bool Exit() {
