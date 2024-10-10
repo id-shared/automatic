@@ -50,7 +50,6 @@ class LockFreeRingBuffer<Action> {
     int nextTail = (localTail + 1);
 
     if (nextTail == Volatile.Read(ref _head.Value) + _buffer.Length) {
-      // Buffer is full, cannot enqueue
       return F;
     }
 
