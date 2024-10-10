@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Linq;
 
 class Perform {
   private static bool D2UD() {
@@ -34,33 +35,35 @@ class Perform {
 
   private static bool D1DL() {
     return Do(() => {
-      Reacted(WaitD, TimeD, KeyA.L);
-      Reacted(WaitA, TimeA, KeyA.R);
-      ReIO(TimeL, [KeyM.L], KeyE.A);
+      Reacted(WaitD, TimeD, [KeyA.L]);
+      Reacted(WaitA, TimeA, [KeyA.R]);
+      ReIO(103, [
+        1,
+        2,
+        4,
+        8,
+        16,
+      ], [KeyM.L], KeyE.A);
     });
   }
 
   private static volatile int WaitD = 0;
   private static volatile int WaitA = 0;
-  private const int TimeL = 115;
   private const int TimeD = 109;
   private const int TimeA = 109;
 
-  private static bool Reacted(int t1, int t, uint k) {
+  private static bool Reacted(int t1, int t, uint[] n) {
     int time = (int)Environment.TickCount64 - t1;
-    return t > time && IO(t - time, k);
+    return t > time && n.All(_ => IO(t - time, _));
   }
 
-  private static bool ReIO(int t, uint[] n, uint k) {
-    if (n.All(IsHeld)) {
-      I(k);
-      O(k);
-      Wait(t);
-      return ReIO(t, n, k);
-    } else {
-      return T;
-    }
+  private static bool ReIO(int t1, int[] n1, uint[] n, uint k) {
+    IO(1, k);
+    Wait(t1 + n1.ElementAt(0));
+    return n.All(IsHeld) ? ReIO(t1, Re(n1), n, k) : T;
   }
+
+  private static int[] Re(int[] n) => n.Length > 1 ? n.Skip(1).ToArray() : [n.Last()];
 
   private static bool Do(Action z) {
     Task.Run(z);
