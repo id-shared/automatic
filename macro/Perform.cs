@@ -25,7 +25,7 @@ class Perform {
   }
 
   private static bool D1UL() {
-    worker.Enqueue(() => {
+    Task.Run(() => {
       ActO([KeyE.A], KeyE.A);
     });
 
@@ -37,9 +37,9 @@ class Perform {
   }
 
   private static bool D1DL() {
-    //worker.Enqueue(() => Ace(19, 99, [KeyM.L], KeyE.C));
+    Task.Run(() => Ace(19, 99, [KeyM.L], KeyE.C));
 
-    worker.Enqueue(() => {
+    Task.Run(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
       ActI([KeyM.L], KeyE.A);
@@ -220,7 +220,6 @@ class Perform {
     Detach(d1_hook_id);
   }
 
-  private static readonly DedicatedWorker worker = new(16);
   private static readonly Dictionary<uint, bool> Unit = [];
   private static int WaitD = 109;
   private static int WaitA = 109;
