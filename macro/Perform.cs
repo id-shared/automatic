@@ -42,7 +42,7 @@ class Perform {
 
   private static volatile int WaitD = 0;
   private static volatile int WaitA = 0;
-  private const int TimeL = 125;
+  private const int TimeL = 115;
   private const int TimeD = 109;
   private const int TimeA = 109;
 
@@ -53,7 +53,7 @@ class Perform {
 
   private static bool ReIO(int t, uint[] n, uint k) {
     if (n.All(IsHeld)) {
-      IO(0, k);
+      IO(1, k);
       Wait(t);
       return ReIO(t, n, k);
     } else {
