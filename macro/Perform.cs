@@ -25,10 +25,11 @@ class Perform {
   }
 
   private static bool D1UL() {
-    return worker.Enqueue(() => {
+    worker.Enqueue(() => {
       ActO([KeyE.A], KeyE.A);
-      ActO([KeyE.C], KeyE.C);
     });
+
+    return T;
   }
 
   private static bool D1DR() {
@@ -36,18 +37,30 @@ class Perform {
   }
 
   private static bool D1DL() {
-    return worker.Enqueue(() => {
+    worker.Enqueue(() => Ace(19, 99, [KeyM.L], KeyE.C));
+
+    worker.Enqueue(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
-      Wait(160);
       ActI([KeyM.L], KeyE.A);
-      ActI([KeyM.L], KeyE.C);
     });
+
+    return T;
   }
 
   private static bool Reacted(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t;
     return t1 > time && IO(t1 - time, k);
+  }
+
+  private static bool Ace(int t1, int t, uint[] n, uint k) {
+    if (n.All(IsHeld)) {
+      ActIO(t, [KeyM.L], KeyE.C);
+      Wait(t1);
+      return Ace(t1, t, n, k);
+    } else {
+      return T;
+    }
   }
 
   private static bool OnD2U(uint k) {
