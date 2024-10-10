@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-class DedicatedWorker {
+﻿class DedicatedWorker {
   public bool Enqueue(Action action) {
     return TaskQueue.Enqueue(action);
   }
@@ -35,13 +33,13 @@ class LockFreeRingBuffer<Action> {
     lock (_buffer) {
       if (_head == _tail) {
         z = default!;
-        return F;
+        return false;
       }
 
       z = _buffer[_head];
       _buffer[_head] = default!;
       _head = (_head + 1) % _buffer.Length;
-      return T;
+      return true;
     }
   }
 
@@ -50,7 +48,7 @@ class LockFreeRingBuffer<Action> {
       _buffer[_tail] = z;
       _tail = (_tail + 1) % _buffer.Length;
     }
-    return T;
+    return true;
   }
 
   public LockFreeRingBuffer(int k) {
@@ -62,6 +60,4 @@ class LockFreeRingBuffer<Action> {
   private readonly Action[] _buffer;
   private static int _head;
   private static int _tail;
-  private const bool F = false;
-  private const bool T = true;
 }
