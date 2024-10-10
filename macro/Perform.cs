@@ -53,7 +53,8 @@ class Perform {
 
   private static bool ReIO(int t, uint[] n, uint k) {
     if (n.All(IsHeld)) {
-      IO(1, k);
+      I(k);
+      O(k);
       Wait(t);
       return ReIO(t, n, k);
     } else {
