@@ -27,7 +27,6 @@
   private const bool F = false;
   private const bool T = true;
 }
-
 class LockFreeRingBuffer<Action> {
   public bool TryDequeue(out Action z) {
     lock (_buffer) {
@@ -38,7 +37,7 @@ class LockFreeRingBuffer<Action> {
 
       z = _buffer[_head];
       _buffer[_head] = default!;
-      _head = (_head + 1) % _buffer.Length;
+      _head = (_head + 1) & (_buffer.Length - 1);
       return true;
     }
   }
@@ -46,12 +45,16 @@ class LockFreeRingBuffer<Action> {
   public bool Enqueue(Action z) {
     lock (_buffer) {
       _buffer[_tail] = z;
-      _tail = (_tail + 1) % _buffer.Length;
+      _tail = (_tail + 1) & (_buffer.Length - 1);
     }
     return true;
   }
 
   public LockFreeRingBuffer(int k) {
+    if ((k & (k - 1)) != 0) {
+      throw new ArgumentException("Buffer size must be a power of 2.");
+    }
+
     _buffer = new Action[k];
     _head = 0;
     _tail = 0;

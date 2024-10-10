@@ -37,7 +37,7 @@ class Perform {
   }
 
   private static bool D1DL() {
-    worker.Enqueue(() => Ace(19, 99, [KeyM.L], KeyE.C));
+    //worker.Enqueue(() => Ace(19, 99, [KeyM.L], KeyE.C));
 
     worker.Enqueue(() => {
       Reacted(WaitD, TimeD, KeyA.L);
