@@ -37,12 +37,13 @@ class Perform {
   }
 
   private static bool D1DL() {
-    Task.Run(() => Ace(80, 160, [KeyM.L], KeyE.C));
-
-    Task.Run(() => {
+    Do(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
-      ActI([KeyM.L], KeyE.A);
+      Ace(19, 99, [KeyM.L], [
+        KeyE.C,
+        KeyE.A,
+      ]);
     });
 
     return T;
@@ -53,14 +54,19 @@ class Perform {
     return t1 > time && IO(t1 - time, k);
   }
 
-  private static bool Ace(int t1, int t, uint[] n, uint k) {
-    if (n.All(IsHeld)) {
-      ActIO(t, [KeyM.L], KeyE.C);
+  private static bool Ace(int t1, int t, uint[] n_1, uint[] n) {
+    if (n_1.All(IsHeld)) {
+      n.All(_ => Do(() => IO(t, _)));
       Wait(t1);
-      return Ace(t1, t, n, k);
+      return Ace(t1, t, n_1, n);
     } else {
       return T;
     }
+  }
+
+  private static bool Do(Action z) {
+    Task.Run(z);
+    return T;
   }
 
   private static bool OnD2U(uint k) {
