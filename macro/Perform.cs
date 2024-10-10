@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Perform {
   private static bool D2UD() {
-    TimeD = (int)Environment.TickCount64;
+    WaitD = (int)Environment.TickCount64;
     return T;
   }
 
   private static bool D2UA() {
-    TimeA = (int)Environment.TickCount64;
+    WaitA = (int)Environment.TickCount64;
     return T;
   }
 
@@ -25,10 +25,6 @@ class Perform {
   }
 
   private static bool D1UL() {
-    Task.Run(() => {
-      ActO([KeyE.A], KeyE.A);
-    });
-
     return T;
   }
 
@@ -38,9 +34,11 @@ class Perform {
 
   private static bool D1DL() {
     Do(() => {
-      Reacted(WaitD, TimeD, KeyA.L);
-      Reacted(WaitA, TimeA, KeyA.R);
-      Ace(19, 99, [KeyM.L], [
+      Reacted(TimeD, WaitD, KeyA.L);
+      Reacted(TimeA, WaitA, KeyA.R);
+      ActIO(TimeL, [KeyM.L], KeyE.A);
+      AceIO(TimeR, [KeyM.L], [
+        KeyM.R,
         KeyE.C,
         KeyE.A,
       ]);
@@ -54,11 +52,12 @@ class Perform {
     return t1 > time && IO(t1 - time, k);
   }
 
-  private static bool Ace(int t1, int t, uint[] n_1, uint[] n) {
+  private static bool AceIO(int t, uint[] n_1, uint[] n) {
     if (n_1.All(IsHeld)) {
-      n.All(_ => Do(() => IO(t, _)));
-      Wait(t1);
-      return Ace(t1, t, n_1, n);
+      n.All(_ => I(_));
+      Wait(t);
+      n.All(_ => O(_));
+      return AceIO(t, n_1, n);
     } else {
       return T;
     }
@@ -227,10 +226,12 @@ class Perform {
   }
 
   private static readonly Dictionary<uint, bool> Unit = [];
-  private static int WaitD = 109;
-  private static int WaitA = 109;
-  private static int TimeD = 0;
-  private static int TimeA = 0;
+  private static int WaitD = 0;
+  private static int WaitA = 0;
+  private const int TimeD = 109;
+  private const int TimeA = 109;
+  private const int TimeR = 64;
+  private const int TimeL = 64;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
