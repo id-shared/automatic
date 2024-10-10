@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Perform {
   private static bool D2UD() {
-    WaitD = (int)Environment.TickCount64;
+    SinceD = (int)Environment.TickCount64;
     return T;
   }
 
   private static bool D2UA() {
-    WaitA = (int)Environment.TickCount64;
+    SinceA = (int)Environment.TickCount64;
     return T;
   }
 
@@ -34,11 +34,10 @@ class Perform {
 
   private static bool D1DL() {
     Do(() => {
-      Reacted(TimeD, WaitD, KeyA.L);
-      Reacted(TimeA, WaitA, KeyA.R);
+      Reacted(SinceD, TimeD, KeyA.L);
+      Reacted(SinceA, TimeA, KeyA.R);
       ActIO(TimeL, [KeyM.L], KeyE.A);
       AceIO(TimeR, [KeyM.L], [
-        KeyM.R,
         KeyE.C,
         KeyE.A,
       ]);
@@ -48,16 +47,16 @@ class Perform {
   }
 
   private static bool Reacted(int t1, int t, uint k) {
-    int time = (int)Environment.TickCount64 - t;
-    return t1 > time && IO(t1 - time, k);
+    int time = (int)Environment.TickCount64 - t1;
+    return t > time && IO(t - time, k);
   }
 
-  private static bool AceIO(int t, uint[] n_1, uint[] n) {
-    if (n_1.All(IsHeld)) {
+  private static bool AceIO(int t, uint[] n1, uint[] n) {
+    if (n1.All(IsHeld)) {
       n.All(_ => I(_));
       Wait(t);
       n.All(_ => O(_));
-      return AceIO(t, n_1, n);
+      return AceIO(t, n1, n);
     } else {
       return T;
     }
@@ -226,12 +225,12 @@ class Perform {
   }
 
   private static readonly Dictionary<uint, bool> Unit = [];
-  private static int WaitD = 0;
-  private static int WaitA = 0;
+  private static int SinceD = 0;
+  private static int SinceA = 0;
   private const int TimeD = 109;
   private const int TimeA = 109;
-  private const int TimeR = 64;
-  private const int TimeL = 64;
+  private const int TimeR = 109;
+  private const int TimeL = 109;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
