@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Perform {
   private static bool D2UD() {
-    SinceD = (int)Environment.TickCount64;
+    WaitD = (int)Environment.TickCount64;
     return T;
   }
 
   private static bool D2UA() {
-    SinceA = (int)Environment.TickCount64;
+    WaitA = (int)Environment.TickCount64;
     return T;
   }
 
@@ -29,21 +29,20 @@ class Perform {
   }
 
   private static bool D1DR() {
-    return T;
+    return Do(() => {
+      ReactO([KeyM.L], KeyE.C);
+      ReactO([KeyM.L], KeyE.A);
+    });
   }
 
   private static bool D1DL() {
-    Do(() => {
-      Reacted(SinceD, TimeD, KeyA.L);
-      Reacted(SinceA, TimeA, KeyA.R);
-      ActIO(TimeL, [KeyM.L], KeyE.A);
-      AceIO(TimeR, [KeyM.L], [
-        KeyE.C,
-        KeyE.A,
-      ]);
+    return Do(() => {
+      Reacted(WaitD, TimeD, KeyA.L);
+      Reacted(WaitA, TimeA, KeyA.R);
+      ActIO(Time, [KeyM.L], KeyE.A);
+      ActI([KeyM.L], KeyE.C);
+      ActI([KeyM.L], KeyE.A);
     });
-
-    return T;
   }
 
   private static bool Reacted(int t1, int t, uint k) {
@@ -51,16 +50,16 @@ class Perform {
     return t > time && IO(t - time, k);
   }
 
-  private static bool AceIO(int t, uint[] n1, uint[] n) {
-    if (n1.All(IsHeld)) {
-      n.All(_ => I(_));
-      Wait(t);
-      n.All(_ => O(_));
-      return AceIO(t, n1, n);
-    } else {
-      return T;
-    }
-  }
+  //private static bool AceIO(int t, uint[] n1, uint[] n) {
+  //  if (n1.All(IsHeld)) {
+  //    n.All(_ => I(_));
+  //    Wait(t);
+  //    n.All(_ => O(_));
+  //    return AceIO(t, n1, n);
+  //  } else {
+  //    return T;
+  //  }
+  //}
 
   private static bool Do(Action z) {
     Task.Run(z);
@@ -225,12 +224,12 @@ class Perform {
   }
 
   private static readonly Dictionary<uint, bool> Unit = [];
-  private static int SinceD = 0;
-  private static int SinceA = 0;
+  private static int WaitD = 0;
+  private static int WaitA = 0;
   private const int TimeD = 109;
   private const int TimeA = 109;
-  private const int TimeR = 109;
-  private const int TimeL = 109;
+  private const int TimeR = 64;
+  private const int Time = 16;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
