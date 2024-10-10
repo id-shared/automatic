@@ -29,10 +29,7 @@ class Perform {
   }
 
   private static bool D1DR() {
-    return Do(() => {
-      ReactO([KeyM.L], KeyE.C);
-      ReactO([KeyM.L], KeyE.A);
-    });
+    return T;
   }
 
   private static bool D1DL() {
@@ -40,8 +37,10 @@ class Perform {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
       ActIO(Time, [KeyM.L], KeyE.A);
-      ActI([KeyM.L], KeyE.C);
-      ActI([KeyM.L], KeyE.A);
+      AceIO(Time, [KeyM.L], [
+        KeyM.R,
+        KeyE.A,
+      ]);
     });
   }
 
@@ -50,16 +49,16 @@ class Perform {
     return t > time && IO(t - time, k);
   }
 
-  //private static bool AceIO(int t, uint[] n1, uint[] n) {
-  //  if (n1.All(IsHeld)) {
-  //    n.All(_ => I(_));
-  //    Wait(t);
-  //    n.All(_ => O(_));
-  //    return AceIO(t, n1, n);
-  //  } else {
-  //    return T;
-  //  }
-  //}
+  private static bool AceIO(int t, uint[] n1, uint[] n) {
+    if (n1.All(IsHeld)) {
+      n.All(_ => I(_));
+      Wait(t);
+      n.All(_ => O(_));
+      return T; // AceIO(t, n1, n);
+    } else {
+      return T;
+    }
+  }
 
   private static bool Do(Action z) {
     Task.Run(z);
@@ -224,12 +223,11 @@ class Perform {
   }
 
   private static readonly Dictionary<uint, bool> Unit = [];
-  private static int WaitD = 0;
-  private static int WaitA = 0;
+  private static volatile int WaitD = 0;
+  private static volatile int WaitA = 0;
   private const int TimeD = 109;
   private const int TimeA = 109;
-  private const int TimeR = 64;
-  private const int Time = 16;
+  private const int Time = 65;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
