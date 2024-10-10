@@ -2,9 +2,6 @@
   private static void Main() {
     Perform.A();
   }
-
-  private const bool F = false;
-  private const bool T = true;
 }
 
 //public static DateTime since = DateTime.MinValue;
