@@ -37,7 +37,7 @@ class Perform {
   }
 
   private static bool D1DL() {
-    Task.Run(() => Ace(19, 99, [KeyM.L], KeyE.C));
+    Task.Run(() => Ace(80, 160, [KeyM.L], KeyE.C));
 
     Task.Run(() => {
       Reacted(WaitD, TimeD, KeyA.L);
