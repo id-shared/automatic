@@ -1,9 +1,6 @@
-﻿using System;
-using System.Threading;
-
-class DedicatedWorker {
+﻿class DedicatedWorker {
   public bool Enqueue(Action action) {
-    return TaskQueue.Enqueue(action);
+    return TaskQueue.TryEnqueue(action);
   }
 
   private void Loop() {
@@ -32,9 +29,27 @@ class DedicatedWorker {
 }
 
 class LockFreeRingBuffer<Action> {
-  private readonly Action[] _buffer;
-  private int _head;
-  private int _tail;
+  public bool TryDequeue(out Action z) {
+    lock (_buffer) {
+      if (_head == _tail) {
+        z = default!;
+        return false;
+      }
+
+      z = _buffer[_head];
+      _buffer[_head] = default!;
+      _head = (_head + 1) & (_buffer.Length - 1);
+      return true;
+    }
+  }
+
+  public bool TryEnqueue(Action z) {
+    lock (_buffer) {
+      _buffer[_tail] = z;
+      _tail = (_tail + 1) & (_buffer.Length - 1);
+    }
+    return true;
+  }
 
   public LockFreeRingBuffer(int k) {
     if ((k & (k - 1)) != 0) {
@@ -46,32 +61,7 @@ class LockFreeRingBuffer<Action> {
     _tail = 0;
   }
 
-  public bool TryDequeue(out Action z) {
-    int currentHead;
-    do {
-      currentHead = _head;
-      if (currentHead == _tail) {
-        z = default!;
-        return false; // Buffer is empty
-      }
-    } while (Interlocked.CompareExchange(ref _head, currentHead + 1, currentHead) != currentHead);
-
-    z = _buffer[currentHead];
-    _buffer[currentHead] = default!; // Optional: Clear the reference
-    return true;
-  }
-
-  public bool Enqueue(Action z) {
-    int currentTail;
-    do {
-      currentTail = _tail;
-      int nextTail = (currentTail + 1) & (_buffer.Length - 1);
-      if (nextTail == _head) {
-        return false; // Buffer is full
-      }
-    } while (Interlocked.CompareExchange(ref _tail, currentTail + 1, currentTail) != currentTail);
-
-    _buffer[currentTail] = z;
-    return true;
-  }
+  private readonly Action[] _buffer;
+  private static int _head;
+  private static int _tail;
 }
