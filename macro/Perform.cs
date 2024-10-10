@@ -36,25 +36,34 @@ class Perform {
     return Do(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
-      ActIO(Time, [KeyM.L], KeyE.A);
-      AceIO(Time, [KeyM.L], [
+      ActIO(HoldA, [KeyM.L], KeyE.A);
+      AceIO(HoldE, HoldC, [KeyM.L], [
         KeyM.R,
         KeyE.A,
       ]);
     });
   }
 
+  private static volatile int WaitD = 0;
+  private static volatile int WaitA = 0;
+  private const int TimeD = 109;
+  private const int TimeA = 109;
+  private const int HoldE = 1;
+  private const int HoldC = 89;
+  private const int HoldA = 65;
+
   private static bool Reacted(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t1;
     return t > time && IO(t - time, k);
   }
 
-  private static bool AceIO(int t, uint[] n1, uint[] n) {
+  private static bool AceIO(int t1, int t, uint[] n1, uint[] n) {
     if (n1.All(IsHeld)) {
       n.All(_ => I(_));
       Wait(t);
       n.All(_ => O(_));
-      return T; // AceIO(t, n1, n);
+      Wait(t1);
+      return T; // AceIO(t1, t, n1, n);
     } else {
       return T;
     }
@@ -126,6 +135,12 @@ class Perform {
     return n.All(IsHeld) && I(k);
   }
 
+  private static bool IsHeld(uint k) {
+    return Unit.TryGetValue(k, out bool is_held) && is_held;
+  }
+
+  private static readonly Dictionary<uint, bool> Unit = [];
+
   private static bool IO(int t, uint k) {
     I(k);
     Wait(t);
@@ -139,10 +154,6 @@ class Perform {
 
   private static bool I(uint k) {
     return Keyboard.Input(k, T);
-  }
-
-  private static bool IsHeld(uint k) {
-    return Unit.TryGetValue(k, out bool is_held) && is_held;
   }
 
   private static void Wait(int i) {
@@ -221,13 +232,6 @@ class Perform {
     Detach(d2_hook_id);
     Detach(d1_hook_id);
   }
-
-  private static readonly Dictionary<uint, bool> Unit = [];
-  private static volatile int WaitD = 0;
-  private static volatile int WaitA = 0;
-  private const int TimeD = 109;
-  private const int TimeA = 109;
-  private const int Time = 65;
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
