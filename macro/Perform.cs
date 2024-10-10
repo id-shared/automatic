@@ -36,11 +36,8 @@ class Perform {
     return Do(() => {
       Reacted(WaitD, TimeD, KeyA.L);
       Reacted(WaitA, TimeA, KeyA.R);
-      ActIO(HoldA, [KeyM.L], KeyE.A);
-      AceIO(HoldE, HoldC, [KeyM.L], [
-        KeyM.R,
-        KeyE.A,
-      ]);
+      //ActIO(HoldA, [KeyM.L], KeyE.A);
+      AceIO(HoldC, [KeyM.L], KeyE.A);
     });
   }
 
@@ -48,22 +45,20 @@ class Perform {
   private static volatile int WaitA = 0;
   private const int TimeD = 109;
   private const int TimeA = 109;
-  private const int HoldE = 1;
-  private const int HoldC = 89;
-  private const int HoldA = 65;
+  private const int HoldC = 125;
+  //private const int HoldA = 99;
 
   private static bool Reacted(int t1, int t, uint k) {
     int time = (int)Environment.TickCount64 - t1;
     return t > time && IO(t - time, k);
   }
 
-  private static bool AceIO(int t1, int t, uint[] n1, uint[] n) {
-    if (n1.All(IsHeld)) {
-      n.All(_ => I(_));
+  private static bool AceIO(int t, uint[] n, uint k) {
+    if (n.All(IsHeld)) {
+      I(k);
+      O(k);
       Wait(t);
-      n.All(_ => O(_));
-      Wait(t1);
-      return T; // AceIO(t1, t, n1, n);
+      return AceIO(t, n, k);
     } else {
       return T;
     }
