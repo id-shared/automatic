@@ -37,7 +37,7 @@ class Perform {
     return Do(() => {
       Reacted(Current - WaitD, TimeD, [KeyA.L]);
       Reacted(Current - WaitA, TimeA, [KeyA.R]);
-      ReIO(99, [KeyM.L], [KeyE.A]);
+      ReIO(63, [KeyM.L], [KeyE.A]);
     });
   }
 
