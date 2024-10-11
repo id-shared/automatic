@@ -20,7 +20,6 @@
       if (_workQueue.TryDequeue(out var workItem)) {
         workItem();
       } else {
-        // Avoid blocking the worker thread, spin for very short periods
         spinWait.SpinOnce();
       }
     }
