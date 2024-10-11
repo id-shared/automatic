@@ -40,7 +40,7 @@ class Perform {
       int Current = (int)Environment.TickCount64;
       Reacted(Current - WaitD, TimeD, [KeyA.L], [KeyE.A]);
       Reacted(Current - WaitA, TimeA, [KeyA.R], [KeyE.A]);
-      ActIO(64, [KeyM.L], [KeyE.A]);
+      ActIO(TimeI, [KeyM.L], [KeyE.A]);
       ActI([KeyM.L], [
         KeyE.C,
         KeyE.A,
@@ -50,6 +50,7 @@ class Perform {
 
   private static volatile int WaitD = 0;
   private static volatile int WaitA = 0;
+  private const int TimeI = 1000 / 16;
   private const int TimeD = 109;
   private const int TimeA = 109;
 
