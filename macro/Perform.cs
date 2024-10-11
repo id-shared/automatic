@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Perform {
   private static bool D2UD() {
-    WaitD = (int)Environment.TickCount64;
+    WD = (int)Environment.TickCount64;
     return T;
   }
 
   private static bool D2UA() {
-    WaitA = (int)Environment.TickCount64;
+    WA = (int)Environment.TickCount64;
     return T;
   }
 
@@ -37,35 +37,34 @@ class Perform {
 
   private static bool D1DL() {
     return Do(() => {
-      int time = (int)Environment.TickCount64;
-      WaitD = IsHeld(KeyX.D) ? time : WaitD;
-      WaitA = IsHeld(KeyX.A) ? time : WaitA;
-      Actor(time - WaitD, TimeD, Time, KeyL, KeyO, KeyK);
-      Actor(time - WaitA, TimeA, Time, KeyR, KeyO, KeyK);
+      int t = (int)Environment.TickCount64;
+      WD = AllHeld([KeyX.D]) ? t : WD;
+      WA = AllHeld([KeyX.A]) ? t : WA;
+      Actor(t - WD, TD, KL, KO, KK);
+      Actor(t - WA, TA, KR, KO, KK);
     });
   }
 
-  private static readonly uint[] KeyL = [
+  private static readonly uint[] KL = [
     KeyA.L
   ];
-  private static readonly uint[] KeyR = [
+  private static readonly uint[] KR = [
     KeyA.R
   ];
-  private static readonly uint[] KeyO = [
+  private static readonly uint[] KO = [
     KeyM.L
   ];
-  private static readonly uint[] KeyK = [
+  private static readonly uint[] KK = [
     KeyE.C,
     KeyE.A
   ];
-  private static volatile int WaitD = 0;
-  private static volatile int WaitA = 0;
-  private const int TimeD = 109;
-  private const int TimeA = 109;
-  private const int Time = 63;
+  private static volatile int WD = 0;
+  private static volatile int WA = 0;
+  private const int TD = 109;
+  private const int TA = 109;
 
-  private static bool Actor(int t2, int t1, int t, uint[] q, uint[] o, uint[] k) {
-    return o.All(IsHeld) && (t1 > t2 ? IO(t1 - t2, q) && I(k) : I(k));
+  private static bool Actor(int w, int t, uint[] q, uint[] o, uint[] k) {
+    return AllHeld(o) && (t > w ? IO(t - w, q) && I(k) : I(k));
   }
   
   private static bool Do(Action z) {
@@ -134,6 +133,10 @@ class Perform {
 
   private static bool ActI(uint[] o, uint[] k) {
     return o.All(IsHeld) && I(k);
+  }
+
+  private static bool AllHeld(uint[] k) {
+    return k.All(IsHeld);
   }
 
   private static bool IsHeld(uint k) {
