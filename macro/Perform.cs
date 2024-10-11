@@ -40,9 +40,11 @@ class Perform {
       int Current = (int)Environment.TickCount64;
       Reacted(Current - WaitD, TimeD, [KeyA.L], [KeyE.A]);
       Reacted(Current - WaitA, TimeA, [KeyA.R], [KeyE.A]);
-      ActIO(1, [KeyM.L], [KeyE.A]);
-      ActI([KeyM.L], [KeyE.A]);
-      Waited(100, [KeyM.L], [KeyE.C]);
+      ActIO(64, [KeyM.L], [KeyE.A]);
+      ActI([KeyM.L], [
+        KeyE.C,
+        KeyE.A,
+      ]);
     });
   }
 
@@ -53,10 +55,6 @@ class Perform {
 
   private static bool Reacted(int w, int t, uint[] o, uint[] k) {
     return t > w && IO(t - w, o) && IO(1, k);
-  }
-
-  private static bool Waited(int w, uint[] o, uint[] k) {
-    return Wait(w) && ActI(o, k);
   }
 
   private static bool Do(Action z) {
