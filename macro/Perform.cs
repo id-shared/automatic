@@ -33,10 +33,11 @@ class Perform {
   }
 
   private static bool D1DL() {
+    int Current = (int)Environment.TickCount64;
     return Do(() => {
-      Reacted(WaitD, TimeD, [KeyA.L]);
-      Reacted(WaitA, TimeA, [KeyA.R]);
-      ReIO(99, 1, [KeyM.L], [KeyE.A]);
+      Reacted(Current - WaitD, TimeD, [KeyA.L]);
+      Reacted(Current - WaitA, TimeA, [KeyA.R]);
+      ReIO(99, [KeyM.L], [KeyE.A]);
     });
   }
 
@@ -45,17 +46,12 @@ class Perform {
   private const int TimeD = 109;
   private const int TimeA = 109;
 
-  private static bool Reacted(int t1, int t, uint[] n) {
-    int time = (int)Environment.TickCount64 - t1;
-    return t > time && n.All(_ => IO(t - time, _));
+  private static bool Reacted(int w, int t, uint[] n) {
+    return t > w && IO(t - w, n);
   }
 
-  private static bool ReIO(int t1, int t, uint[] n, uint[] k) {
-    _ = k.All(I);
-    Wait(t1);
-    _ = k.All(O);
-    Wait(t);
-    return n.All(IsHeld) && ReIO(t1, t, n, k);
+  private static bool ReIO(int t, uint[] n1, uint[] n) {
+    return n1.All(IsHeld) && IO(t, n) && ReIO(t, n1, n);
   }
 
   private static bool Do(Action z) {
@@ -100,28 +96,28 @@ class Perform {
     };
   }
 
-  private static bool ReactIO(int t, uint[] n, uint k) {
-    return !n.Any(IsHeld) && IO(t, k);
+  private static bool ReactIO(int t, uint[] n1, uint[] n) {
+    return !n1.Any(IsHeld) && IO(t, n);
   }
 
-  private static bool ReactO(uint[] n, uint k) {
-    return !n.Any(IsHeld) && O(k);
+  private static bool ReactO(uint[] n1, uint[] n) {
+    return !n1.Any(IsHeld) && O(n);
   }
 
-  private static bool ReactI(uint[] n, uint k) {
-    return !n.Any(IsHeld) && I(k);
+  private static bool ReactI(uint[] n1, uint[] n) {
+    return !n1.Any(IsHeld) && I(n);
   }
 
-  private static bool ActIO(int t, uint[] n, uint k) {
-    return n.All(IsHeld) && IO(t, k);
+  private static bool ActIO(int t, uint[] n1, uint[] n) {
+    return n1.All(IsHeld) && IO(t, n);
   }
 
-  private static bool ActO(uint[] n, uint k) {
-    return n.All(IsHeld) && O(k);
+  private static bool ActO(uint[] n1, uint[] n) {
+    return n1.All(IsHeld) && O(n);
   }
 
-  private static bool ActI(uint[] n, uint k) {
-    return n.All(IsHeld) && I(k);
+  private static bool ActI(uint[] n1, uint[] n) {
+    return n1.All(IsHeld) && I(n);
   }
 
   private static bool IsHeld(uint k) {
@@ -130,19 +126,19 @@ class Perform {
 
   private static readonly Dictionary<uint, bool> Unit = [];
 
-  private static bool IO(int t, uint k) {
+  private static bool IO(int t, uint[] k) {
     I(k);
     Wait(t);
     O(k);
     return T;
   }
 
-  private static bool O(uint k) {
-    return Keyboard.Input(k, F);
+  private static bool O(uint[] n) {
+    return n.All(_ => Keyboard.Input(_, F));
   }
 
-  private static bool I(uint k) {
-    return Keyboard.Input(k, T);
+  private static bool I(uint[] n) {
+    return n.All(_=>Keyboard.Input(_, T));
   }
 
   private static void Wait(int i) {
