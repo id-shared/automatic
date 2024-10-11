@@ -37,12 +37,29 @@ class Perform {
 
   private static bool D1DL() {
     return Do(() => {
-      int t = (int)Environment.TickCount64;
-      WaitD = IsHeld(KeyX.D) ? t : WaitD;
-      WaitA = IsHeld(KeyX.A) ? t : WaitA;
-      Actor(t - WaitD, TimeD, [KeyA.L], [KeyE.A]);
-      Actor(t - WaitA, TimeA, [KeyA.R], [KeyE.A]);
-      Acted(99, [KeyM.L], [KeyE.C]);
+      int time = (int)Environment.TickCount64;
+      uint[] r = [
+        KeyA.R
+      ];
+      uint[] l = [
+        KeyA.L
+      ];
+      uint[] o = [
+        KeyM.L
+      ];
+      uint[] k = [
+        KeyE.A
+      ];
+      WaitD = IsHeld(KeyX.D) ? time : WaitD;
+      WaitA = IsHeld(KeyX.A) ? time : WaitA;
+      Actor(time - WaitD, TimeD, Time, l, o, k);
+      Actor(time - WaitA, TimeA, Time, r, o, k);
+      Wait(100);
+      ActI([
+        KeyM.L
+      ], [
+        KeyE.C
+      ]);
     });
   }
 
@@ -50,15 +67,12 @@ class Perform {
   private static volatile int WaitA = 0;
   private const int TimeD = 109;
   private const int TimeA = 109;
+  private const int Time = 63;
 
-  private static bool Actor(int w, int t, uint[] o, uint[] k) {
-    return t > w ? IO(t - w, o) && I(k) : I(k);
+  private static bool Actor(int t2, int t1, int t, uint[] q, uint[] o, uint[] k) {
+    return o.All(IsHeld) && (t1 > t2 ? IO(t1 - t2, q) && I(k) : I(k));
   }
   
-  private static bool Acted(int t, uint[] o, uint[] k) {
-    return Wait(t) && ActI(o, k);
-  }
-
   private static bool Do(Action z) {
     worker.Enqueue(z);
     return T;
