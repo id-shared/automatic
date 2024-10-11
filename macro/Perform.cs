@@ -40,24 +40,23 @@ class Perform {
       int t = (int)Environment.TickCount64;
       WaitD = IsHeld(KeyX.D) ? t : WaitD;
       WaitA = IsHeld(KeyX.A) ? t : WaitA;
-      Reacted(t - WaitD, TimeD, [KeyA.L], [KeyE.A]);
-      Reacted(t - WaitA, TimeA, [KeyA.R], [KeyE.A]);
-      ActIO(TimeI, [KeyM.L], [KeyE.A]);
-      ActI([KeyM.L], [
-        KeyE.C,
-        KeyE.A,
-      ]);
+      Actor(t - WaitD, TimeD, [KeyA.L], [KeyE.A]);
+      Actor(t - WaitA, TimeA, [KeyA.R], [KeyE.A]);
+      Acted(99, [KeyM.L], [KeyE.C]);
     });
   }
 
   private static volatile int WaitD = 0;
   private static volatile int WaitA = 0;
-  private const int TimeI = 1000 / 16;
   private const int TimeD = 109;
   private const int TimeA = 109;
 
-  private static bool Reacted(int w, int t, uint[] o, uint[] k) {
-    return t > w && IO(t - w, o) && IO(1, k);
+  private static bool Actor(int w, int t, uint[] o, uint[] k) {
+    return t > w ? IO(t - w, o) && I(k) : I(k);
+  }
+  
+  private static bool Acted(int t, uint[] o, uint[] k) {
+    return Wait(t) && ActI(o, k);
   }
 
   private static bool Do(Action z) {
