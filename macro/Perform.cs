@@ -25,7 +25,10 @@ class Perform {
   }
 
   private static bool D1UL() {
-    return T;
+    return Do(() => {
+      ActO([KeyE.C], [KeyE.C]);
+      ActO([KeyE.A], [KeyE.A]);
+    });
   }
 
   private static bool D1DR() {
@@ -33,11 +36,11 @@ class Perform {
   }
 
   private static bool D1DL() {
-    int Current = (int)Environment.TickCount64;
     return Do(() => {
-      Reacted(Current - WaitD, TimeD, [KeyA.L]);
-      Reacted(Current - WaitA, TimeA, [KeyA.R]);
-      ReIO(63, [KeyM.L], [KeyE.A]);
+      int Current = (int)Environment.TickCount64;
+      Reacted(Current - WaitD, TimeD, [KeyA.L], [KeyE.A]);
+      Reacted(Current - WaitA, TimeA, [KeyA.R], [KeyE.A]);
+      ActI([KeyM.L], [KeyE.A]);
     });
   }
 
@@ -46,18 +49,15 @@ class Perform {
   private const int TimeD = 109;
   private const int TimeA = 109;
 
-  private static bool Reacted(int w, int t, uint[] n) {
-    return t > w && IO(t - w, n);
+  private static bool Reacted(int w, int t, uint[] o, uint[] k) {
+    return t > w && IO(t - w, o) && IO(t - w, o) && IO(1, k);
   }
-
-  private static bool ReIO(int t, uint[] o, uint[] n) {
-    return o.All(IsHeld) && IO(t, n) && ReIO(t, o, n);
-  }
-
   private static bool Do(Action z) {
-    Task.Run(z);
+    worker.Enqueue(z);
     return T;
   }
+
+  private static ZeroLatencyWorker worker = new(1024);
 
   private static bool OnD2U(uint k) {
     Unit[k] = F;
@@ -96,28 +96,28 @@ class Perform {
     };
   }
 
-  private static bool ReactIO(int t, uint[] o, uint[] n) {
-    return !o.Any(IsHeld) && IO(t, n);
+  private static bool ReactIO(int t, uint[] o, uint[] k) {
+    return !o.Any(IsHeld) && IO(t, k);
   }
 
-  private static bool ReactO(uint[] o, uint[] n) {
-    return !o.Any(IsHeld) && O(n);
+  private static bool ReactO(uint[] o, uint[] k) {
+    return !o.Any(IsHeld) && O(k);
   }
 
-  private static bool ReactI(uint[] o, uint[] n) {
-    return !o.Any(IsHeld) && I(n);
+  private static bool ReactI(uint[] o, uint[] k) {
+    return !o.Any(IsHeld) && I(k);
   }
 
-  private static bool ActIO(int t, uint[] o, uint[] n) {
-    return o.All(IsHeld) && IO(t, n);
+  private static bool ActIO(int t, uint[] o, uint[] k) {
+    return o.All(IsHeld) && IO(t, k);
   }
 
-  private static bool ActO(uint[] o, uint[] n) {
-    return o.All(IsHeld) && O(n);
+  private static bool ActO(uint[] o, uint[] k) {
+    return o.All(IsHeld) && O(k);
   }
 
-  private static bool ActI(uint[] o, uint[] n) {
-    return o.All(IsHeld) && I(n);
+  private static bool ActI(uint[] o, uint[] k) {
+    return o.All(IsHeld) && I(k);
   }
 
   private static bool IsHeld(uint k) {
@@ -138,11 +138,12 @@ class Perform {
   }
 
   private static bool I(uint[] n) {
-    return n.All(_=>Keyboard.Input(_, T));
+    return n.All(_ => Keyboard.Input(_, T));
   }
 
-  private static void Wait(int i) {
+  private static bool Wait(int i) {
     Thread.Sleep(i);
+    return T;
   }
 
   private static bool Exit() {
