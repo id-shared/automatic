@@ -36,29 +36,28 @@ class Perform {
   }
 
   private static bool D1DL() {
-    uint[] k = [
-      KeyE.C,
-      KeyE.A
-    ];
-    uint[] o = [
-      KeyM.L
-    ];
-    uint[] l = [
-      KeyA.L
-    ];
-    uint[] r = [
-      KeyA.R
-    ];
-
     return Do(() => {
       int time = (int)Environment.TickCount64;
       WaitD = IsHeld(KeyX.D) ? time : WaitD;
       WaitA = IsHeld(KeyX.A) ? time : WaitA;
-      Actor(time - WaitD, TimeD, Time, l, o, k);
-      Actor(time - WaitA, TimeA, Time, r, o, k);
+      Actor(time - WaitD, TimeD, Time, KeyL, KeyO, KeyK);
+      Actor(time - WaitA, TimeA, Time, KeyR, KeyO, KeyK);
     });
   }
 
+  private static readonly uint[] KeyL = [
+    KeyA.L
+  ];
+  private static readonly uint[] KeyR = [
+    KeyA.R
+  ];
+  private static readonly uint[] KeyO = [
+    KeyM.L
+  ];
+  private static readonly uint[] KeyK = [
+    KeyE.C,
+    KeyE.A
+  ];
   private static volatile int WaitD = 0;
   private static volatile int WaitA = 0;
   private const int TimeD = 109;
