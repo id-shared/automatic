@@ -50,8 +50,8 @@ class Perform {
     return t > w && IO(t - w, n);
   }
 
-  private static bool ReIO(int t, uint[] n1, uint[] n) {
-    return n1.All(IsHeld) && IO(t, n) && ReIO(t, n1, n);
+  private static bool ReIO(int t, uint[] o, uint[] n) {
+    return o.All(IsHeld) && IO(t, n) && ReIO(t, o, n);
   }
 
   private static bool Do(Action z) {
@@ -96,28 +96,28 @@ class Perform {
     };
   }
 
-  private static bool ReactIO(int t, uint[] n1, uint[] n) {
-    return !n1.Any(IsHeld) && IO(t, n);
+  private static bool ReactIO(int t, uint[] o, uint[] n) {
+    return !o.Any(IsHeld) && IO(t, n);
   }
 
-  private static bool ReactO(uint[] n1, uint[] n) {
-    return !n1.Any(IsHeld) && O(n);
+  private static bool ReactO(uint[] o, uint[] n) {
+    return !o.Any(IsHeld) && O(n);
   }
 
-  private static bool ReactI(uint[] n1, uint[] n) {
-    return !n1.Any(IsHeld) && I(n);
+  private static bool ReactI(uint[] o, uint[] n) {
+    return !o.Any(IsHeld) && I(n);
   }
 
-  private static bool ActIO(int t, uint[] n1, uint[] n) {
-    return n1.All(IsHeld) && IO(t, n);
+  private static bool ActIO(int t, uint[] o, uint[] n) {
+    return o.All(IsHeld) && IO(t, n);
   }
 
-  private static bool ActO(uint[] n1, uint[] n) {
-    return n1.All(IsHeld) && O(n);
+  private static bool ActO(uint[] o, uint[] n) {
+    return o.All(IsHeld) && O(n);
   }
 
-  private static bool ActI(uint[] n1, uint[] n) {
-    return n1.All(IsHeld) && I(n);
+  private static bool ActI(uint[] o, uint[] n) {
+    return o.All(IsHeld) && I(n);
   }
 
   private static bool IsHeld(uint k) {
