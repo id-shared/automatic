@@ -57,7 +57,7 @@ class Perform {
     return T;
   }
 
-  private static ZeroLatencyWorker worker = new(1024);
+  private static DedicatedWorker worker = new(1024);
 
   private static bool OnD2U(uint k) {
     Unit[k] = F;

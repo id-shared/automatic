@@ -1,9 +1,9 @@
-﻿class ZeroLatencyWorker {
+﻿class DedicatedWorker {
   private readonly LockFreeRingBuffer<Action> _workQueue;
   private readonly Thread _workerThread;
   private volatile bool _isRunning;
 
-  public ZeroLatencyWorker(int bufferSize) {
+  public DedicatedWorker(int bufferSize) {
     _workQueue = new LockFreeRingBuffer<Action>(bufferSize);
     _workerThread = new Thread(WorkerLoop) { IsBackground = true };
     _isRunning = true;
