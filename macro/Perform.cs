@@ -112,27 +112,31 @@ class Perform {
   }
 
   private static bool ReactIO(int t, uint[] o, uint[] k) {
-    return !o.Any(IsHeld) && IO(t, k);
+    return !AnyHeld(o) && IO(t, k);
   }
 
   private static bool ReactO(uint[] o, uint[] k) {
-    return !o.Any(IsHeld) && O(k);
+    return !AnyHeld(o) && O(k);
   }
 
   private static bool ReactI(uint[] o, uint[] k) {
-    return !o.Any(IsHeld) && I(k);
+    return !AnyHeld(o) && I(k);
   }
 
   private static bool ActIO(int t, uint[] o, uint[] k) {
-    return o.All(IsHeld) && IO(t, k);
+    return AllHeld(o) && IO(t, k);
   }
 
   private static bool ActO(uint[] o, uint[] k) {
-    return o.All(IsHeld) && O(k);
+    return AllHeld(o) && O(k);
   }
 
   private static bool ActI(uint[] o, uint[] k) {
-    return o.All(IsHeld) && I(k);
+    return AllHeld(o) && I(k);
+  }
+
+  private static bool AnyHeld(uint[] k) {
+    return k.Any(IsHeld);
   }
 
   private static bool AllHeld(uint[] k) {
