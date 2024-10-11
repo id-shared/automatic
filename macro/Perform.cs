@@ -36,30 +36,26 @@ class Perform {
   }
 
   private static bool D1DL() {
+    uint[] k = [
+      KeyE.C,
+      KeyE.A
+    ];
+    uint[] o = [
+      KeyM.L
+    ];
+    uint[] l = [
+      KeyA.L
+    ];
+    uint[] r = [
+      KeyA.R
+    ];
+
     return Do(() => {
       int time = (int)Environment.TickCount64;
-      uint[] r = [
-        KeyA.R
-      ];
-      uint[] l = [
-        KeyA.L
-      ];
-      uint[] o = [
-        KeyM.L
-      ];
-      uint[] k = [
-        KeyE.A
-      ];
       WaitD = IsHeld(KeyX.D) ? time : WaitD;
       WaitA = IsHeld(KeyX.A) ? time : WaitA;
       Actor(time - WaitD, TimeD, Time, l, o, k);
       Actor(time - WaitA, TimeA, Time, r, o, k);
-      Wait(100);
-      ActI([
-        KeyM.L
-      ], [
-        KeyE.C
-      ]);
     });
   }
 
