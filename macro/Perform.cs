@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Linq;
 
 class Perform {
   private static bool D2UD() {
@@ -37,13 +36,7 @@ class Perform {
     return Do(() => {
       Reacted(WaitD, TimeD, [KeyA.L]);
       Reacted(WaitA, TimeA, [KeyA.R]);
-      ReIO(103, [
-        1,
-        2,
-        4,
-        8,
-        16,
-      ], [KeyM.L], KeyE.A);
+      ReIO(99, 1, [KeyM.L], [KeyE.A]);
     });
   }
 
@@ -57,13 +50,13 @@ class Perform {
     return t > time && n.All(_ => IO(t - time, _));
   }
 
-  private static bool ReIO(int t1, int[] n1, uint[] n, uint k) {
-    IO(1, k);
-    Wait(t1 + n1.ElementAt(0));
-    return n.All(IsHeld) ? ReIO(t1, Re(n1), n, k) : T;
+  private static bool ReIO(int t1, int t, uint[] n, uint[] k) {
+    _ = k.All(I);
+    Wait(t1);
+    _ = k.All(O);
+    Wait(t);
+    return n.All(IsHeld) && ReIO(t1, t, n, k);
   }
-
-  private static int[] Re(int[] n) => n.Length > 1 ? n.Skip(1).ToArray() : [n.Last()];
 
   private static bool Do(Action z) {
     Task.Run(z);
