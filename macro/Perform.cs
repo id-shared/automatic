@@ -37,9 +37,11 @@ class Perform {
 
   private static bool D1DL() {
     return Do(() => {
-      int Current = (int)Environment.TickCount64;
-      Reacted(Current - WaitD, TimeD, [KeyA.L], [KeyE.A]);
-      Reacted(Current - WaitA, TimeA, [KeyA.R], [KeyE.A]);
+      int t = (int)Environment.TickCount64;
+      WaitD = IsHeld(KeyX.D) ? t : WaitD;
+      WaitA = IsHeld(KeyX.A) ? t : WaitA;
+      Reacted(t - WaitD, TimeD, [KeyA.L], [KeyE.A]);
+      Reacted(t - WaitA, TimeA, [KeyA.R], [KeyE.A]);
       ActIO(TimeI, [KeyM.L], [KeyE.A]);
       ActI([KeyM.L], [
         KeyE.C,
