@@ -36,27 +36,20 @@ class Perform {
 
   private static bool D1DL() {
     int TC64 = (int)Environment.TickCount64;
-    SD = AllHeld([KeyX.D]) ? TC64 : SD;
-    SA = AllHeld([KeyX.A]) ? TC64 : SA;
-    Actor(TC64 - SD, TD, KL);
-    Actor(TC64 - SA, TA, KR);
-    DL(99);
-    return A.T;
+    //SD = AllHeld([KeyX.D]) ? TC64 : SD;
+    //SA = AllHeld([KeyX.A]) ? TC64 : SA;
+    Actor(TC64 - SD, TD, [KeyA.L]);
+    Actor(TC64 - SA, TA, [KeyA.R]);
+    return DL([KeyE.A, KeyE.C]);
   }
+
   private static bool Actor(int w, int t, uint[] k) {
     return t > w && IO(t - w, k);
   }
 
-  private static bool DL(int t) {
-    return AllHeld([KeyM.L]) && I([KeyE.A]) && Wait(t) && I([KeyE.A]);
+  private static bool DL(uint[] k) {
+    return ActI([KeyM.L], k);
   }
-
-  private static readonly uint[] KL = [
-    KeyA.L
-  ];
-  private static readonly uint[] KR = [
-    KeyA.R
-  ];
 
   private const int TD = 109;
   private const int TA = 109;
