@@ -1,44 +1,29 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 class Perform {
-  private static volatile int UD, UA, DD, DA;
-  private static readonly uint[] KR = [KeyA.R];
-  private static readonly uint[] KL = [KeyA.L];
+  private static readonly uint[] KR = [KeyE.C, KeyA.R];
+  private static readonly uint[] KL = [KeyE.C, KeyA.L];
   private const int ID = 119, IA = 119;
 
   private static IntPtr KeyDU(Back x) {
-    IntPtr next = Next(x);
-    UD = (int)Environment.TickCount64;
     IO(ID, KL);
-    return next;
+    //IO(99, [KeyM.L]);
+    return Next(x);
   }
 
   private static IntPtr KeyDD(Back x) {
-    IntPtr next = Next(x);
-    DD = (int)Environment.TickCount64;
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyAU(Back x) {
-    IntPtr next = Next(x);
-    UA = (int)Environment.TickCount64;
     IO(IA, KR);
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyAD(Back x) {
-    IntPtr next = Next(x);
-    DA = (int)Environment.TickCount64;
-    return next;
+    return Next(x);
   }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static bool IsD() => (UD - DD) < 0;
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static bool IsA() => (UA - DA) < 0;
 
   private static IntPtr OnU(Back x, uint i) => i switch {
     KeyX.D => KeyDU(x),
@@ -84,7 +69,6 @@ class Perform {
     };
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
   private struct Back {
