@@ -35,13 +35,12 @@ class Perform {
   }
 
   private static bool D1DL() {
-    return Do(() => {
-      int TC = (int)Environment.TickCount64;
-      WD = AllHeld([KeyX.D]) ? TC : WD;
-      WA = AllHeld([KeyX.A]) ? TC : WA;
-      Actor(TC - WD, TD, KL, KO, KK);
-      Actor(TC - WA, TA, KR, KO, KK);
-    });
+    int TC = (int)Environment.TickCount64;
+    WD = AllHeld([KeyX.D]) ? TC : WD;
+    WA = AllHeld([KeyX.A]) ? TC : WA;
+    Actor(TC - WD, TD, KL, KO, KK);
+    Actor(TC - WA, TA, KR, KO, KK);
+    return A.T;
   }
 
   private static readonly uint[] KL = [
