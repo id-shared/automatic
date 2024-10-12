@@ -36,11 +36,19 @@ class Perform {
 
   private static bool D1DL() {
     int TC64 = (int)Environment.TickCount64;
-    //SD = AllHeld([KeyX.D]) ? TC64 : SD;
+    SD = AllHeld([KeyX.D]) ? TC64 : SD;
     SA = AllHeld([KeyX.A]) ? TC64 : SA;
-    Actor(TC64 - SD, TD, KL, KO, KK);
-    Actor(TC64 - SA, TA, KR, KO, KK);
+    Actor(TC64 - SD, TD, KL);
+    Actor(TC64 - SA, TA, KR);
+    DL(99);
     return A.T;
+  }
+  private static bool Actor(int w, int t, uint[] k) {
+    return t > w && IO(t - w, k);
+  }
+
+  private static bool DL(int t) {
+    return AllHeld([KeyM.L]) && I([KeyE.A]) && Wait(t) && I([KeyE.A]);
   }
 
   private static readonly uint[] KL = [
@@ -49,23 +57,12 @@ class Perform {
   private static readonly uint[] KR = [
     KeyA.R
   ];
-  private static readonly uint[] KO = [
-    KeyM.L
-  ];
-  private static readonly uint[] KK = [
-    KeyE.C,
-    KeyE.A
-  ];
 
   private const int TD = 109;
   private const int TA = 109;
   private static int SD = 0;
   private static int SA = 0;
 
-  private static bool Actor(int w, int t, uint[] q, uint[] o, uint[] k) {
-    return AllHeld(o) && (t > w ? IO(t - w, q) && I(k) : I(k));
-  }
-  
   private static bool Do(Action z) {
     worker.Enqueue(z);
     return A.T;
@@ -73,39 +70,39 @@ class Perform {
 
   private static DedicatedWorker worker = new(1024);
 
-  private static bool OnD2U(uint k) {
-    Unit[k] = A.F;
+  private static bool OnD2U(uint i) {
+    Unit[i] = A.F;
     return A.T switch {
-      var _ when KeyX.A == k => D2UA(),
-      var _ when KeyX.D == k => D2UD(),
-      var _ when KeyE.W == k => Exit(),
+      var _ when KeyX.A == i => D2UA(),
+      var _ when KeyX.D == i => D2UD(),
+      var _ when KeyE.W == i => Exit(),
       _ => A.T,
     };
   }
 
-  private static bool OnD2D(uint k) {
-    Unit[k] = A.T;
+  private static bool OnD2D(uint i) {
+    Unit[i] = A.T;
     return A.T switch {
-      var _ when KeyX.A == k => D2DA(),
-      var _ when KeyX.D == k => D2DD(),
+      var _ when KeyX.A == i => D2DA(),
+      var _ when KeyX.D == i => D2DD(),
       _ => A.T,
     };
   }
 
-  private static bool OnD1U(uint k) {
-    Unit[k] = A.F;
+  private static bool OnD1U(uint i) {
+    Unit[i] = A.F;
     return A.T switch {
-      var _ when KeyM.L == k => D1UL(),
-      var _ when KeyM.R == k => D1UR(),
+      var _ when KeyM.L == i => D1UL(),
+      var _ when KeyM.R == i => D1UR(),
       _ => A.T,
     };
   }
 
-  private static bool OnD1D(uint k) {
-    Unit[k] = A.T;
+  private static bool OnD1D(uint i) {
+    Unit[i] = A.T;
     return A.T switch {
-      var _ when KeyM.R == k => D1DR(),
-      var _ when KeyM.L == k => D1DL(),
+      var _ when KeyM.R == i => D1DR(),
+      var _ when KeyM.L == i => D1DL(),
       _ => A.T,
     };
   }
