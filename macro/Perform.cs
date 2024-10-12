@@ -36,11 +36,11 @@ class Perform {
 
   private static IntPtr D1DL(Back x) {
     int TC64 = (int)Environment.TickCount64;
-    //SD = AllHeld([KeyX.D]) ? TC64 : SD;
-    //SA = AllHeld([KeyX.A]) ? TC64 : SA;
+    SD = AllHeld([KeyX.D]) ? TC64 : SD;
+    SA = AllHeld([KeyX.A]) ? TC64 : SA;
     Actor(TC64 - SD, TD, [KeyA.L]);
     Actor(TC64 - SA, TA, [KeyA.R]);
-    //DL([KeyE.C]);
+    DL([KeyE.C]);
     return Apple(x);
   }
 
