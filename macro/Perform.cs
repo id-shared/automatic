@@ -162,7 +162,7 @@ class Perform {
   }
 
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    Back x = new Back {
+    Back x = new() {
       wParam = wParam,
       lParam = lParam,
       iParam = d2_hook_id,
@@ -185,7 +185,7 @@ class Perform {
   }
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    Back x = new Back {
+    Back x = new() {
       wParam = wParam,
       lParam = lParam,
       iParam = d1_hook_id,
