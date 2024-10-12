@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
 
 class Perform {
   private static volatile int UD, UA, DD, DA;
