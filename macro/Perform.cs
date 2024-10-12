@@ -36,8 +36,8 @@ class Perform {
     int TC64 = (int)Environment.TickCount64;
     SD = AllHeld([KeyX.D]) ? TC64 : SD;
     SA = AllHeld([KeyX.A]) ? TC64 : SA;
-    Actor(TC64 - SD, TD, [KeyA.L]);
-    Actor(TC64 - SA, TA, [KeyA.R]);
+    Actor(TC64 - SD, ID, [KeyA.L]);
+    Actor(TC64 - SA, IA, [KeyA.R]);
     return Next(x);
   }
 
@@ -45,10 +45,10 @@ class Perform {
     return t > w && IO(t - w, k);
   }
 
-  private const int TD = 109;
-  private const int TA = 109;
-  private static int SD = 0;
-  private static int SA = 0;
+  private static volatile int SD = 0;
+  private static volatile int SA = 0;
+  private const int ID = 109;
+  private const int IA = 109;
 
   private static bool Do(Action z) {
     worker.Enqueue(z);
@@ -68,6 +68,7 @@ class Perform {
   }
 
   private static IntPtr OnD2D(Back x, uint i) {
+    Console.WriteLine(i);
     Unit[i] = A.T;
     return A.T switch {
       var _ when KeyX.A == i => D2DA(x),
