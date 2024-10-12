@@ -39,19 +39,25 @@ class Perform {
 
   private static IntPtr D1DL(Back x) {
     DL = (int)Environment.TickCount64;
-    UD = IsD() ? Tc64(DL, UD, ID) : UD;
-    UA = IsA() ? Tc64(DL, UA, IA) : UA;
-    Actor(DL - UD, ID, [KeyA.L]);
-    Actor(DL - UA, IA, [KeyA.R]);
+    Actor(Act(DL, UD, IsD()), ID, KL);
+    Actor(Act(DL, UA, IsA()), IA, KR);
     return Next(x);
   }
 
-  private static bool Actor(int w, int t, uint[] k) {
-    return t > w && IO(t - w, k);
+  private static bool Actor(int t, int i, uint[] k) {
+    return i > t && IO(i - t, k);
   }
 
-  private static int Tc64(int w, int t, int i) {
-    return (w - t) > i ? w : t;
+  private static int Act(int t, int i, bool a) {
+    return t - (a ? t : i);
+  }
+
+  private static bool IsR() {
+    return 0 > (UR - DR);
+  }
+
+  private static bool IsL() {
+    return 0 > (UL - DL);
   }
 
   private static bool IsD() {
@@ -62,6 +68,8 @@ class Perform {
     return 0 > (UA - DA);
   }
 
+  private static readonly uint[] KR = [KeyA.R];
+  private static readonly uint[] KL = [KeyA.L];
   private static volatile int UR = 0;
   private static volatile int UL = 0;
   private static volatile int UD = 0;
