@@ -161,7 +161,7 @@ class Perform {
     Back x = new() {
       wParam = wParam,
       lParam = lParam,
-      iParam = d2_hook_id,
+      iParam = HookD2,
       nCode = nCode,
     };
 
@@ -184,7 +184,7 @@ class Perform {
     Back x = new() {
       wParam = wParam,
       lParam = lParam,
-      iParam = d1_hook_id,
+      iParam = HookD1,
       nCode = nCode,
     };
 
@@ -244,13 +244,13 @@ class Perform {
   }
 
   public Perform() {
-    d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
-    d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
+    HookD2 = SetHook(d2_hook, WH_KEYBOARD_LL);
+    HookD1 = SetHook(d1_hook, WH_MOUSE_LL);
 
     SubscribeKey(new MSG());
 
-    Detach(d2_hook_id);
-    Detach(d1_hook_id);
+    Detach(HookD2);
+    Detach(HookD1);
   }
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -258,8 +258,8 @@ class Perform {
 
   private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
   private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
-  private static IntPtr d2_hook_id = IntPtr.Zero;
-  private static IntPtr d1_hook_id = IntPtr.Zero;
+  private static IntPtr HookD2 = IntPtr.Zero;
+  private static IntPtr HookD1 = IntPtr.Zero;
 
   private const uint WH_KEYBOARD_LL = 13;
   private const uint WH_MOUSE_LL = 14;
