@@ -4,44 +4,43 @@ using System.Diagnostics;
 class Perform {
   private static bool D2UD() {
     WD = (int)Environment.TickCount64;
-    return T;
+    return A.T;
   }
 
   private static bool D2UA() {
     WA = (int)Environment.TickCount64;
-    return T;
+    return A.T;
   }
 
   private static bool D2DD() {
-    return T;
+    return A.T;
   }
 
   private static bool D2DA() {
-    return T;
+    return A.T;
   }
 
   private static bool D1UR() {
-    return T;
+    return A.T;
   }
 
   private static bool D1UL() {
-    return Do(() => {
-      ActO([KeyE.C], [KeyE.C]);
-      ActO([KeyE.A], [KeyE.A]);
-    });
+    ActO([KeyE.C], [KeyE.C]);
+    ActO([KeyE.A], [KeyE.A]);
+    return A.T;
   }
 
   private static bool D1DR() {
-    return T;
+    return A.T;
   }
 
   private static bool D1DL() {
     return Do(() => {
-      int t = (int)Environment.TickCount64;
-      WD = AllHeld([KeyX.D]) ? t : WD;
-      WA = AllHeld([KeyX.A]) ? t : WA;
-      Actor(t - WD, TD, KL, KO, KK);
-      Actor(t - WA, TA, KR, KO, KK);
+      int TC = (int)Environment.TickCount64;
+      WD = AllHeld([KeyX.D]) ? TC : WD;
+      WA = AllHeld([KeyX.A]) ? TC : WA;
+      Actor(TC - WD, TD, KL, KO, KK);
+      Actor(TC - WA, TA, KR, KO, KK);
     });
   }
 
@@ -69,45 +68,45 @@ class Perform {
   
   private static bool Do(Action z) {
     worker.Enqueue(z);
-    return T;
+    return A.T;
   }
 
   private static DedicatedWorker worker = new(1024);
 
   private static bool OnD2U(uint k) {
-    Unit[k] = F;
-    return T switch {
+    Unit[k] = A.F;
+    return A.T switch {
       var _ when KeyX.D == k => D2UD(),
       var _ when KeyX.A == k => D2UA(),
-      _ => T,
+      _ => A.T,
     };
   }
 
   private static bool OnD2D(uint k) {
-    Unit[k] = T;
-    return T switch {
+    Unit[k] = A.T;
+    return A.T switch {
       var _ when KeyX.D == k => D2DD(),
       var _ when KeyX.A == k => D2DA(),
       var _ when KeyE.W == k => Exit(),
-      _ => T,
+      _ => A.T,
     };
   }
 
   private static bool OnD1U(uint k) {
-    Unit[k] = F;
-    return T switch {
+    Unit[k] = A.F;
+    return A.T switch {
       var _ when KeyM.R == k => D1UR(),
       var _ when KeyM.L == k => D1UL(),
-      _ => T,
+      _ => A.T,
     };
   }
 
   private static bool OnD1D(uint k) {
-    Unit[k] = T;
-    return T switch {
+    Unit[k] = A.T;
+    return A.T switch {
       var _ when KeyM.R == k => D1DR(),
       var _ when KeyM.L == k => D1DL(),
-      _ => T,
+      _ => A.T,
     };
   }
 
@@ -153,37 +152,37 @@ class Perform {
     I(k);
     Wait(t);
     O(k);
-    return T;
+    return A.T;
   }
 
   private static bool O(uint[] n) {
-    return n.All(_ => Keyboard.Input(_, F));
+    return n.All(_ => Keyboard.Input(_, A.F));
   }
 
   private static bool I(uint[] n) {
-    return n.All(_ => Keyboard.Input(_, T));
+    return n.All(_ => Keyboard.Input(_, A.T));
   }
 
   private static bool Wait(int i) {
     Thread.Sleep(i);
-    return T;
+    return A.T;
   }
 
   private static bool Exit() {
     Environment.Exit(0);
-    return T;
+    return A.T;
   }
 
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
-      _ = T switch {
+      _ = A.T switch {
         var _ when act == WM_SYSKEYDOWN => OnD2D(key),
         var _ when act == WM_KEYDOWN => OnD2D(key),
         var _ when act == WM_SYSKEYUP => OnD2U(key),
         var _ when act == WM_KEYUP => OnD2U(key),
-        _ => T,
+        _ => A.T,
       };
     }
     return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
@@ -192,12 +191,12 @@ class Perform {
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode >= 0) {
       uint act = (uint)wParam;
-      _ = T switch {
+      _ = A.T switch {
         var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
         var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
         var _ when act == WM_RBUTTONDOWN => OnD1D(KeyM.R),
         var _ when act == WM_RBUTTONUP => OnD1U(KeyM.R),
-        _ => T,
+        _ => A.T,
       };
     }
     return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
@@ -206,13 +205,13 @@ class Perform {
   private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
 
-    switch (T) {
+    switch (A.T) {
       case var _ when module == null:
         return IntPtr.Zero;
       default:
         IntPtr handle = GetModuleHandle(module.ModuleName);
 
-        return T switch {
+        return A.T switch {
           var _ when handle == IntPtr.Zero => IntPtr.Zero,
           _ => SetWindowsHookEx((int)hookType, proc, handle, 0),
         };
@@ -227,12 +226,13 @@ class Perform {
   }
 
   private static bool Detach(nint id) {
-    return T switch {
-      var _ when id == IntPtr.Zero => F,
+    return A.T switch {
+      var _ when id == IntPtr.Zero => A.F,
       _ => UnhookWindowsHookEx(id),
     };
   }
-  public static void A() {
+
+  public Perform() {
     d2_hook_id = SetHook(d2_hook, WH_KEYBOARD_LL);
     d1_hook_id = SetHook(d1_hook, WH_MOUSE_LL);
 
@@ -260,8 +260,6 @@ class Perform {
   private const uint WM_LBUTTONUP = 0x0202;
   private const uint WM_RBUTTONDOWN = 0x0204;
   private const uint WM_RBUTTONUP = 0x0205;
-  private const bool F = false;
-  private const bool T = true;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {

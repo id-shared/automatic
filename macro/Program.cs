@@ -1,6 +1,6 @@
 ﻿class Program {
   private static void Main() {
-    Perform.A();
+    new Perform();
   }
 }
 
