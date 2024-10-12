@@ -13,10 +13,12 @@ class Perform {
   }
 
   private static IntPtr D2DD(Back x) {
+    SA = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D2DA(Back x) {
+    SA = (int)Environment.TickCount64;
     return Next(x);
   }
 
