@@ -2,62 +2,30 @@
 using System.Diagnostics;
 
 class Perform {
-  private static IntPtr D2UD(Back x) {
+  private static IntPtr KeyDU(Back x) {
+    IntPtr next = Next(x);
     UD = (int)Environment.TickCount64;
-    return Next(x);
+    IO(ID, KL);
+    return next;
   }
 
-  private static IntPtr D2UA(Back x) {
-    UA = (int)Environment.TickCount64;
-    return Next(x);
-  }
-
-  private static IntPtr D2DD(Back x) {
+  private static IntPtr KeyDD(Back x) {
+    IntPtr next = Next(x);
     DD = (int)Environment.TickCount64;
-    return Next(x);
+    return next;
   }
 
-  private static IntPtr D2DA(Back x) {
+  private static IntPtr KeyAU(Back x) {
+    IntPtr next = Next(x);
+    UA = (int)Environment.TickCount64;
+    IO(IA, KR);
+    return next;
+  }
+
+  private static IntPtr KeyAD(Back x) {
+    IntPtr next = Next(x);
     DA = (int)Environment.TickCount64;
-    return Next(x);
-  }
-
-  private static IntPtr D1UR(Back x) {
-    UR = (int)Environment.TickCount64;
-    return Next(x);
-  }
-
-  private static IntPtr D1UL(Back x) {
-    UL = (int)Environment.TickCount64;
-    return Next(x);
-  }
-
-  private static IntPtr D1DR(Back x) {
-    DR = (int)Environment.TickCount64;
-    return Next(x);
-  }
-
-  private static IntPtr D1DL(Back x) {
-    DL = (int)Environment.TickCount64;
-    Actor(ID, DL - UD, KL);
-    Actor(IA, DL - UA, KR);
-    return Next(x);
-  }
-
-  private static bool Actor(int t, int i, uint[] k) {
-    return t > i && IO(t - i, k);
-  }
-
-  private static int Act(int t, int i, bool a) {
-    return t - (a ? t : i);
-  }
-
-  private static bool IsR() {
-    return 0 > (UR - DR);
-  }
-
-  private static bool IsL() {
-    return 0 > (UL - DL);
+    return next;
   }
 
   private static bool IsD() {
@@ -70,92 +38,29 @@ class Perform {
 
   private static readonly uint[] KR = [KeyA.R];
   private static readonly uint[] KL = [KeyA.L];
-  private static volatile int UR = 0;
-  private static volatile int UL = 0;
   private static volatile int UD = 0;
   private static volatile int UA = 0;
-  private static volatile int DR = 0;
-  private static volatile int DL = 0;
   private static volatile int DD = 0;
   private static volatile int DA = 0;
   private const int ID = 109;
   private const int IA = 109;
 
-  private static IntPtr OnD2U(Back x, uint i) {
+  private static IntPtr OnU(Back x, uint i) {
+    return A.T switch {
+      var _ when KeyX.D == i => KeyDU(x),
+      var _ when KeyX.A == i => KeyAU(x),
+      _ => Next(x),
+    };
+  }
+
+  private static IntPtr OnD(Back x, uint i) {
     _ = KeyE.W == i && Exit();
-    Unit[i] = A.F;
     return A.T switch {
-      var _ when KeyX.A == i => D2UA(x),
-      var _ when KeyX.D == i => D2UD(x),
+      var _ when KeyX.D == i => KeyDD(x),
+      var _ when KeyX.A == i => KeyAD(x),
       _ => Next(x),
     };
   }
-
-  private static IntPtr OnD2D(Back x, uint i) {
-    Console.WriteLine(i);
-    Unit[i] = A.T;
-    return A.T switch {
-      var _ when KeyX.A == i => D2DA(x),
-      var _ when KeyX.D == i => D2DD(x),
-      _ => Next(x),
-    };
-  }
-
-  private static IntPtr OnD1U(Back x, uint i) {
-    Unit[i] = A.F;
-    return A.T switch {
-      var _ when KeyM.L == i => D1UL(x),
-      var _ when KeyM.R == i => D1UR(x),
-      _ => Next(x),
-    };
-  }
-
-  private static IntPtr OnD1D(Back x, uint i) {
-    Unit[i] = A.T;
-    return A.T switch {
-      var _ when KeyM.R == i => D1DR(x),
-      var _ when KeyM.L == i => D1DL(x),
-      _ => Next(x),
-    };
-  }
-
-  private static bool ReactIO(int t, uint[] o, uint[] k) {
-    return !AnyHeld(o) && IO(t, k);
-  }
-
-  private static bool ReactO(uint[] o, uint[] k) {
-    return !AnyHeld(o) && O(k);
-  }
-
-  private static bool ReactI(uint[] o, uint[] k) {
-    return !AnyHeld(o) && I(k);
-  }
-
-  private static bool ActIO(int t, uint[] o, uint[] k) {
-    return AllHeld(o) && IO(t, k);
-  }
-
-  private static bool ActO(uint[] o, uint[] k) {
-    return AllHeld(o) && O(k);
-  }
-
-  private static bool ActI(uint[] o, uint[] k) {
-    return AllHeld(o) && I(k);
-  }
-
-  private static bool AnyHeld(uint[] k) {
-    return k.Any(IsHeld);
-  }
-
-  private static bool AllHeld(uint[] k) {
-    return k.All(IsHeld);
-  }
-
-  private static bool IsHeld(uint k) {
-    return Unit.TryGetValue(k, out bool is_held) && is_held;
-  }
-
-  private static readonly Dictionary<uint, bool> Unit = [];
 
   private static bool IO(int t, uint[] k) {
     I(k);
@@ -182,11 +87,11 @@ class Perform {
     return A.T;
   }
 
-  public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     Back x = new() {
       wParam = wParam,
       lParam = lParam,
-      iParam = HookD2,
+      iParam = Hook,
       nCode = nCode,
     };
 
@@ -194,32 +99,10 @@ class Perform {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
       return A.T switch {
-        var _ when act == WM_SYSKEYDOWN => OnD2D(x, key),
-        var _ when act == WM_KEYDOWN => OnD2D(x, key),
-        var _ when act == WM_SYSKEYUP => OnD2U(x, key),
-        var _ when act == WM_KEYUP => OnD2U(x, key),
-        _ => Next(x),
-      };
-    } else {
-      return Next(x);
-    }
-  }
-
-  public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    Back x = new() {
-      wParam = wParam,
-      lParam = lParam,
-      iParam = HookD1,
-      nCode = nCode,
-    };
-
-    if (nCode >= 0) {
-      uint act = (uint)wParam;
-      return A.T switch {
-        var _ when act == WM_LBUTTONDOWN => OnD1D(x, KeyM.L),
-        var _ when act == WM_LBUTTONUP => OnD1U(x, KeyM.L),
-        var _ when act == WM_RBUTTONDOWN => OnD1D(x, KeyM.R),
-        var _ when act == WM_RBUTTONUP => OnD1U(x, KeyM.R),
+        var _ when act == WM_SYSKEYDOWN => OnD(x, key),
+        var _ when act == WM_KEYDOWN => OnD(x, key),
+        var _ when act == WM_SYSKEYUP => OnU(x, key),
+        var _ when act == WM_KEYUP => OnU(x, key),
         _ => Next(x),
       };
     } else {
@@ -276,33 +159,22 @@ class Perform {
   }
 
   public Perform() {
-    HookD2 = SetHook(d2_hook, WH_KEYBOARD_LL);
-    HookD1 = SetHook(d1_hook, WH_MOUSE_LL);
-
+    Hook = SetHook(HookCallBack, WH_KEYBOARD_LL);
     SubscribeKey(new MSG());
-
-    Detach(HookD2);
-    Detach(HookD1);
+    Detach(Hook);
   }
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
   private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-  private static readonly LowLevelKeyboardProc d2_hook = D2HookCallback;
-  private static readonly LowLevelMouseProc d1_hook = D1HookCallback;
-  private static IntPtr HookD2 = IntPtr.Zero;
-  private static IntPtr HookD1 = IntPtr.Zero;
+  private static readonly LowLevelKeyboardProc HookCallBack = HookCallback;
+  private static volatile IntPtr Hook = IntPtr.Zero;
 
   private const uint WH_KEYBOARD_LL = 13;
-  private const uint WH_MOUSE_LL = 14;
   private const uint WM_KEYDOWN = 0x0100;
   private const uint WM_SYSKEYDOWN = 0x0104;
   private const uint WM_KEYUP = 0x0101;
   private const uint WM_SYSKEYUP = 0x0105;
-  private const uint WM_LBUTTONDOWN = 0x0201;
-  private const uint WM_LBUTTONUP = 0x0202;
-  private const uint WM_RBUTTONDOWN = 0x0204;
-  private const uint WM_RBUTTONUP = 0x0205;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
