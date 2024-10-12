@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Perform {
   private static bool D2UD() {
-    WD = (int)Environment.TickCount64;
+    SD = (int)Environment.TickCount64;
     return A.T;
   }
 
   private static bool D2UA() {
-    WA = (int)Environment.TickCount64;
+    SA = (int)Environment.TickCount64;
     return A.T;
   }
 
@@ -35,11 +35,11 @@ class Perform {
   }
 
   private static bool D1DL() {
-    int TC = (int)Environment.TickCount64;
-    WD = AllHeld([KeyX.D]) ? TC : WD;
-    WA = AllHeld([KeyX.A]) ? TC : WA;
-    Actor(TC - WD, TD, KL, KO, KK);
-    Actor(TC - WA, TA, KR, KO, KK);
+    int TC64 = (int)Environment.TickCount64;
+    //SD = AllHeld([KeyX.D]) ? TC64 : SD;
+    SA = AllHeld([KeyX.A]) ? TC64 : SA;
+    Actor(TC64 - SD, TD, KL, KO, KK);
+    Actor(TC64 - SA, TA, KR, KO, KK);
     return A.T;
   }
 
@@ -56,10 +56,11 @@ class Perform {
     KeyE.C,
     KeyE.A
   ];
-  private static volatile int WD = 0;
-  private static volatile int WA = 0;
+
   private const int TD = 109;
   private const int TA = 109;
+  private static int SD = 0;
+  private static int SA = 0;
 
   private static bool Actor(int w, int t, uint[] q, uint[] o, uint[] k) {
     return AllHeld(o) && (t > w ? IO(t - w, q) && I(k) : I(k));
@@ -75,8 +76,9 @@ class Perform {
   private static bool OnD2U(uint k) {
     Unit[k] = A.F;
     return A.T switch {
-      var _ when KeyX.D == k => D2UD(),
       var _ when KeyX.A == k => D2UA(),
+      var _ when KeyX.D == k => D2UD(),
+      var _ when KeyE.W == k => Exit(),
       _ => A.T,
     };
   }
@@ -84,9 +86,8 @@ class Perform {
   private static bool OnD2D(uint k) {
     Unit[k] = A.T;
     return A.T switch {
-      var _ when KeyX.D == k => D2DD(),
       var _ when KeyX.A == k => D2DA(),
-      var _ when KeyE.W == k => Exit(),
+      var _ when KeyX.D == k => D2DD(),
       _ => A.T,
     };
   }
@@ -94,8 +95,8 @@ class Perform {
   private static bool OnD1U(uint k) {
     Unit[k] = A.F;
     return A.T switch {
-      var _ when KeyM.R == k => D1UR(),
       var _ when KeyM.L == k => D1UL(),
+      var _ when KeyM.R == k => D1UR(),
       _ => A.T,
     };
   }
