@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 class Perform {
   private static volatile int UD, UA, DD, DA;
@@ -9,25 +10,29 @@ class Perform {
   private const int ID = 109, IA = 109;
 
   private static IntPtr KeyDU(Back x) {
+    IntPtr next = Next(x);
     UD = (int)Environment.TickCount64;
     IO(ID, KL);
-    return Next(x);
+    return next;
   }
 
   private static IntPtr KeyDD(Back x) {
+    IntPtr next = Next(x);
     DD = (int)Environment.TickCount64;
-    return Next(x);
+    return next;
   }
 
   private static IntPtr KeyAU(Back x) {
+    IntPtr next = Next(x);
     UA = (int)Environment.TickCount64;
     IO(IA, KR);
-    return Next(x);
+    return next;
   }
 
   private static IntPtr KeyAD(Back x) {
+    IntPtr next = Next(x);
     DA = (int)Environment.TickCount64;
-    return Next(x);
+    return next;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -36,21 +41,17 @@ class Perform {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static bool IsA() => (UA - DA) < 0;
 
-  private static IntPtr OnU(Back x, uint i) =>
-    i switch {
-      KeyX.D => KeyDU(x),
-      KeyX.A => KeyAU(x),
-      _ => Next(x),
-    };
+  private static IntPtr OnU(Back x, uint i) => i switch {
+    KeyX.D => KeyDU(x),
+    KeyX.A => KeyAU(x),
+    _ => Next(x),
+  };
 
-  private static IntPtr OnD(Back x, uint i) {
-    if (i == KeyE.W) Exit();
-    return i switch {
-      KeyX.D => KeyDD(x),
-      KeyX.A => KeyAD(x),
-      _ => Next(x),
-    };
-  }
+  private static IntPtr OnD(Back x, uint i) => i switch {
+    KeyX.D => KeyDD(x),
+    KeyX.A => KeyAD(x),
+    _ => Next(x),
+  };
 
   private static bool IO(int t, uint[] k) {
     I(k);
@@ -74,6 +75,8 @@ class Perform {
 
     uint key = (uint)Marshal.ReadInt32(lParam);
     uint act = (uint)wParam;
+
+    if (key == KeyE.W) Exit();
 
     return act switch {
       WM_SYSKEYDOWN or WM_KEYDOWN => OnD(new Back(nCode, wParam, lParam), key),
