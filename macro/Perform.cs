@@ -2,22 +2,22 @@
 using System.Diagnostics;
 
 class Perform {
-  private static bool D2UD() {
+  private static IntPtr D2UD(Back x) {
     SD = (int)Environment.TickCount64;
-    return A.T;
+    return Apple(x);
   }
 
-  private static bool D2UA() {
+  private static IntPtr D2UA(Back x) {
     SA = (int)Environment.TickCount64;
-    return A.T;
+    return Apple(x);
   }
 
-  private static bool D2DD() {
-    return A.T;
+  private static IntPtr D2DD(Back x) {
+    return Apple(x);
   }
 
-  private static bool D2DA() {
-    return A.T;
+  private static IntPtr D2DA(Back x) {
+    return Apple(x);
   }
 
   private static IntPtr D1UR(Back x) {
@@ -25,8 +25,6 @@ class Perform {
   }
 
   private static IntPtr D1UL(Back x) {
-    ActO([KeyE.C], [KeyE.C]);
-    ActO([KeyE.A], [KeyE.A]);
     return Apple(x);
   }
 
@@ -40,7 +38,6 @@ class Perform {
     SA = AllHeld([KeyX.A]) ? TC64 : SA;
     Actor(TC64 - SD, TD, [KeyA.L]);
     Actor(TC64 - SA, TA, [KeyA.R]);
-    DL([KeyE.C]);
     return Apple(x);
   }
 
@@ -64,22 +61,22 @@ class Perform {
 
   private static DedicatedWorker worker = new(1024);
 
-  private static bool OnD2U(uint i) {
+  private static IntPtr OnD2U(Back x, uint i) {
+    _ = KeyE.W == i && Exit();
     Unit[i] = A.F;
     return A.T switch {
-      var _ when KeyX.A == i => D2UA(),
-      var _ when KeyX.D == i => D2UD(),
-      var _ when KeyE.W == i => Exit(),
-      _ => A.T,
+      var _ when KeyX.A == i => D2UA(x),
+      var _ when KeyX.D == i => D2UD(x),
+      _ => Apple(x),
     };
   }
 
-  private static bool OnD2D(uint i) {
+  private static IntPtr OnD2D(Back x, uint i) {
     Unit[i] = A.T;
     return A.T switch {
-      var _ when KeyX.A == i => D2DA(),
-      var _ when KeyX.D == i => D2DD(),
-      _ => A.T,
+      var _ when KeyX.A == i => D2DA(x),
+      var _ when KeyX.D == i => D2DD(x),
+      _ => Apple(x),
     };
   }
 
@@ -165,18 +162,26 @@ class Perform {
   }
 
   public static IntPtr D2HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    Back x = new Back {
+      wParam = wParam,
+      lParam = lParam,
+      iParam = d2_hook_id,
+      nCode = nCode,
+    };
+
     if (nCode >= 0) {
       uint key = (uint)Marshal.ReadInt32(lParam);
       uint act = (uint)wParam;
-      _ = A.T switch {
-        var _ when act == WM_SYSKEYDOWN => OnD2D(key),
-        var _ when act == WM_KEYDOWN => OnD2D(key),
-        var _ when act == WM_SYSKEYUP => OnD2U(key),
-        var _ when act == WM_KEYUP => OnD2U(key),
-        _ => A.T,
+      return A.T switch {
+        var _ when act == WM_SYSKEYDOWN => OnD2D(x, key),
+        var _ when act == WM_KEYDOWN => OnD2D(x, key),
+        var _ when act == WM_SYSKEYUP => OnD2U(x, key),
+        var _ when act == WM_KEYUP => OnD2U(x, key),
+        _ => Apple(x),
       };
+    } else {
+      return Apple(x);
     }
-    return CallNextHookEx(d2_hook_id, nCode, wParam, lParam);
   }
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
