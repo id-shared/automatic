@@ -34,8 +34,8 @@ class Perform {
 
   private static IntPtr D1DL(Back x) {
     int TC64 = (int)Environment.TickCount64;
-    SD = AllHeld([KeyX.D]) ? TC64 : SD;
-    SA = AllHeld([KeyX.A]) ? TC64 : SA;
+    SD = AllHeld([KeyX.D]) ? Tc64(TC64, SD, ID) : SD;
+    SA = AllHeld([KeyX.A]) ? Tc64(TC64, SA, IA) : SA;
     Actor(TC64 - SD, ID, [KeyA.L]);
     Actor(TC64 - SA, IA, [KeyA.R]);
     return Next(x);
@@ -43,6 +43,10 @@ class Perform {
 
   private static bool Actor(int w, int t, uint[] k) {
     return t > w && IO(t - w, k);
+  }
+
+  private static int Tc64(int w, int t, int i) {
+    return (w - t) > i ? w : t;
   }
 
   private static volatile int SD = 0;
