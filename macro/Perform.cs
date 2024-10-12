@@ -3,43 +3,46 @@ using System.Diagnostics;
 
 class Perform {
   private static IntPtr D2UD(Back x) {
-    SD = (int)Environment.TickCount64;
+    UD = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D2UA(Back x) {
-    SA = (int)Environment.TickCount64;
+    UA = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D2DD(Back x) {
-    SA = (int)Environment.TickCount64;
+    DD = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D2DA(Back x) {
-    SA = (int)Environment.TickCount64;
+    DA = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D1UR(Back x) {
+    UR = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D1UL(Back x) {
+    UL = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D1DR(Back x) {
+    DR = (int)Environment.TickCount64;
     return Next(x);
   }
 
   private static IntPtr D1DL(Back x) {
-    int TC64 = (int)Environment.TickCount64;
-    SD = AllHeld([KeyX.D]) ? Tc64(TC64, SD, ID) : SD;
-    SA = AllHeld([KeyX.A]) ? Tc64(TC64, SA, IA) : SA;
-    Actor(TC64 - SD, ID, [KeyA.L]);
-    Actor(TC64 - SA, IA, [KeyA.R]);
+    DL = (int)Environment.TickCount64;
+    UD = IsD() ? Tc64(DL, UD, ID) : UD;
+    UA = IsA() ? Tc64(DL, UA, IA) : UA;
+    Actor(DL - UD, ID, [KeyA.L]);
+    Actor(DL - UA, IA, [KeyA.R]);
     return Next(x);
   }
 
@@ -51,8 +54,22 @@ class Perform {
     return (w - t) > i ? w : t;
   }
 
-  private static volatile int SD = 0;
-  private static volatile int SA = 0;
+  private static bool IsD() {
+    return 0 > (UD - DD);
+  }
+
+  private static bool IsA() {
+    return 0 > (UA - DA);
+  }
+
+  private static volatile int UR = 0;
+  private static volatile int UL = 0;
+  private static volatile int UD = 0;
+  private static volatile int UA = 0;
+  private static volatile int DR = 0;
+  private static volatile int DL = 0;
+  private static volatile int DD = 0;
+  private static volatile int DA = 0;
   private const int ID = 109;
   private const int IA = 109;
 
