@@ -4,32 +4,32 @@ using System.Diagnostics;
 class Perform {
   private static IntPtr D2UD(Back x) {
     SD = (int)Environment.TickCount64;
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D2UA(Back x) {
     SA = (int)Environment.TickCount64;
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D2DD(Back x) {
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D2DA(Back x) {
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D1UR(Back x) {
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D1UL(Back x) {
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D1DR(Back x) {
-    return Apple(x);
+    return Next(x);
   }
 
   private static IntPtr D1DL(Back x) {
@@ -38,15 +38,11 @@ class Perform {
     SA = AllHeld([KeyX.A]) ? TC64 : SA;
     Actor(TC64 - SD, TD, [KeyA.L]);
     Actor(TC64 - SA, TA, [KeyA.R]);
-    return Apple(x);
+    return Next(x);
   }
 
   private static bool Actor(int w, int t, uint[] k) {
     return t > w && IO(t - w, k);
-  }
-
-  private static bool DL(uint[] k) {
-    return ActI([KeyM.L], k);
   }
 
   private const int TD = 109;
@@ -67,7 +63,7 @@ class Perform {
     return A.T switch {
       var _ when KeyX.A == i => D2UA(x),
       var _ when KeyX.D == i => D2UD(x),
-      _ => Apple(x),
+      _ => Next(x),
     };
   }
 
@@ -76,7 +72,7 @@ class Perform {
     return A.T switch {
       var _ when KeyX.A == i => D2DA(x),
       var _ when KeyX.D == i => D2DD(x),
-      _ => Apple(x),
+      _ => Next(x),
     };
   }
 
@@ -85,7 +81,7 @@ class Perform {
     return A.T switch {
       var _ when KeyM.L == i => D1UL(x),
       var _ when KeyM.R == i => D1UR(x),
-      _ => Apple(x),
+      _ => Next(x),
     };
   }
 
@@ -94,7 +90,7 @@ class Perform {
     return A.T switch {
       var _ when KeyM.R == i => D1DR(x),
       var _ when KeyM.L == i => D1DL(x),
-      _ => Apple(x),
+      _ => Next(x),
     };
   }
 
@@ -177,10 +173,10 @@ class Perform {
         var _ when act == WM_KEYDOWN => OnD2D(x, key),
         var _ when act == WM_SYSKEYUP => OnD2U(x, key),
         var _ when act == WM_KEYUP => OnD2U(x, key),
-        _ => Apple(x),
+        _ => Next(x),
       };
     } else {
-      return Apple(x);
+      return Next(x);
     }
   }
 
@@ -199,14 +195,14 @@ class Perform {
         var _ when act == WM_LBUTTONUP => OnD1U(x, KeyM.L),
         var _ when act == WM_RBUTTONDOWN => OnD1D(x, KeyM.R),
         var _ when act == WM_RBUTTONUP => OnD1U(x, KeyM.R),
-        _ => Apple(x),
+        _ => Next(x),
       };
     } else {
-      return Apple(x);
+      return Next(x);
     }
   }
 
-  private static IntPtr Apple(Back x) {
+  private static IntPtr Next(Back x) {
     return CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
   }
 
