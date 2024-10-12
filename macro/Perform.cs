@@ -39,13 +39,13 @@ class Perform {
 
   private static IntPtr D1DL(Back x) {
     DL = (int)Environment.TickCount64;
-    Actor(Act(DL, UD, IsD()), ID, KL);
-    Actor(Act(DL, UA, IsA()), IA, KR);
+    Actor(ID, DL - UD, KL);
+    Actor(IA, DL - UA, KR);
     return Next(x);
   }
 
   private static bool Actor(int t, int i, uint[] k) {
-    return i > t && IO(i - t, k);
+    return t > i && IO(t - i, k);
   }
 
   private static int Act(int t, int i, bool a) {
@@ -80,13 +80,6 @@ class Perform {
   private static volatile int DA = 0;
   private const int ID = 109;
   private const int IA = 109;
-
-  private static bool Do(Action z) {
-    worker.Enqueue(z);
-    return A.T;
-  }
-
-  private static DedicatedWorker worker = new(1024);
 
   private static IntPtr OnD2U(Back x, uint i) {
     _ = KeyE.W == i && Exit();
@@ -244,6 +237,13 @@ class Perform {
     public IntPtr iParam { get; set; }
     public int nCode { get; set; }
   }
+
+  private static IntPtr Do(Action z, Back x) {
+    worker.Enqueue(z);
+    return Next(x);
+  }
+
+  private static DedicatedWorker worker = new(1024);
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
     using ProcessModule? module = Process.GetCurrentProcess().MainModule;
