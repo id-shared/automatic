@@ -2,8 +2,8 @@
 using System.Diagnostics;
 
 class Perform {
-  private static readonly uint[] KR = [KeyE.C, KeyA.R];
-  private static readonly uint[] KL = [KeyE.C, KeyA.L];
+  private static readonly uint[] KR = [KeyA.R];
+  private static readonly uint[] KL = [KeyA.L];
   private const int ID = 119, IA = 119;
 
   private static IntPtr KeyDU(Back x) {
