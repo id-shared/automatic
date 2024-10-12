@@ -1,63 +1,53 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 class Perform {
+  private static volatile int UD, UA, DD, DA;
+  private static readonly uint[] KR = { KeyA.R };
+  private static readonly uint[] KL = { KeyA.L };
+  private const int ID = 109, IA = 109;
+
   private static IntPtr KeyDU(Back x) {
-    IntPtr next = Next(x);
     UD = (int)Environment.TickCount64;
     IO(ID, KL);
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyDD(Back x) {
-    IntPtr next = Next(x);
     DD = (int)Environment.TickCount64;
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyAU(Back x) {
-    IntPtr next = Next(x);
     UA = (int)Environment.TickCount64;
     IO(IA, KR);
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyAD(Back x) {
-    IntPtr next = Next(x);
     DA = (int)Environment.TickCount64;
-    return next;
+    return Next(x);
   }
 
-  private static bool IsD() {
-    return 0 > (UD - DD);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static bool IsD() => (UD - DD) < 0;
 
-  private static bool IsA() {
-    return 0 > (UA - DA);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static bool IsA() => (UA - DA) < 0;
 
-  private static readonly uint[] KR = [KeyA.R];
-  private static readonly uint[] KL = [KeyA.L];
-  private static volatile int UD = 0;
-  private static volatile int UA = 0;
-  private static volatile int DD = 0;
-  private static volatile int DA = 0;
-  private const int ID = 109;
-  private const int IA = 109;
-
-  private static IntPtr OnU(Back x, uint i) {
-    return A.T switch {
-      var _ when KeyX.D == i => KeyDU(x),
-      var _ when KeyX.A == i => KeyAU(x),
+  private static IntPtr OnU(Back x, uint i) =>
+    i switch {
+      KeyX.D => KeyDU(x),
+      KeyX.A => KeyAU(x),
       _ => Next(x),
     };
-  }
 
   private static IntPtr OnD(Back x, uint i) {
-    _ = KeyE.W == i && Exit();
-    return A.T switch {
-      var _ when KeyX.D == i => KeyDD(x),
-      var _ when KeyX.A == i => KeyAD(x),
+    if (i == KeyE.W) Exit();
+    return i switch {
+      KeyX.D => KeyDD(x),
+      KeyX.A => KeyAD(x),
       _ => Next(x),
     };
   }
@@ -69,79 +59,49 @@ class Perform {
     return A.T;
   }
 
-  private static bool O(uint[] n) {
-    return n.All(_ => Keyboard.Input(_, A.F));
-  }
-
-  private static bool I(uint[] n) {
-    return n.All(_ => Keyboard.Input(_, A.T));
-  }
+  private static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
+  private static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
 
   private static bool Wait(int i) {
-    Thread.Sleep(i);
+    SpinWait.SpinUntil(() => false, i);
     return A.T;
   }
 
-  private static bool Exit() {
-    Environment.Exit(0);
-    return A.T;
-  }
+  private static void Exit() => Environment.Exit(0);
 
   public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-    Back x = new() {
-      wParam = wParam,
-      lParam = lParam,
-      iParam = Hook,
-      nCode = nCode,
+    if (nCode < 0) return Next(new Back(nCode, wParam, lParam));
+
+    uint key = (uint)Marshal.ReadInt32(lParam);
+    uint act = (uint)wParam;
+
+    return act switch {
+      WM_SYSKEYDOWN or WM_KEYDOWN => OnD(new Back(nCode, wParam, lParam), key),
+      WM_SYSKEYUP or WM_KEYUP => OnU(new Back(nCode, wParam, lParam), key),
+      _ => Next(new Back(nCode, wParam, lParam)),
     };
-
-    if (nCode >= 0) {
-      uint key = (uint)Marshal.ReadInt32(lParam);
-      uint act = (uint)wParam;
-      return A.T switch {
-        var _ when act == WM_SYSKEYDOWN => OnD(x, key),
-        var _ when act == WM_KEYDOWN => OnD(x, key),
-        var _ when act == WM_SYSKEYUP => OnU(x, key),
-        var _ when act == WM_KEYUP => OnU(x, key),
-        _ => Next(x),
-      };
-    } else {
-      return Next(x);
-    }
   }
 
-  private static IntPtr Next(Back x) {
-    return CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
   private struct Back {
-    public IntPtr wParam { get; set; }
-    public IntPtr lParam { get; set; }
-    public IntPtr iParam { get; set; }
-    public int nCode { get; set; }
-  }
+    public IntPtr wParam, lParam, iParam;
+    public int nCode;
 
-  private static IntPtr Do(Action z, Back x) {
-    worker.Enqueue(z);
-    return Next(x);
+    public Back(int code, IntPtr w, IntPtr l) {
+      nCode = code; wParam = w; lParam = l;
+      iParam = Hook;
+    }
   }
-
-  private static DedicatedWorker worker = new(1024);
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
-    using ProcessModule? module = Process.GetCurrentProcess().MainModule;
+    using var module = Process.GetCurrentProcess().MainModule;
+    if (module == null) return IntPtr.Zero;
 
-    switch (A.T) {
-      case var _ when module == null:
-        return IntPtr.Zero;
-      default:
-        IntPtr handle = GetModuleHandle(module.ModuleName);
-
-        return A.T switch {
-          var _ when handle == IntPtr.Zero => IntPtr.Zero,
-          _ => SetWindowsHookEx((int)hookType, proc, handle, 0),
-        };
-    }
+    IntPtr handle = GetModuleHandle(module.ModuleName);
+    return handle == IntPtr.Zero ? IntPtr.Zero :
+      SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
   private static void SubscribeKey(MSG msg) {
@@ -151,12 +111,7 @@ class Perform {
     }
   }
 
-  private static bool Detach(nint id) {
-    return A.T switch {
-      var _ when id == IntPtr.Zero => A.F,
-      _ => UnhookWindowsHookEx(id),
-    };
-  }
+  private static bool Detach(nint id) => id != IntPtr.Zero && UnhookWindowsHookEx(id);
 
   public Perform() {
     Hook = SetHook(HookCallBack, WH_KEYBOARD_LL);
@@ -165,31 +120,25 @@ class Perform {
   }
 
   private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-  private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
   private static readonly LowLevelKeyboardProc HookCallBack = HookCallback;
   private static volatile IntPtr Hook = IntPtr.Zero;
 
   private const uint WH_KEYBOARD_LL = 13;
-  private const uint WM_KEYDOWN = 0x0100;
-  private const uint WM_SYSKEYDOWN = 0x0104;
-  private const uint WM_KEYUP = 0x0101;
-  private const uint WM_SYSKEYUP = 0x0105;
+  private const uint WM_KEYDOWN = 0x0100, WM_SYSKEYDOWN = 0x0104;
+  private const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
     public IntPtr hWnd;
     public uint message;
-    public IntPtr wParam;
-    public IntPtr lParam;
+    public IntPtr wParam, lParam;
     public uint time;
     public POINT pt;
   }
 
   [StructLayout(LayoutKind.Sequential)]
   private struct POINT {
-    public int x;
-    public int y;
+    public int x, y;
   }
 
   [DllImport("user32.dll")]
@@ -198,7 +147,6 @@ class Perform {
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
   private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
 
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
   private static extern IntPtr GetModuleHandle(string lpModuleName);
