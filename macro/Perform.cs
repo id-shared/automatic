@@ -20,27 +20,28 @@ class Perform {
     return A.T;
   }
 
-  private static bool D1UR() {
-    return A.T;
+  private static IntPtr D1UR(Back x) {
+    return Apple(x);
   }
 
-  private static bool D1UL() {
+  private static IntPtr D1UL(Back x) {
     ActO([KeyE.C], [KeyE.C]);
     ActO([KeyE.A], [KeyE.A]);
-    return A.T;
+    return Apple(x);
   }
 
-  private static bool D1DR() {
-    return A.T;
+  private static IntPtr D1DR(Back x) {
+    return Apple(x);
   }
 
-  private static bool D1DL() {
+  private static IntPtr D1DL(Back x) {
     int TC64 = (int)Environment.TickCount64;
     //SD = AllHeld([KeyX.D]) ? TC64 : SD;
     //SA = AllHeld([KeyX.A]) ? TC64 : SA;
     Actor(TC64 - SD, TD, [KeyA.L]);
     Actor(TC64 - SA, TA, [KeyA.R]);
-    return DL([KeyE.A, KeyE.C]);
+    //DL([KeyE.C]);
+    return Apple(x);
   }
 
   private static bool Actor(int w, int t, uint[] k) {
@@ -82,21 +83,21 @@ class Perform {
     };
   }
 
-  private static bool OnD1U(uint i) {
+  private static IntPtr OnD1U(Back x, uint i) {
     Unit[i] = A.F;
     return A.T switch {
-      var _ when KeyM.L == i => D1UL(),
-      var _ when KeyM.R == i => D1UR(),
-      _ => A.T,
+      var _ when KeyM.L == i => D1UL(x),
+      var _ when KeyM.R == i => D1UR(x),
+      _ => Apple(x),
     };
   }
 
-  private static bool OnD1D(uint i) {
+  private static IntPtr OnD1D(Back x, uint i) {
     Unit[i] = A.T;
     return A.T switch {
-      var _ when KeyM.R == i => D1DR(),
-      var _ when KeyM.L == i => D1DL(),
-      _ => A.T,
+      var _ when KeyM.R == i => D1DR(x),
+      var _ when KeyM.L == i => D1DL(x),
+      _ => Apple(x),
     };
   }
 
@@ -179,17 +180,36 @@ class Perform {
   }
 
   public static IntPtr D1HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    Back x = new Back {
+      wParam = wParam,
+      lParam = lParam,
+      iParam = d1_hook_id,
+      nCode = nCode,
+    };
+
     if (nCode >= 0) {
       uint act = (uint)wParam;
-      _ = A.T switch {
-        var _ when act == WM_LBUTTONDOWN => OnD1D(KeyM.L),
-        var _ when act == WM_LBUTTONUP => OnD1U(KeyM.L),
-        var _ when act == WM_RBUTTONDOWN => OnD1D(KeyM.R),
-        var _ when act == WM_RBUTTONUP => OnD1U(KeyM.R),
-        _ => A.T,
+      return A.T switch {
+        var _ when act == WM_LBUTTONDOWN => OnD1D(x, KeyM.L),
+        var _ when act == WM_LBUTTONUP => OnD1U(x, KeyM.L),
+        var _ when act == WM_RBUTTONDOWN => OnD1D(x, KeyM.R),
+        var _ when act == WM_RBUTTONUP => OnD1U(x, KeyM.R),
+        _ => Apple(x),
       };
+    } else {
+      return Apple(x);
     }
-    return CallNextHookEx(d1_hook_id, nCode, wParam, lParam);
+  }
+
+  private static IntPtr Apple(Back x) {
+    return CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
+  }
+
+  private struct Back {
+    public IntPtr wParam { get; set; }
+    public IntPtr lParam { get; set; }
+    public IntPtr iParam { get; set; }
+    public int nCode { get; set; }
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
