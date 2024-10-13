@@ -4,11 +4,15 @@ using System.Diagnostics;
 class Perform {
   private static readonly uint[] KR = { KeyA.R };
   private static readonly uint[] KL = { KeyA.L };
-  private const int ID = 119, IA = 119;
+  private static volatile bool LT = A.T;
+  private const int IT = 119;
 
   private static IntPtr KeyDU(Back x) {
-    IO(ID, KL);
-    return Next(x);
+    IntPtr next = Next(x);
+    LT = A.F;
+    IO(IT, KL);
+    LT = A.T;
+    return next;
   }
 
   private static IntPtr KeyDD(Back x) {
@@ -16,8 +20,11 @@ class Perform {
   }
 
   private static IntPtr KeyAU(Back x) {
-    IO(IA, KR);
-    return Next(x);
+    IntPtr next = Next(x);
+    LT = A.F;
+    IO(IT, KR);
+    LT = A.T;
+    return next;
   }
 
   private static IntPtr KeyAD(Back x) {
@@ -48,22 +55,33 @@ class Perform {
   private static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode < 0) return Next(new Back(nCode, wParam, lParam));
+    Back back = new(nCode, wParam, lParam, hookX2);
+    if (nCode < 0) return Next(back);
 
     uint key = (uint)Marshal.ReadInt32(lParam);
-    uint act = (uint)wParam;
-
     if (key == KeyE.W) Exit();
 
-    return act switch {
-      WM_SYSKEYDOWN or WM_KEYDOWN => OnD(new Back(nCode, wParam, lParam), key),
-      WM_SYSKEYUP or WM_KEYUP => OnU(new Back(nCode, wParam, lParam), key),
-      _ => Next(new Back(nCode, wParam, lParam)),
-    };
+    switch ((uint)wParam) {
+      case WM_SYSKEYDOWN or WM_KEYDOWN:
+        return OnD(back, key);
+      case WM_SYSKEYUP or WM_KEYUP:
+        return OnU(back, key);
+      default:
+        return Next(back);
+    }
   }
 
   public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
-    return CallNextHookEx(hookX1, nCode, wParam, lParam);
+    Back back = new(nCode, wParam, lParam, hookX1);
+    if (nCode < 0) return Next(back);
+
+    switch ((uint)wParam) {
+      case WM_LBUTTONDOWN:
+        SpinWait.SpinUntil(() => LT, IT);
+        return Next(back);
+      default:
+        return Next(back);
+    }
   }
 
   private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
@@ -75,8 +93,8 @@ class Perform {
 
   private static void Exit() => Environment.Exit(0);
 
-  private struct Back(int code, IntPtr w, IntPtr l) {
-    public IntPtr wParam = w, lParam = l, iParam = hookX2;
+  private struct Back(int code, IntPtr w, IntPtr l, IntPtr i) {
+    public IntPtr wParam = w, lParam = l, iParam = i;
     public int nCode = code;
   }
 
@@ -113,10 +131,9 @@ class Perform {
   private static volatile IntPtr hookX2 = IntPtr.Zero;
   private static volatile IntPtr hookX1 = IntPtr.Zero;
 
-  private const uint WH_KEYBOARD_LL = 13;
-  private const uint WH_MOUSE_LL = 14;
-  private const uint WM_KEYDOWN = 0x0100, WM_SYSKEYDOWN = 0x0104;
-  private const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
+  private const uint WM_MOUSEMOVE = 0x0200, WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202, WM_RBUTTONDOWN = 0x0204, WM_RBUTTONUP = 0x0205;
+  private const uint WM_KEYDOWN = 0x0100, WM_KEYUP = 0x0101, WM_SYSKEYDOWN = 0x0104, WM_SYSKEYUP = 0x0105;
+  private const uint WH_KEYBOARD_LL = 13, WH_MOUSE_LL = 14;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct MSG {
@@ -130,6 +147,15 @@ class Perform {
   [StructLayout(LayoutKind.Sequential)]
   private struct POINT {
     public int x, y;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  private struct MSLLHOOKSTRUCT {
+    public POINT pt;
+    public uint mouseData;
+    public uint flags;
+    public uint time;
+    public IntPtr dwExtraInfo;
   }
 
   [DllImport("user32.dll")]
