@@ -10,18 +10,16 @@ class Perform {
 
   private static bool KeyDU() {
     FREE = A.F;
-    return FX.TryEnqueue(() => {
-      IO(IT, KL);
-      FREE = A.T;
-    });
+    IO(IT, KL);
+    FREE = A.T;
+    return A.T;
   }
 
   private static bool KeyAU() {
     FREE = A.F;
-    return FX.TryEnqueue(() => {
-      IO(IT, KR);
-      FREE = A.T;
-    });
+    IO(IT, KR);
+    FREE = A.T;
+    return A.T;
   }
 
   private static bool OnU(uint i) => i switch {
@@ -50,7 +48,9 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_SYSKEYUP or WM_KEYUP:
-        OnU(key);
+        FX.TryEnqueue(() => {
+          OnU(key);
+        });
         return next;
       default:
         return next;
@@ -64,7 +64,7 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         FX.TryEnqueue(() => {
-          Wait(() => FREE, 500);
+          Till(() => FREE);
           IO(9, [KeyE.A]);
         });
         return next;
