@@ -7,9 +7,8 @@ class Perform {
   private const int ID = 119, IA = 119;
 
   private static IntPtr KeyDU(Back x) {
-    IntPtr next = Next(x);
     IO(ID, KL);
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyDD(Back x) {
@@ -17,9 +16,8 @@ class Perform {
   }
 
   private static IntPtr KeyAU(Back x) {
-    IntPtr next = Next(x);
     IO(IA, KR);
-    return next;
+    return Next(x);
   }
 
   private static IntPtr KeyAD(Back x) {
