@@ -16,10 +16,6 @@ class Perform {
     });
   }
 
-  private static bool KeyDD() {
-    return A.T;
-  }
-
   private static bool KeyAU() {
     LT = A.F;
     return worker.TryEnqueue(() => {
@@ -28,25 +24,15 @@ class Perform {
     });
   }
 
-  private static bool KeyAD() {
-    return A.T;
-  }
-
   private static bool OnU(uint i) => i switch {
     KeyX.D => KeyDU(),
     KeyX.A => KeyAU(),
     _ => A.F,
   };
 
-  private static bool OnD(uint i) => i switch {
-    KeyX.D => KeyDD(),
-    KeyX.A => KeyAD(),
-    _ => A.F,
-  };
-
   private static bool IO(int t, uint[] k) {
     I(k);
-    Wait(t);
+    Wait(() => A.F, t);
     O(k);
     return A.T;
   }
@@ -63,9 +49,6 @@ class Perform {
     if (key == KeyE.W) Exit();
 
     switch ((uint)wParam) {
-      case WM_SYSKEYDOWN or WM_KEYDOWN:
-        OnD(key);
-        return next;
       case WM_SYSKEYUP or WM_KEYUP:
         OnU(key);
         return next;
@@ -80,7 +63,10 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        SpinWait.SpinUntil(() => LT, IT);
+        Wait(() => LT, IT);
+        return Next(back);
+      case WM_RBUTTONDOWN:
+        Wait(() => LT, IT);
         return Next(back);
       default:
         return Next(back);
@@ -89,8 +75,8 @@ class Perform {
 
   private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
-  private static bool Wait(int i) {
-    SpinWait.SpinUntil(() => A.F, i);
+  private static bool Wait(Func<bool> z, int i) {
+    SpinWait.SpinUntil(z, i);
     return A.T;
   }
 
@@ -134,8 +120,8 @@ class Perform {
   private static volatile IntPtr hookX2 = IntPtr.Zero;
   private static volatile IntPtr hookX1 = IntPtr.Zero;
 
-  private const uint WM_MOUSEMOVE = 0x0200, WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202, WM_RBUTTONDOWN = 0x0204, WM_RBUTTONUP = 0x0205;
-  private const uint WM_KEYDOWN = 0x0100, WM_KEYUP = 0x0101, WM_SYSKEYDOWN = 0x0104, WM_SYSKEYUP = 0x0105;
+  private const uint WM_LBUTTONDOWN = 0x0201, WM_RBUTTONDOWN = 0x0204;
+  private const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
   private const uint WH_KEYBOARD_LL = 13, WH_MOUSE_LL = 14;
 
   [StructLayout(LayoutKind.Sequential)]
