@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 class Perform {
+  private static readonly DedicatedWorker worker = new(1024);
   private static readonly uint[] KR = { KeyA.R };
   private static readonly uint[] KL = { KeyA.L };
   private static volatile bool LT = A.T;
@@ -9,11 +10,10 @@ class Perform {
 
   private static bool KeyDU() {
     LT = A.F;
-    Task.Run (() => {
+    return worker.TryEnqueue(() => {
       IO(IT, KL);
       LT = A.T;
     });
-    return A.T;
   }
 
   private static bool KeyDD() {
@@ -22,11 +22,10 @@ class Perform {
 
   private static bool KeyAU() {
     LT = A.F;
-    Task.Run(() => {
+    return worker.TryEnqueue(() => {
       IO(IT, KR);
       LT = A.T;
     });
-    return A.T;
   }
 
   private static bool KeyAD() {
