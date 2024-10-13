@@ -68,7 +68,7 @@ class Perform {
         LMBX = A.T;
         FX.TryEnqueue(() => {
           Till(() => FREE);
-          IO(63, [KeyE.A]);
+          IO(IT, [KeyE.A]);
           _ = LMBX && I([KeyE.C, KeyE.A]);
         });
         return next;
