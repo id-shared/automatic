@@ -1,4 +1,27 @@
-﻿class DedicatedWorker {
+﻿public class WorkerPool {
+  private readonly DedicatedWorker[] _workers;
+  private int _nextWorkerIndex = 0;
+
+  public WorkerPool(int workerCount, int bufferSize) {
+    _workers = new DedicatedWorker[workerCount];
+    for (int i = 0; i < workerCount; i++) {
+      _workers[i] = new DedicatedWorker(bufferSize);
+    }
+  }
+
+  public bool TryEnqueue(Action work) {
+    int index = Interlocked.Increment(ref _nextWorkerIndex) % _workers.Length;
+    return _workers[index].TryEnqueue(work);
+  }
+
+  public void StopAll() {
+    foreach (var worker in _workers) {
+      worker.Stop();
+    }
+  }
+}
+
+class DedicatedWorker {
   private readonly LockFreeRingBuffer<Action> _workQueue;
   private readonly Thread _workerThread;
   private volatile bool _isRunning;

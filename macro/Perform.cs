@@ -5,24 +5,24 @@ class Perform {
   private static readonly DedicatedWorker FX = new(1024);
   private static readonly uint[] KR = [KeyA.R];
   private static readonly uint[] KL = [KeyA.L];
-  private static volatile bool LOCK = A.T;
+  private static bool FREE = A.T;
   private const int IT = 99;
 
   private static bool KeyDU() {
     bool back = FX.TryEnqueue(() => {
       IO(IT, KL);
-      LOCK = A.T;
+      FREE = A.T;
     });
-    LOCK = A.F;
+    FREE = A.F;
     return back;
   }
 
   private static bool KeyAU() {
     bool back = FX.TryEnqueue(() => {
       IO(IT, KR);
-      LOCK = A.T;
+      FREE = A.T;
     });
-    LOCK = A.F;
+    FREE = A.F;
     return back;
   }
 
@@ -65,7 +65,7 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_RBUTTONDOWN or WM_LBUTTONDOWN:
-        Until(() => LOCK);
+        Until(() => FREE);
         return Next(back);
       default:
         return Next(back);
