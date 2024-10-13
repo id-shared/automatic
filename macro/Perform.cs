@@ -2,27 +2,27 @@
 using System.Diagnostics;
 
 class Perform {
-  private static readonly DedicatedWorker worker = new(1024);
+  private static readonly DedicatedWorker FX = new(1024);
   private static readonly uint[] KR = [KeyA.R];
   private static readonly uint[] KL = [KeyA.L];
-  private static volatile bool LT = A.T;
+  private static volatile bool LOCK = A.T;
   private const int IT = 99;
 
   private static bool KeyDU() {
-    bool back = worker.TryEnqueue(() => {
+    bool back = FX.TryEnqueue(() => {
       IO(IT, KL);
-      LT = A.T;
+      LOCK = A.T;
     });
-    LT = A.F;
+    LOCK = A.F;
     return back;
   }
 
   private static bool KeyAU() {
-    bool back = worker.TryEnqueue(() => {
+    bool back = FX.TryEnqueue(() => {
       IO(IT, KR);
-      LT = A.T;
+      LOCK = A.T;
     });
-    LT = A.F;
+    LOCK = A.F;
     return back;
   }
 
@@ -65,18 +65,25 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_RBUTTONDOWN or WM_LBUTTONDOWN:
-        Wait(() => LT, IT);
+        Until(() => LOCK);
         return Next(back);
       default:
         return Next(back);
     }
   }
 
+  private static bool Until(Func<bool> z) {
+    SpinWait spinner = new();
+    while (!z()) {
+      spinner.SpinOnce();
+    }
+    return A.T;
+  }
+
   private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
   private static bool Wait(Func<bool> z, int i) {
-    SpinWait.SpinUntil(z, i);
-    return A.T;
+    return SpinWait.SpinUntil(z, i);
   }
 
   private static void Exit() => Environment.Exit(0);
@@ -102,14 +109,10 @@ class Perform {
     }
   }
 
-  private static bool Detach(IntPtr id) => id != IntPtr.Zero && UnhookWindowsHookEx(id);
-
   public Perform() {
     hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);
     hookX1 = SetHook(hookCallbackX1, WH_MOUSE_LL);
     Subscribe(new MSG());
-    Detach(hookX2);
-    Detach(hookX1);
   }
 
   private delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
