@@ -2,8 +2,8 @@
 using System.Diagnostics;
 
 class Perform {
-  private static readonly uint[] KR = [KeyA.R];
-  private static readonly uint[] KL = [KeyA.L];
+  private static readonly uint[] KR = { KeyA.R };
+  private static readonly uint[] KL = { KeyA.L };
   private const int ID = 119, IA = 119;
 
   private static IntPtr KeyDU(Back x) {
@@ -47,7 +47,7 @@ class Perform {
 
   private static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
 
-  public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode < 0) return Next(new Back(nCode, wParam, lParam));
 
     uint key = (uint)Marshal.ReadInt32(lParam);
@@ -62,6 +62,10 @@ class Perform {
     };
   }
 
+  public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
+    return CallNextHookEx(hookX1, nCode, wParam, lParam);
+  }
+
   private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
   private static bool Wait(int i) {
@@ -72,7 +76,7 @@ class Perform {
   private static void Exit() => Environment.Exit(0);
 
   private struct Back(int code, IntPtr w, IntPtr l) {
-    public IntPtr wParam = w, lParam = l, iParam = Hook;
+    public IntPtr wParam = w, lParam = l, iParam = hookX2;
     public int nCode = code;
   }
 
@@ -85,26 +89,32 @@ class Perform {
       SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
-  private static void SubscribeKey(MSG msg) {
+  private static void Subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
   }
 
-  private static bool Detach(nint id) => id != IntPtr.Zero && UnhookWindowsHookEx(id);
+  private static bool Detach(IntPtr id) => id != IntPtr.Zero && UnhookWindowsHookEx(id);
 
   public Perform() {
-    Hook = SetHook(HookCallBack, WH_KEYBOARD_LL);
-    SubscribeKey(new MSG());
-    Detach(Hook);
+    hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);
+    hookX1 = SetHook(hookCallbackX1, WH_MOUSE_LL);
+    Subscribe(new MSG());
+    Detach(hookX2);
+    Detach(hookX1);
   }
 
-  private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-  private static readonly LowLevelKeyboardProc HookCallBack = HookCallback;
-  private static volatile IntPtr Hook = IntPtr.Zero;
+  private delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
+  private static readonly LowLevelProc hookCallBackX2 = HookCallbackX2;
+  private static readonly LowLevelProc hookCallbackX1 = HookCallbackX1;
+
+  private static volatile IntPtr hookX2 = IntPtr.Zero;
+  private static volatile IntPtr hookX1 = IntPtr.Zero;
 
   private const uint WH_KEYBOARD_LL = 13;
+  private const uint WH_MOUSE_LL = 14;
   private const uint WM_KEYDOWN = 0x0100, WM_SYSKEYDOWN = 0x0104;
   private const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
 
