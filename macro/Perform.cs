@@ -5,7 +5,9 @@ class Perform {
   private static readonly WorkerPool FX = new(16, 1024);
   private static readonly uint[] KR = [KeyA.R];
   private static readonly uint[] KL = [KeyA.L];
-  private static bool FREE = A.T;
+  private static volatile bool RMBX = A.F;
+  private static volatile bool LMBX = A.F;
+  private static volatile bool FREE = A.T;
   private const int IT = 99;
 
   private static bool KeyDU() {
@@ -63,10 +65,17 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
+        LMBX = A.T;
         FX.TryEnqueue(() => {
           Till(() => FREE);
-          IO(9, [KeyE.A]);
-          I([KeyE.A]);
+          IO(99, [KeyE.A]);
+          _ = LMBX && I([KeyE.A]);
+        });
+        return next;
+      case WM_LBUTTONUP:
+        LMBX = A.F;
+        FX.TryEnqueue(() => {
+          _ = LMBX || O([KeyE.A]);
         });
         return next;
       default:
@@ -122,7 +131,7 @@ class Perform {
   private static volatile IntPtr hookX2 = IntPtr.Zero;
   private static volatile IntPtr hookX1 = IntPtr.Zero;
 
-  private const uint WM_LBUTTONDOWN = 0x0201, WM_RBUTTONDOWN = 0x0204;
+  private const uint WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202, WM_RBUTTONDOWN = 0x0204, WM_RBUTTONUP = 0x0204;
   private const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
   private const uint WH_KEYBOARD_LL = 13, WH_MOUSE_LL = 14;
 
