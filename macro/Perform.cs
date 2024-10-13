@@ -7,40 +7,42 @@ class Perform {
   private static volatile bool LT = A.T;
   private const int IT = 119;
 
-  private static IntPtr KeyDU(Back x) {
-    IntPtr next = Next(x);
+  private static bool KeyDU() {
     LT = A.F;
-    IO(IT, KL);
-    LT = A.T;
-    return next;
+    Task.Run (() => {
+      IO(IT, KL);
+      LT = A.T;
+    });
+    return A.T;
   }
 
-  private static IntPtr KeyDD(Back x) {
-    return Next(x);
+  private static bool KeyDD() {
+    return A.T;
   }
 
-  private static IntPtr KeyAU(Back x) {
-    IntPtr next = Next(x);
+  private static bool KeyAU() {
     LT = A.F;
-    IO(IT, KR);
-    LT = A.T;
-    return next;
+    Task.Run(() => {
+      IO(IT, KR);
+      LT = A.T;
+    });
+    return A.T;
   }
 
-  private static IntPtr KeyAD(Back x) {
-    return Next(x);
+  private static bool KeyAD() {
+    return A.T;
   }
 
-  private static IntPtr OnU(Back x, uint i) => i switch {
-    KeyX.D => KeyDU(x),
-    KeyX.A => KeyAU(x),
-    _ => Next(x),
+  private static bool OnU(uint i) => i switch {
+    KeyX.D => KeyDU(),
+    KeyX.A => KeyAU(),
+    _ => A.F,
   };
 
-  private static IntPtr OnD(Back x, uint i) => i switch {
-    KeyX.D => KeyDD(x),
-    KeyX.A => KeyAD(x),
-    _ => Next(x),
+  private static bool OnD(uint i) => i switch {
+    KeyX.D => KeyDD(),
+    KeyX.A => KeyAD(),
+    _ => A.F,
   };
 
   private static bool IO(int t, uint[] k) {
@@ -55,19 +57,21 @@ class Perform {
   private static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
-    Back back = new(nCode, wParam, lParam, hookX2);
-    if (nCode < 0) return Next(back);
+    IntPtr next = Next(new Back(nCode, wParam, lParam, hookX2));
+    if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
     if (key == KeyE.W) Exit();
 
     switch ((uint)wParam) {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
-        return OnD(back, key);
+        OnD(key);
+        return next;
       case WM_SYSKEYUP or WM_KEYUP:
-        return OnU(back, key);
+        OnU(key);
+        return next;
       default:
-        return Next(back);
+        return next;
     }
   }
 
