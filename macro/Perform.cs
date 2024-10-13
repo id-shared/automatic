@@ -7,8 +7,9 @@ class Perform {
   private const int ID = 119, IA = 119;
 
   private static IntPtr KeyDU(Back x) {
+    IntPtr next = Next(x);
     IO(ID, KL);
-    return Next(x);
+    return next;
   }
 
   private static IntPtr KeyDD(Back x) {
@@ -16,8 +17,9 @@ class Perform {
   }
 
   private static IntPtr KeyAU(Back x) {
+    IntPtr next = Next(x);
     IO(IA, KR);
-    return Next(x);
+    return next;
   }
 
   private static IntPtr KeyAD(Back x) {
@@ -44,14 +46,8 @@ class Perform {
   }
 
   private static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
+
   private static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
-
-  private static bool Wait(int i) {
-    SpinWait.SpinUntil(() => false, i);
-    return A.T;
-  }
-
-  private static void Exit() => Environment.Exit(0);
 
   public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
     if (nCode < 0) return Next(new Back(nCode, wParam, lParam));
@@ -70,14 +66,16 @@ class Perform {
 
   private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
-  private struct Back {
-    public IntPtr wParam, lParam, iParam;
-    public int nCode;
+  private static bool Wait(int i) {
+    SpinWait.SpinUntil(() => A.F, i);
+    return A.T;
+  }
 
-    public Back(int code, IntPtr w, IntPtr l) {
-      nCode = code; wParam = w; lParam = l;
-      iParam = Hook;
-    }
+  private static void Exit() => Environment.Exit(0);
+
+  private struct Back(int code, IntPtr w, IntPtr l) {
+    public IntPtr wParam = w, lParam = l, iParam = Hook;
+    public int nCode = code;
   }
 
   private static IntPtr SetHook(Delegate proc, uint hookType) {
