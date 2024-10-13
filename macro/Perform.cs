@@ -9,21 +9,19 @@ class Perform {
   private const int IT = 99;
 
   private static bool KeyDU() {
-    bool back = FX.TryEnqueue(() => {
+    FREE = A.F;
+    return FX.TryEnqueue(() => {
       IO(IT, KL);
       FREE = A.T;
     });
-    FREE = A.F;
-    return back;
   }
 
   private static bool KeyAU() {
-    bool back = FX.TryEnqueue(() => {
+    FREE = A.F;
+    return FX.TryEnqueue(() => {
       IO(IT, KR);
       FREE = A.T;
     });
-    FREE = A.F;
-    return back;
   }
 
   private static bool OnU(uint i) => i switch {
@@ -65,25 +63,25 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_RBUTTONDOWN or WM_LBUTTONDOWN:
-        Until(() => FREE);
+        Wait(() => FREE, IT);
         return Next(back);
       default:
         return Next(back);
     }
   }
 
-  private static bool Until(Func<bool> z) {
+  private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
+
+  private static bool Wait(Func<bool> z, int i) {
+    return SpinWait.SpinUntil(z, i);
+  }
+
+  private static bool Till(Func<bool> z) {
     SpinWait spinner = new();
     while (!z()) {
       spinner.SpinOnce();
     }
     return A.T;
-  }
-
-  private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
-
-  private static bool Wait(Func<bool> z, int i) {
-    return SpinWait.SpinUntil(z, i);
   }
 
   private static void Exit() => Environment.Exit(0);
