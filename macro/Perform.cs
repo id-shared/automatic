@@ -69,13 +69,13 @@ class Perform {
         FX.TryEnqueue(() => {
           Till(() => FREE);
           IO(63, [KeyE.A]);
-          _ = LMBX && I([KeyM.R, KeyE.C, KeyE.A]);
+          _ = LMBX && I([KeyE.C, KeyE.A]);
         });
         return next;
       case WM_LBUTTONUP:
         LMBX = A.F;
         FX.TryEnqueue(() => {
-          _ = LMBX || O([KeyM.R, KeyE.C, KeyE.A]);
+          _ = LMBX || O([KeyE.C, KeyE.A]);
         });
         return next;
       default:
