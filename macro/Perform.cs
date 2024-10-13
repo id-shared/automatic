@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 class Perform {
-  private static readonly DedicatedWorker FX = new(1024);
+  private static readonly WorkerPool FX = new(16, 1024);
   private static readonly uint[] KR = [KeyA.R];
   private static readonly uint[] KL = [KeyA.L];
   private static bool FREE = A.T;
@@ -42,7 +42,7 @@ class Perform {
   private static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
-    IntPtr next = Next(new Back(nCode, wParam, lParam, hookX2));
+    IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
@@ -58,19 +58,20 @@ class Perform {
   }
 
   public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
-    Back back = new(nCode, wParam, lParam, hookX1);
-    if (nCode < 0) return Next(back);
+    IntPtr next = CallNextHookEx(hookX1, nCode, wParam, lParam);
+    if (nCode < 0) return next;
 
     switch ((uint)wParam) {
-      case WM_RBUTTONDOWN or WM_LBUTTONDOWN:
-        Wait(() => FREE, IT);
-        return Next(back);
+      case WM_LBUTTONDOWN:
+        FX.TryEnqueue(() => {
+          Wait(() => FREE, 500);
+          IO(9, [KeyE.A]);
+        });
+        return next;
       default:
-        return Next(back);
+        return next;
     }
   }
-
-  private static IntPtr Next(Back x) => CallNextHookEx(x.iParam, x.nCode, x.wParam, x.lParam);
 
   private static bool Wait(Func<bool> z, int i) {
     return SpinWait.SpinUntil(z, i);

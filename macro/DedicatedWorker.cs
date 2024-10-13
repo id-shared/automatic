@@ -1,4 +1,4 @@
-﻿public class WorkerPool {
+﻿class WorkerPool {
   private readonly DedicatedWorker[] _workers;
   private int _nextWorkerIndex = 0;
 
