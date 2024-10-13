@@ -66,6 +66,7 @@ class Perform {
         FX.TryEnqueue(() => {
           Till(() => FREE);
           IO(9, [KeyE.A]);
+          I([KeyE.A]);
         });
         return next;
       default:
