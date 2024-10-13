@@ -11,8 +11,7 @@
   }
 
   public bool TryEnqueue(Action work) {
-    _workQueue.Enqueue(work);
-    return _isRunning;
+    return _workQueue.TryEnqueue(work);
   }
 
   private void WorkerLoop() {
@@ -45,7 +44,7 @@ public class LockFreeRingBuffer<T> {
     _tail = 0;
   }
 
-  public bool Enqueue(T item) {
+  public bool TryEnqueue(T item) {
     int head = _head;
     int nextHead = (head + 1) % _capacity;
 
