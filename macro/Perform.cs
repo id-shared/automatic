@@ -9,19 +9,21 @@ class Perform {
   private const int IT = 119;
 
   private static bool KeyDU() {
-    LT = A.F;
-    return worker.TryEnqueue(() => {
+    bool back = worker.TryEnqueue(() => {
       IO(IT, KL);
       LT = A.T;
     });
+    LT = A.F;
+    return back;
   }
 
   private static bool KeyAU() {
-    LT = A.F;
-    return worker.TryEnqueue(() => {
+    bool back = worker.TryEnqueue(() => {
       IO(IT, KR);
       LT = A.T;
     });
+    LT = A.F;
+    return back;
   }
 
   private static bool OnU(uint i) => i switch {
@@ -62,10 +64,7 @@ class Perform {
     if (nCode < 0) return Next(back);
 
     switch ((uint)wParam) {
-      case WM_LBUTTONDOWN:
-        Wait(() => LT, IT);
-        return Next(back);
-      case WM_RBUTTONDOWN:
+      case WM_RBUTTONDOWN or WM_LBUTTONDOWN:
         Wait(() => LT, IT);
         return Next(back);
       default:
