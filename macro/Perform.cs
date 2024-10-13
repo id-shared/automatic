@@ -3,10 +3,10 @@ using System.Diagnostics;
 
 class Perform {
   private static readonly DedicatedWorker worker = new(1024);
-  private static readonly uint[] KR = { KeyA.R };
-  private static readonly uint[] KL = { KeyA.L };
+  private static readonly uint[] KR = [KeyA.R];
+  private static readonly uint[] KL = [KeyA.L];
   private static volatile bool LT = A.T;
-  private const int IT = 119;
+  private const int IT = 99;
 
   private static bool KeyDU() {
     bool back = worker.TryEnqueue(() => {
