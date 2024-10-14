@@ -3,13 +3,14 @@ using System.Diagnostics;
 
 class Perform {
   private static readonly WorkerPool FX = new(1, 1024);
-  private static readonly uint[] ML = [KeyE.C, KeyE.A];
+  private static readonly uint[] ML = [KeyE.A];
   private static readonly uint[] AR = [KeyA.R];
   private static readonly uint[] AL = [KeyA.L];
   private static volatile bool LMBX = A.F;
   private static volatile bool FREE = A.T;
   private const int IT = 99;
-  
+  private const int IN = 1;
+
   private static bool KeyDU() {
     FREE = A.F;
     return FX.TryEnqueue(() => {
@@ -32,9 +33,9 @@ class Perform {
     _ => A.F,
   };
 
-  private static bool IO2(int t1, int t, uint[] k) {
+  private static bool XO(int t, uint[] k) {
     I(k);
-    Wait(() => A.F, t1);
+    Wait(() => A.F, t);
     O(k);
     Wait(() => A.F, t);
     return A.T;
@@ -76,7 +77,7 @@ class Perform {
         LMBX = A.T;
         FX.TryEnqueue(() => {
           Till(_ => FREE);
-          Till(_ => IO2(18, 9, ML) && !LMBX);
+          Till(_ => XO(IN, ML) && !LMBX);
         });
         return next;
       case WM_LBUTTONUP:
