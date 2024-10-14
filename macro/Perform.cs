@@ -9,7 +9,7 @@ class Perform {
   private static volatile bool LMBX = A.F;
   private static volatile bool FREE = A.T;
   private const int IT = 99;
-  private const int IN = 49;
+  private const int IN = 54;
 
   private static bool KeyDU() {
     FREE = A.F;
