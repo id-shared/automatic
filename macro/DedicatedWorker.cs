@@ -13,12 +13,6 @@
     int index = Interlocked.Increment(ref _nextWorkerIndex) % _workers.Length;
     return _workers[index].TryEnqueue(work);
   }
-
-  public void StopAll() {
-    foreach (var worker in _workers) {
-      worker.Stop();
-    }
-  }
 }
 
 class DedicatedWorker {
@@ -28,7 +22,9 @@ class DedicatedWorker {
 
   public DedicatedWorker(int bufferSize) {
     _workQueue = new LockFreeRingBuffer<Action>(bufferSize);
-    _workerThread = new Thread(WorkerLoop) { IsBackground = true };
+    _workerThread = new Thread(WorkerLoop) {
+      IsBackground = true
+    };
     _isRunning = true;
     _workerThread.Start();
   }
@@ -37,24 +33,19 @@ class DedicatedWorker {
     return _workQueue.TryEnqueue(work);
   }
 
-  private void WorkerLoop() {
-    SpinWait spinWait = new SpinWait();
+  public void WorkerLoop() {
+    SpinWait spinner = new();
     while (_isRunning) {
       if (_workQueue.TryDequeue(out var workItem)) {
         workItem();
       } else {
-        spinWait.SpinOnce();
+        spinner.SpinOnce();
       }
     }
   }
-
-  public void Stop() {
-    _isRunning = false;
-    _workerThread.Join();
-  }
 }
 
-public class LockFreeRingBuffer<T> {
+class LockFreeRingBuffer<T> {
   private readonly T[] _buffer;
   private readonly int _capacity;
   private volatile int _head;

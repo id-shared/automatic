@@ -2,26 +2,30 @@
 using System.Diagnostics;
 
 class Perform {
-  private static readonly WorkerPool FX = new(16, 65536);
+  private static readonly WorkerPool FX = new(16, 256);
   private static readonly uint[] EA = [KeyE.A];
   private static readonly uint[] AR = [KeyA.R];
   private static readonly uint[] AL = [KeyA.L];
   private static volatile bool LMBX = A.F;
   private static volatile bool FREE = A.T;
-  private const int IT = 99;
-  private const int IN = 31;
+  private const int IT = 81;
+  private const int IN = 81;
 
   private static bool KeyDU() {
-    FREE = A.F;
-    IO(IT, AL);
-    FREE = A.T;
+    FX.TryEnqueue(() => {
+      FREE = A.F;
+      IO(IT, AL);
+      FREE = A.T;
+    });
     return A.T;
   }
 
   private static bool KeyAU() {
-    FREE = A.F;
-    IO(IT, AR);
-    FREE = A.T;
+    FX.TryEnqueue(() => {
+      FREE = A.F;
+      IO(IT, AR);
+      FREE = A.T;
+    });
     return A.T;
   }
 
@@ -51,9 +55,7 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_SYSKEYUP or WM_KEYUP:
-        FX.TryEnqueue(() => {
-          OnU(key);
-        });
+        OnU(key);
         return next;
       default:
         return next;
@@ -66,8 +68,8 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        LMBX = A.T;
         FX.TryEnqueue(() => {
+          LMBX = A.T;
           Till(() => FREE);
           Till(() => IO(IN, EA) && !LMBX);
         });
