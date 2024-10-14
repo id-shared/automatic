@@ -8,13 +8,12 @@ class Perform {
   private static readonly uint[] AL = [KeyA.L];
   private static volatile bool FLMB = A.T;
   private static volatile bool FREE = A.T;
-  private const int IT = 99;
-  private const int IN = 16;
+  private const int TL = 99;
 
   private static bool KeyDU() {
     FREE = A.F;
     return FX.TryEnqueue(() => {
-      IO(IT, AL);
+      IO(TL, AL);
       FREE = A.T;
     });
   }
@@ -22,7 +21,7 @@ class Perform {
   private static bool KeyAU() {
     FREE = A.F;
     return FX.TryEnqueue(() => {
-      IO(IT, AR);
+      IO(TL, AR);
       FREE = A.T;
     });
   }
