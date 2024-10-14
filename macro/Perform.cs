@@ -9,14 +9,13 @@ class Perform {
   private static volatile bool LMBX = A.F;
   private static volatile bool FREE = A.T;
   private const int IT = 99;
-  private const int IN = 99;
+  private const int IN = 49;
 
   private static bool KeyDU() {
     FREE = A.F;
     return FX.TryEnqueue(() => {
       IO(IT, AL);
       FREE = A.T;
-      IO(IN, EA);
     });
   }
 
