@@ -32,11 +32,10 @@ class Perform {
     _ => A.F,
   };
 
-  private static bool XO(int t1, int t, uint[] k) {
+  private static bool XO(int t, uint[] k) {
     I(k);
-    Wait(() => A.F, t);
     O(k);
-    Wait(() => A.F, t1);
+    Wait(() => A.F, t);
     return A.T;
   }
 
@@ -76,7 +75,7 @@ class Perform {
         FLMB = A.F;
         FX.TryEnqueue(() => {
           Till(_ => FREE);
-          Till(_ => XO(15, 1, ML) && FLMB);
+          Till(_ => XO(9, ML) && FLMB);
         });
         return next;
       case WM_LBUTTONUP:
