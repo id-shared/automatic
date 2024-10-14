@@ -34,14 +34,14 @@ class Perform {
 
   private static bool XO(int t, uint[] k) {
     I(k);
+    Wait(9);
     O(k);
-    Wait(() => A.F, t);
     return A.T;
   }
 
   private static bool IO(int t, uint[] k) {
     I(k);
-    Wait(() => A.F, t);
+    Wait(t);
     O(k);
     return A.T;
   }
@@ -72,6 +72,10 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
+        var stopwatch = Stopwatch.StartNew();
+        Thread.Sleep(1);
+        stopwatch.Stop();
+        Console.WriteLine($"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds} ms");
         FLMB = A.F;
         FX.TryEnqueue(() => {
           Till(_ => FREE);
@@ -86,8 +90,9 @@ class Perform {
     }
   }
 
-  private static bool Wait(Func<bool> z, int i) {
-    return SpinWait.SpinUntil(z, i);
+  private static bool Wait(int i) {
+    Thread.Sleep(i);
+    return A.T;
   }
 
   private static bool Till(Func<int, bool> z) {

@@ -2,19 +2,19 @@
 
 class Keyboard {
   public static bool Input(uint k1, bool @is) {
-    I[0].type = INPUT_KEYBOARD;
-    I[0].mkhi.ki.wVk = (ushort)k1;
-    I[0].mkhi.ki.wScan = 0;
-    I[0].mkhi.ki.dwFlags = @is ? 0 : KEYEVENTF_KEYUP;
-    I[0].mkhi.ki.time = 0;
-    I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
-    SendInput((uint)I.Length, I, I_size);
+    INPUT[] inputs = new INPUT[1];
+    inputs[0].type = INPUT_KEYBOARD;
+    inputs[0].mkhi.ki.wVk = (ushort)k1;
+    inputs[0].mkhi.ki.wScan = 0;
+    inputs[0].mkhi.ki.dwFlags = @is ? 0 : KEYEVENTF_KEYUP;
+    inputs[0].mkhi.ki.time = 0;
+    inputs[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
+
+    SendInput((uint)inputs.Length, inputs, I_size);
     return A.T;
   }
 
-  private static readonly int I_size = Marshal.SizeOf(typeof(INPUT));
-  private static readonly INPUT[] I = new INPUT[1];
-
+  private static readonly int I_size = Marshal.SizeOf<INPUT>();
   private const uint INPUT_KEYBOARD = 1;
   private const uint KEYEVENTF_KEYUP = 0x0002;
 
@@ -26,12 +26,9 @@ class Keyboard {
 
   [StructLayout(LayoutKind.Explicit)]
   private struct MOUSEKEYBDHARDWAREINPUT {
-    [FieldOffset(0)]
-    public MOUSEINPUT mi;
-    [FieldOffset(0)]
-    public KEYBDINPUT ki;
-    [FieldOffset(0)]
-    public HARDWAREINPUT hi;
+    [FieldOffset(0)] public MOUSEINPUT mi;
+    [FieldOffset(0)] public KEYBDINPUT ki;
+    [FieldOffset(0)] public HARDWAREINPUT hi;
   }
 
   [StructLayout(LayoutKind.Sequential)]
