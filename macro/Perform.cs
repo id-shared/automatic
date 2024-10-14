@@ -8,25 +8,24 @@ class Perform {
   private static readonly uint[] AL = [KeyA.L];
   private static volatile bool LMBX = A.F;
   private static volatile bool FREE = A.T;
-  private const int IT = 81;
-  private const int IN = 81;
+  private const int IT = 99;
+  private const int IN = 99;
 
   private static bool KeyDU() {
-    FX.TryEnqueue(() => {
-      FREE = A.F;
+    FREE = A.F;
+    return FX.TryEnqueue(() => {
       IO(IT, AL);
       FREE = A.T;
+      IO(IN, EA);
     });
-    return A.T;
   }
 
   private static bool KeyAU() {
-    FX.TryEnqueue(() => {
-      FREE = A.F;
+    FREE = A.F;
+    return FX.TryEnqueue(() => {
       IO(IT, AR);
       FREE = A.T;
     });
-    return A.T;
   }
 
   private static bool OnU(uint i) => i switch {
@@ -68,8 +67,8 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
+        LMBX = A.T;
         FX.TryEnqueue(() => {
-          LMBX = A.T;
           Till(() => FREE);
           Till(() => IO(IN, EA) && !LMBX);
         });
