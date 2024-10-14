@@ -2,14 +2,14 @@
 using System.Diagnostics;
 
 class Perform {
-  private static readonly WorkerPool FX = new(16, 256);
+  private static readonly WorkerPool FX = new(1, 1024);
   private static readonly uint[] EA = [KeyE.A];
   private static readonly uint[] AR = [KeyA.R];
   private static readonly uint[] AL = [KeyA.L];
   private static volatile bool LMBX = A.F;
   private static volatile bool FREE = A.T;
   private const int IT = 99;
-  private const int IN = 54;
+  private const int IN = 81;
 
   private static bool KeyDU() {
     FREE = A.F;
@@ -68,8 +68,8 @@ class Perform {
       case WM_LBUTTONDOWN:
         LMBX = A.T;
         FX.TryEnqueue(() => {
-          Till(() => FREE);
-          Till(() => IO(IN, EA) && !LMBX);
+          Till(_ => FREE);
+          Till(_ => IO(Math.Max(9, IN - (9 * _)), EA) && !LMBX);
         });
         return next;
       case WM_LBUTTONUP:
@@ -84,9 +84,9 @@ class Perform {
     return SpinWait.SpinUntil(z, i);
   }
 
-  private static bool Till(Func<bool> z) {
+  private static bool Till(Func<int, bool> z) {
     SpinWait spinner = new();
-    while (!z()) {
+    while (!z(spinner.Count + 1)) {
       spinner.SpinOnce();
     }
     return A.T;
