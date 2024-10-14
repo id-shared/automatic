@@ -9,9 +9,7 @@ class Keyboard {
     inputs[0].mkhi.ki.dwFlags = @is ? 0 : KEYEVENTF_KEYUP;
     inputs[0].mkhi.ki.time = 0;
     inputs[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
-
-    SendInput((uint)inputs.Length, inputs, I_size);
-    return A.T;
+    return SendInput((uint)inputs.Length, inputs, I_size) != 0;
   }
 
   private static readonly int I_size = Marshal.SizeOf<INPUT>();

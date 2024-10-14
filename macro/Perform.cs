@@ -9,6 +9,7 @@ class Perform {
   private static volatile bool FLMB = A.T;
   private static volatile bool FREE = A.T;
   private const int TL = 99;
+  private const int IL = 18;
 
   private static bool KeyDU() {
     FREE = A.F;
@@ -34,16 +35,16 @@ class Perform {
 
   private static bool XO(int t, uint[] k) {
     I(k);
-    Wait(9);
     O(k);
-    return A.T;
+    Wait(t);
+    return A.F;
   }
 
   private static bool IO(int t, uint[] k) {
     I(k);
     Wait(t);
     O(k);
-    return A.T;
+    return A.F;
   }
 
   private static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
@@ -72,14 +73,10 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        var stopwatch = Stopwatch.StartNew();
-        Thread.Sleep(1);
-        stopwatch.Stop();
-        Console.WriteLine($"Elapsed time: {stopwatch.Elapsed.TotalMilliseconds} ms");
         FLMB = A.F;
         FX.TryEnqueue(() => {
           Till(_ => FREE);
-          Till(_ => XO(9, ML) && FLMB);
+          Till(_ => !FLMB && XO(IL, ML));
         });
         return next;
       case WM_LBUTTONUP:
