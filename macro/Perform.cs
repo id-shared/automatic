@@ -3,8 +3,7 @@ using System.Diagnostics;
 
 class Perform {
   private static readonly WorkerPool FX = new(1, 1024);
-  private static readonly uint[] EC = [KeyE.C];
-  private static readonly uint[] EA = [KeyE.A];
+  private static readonly uint[] ML = [KeyE.C, KeyE.A];
   private static readonly uint[] AR = [KeyA.R];
   private static readonly uint[] AL = [KeyA.L];
   private static volatile bool LMBX = A.F;
@@ -33,13 +32,11 @@ class Perform {
     _ => A.F,
   };
 
-  private static bool IO2(int t1, int t, uint[] k1, uint[] k) {
-    I(k1);
+  private static bool IO2(int t1, int t, uint[] k) {
     I(k);
     Wait(() => A.F, t1);
-    O(k1);
-    Wait(() => A.F, t);
     O(k);
+    Wait(() => A.F, t);
     return A.T;
   }
 
@@ -79,7 +76,7 @@ class Perform {
         LMBX = A.T;
         FX.TryEnqueue(() => {
           Till(_ => FREE);
-          Till(_ => IO2(36, 9, EC, EA) && !LMBX);
+          Till(_ => IO2(18, 9, ML) && !LMBX);
         });
         return next;
       case WM_LBUTTONUP:
