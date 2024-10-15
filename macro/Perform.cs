@@ -6,10 +6,10 @@ class Perform {
   public static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
+  public static readonly double TL = 99.0;
+  public static readonly double IL = 19.0;
   public static volatile bool FLMB = A.T;
   public static volatile bool FREE = A.T;
-  public const double TL = 99.0;
-  public const double IL = 19.0;
 
   public static bool KeyDU() {
     FX.TryEnqueue(() => {
