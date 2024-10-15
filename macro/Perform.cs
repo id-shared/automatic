@@ -2,12 +2,12 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly WorkerPool FX = new(16, 16);
-  public static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
+  public static readonly WorkerPool FX = new(16, 1024);
+  public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.0;
-  public static readonly double IL = 19.0;
+  public static readonly double IL = 99.0;
   public static volatile bool FLMB = A.T;
   public static volatile bool FREE = A.T;
 
@@ -74,9 +74,9 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         FLMB = A.F;
-        FX.TryEnqueue(() => {
+        Task.Run(() => {
           Till(_ => FREE);
-          Till(_ => !FLMB && XO(IL, ML));
+          Till(_ => !FLMB && IO(IL, ML));
         });
         return next;
       case WM_LBUTTONUP:
