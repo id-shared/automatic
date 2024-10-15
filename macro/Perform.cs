@@ -7,9 +7,9 @@ class Perform {
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
+  public static readonly double XL = 199.9999;
   public static readonly double TL = 99.99999;
-  public static readonly double IL = 19.99999;
-  public static bool LMBX = A.F;
+  public static readonly double IL = 24.99999;
 
   public static bool KeyDU() {
     return QX2.TryEnqueue(() => {
@@ -47,6 +47,8 @@ class Perform {
 
   public static bool I(uint[] k) => Keyboard.Input(k, A.T);
 
+  public static bool H(uint[] k) => k.All(Keyboard.IsHeld);
+
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
     if (nCode < 0) return next;
@@ -69,13 +71,11 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        LMBX = A.T;
         QX2.TryEnqueue(() => {
-          Till(_ => XO(IL, ML) && LMBX);
+          Till(_ => XO(IL, ML) && (H([KeyM.L]) || (Time.IO(XL) && H([KeyM.L]))));
         });
         return next;
       case WM_LBUTTONUP:
-        LMBX = A.F;
         return next;
       default:
         return next;

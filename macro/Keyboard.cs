@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 class Keyboard {
   public static bool Input(uint[] keys, bool press) {
@@ -12,6 +13,11 @@ class Keyboard {
       inputs[i].mkhi.ki.dwExtraInfo = IntPtr.Zero;
     }
     return SendInput((uint)inputs.Length, inputs, I_SIZE) != 0;
+  }
+
+  public static bool IsHeld(uint virtualKey) {
+    short state = GetKeyState((int)virtualKey);
+    return (state & 0x8000) != 0;
   }
 
   public static readonly uint E_KEYU = 0x0002;
@@ -60,4 +66,7 @@ class Keyboard {
 
   [DllImport("user32.dll")]
   private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+
+  [DllImport("user32.dll")]
+  private static extern short GetKeyState(int nVirtKey);
 }
