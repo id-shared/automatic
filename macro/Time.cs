@@ -2,7 +2,15 @@
 using System.Runtime.InteropServices;
 
 class Time {
-  public static bool Wait(double ms) {
+  public static TimeSpan Took(Action action) {
+    Stopwatch stopwatch = Stopwatch.StartNew();
+    action.Invoke();
+    stopwatch.Stop();
+    Console.WriteLine($"Action executed in: {stopwatch.Elapsed.TotalMilliseconds} ms");
+    return stopwatch.Elapsed;
+  }
+
+  public static bool Ran(double ms) {
     QueryPerformanceFrequency(out long frequency);
     QueryPerformanceCounter(out long start);
 
@@ -14,14 +22,6 @@ class Time {
     } while (current - start < ticksToWait);
 
     return A.T;
-  }
-
-  public static TimeSpan Took(Action action) {
-    Stopwatch stopwatch = Stopwatch.StartNew();
-    action.Invoke();
-    stopwatch.Stop();
-    Console.WriteLine($"Action executed in: {stopwatch.Elapsed.TotalMilliseconds} ms");
-    return stopwatch.Elapsed;
   }
 
   [DllImport("kernel32.dll")]

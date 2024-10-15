@@ -8,23 +8,24 @@ class Perform {
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.0;
   public static readonly double IL = 81.0;
-  public static volatile bool HELD = A.F;
-  public static volatile bool FREE = A.T;
+  public static volatile bool PLMB = A.F;
+  public static volatile bool HLMB = A.F;
+  public static volatile bool FLMB = A.F;
 
   public static bool KeyDU() {
-    FREE = A.F;
+    FLMB = A.T;
     Task.Run(() => {
       IO(TL, AL);
-      FREE = A.T;
+      FLMB = A.F;
     });
     return A.T;
   }
 
   public static bool KeyAU() {
-    FREE = A.F;
+    FLMB = A.T;
     Task.Run(() => {
       IO(TL, AR);
-      FREE = A.T;
+      FLMB = A.F;
     });
     return A.T;
   }
@@ -37,15 +38,15 @@ class Perform {
 
   public static bool XO(double t, uint[] k) {
     I(k);
-    Time.Wait(1);
+    Time.Ran(1);
     O(k);
-    Time.Wait(9);
+    Time.Ran(9);
     return A.T;
   }
 
   public static bool IO(double t, uint[] k) {
     I(k);
-    Time.Wait(t);
+    Time.Ran(t);
     O(k);
     return A.T;
   }
@@ -76,14 +77,19 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        HELD = A.T;
+        PLMB = A.T;
+        HLMB = A.T;
         Task.Run(() => {
-          //Till(_ => FREE);
-          Till(_ => XO(IL, ML) && HELD);
+          Till(_ => FLMB);
+          Till(_ => XO(IL, ML) && HLMB);
         });
         return next;
       case WM_LBUTTONUP:
-        HELD = A.F;
+        PLMB = A.F;
+        Task.Run(() => {
+          Time.Ran(9);
+          HLMB = PLMB;
+        });
         return next;
       default:
         return next;
@@ -92,7 +98,7 @@ class Perform {
 
   public static bool Till(Func<int, bool> z) {
     while (z(1)) {
-      Time.Wait(1);
+      Time.Ran(1);
     }
     return A.T;
   }
