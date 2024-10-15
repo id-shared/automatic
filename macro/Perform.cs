@@ -19,22 +19,16 @@ class Perform {
 
   static bool KeyDU() {
     FREE = A.F;
-    return FX.TryEnqueue(() => {
-      Console.WriteLine("a");
-      IO(TL, AL);
-      FREE = A.T;
-      Console.WriteLine("b");
-      IO(99.0, [KeyE.A]);
-      Console.WriteLine("c");
-    });
+    IO(TL, AL);
+    FREE = A.T;
+    return A.T;
   }
 
   static bool KeyAU() {
     FREE = A.F;
-    return FX.TryEnqueue(() => {
-      IO(TL, AR);
-      FREE = A.T;
-    });
+    IO(TL, AR);
+    FREE = A.T;
+    return A.T;
   }
 
   static bool OnU(uint i) => i switch {

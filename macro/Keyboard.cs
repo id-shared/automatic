@@ -2,21 +2,15 @@
 
 class Keyboard {
   public static bool Input(uint k1, bool @is) {
-    I[0].type = INPUT_KEYBOARD;
+    INPUT[] I = new INPUT[1];
+    I[0].type = 1;
     I[0].mkhi.ki.wVk = (ushort)k1;
     I[0].mkhi.ki.wScan = 0;
-    I[0].mkhi.ki.dwFlags = @is ? 0 : KEYEVENTF_KEYUP;
+    I[0].mkhi.ki.dwFlags = @is ? 0 : (uint)2;
     I[0].mkhi.ki.time = 0;
     I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
-    SendInput((uint)I.Length, I, I_size);
-    return A.T;
+    return SendInput((uint)I.Length, I, Marshal.SizeOf<INPUT>()) != 0;
   }
-
-  private static readonly int I_size = Marshal.SizeOf(typeof(INPUT));
-  private static readonly INPUT[] I = new INPUT[1];
-
-  private const uint INPUT_KEYBOARD = 1;
-  private const uint KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
   private struct INPUT {
