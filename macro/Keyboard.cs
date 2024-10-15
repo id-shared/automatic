@@ -1,25 +1,30 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  public static bool Input(uint k1, bool @is) {
+  public static bool Input(uint k, bool a) {
     INPUT[] I = new INPUT[1];
-    I[0].type = 1;
-    I[0].mkhi.ki.wVk = (ushort)k1;
+    I[0].type = I_TYPE;
+    I[0].mkhi.ki.wVk = (ushort)k;
     I[0].mkhi.ki.wScan = 0;
-    I[0].mkhi.ki.dwFlags = @is ? 0 : (uint)2;
+    I[0].mkhi.ki.dwFlags = a ? 0 : E_KEYU;
     I[0].mkhi.ki.time = 0;
     I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
-    return SendInput((uint)I.Length, I, Marshal.SizeOf<INPUT>()) != 0;
+    return SendInput((uint)I.Length, I, I_SIZE) != 0;
   }
 
+  public static readonly uint E_KEYU = 0x0002;
+  public static readonly uint E_KEYD = 0x0000;
+  public static readonly uint I_TYPE = 1;
+  public static readonly int I_SIZE = Marshal.SizeOf<INPUT>();
+
   [StructLayout(LayoutKind.Sequential)]
-  public struct INPUT {
+  private struct INPUT {
     public uint type;
     public MOUSEKEYBDHARDWAREINPUT mkhi;
   }
 
   [StructLayout(LayoutKind.Explicit)]
-  public struct MOUSEKEYBDHARDWAREINPUT {
+  private struct MOUSEKEYBDHARDWAREINPUT {
     [FieldOffset(0)]
     public MOUSEINPUT mi;
     [FieldOffset(0)]
@@ -29,7 +34,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  public struct KEYBDINPUT {
+  private struct KEYBDINPUT {
     public ushort wVk;
     public ushort wScan;
     public uint dwFlags;
@@ -38,7 +43,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  public struct MOUSEINPUT {
+  private struct MOUSEINPUT {
     public int dx;
     public int dy;
     public uint mouseData;
@@ -48,12 +53,12 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  public struct HARDWAREINPUT {
+  private struct HARDWAREINPUT {
     public uint uMsg;
     public ushort wParamL;
     public ushort wParamH;
   }
 
   [DllImport("user32.dll")]
-  public static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 }

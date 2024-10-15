@@ -2,29 +2,31 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly WorkerPool FX = new(16, 1024);
+  //public static readonly WorkerPool FX = new(16, 1024);
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.0;
-  public static readonly double IL = 99.0;
+  public static readonly double IL = 19.0;
   public static volatile bool FLMB = A.T;
   public static volatile bool FREE = A.T;
 
   public static bool KeyDU() {
     FREE = A.F;
-    return FX.TryEnqueue(() => {
+    Task.Run(() => {
       IO(TL, AL);
       FREE = A.T;
     });
+    return A.T;
   }
 
   public static bool KeyAU() {
     FREE = A.F;
-    return FX.TryEnqueue(() => {
+    Task.Run(() => {
       IO(TL, AR);
       FREE = A.T;
     });
+    return A.T;
   }
 
   public static bool OnU(uint i) => i switch {
@@ -36,13 +38,12 @@ class Perform {
   public static bool XO(double t, uint[] k) {
     I(k);
     O(k);
-    Time.Wait(t);
     return A.F;
   }
 
   public static bool IO(double t, uint[] k) {
     I(k);
-    Time.Wait(t);
+    Thread.Sleep((int)t);
     O(k);
     return A.F;
   }
@@ -75,8 +76,8 @@ class Perform {
       case WM_LBUTTONDOWN:
         FLMB = A.F;
         Task.Run(() => {
-          Till(_ => FREE);
-          Till(_ => !FLMB && IO(IL, ML));
+          //Till(_ => FREE);
+          Till(_ => IO(IL, ML) && FLMB);
         });
         return next;
       case WM_LBUTTONUP:
