@@ -6,8 +6,8 @@ class Perform {
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
-  public static readonly double TL = 99.0;
-  public static readonly double IL = 19.0;
+  public static readonly double TL = 99.99999;
+  public static readonly double IL = 9.999999;
   public static volatile bool PLMB = A.F;
   public static volatile bool HLMB = A.F;
   public static volatile bool FLMB = A.F;
@@ -35,7 +35,7 @@ class Perform {
   };
 
   public static bool XO(double t, uint[] k) {
-    IO(1, k);
+    IO(t, k);
     Time.IO(t);
     return A.T;
   }
@@ -83,7 +83,7 @@ class Perform {
       case WM_LBUTTONUP:
         PLMB = A.F;
         FX.TryEnqueue(() => {
-          Time.IO(IL);
+          Time.IO(IL + IL);
           HLMB = PLMB;
         });
         return next;
