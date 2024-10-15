@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 class Perform {
   //public static readonly WorkerPool FX = new(16, 1024);
-  public static readonly uint[] ML = [KeyE.A];
+  public static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.0;
-  public static readonly double IL = 81.0;
+  public static readonly double IL = 19.0;
   public static volatile bool PLMB = A.F;
   public static volatile bool HLMB = A.F;
   public static volatile bool FLMB = A.F;
@@ -38,22 +38,21 @@ class Perform {
 
   public static bool XO(double t, uint[] k) {
     I(k);
-    Time.Ran(1);
     O(k);
-    Time.Ran(9);
+    Time.O(t);
     return A.T;
   }
 
   public static bool IO(double t, uint[] k) {
     I(k);
-    Time.Ran(t);
+    Time.O(t);
     O(k);
     return A.T;
   }
 
-  public static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
+  public static bool O(uint[] k) => Keyboard.Input(k, A.F);
 
-  public static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
+  public static bool I(uint[] k) => Keyboard.Input(k, A.T);
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
@@ -87,8 +86,8 @@ class Perform {
       case WM_LBUTTONUP:
         PLMB = A.F;
         Task.Run(() => {
-          Time.Ran(9);
-          HLMB = PLMB;
+          Time.O(IL);
+          HLMB = A.F;
         });
         return next;
       default:
@@ -98,7 +97,7 @@ class Perform {
 
   public static bool Till(Func<int, bool> z) {
     while (z(1)) {
-      Time.Ran(1);
+      Time.O(1);
     }
     return A.T;
   }

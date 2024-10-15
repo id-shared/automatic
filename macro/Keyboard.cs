@@ -1,15 +1,17 @@
 ﻿using System.Runtime.InteropServices;
 
 class Keyboard {
-  public static bool Input(uint k, bool a) {
-    INPUT[] I = new INPUT[1];
-    I[0].type = I_TYPE;
-    I[0].mkhi.ki.wVk = (ushort)k;
-    I[0].mkhi.ki.wScan = 0;
-    I[0].mkhi.ki.dwFlags = a ? 0 : E_KEYU;
-    I[0].mkhi.ki.time = 0;
-    I[0].mkhi.ki.dwExtraInfo = IntPtr.Zero;
-    return SendInput((uint)I.Length, I, I_SIZE) != 0;
+  public static bool Input(uint[] keys, bool press) {
+    INPUT[] inputs = new INPUT[keys.Length];
+    for (int i = 0; i < keys.Length; i++) {
+      inputs[i].type = I_TYPE;
+      inputs[i].mkhi.ki.wVk = (ushort)keys[i];
+      inputs[i].mkhi.ki.wScan = 0;
+      inputs[i].mkhi.ki.dwFlags = press ? E_KEYD : E_KEYU;
+      inputs[i].mkhi.ki.time = 0;
+      inputs[i].mkhi.ki.dwExtraInfo = IntPtr.Zero;
+    }
+    return SendInput((uint)inputs.Length, inputs, I_SIZE) != 0;
   }
 
   public static readonly uint E_KEYU = 0x0002;
@@ -25,12 +27,9 @@ class Keyboard {
 
   [StructLayout(LayoutKind.Explicit)]
   private struct MOUSEKEYBDHARDWAREINPUT {
-    [FieldOffset(0)]
-    public MOUSEINPUT mi;
-    [FieldOffset(0)]
-    public KEYBDINPUT ki;
-    [FieldOffset(0)]
-    public HARDWAREINPUT hi;
+    [FieldOffset(0)] public MOUSEINPUT mi;
+    [FieldOffset(0)] public KEYBDINPUT ki;
+    [FieldOffset(0)] public HARDWAREINPUT hi;
   }
 
   [StructLayout(LayoutKind.Sequential)]
