@@ -2,60 +2,59 @@
 using System.Diagnostics;
 
 class Perform {
-  static readonly WorkerPool FX = new(1, 1024);
-  static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
-  static readonly uint[] AR = [KeyA.R];
-  static readonly uint[] AL = [KeyA.L];
-  static volatile bool FLMB = A.T;
-  static volatile bool FREE = A.T;
-  const double TL = 99.0;
-  const double IL = 19.0;
+  public static readonly WorkerPool FX = new(1, 1024);
+  public static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
+  public static readonly uint[] AR = [KeyA.R];
+  public static readonly uint[] AL = [KeyA.L];
+  public static volatile bool FLMB = A.T;
+  public static volatile bool FREE = A.T;
+  public const double TL = 99.0;
+  public const double IL = 19.0;
 
-  public Perform() {
-    hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);
-    hookX1 = SetHook(hookCallbackX1, WH_MOUSE_LL);
-    Subscribe(new MSG());
-  }
-
-  static bool KeyDU() {
+  public static bool KeyDU() {
+    FX.TryEnqueue(() => {
+      I([(uint)ConsoleKey.X]);
+      Console.WriteLine("a");
+      O([(uint)ConsoleKey.X]);
+    });
     FREE = A.F;
     IO(TL, AL);
     FREE = A.T;
     return A.T;
   }
 
-  static bool KeyAU() {
+  public static bool KeyAU() {
     FREE = A.F;
     IO(TL, AR);
     FREE = A.T;
     return A.T;
   }
 
-  static bool OnU(uint i) => i switch {
+  public static bool OnU(uint i) => i switch {
     KeyX.D => KeyDU(),
     KeyX.A => KeyAU(),
     _ => A.F,
   };
 
-  static bool XO(double t, uint[] k) {
+  public static bool XO(double t, uint[] k) {
     I(k);
     O(k);
     Time.Wait(t);
     return A.F;
   }
 
-  static bool IO(double t, uint[] k) {
+  public static bool IO(double t, uint[] k) {
     I(k);
     Time.Wait(t);
     O(k);
     return A.F;
   }
 
-  static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
+  public static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
 
-  static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
+  public static bool I(uint[] n) => n.All(_ => Keyboard.Input(_, A.T));
 
-  static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
@@ -71,7 +70,7 @@ class Perform {
     }
   }
 
-  static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX1, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
@@ -91,7 +90,7 @@ class Perform {
     }
   }
 
-  static bool Till(Func<int, bool> z) {
+  public static bool Till(Func<int, bool> z) {
     SpinWait spinner = new();
     while (!z(spinner.Count + 1)) {
       spinner.SpinOnce();
@@ -99,14 +98,14 @@ class Perform {
     return A.T;
   }
 
-  static void Exit() => Environment.Exit(0);
+  public static void Exit() => Environment.Exit(0);
 
-  struct Back(int code, IntPtr w, IntPtr l, IntPtr i) {
+  public struct Back(int code, IntPtr w, IntPtr l, IntPtr i) {
     public IntPtr wParam = w, lParam = l, iParam = i;
     public int nCode = code;
   }
 
-  static IntPtr SetHook(Delegate proc, uint hookType) {
+  public static IntPtr SetHook(Delegate proc, uint hookType) {
     using var module = Process.GetCurrentProcess().MainModule;
     if (module == null) return IntPtr.Zero;
 
@@ -115,26 +114,32 @@ class Perform {
       SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
-  static void Subscribe(MSG msg) {
+  public static void Subscribe(MSG msg) {
     while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
       TranslateMessage(ref msg);
       DispatchMessage(ref msg);
     }
   }
 
-  delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
-  static readonly LowLevelProc hookCallBackX2 = HookCallbackX2;
-  static readonly LowLevelProc hookCallbackX1 = HookCallbackX1;
+  public Perform() {
+    hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);
+    hookX1 = SetHook(hookCallbackX1, WH_MOUSE_LL);
+    Subscribe(new MSG());
+  }
 
-  static volatile IntPtr hookX2 = IntPtr.Zero;
-  static volatile IntPtr hookX1 = IntPtr.Zero;
+  public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
+  public static readonly LowLevelProc hookCallBackX2 = HookCallbackX2;
+  public static readonly LowLevelProc hookCallbackX1 = HookCallbackX1;
 
-  const uint WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202;
-  const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
-  const uint WH_KEYBOARD_LL = 13, WH_MOUSE_LL = 14;
+  public static volatile IntPtr hookX2 = IntPtr.Zero;
+  public static volatile IntPtr hookX1 = IntPtr.Zero;
+
+  public const uint WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202;
+  public const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
+  public const uint WH_KEYBOARD_LL = 13, WH_MOUSE_LL = 14;
 
   [StructLayout(LayoutKind.Sequential)]
-  struct MSG {
+  public struct MSG {
     public IntPtr hWnd;
     public uint message;
     public IntPtr wParam, lParam;
@@ -143,12 +148,12 @@ class Perform {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  struct POINT {
+  public struct POINT {
     public int x, y;
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  struct MSLLHOOKSTRUCT {
+  public struct MSLLHOOKSTRUCT {
     public POINT pt;
     public uint mouseData;
     public uint flags;
@@ -157,26 +162,26 @@ class Perform {
   }
 
   [DllImport("user32.dll")]
-  extern static IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
+  public static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
 
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
-  extern static bool UnhookWindowsHookEx(IntPtr hhk);
+  public static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-  extern static IntPtr GetModuleHandle(string lpModuleName);
+  public static extern IntPtr GetModuleHandle(string lpModuleName);
 
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
-  extern static bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+  public static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
-  extern static bool TranslateMessage(ref MSG lpMsg);
+  public static extern bool TranslateMessage(ref MSG lpMsg);
 
   [DllImport("user32.dll")]
-  extern static IntPtr DispatchMessage(ref MSG lpMsg);
+  public static extern IntPtr DispatchMessage(ref MSG lpMsg);
 
   [DllImport("user32.dll")]
-  extern static IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+  public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 }

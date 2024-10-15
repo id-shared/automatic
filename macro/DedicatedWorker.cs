@@ -1,6 +1,6 @@
 ﻿class WorkerPool {
-  readonly DedicatedWorker[] worker_list;
-  int worker_next = 0;
+  public readonly DedicatedWorker[] worker_list;
+  public int worker_next = 0;
 
   public WorkerPool(int workerCount, int bufferSize) {
     worker_list = new DedicatedWorker[workerCount];
@@ -16,8 +16,8 @@
 }
 
 class DedicatedWorker {
-  readonly LockFreeRingBuffer<Action> queued;
-  readonly Thread thread;
+  public readonly LockFreeRingBuffer<Action> queued;
+  public readonly Thread thread;
 
   public DedicatedWorker(int bufferSize) {
     queued = new LockFreeRingBuffer<Action>(bufferSize);
@@ -44,10 +44,10 @@ class DedicatedWorker {
 }
 
 class LockFreeRingBuffer<T> {
-  readonly T[] _buffer;
-  readonly int _capacity;
-  volatile int _head;
-  volatile int _tail;
+  public readonly T[] _buffer;
+  public readonly int _capacity;
+  public volatile int _head;
+  public volatile int _tail;
 
   public LockFreeRingBuffer(int capacity) {
     _capacity = capacity;

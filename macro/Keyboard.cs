@@ -13,13 +13,13 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct INPUT {
+  public struct INPUT {
     public uint type;
     public MOUSEKEYBDHARDWAREINPUT mkhi;
   }
 
   [StructLayout(LayoutKind.Explicit)]
-  private struct MOUSEKEYBDHARDWAREINPUT {
+  public struct MOUSEKEYBDHARDWAREINPUT {
     [FieldOffset(0)]
     public MOUSEINPUT mi;
     [FieldOffset(0)]
@@ -29,7 +29,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct KEYBDINPUT {
+  public struct KEYBDINPUT {
     public ushort wVk;
     public ushort wScan;
     public uint dwFlags;
@@ -38,7 +38,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct MOUSEINPUT {
+  public struct MOUSEINPUT {
     public int dx;
     public int dy;
     public uint mouseData;
@@ -48,12 +48,12 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct HARDWAREINPUT {
+  public struct HARDWAREINPUT {
     public uint uMsg;
     public ushort wParamL;
     public ushort wParamH;
   }
 
   [DllImport("user32.dll")]
-  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+  public static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 }

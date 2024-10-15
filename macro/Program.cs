@@ -1,5 +1,5 @@
 ﻿class Program {
-  static void Main() {
+  public static void Main() {
     Perform _ = new();
   }
 }
