@@ -1,6 +1,6 @@
-﻿class Program {
+﻿internal class Program {
   private static void Main() {
-    new Perform();
+    Perform _ = new();
   }
 }
 

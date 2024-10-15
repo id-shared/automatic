@@ -12,25 +12,25 @@ class Keyboard {
     return SendInput((uint)inputs.Length, inputs, I_size) != 0;
   }
 
-  private static readonly int I_size = Marshal.SizeOf<INPUT>();
-  private const uint INPUT_KEYBOARD = 1;
-  private const uint KEYEVENTF_KEYUP = 0x0002;
+  static readonly int I_size = Marshal.SizeOf<INPUT>();
+  const uint INPUT_KEYBOARD = 1;
+  const uint KEYEVENTF_KEYUP = 0x0002;
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct INPUT {
+  struct INPUT {
     public uint type;
     public MOUSEKEYBDHARDWAREINPUT mkhi;
   }
 
   [StructLayout(LayoutKind.Explicit)]
-  private struct MOUSEKEYBDHARDWAREINPUT {
+  struct MOUSEKEYBDHARDWAREINPUT {
     [FieldOffset(0)] public MOUSEINPUT mi;
     [FieldOffset(0)] public KEYBDINPUT ki;
     [FieldOffset(0)] public HARDWAREINPUT hi;
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct KEYBDINPUT {
+  struct KEYBDINPUT {
     public ushort wVk;
     public ushort wScan;
     public uint dwFlags;
@@ -39,7 +39,7 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct MOUSEINPUT {
+  struct MOUSEINPUT {
     public int dx;
     public int dy;
     public uint mouseData;
@@ -49,12 +49,12 @@ class Keyboard {
   }
 
   [StructLayout(LayoutKind.Sequential)]
-  private struct HARDWAREINPUT {
+  struct HARDWAREINPUT {
     public uint uMsg;
     public ushort wParamL;
     public ushort wParamH;
   }
 
   [DllImport("user32.dll")]
-  private static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+  extern static uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 }
