@@ -10,7 +10,7 @@ class Time {
     return stopwatch.Elapsed;
   }
 
-  public static bool O(double ms) {
+  public static bool IO(double ms) {
     QueryPerformanceFrequency(out long frequency);
     QueryPerformanceCounter(out long start);
 
