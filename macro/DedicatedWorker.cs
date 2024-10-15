@@ -35,7 +35,11 @@ class DedicatedWorker {
     SpinWait spinner = new();
     while (true) {
       if (queued.TryDequeue(out var workItem)) {
-        workItem();
+        try {
+          workItem();
+        } catch (Exception ex) {
+          Console.WriteLine($"Exception message: {ex.Message}");
+        }
       } else {
         spinner.SpinOnce();
       }

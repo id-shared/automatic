@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly WorkerPool FX = new(1, 1024);
+  public static readonly WorkerPool FX = new(16, 2);
   public static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
