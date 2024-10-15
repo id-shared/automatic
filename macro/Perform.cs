@@ -1,15 +1,15 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-internal class Perform {
+class Perform {
   static readonly WorkerPool FX = new(1, 1024);
-  static readonly uint[] ML = [KeyE.C, KeyE.A];
+  static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
   static readonly uint[] AR = [KeyA.R];
   static readonly uint[] AL = [KeyA.L];
   static volatile bool FLMB = A.T;
   static volatile bool FREE = A.T;
-  const int TL = 99;
-  const int IL = 25;
+  const double TL = 99;
+  const double IL = 19;
 
   public Perform() {
     hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);

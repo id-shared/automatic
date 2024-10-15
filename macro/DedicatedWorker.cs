@@ -1,4 +1,4 @@
-﻿internal class WorkerPool {
+﻿class WorkerPool {
   readonly DedicatedWorker[] _workers;
   int _nextWorkerIndex = 0;
 
@@ -15,7 +15,7 @@
   }
 }
 
-internal class DedicatedWorker {
+class DedicatedWorker {
   readonly LockFreeRingBuffer<Action> _workQueue;
   readonly Thread _workerThread;
   volatile bool _isRunning;
@@ -45,7 +45,7 @@ internal class DedicatedWorker {
   }
 }
 
-internal class LockFreeRingBuffer<T> {
+class LockFreeRingBuffer<T> {
   readonly T[] _buffer;
   readonly int _capacity;
   volatile int _head;

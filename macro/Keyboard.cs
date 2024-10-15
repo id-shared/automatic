@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-internal class Keyboard {
+class Keyboard {
   public static bool Input(uint k1, bool @is) {
     INPUT[] inputs = new INPUT[1];
     inputs[0].type = INPUT_KEYBOARD;
