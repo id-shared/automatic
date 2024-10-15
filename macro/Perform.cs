@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly WorkerPool FX = new(16, 2);
+  public static readonly WorkerPool FX = new(16, 16);
   public static readonly uint[] ML = [KeyE.S, KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
@@ -12,22 +12,19 @@ class Perform {
   public static volatile bool FREE = A.T;
 
   public static bool KeyDU() {
-    FX.TryEnqueue(() => {
-      I([(uint)ConsoleKey.X]);
-      Console.WriteLine("a");
-      O([(uint)ConsoleKey.X]);
-    });
     FREE = A.F;
-    IO(TL, AL);
-    FREE = A.T;
-    return A.T;
+    return FX.TryEnqueue(() => {
+      IO(TL, AL);
+      FREE = A.T;
+    });
   }
 
   public static bool KeyAU() {
     FREE = A.F;
-    IO(TL, AR);
-    FREE = A.T;
-    return A.T;
+    return FX.TryEnqueue(() => {
+      IO(TL, AR);
+      FREE = A.T;
+    });
   }
 
   public static bool OnU(uint i) => i switch {
