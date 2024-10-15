@@ -2,19 +2,18 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly WorkerPool FX = new(16, 16);
+  public static readonly Queue RUN = new(64);
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.99999;
   public static readonly double IL = 9.999999;
-  public static volatile bool PLMB = A.F;
-  public static volatile bool HLMB = A.F;
-  public static volatile bool FLMB = A.F;
+  public static bool HLMB = A.F;
+  public static bool FLMB = A.F;
 
   public static bool KeyDU() {
     FLMB = A.T;
-    return FX.TryEnqueue(() => {
+    return RUN.TryEnqueue(() => {
       IO(TL, AL);
       FLMB = A.F;
     });
@@ -22,7 +21,7 @@ class Perform {
 
   public static bool KeyAU() {
     FLMB = A.T;
-    return FX.TryEnqueue(() => {
+    return RUN.TryEnqueue(() => {
       IO(TL, AR);
       FLMB = A.F;
     });
@@ -73,19 +72,14 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        PLMB = A.T;
         HLMB = A.T;
-        FX.TryEnqueue(() => {
+        RUN.TryEnqueue(() => {
           Till(_ => FLMB);
           Till(_ => XO(IL, ML) && HLMB);
         });
         return next;
       case WM_LBUTTONUP:
-        PLMB = A.F;
-        FX.TryEnqueue(() => {
-          Time.IO(IL + IL);
-          HLMB = PLMB;
-        });
+        HLMB = A.F;
         return next;
       default:
         return next;

@@ -1,25 +1,8 @@
-﻿class WorkerPool {
-  public readonly DedicatedWorker[] worker_list;
-  public int worker_next = 0;
-
-  public WorkerPool(int workerCount, int bufferSize) {
-    worker_list = new DedicatedWorker[workerCount];
-    for (int i = 0; i < workerCount; i++) {
-      worker_list[i] = new DedicatedWorker(bufferSize);
-    }
-  }
-
-  public bool TryEnqueue(Action work) {
-    int index = Interlocked.Increment(ref worker_next) % worker_list.Length;
-    return worker_list[index].TryEnqueue(work);
-  }
-}
-
-class DedicatedWorker {
+﻿class Queue {
   public readonly LockFreeRingBuffer<Action> queued;
   public readonly Thread thread;
 
-  public DedicatedWorker(int bufferSize) {
+  public Queue(int bufferSize) {
     queued = new LockFreeRingBuffer<Action>(bufferSize);
     thread = new Thread(WorkerLoop) {
       IsBackground = true
