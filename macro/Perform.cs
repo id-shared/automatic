@@ -38,14 +38,15 @@ class Perform {
   public static bool XO(double t, uint[] k) {
     I(k);
     O(k);
-    return A.F;
+    Time.Wait(t);
+    return A.T;
   }
 
   public static bool IO(double t, uint[] k) {
     I(k);
-    Thread.Sleep((int)t);
+    Time.Wait(t);
     O(k);
-    return A.F;
+    return A.T;
   }
 
   public static bool O(uint[] n) => n.All(_ => Keyboard.Input(_, A.F));
@@ -76,7 +77,7 @@ class Perform {
       case WM_LBUTTONDOWN:
         FLMB = A.F;
         Task.Run(() => {
-          //Till(_ => FREE);
+          Till(_ => FREE);
           Till(_ => IO(IL, ML) && FLMB);
         });
         return next;
@@ -89,9 +90,8 @@ class Perform {
   }
 
   public static bool Till(Func<int, bool> z) {
-    SpinWait spinner = new();
-    while (!z(spinner.Count + 1)) {
-      spinner.SpinOnce();
+    while (!z(1)) {
+      Time.Wait(1);
     }
     return A.T;
   }
