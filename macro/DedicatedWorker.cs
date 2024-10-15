@@ -18,14 +18,12 @@
 class DedicatedWorker {
   readonly LockFreeRingBuffer<Action> _workQueue;
   readonly Thread _workerThread;
-  volatile bool _isRunning;
 
   public DedicatedWorker(int bufferSize) {
     _workQueue = new LockFreeRingBuffer<Action>(bufferSize);
     _workerThread = new Thread(WorkerLoop) {
       IsBackground = true
     };
-    _isRunning = true;
     _workerThread.Start();
   }
 
@@ -35,7 +33,7 @@ class DedicatedWorker {
 
   public void WorkerLoop() {
     SpinWait spinner = new();
-    while (_isRunning) {
+    while (true) {
       if (_workQueue.TryDequeue(out var workItem)) {
         workItem();
       } else {

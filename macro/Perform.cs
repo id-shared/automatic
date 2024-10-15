@@ -8,8 +8,8 @@ class Perform {
   static readonly uint[] AL = [KeyA.L];
   static volatile bool FLMB = A.T;
   static volatile bool FREE = A.T;
-  const double TL = 99;
-  const double IL = 19;
+  const double TL = 99.0;
+  const double IL = 19.0;
 
   public Perform() {
     hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);
@@ -20,8 +20,12 @@ class Perform {
   static bool KeyDU() {
     FREE = A.F;
     return FX.TryEnqueue(() => {
+      Console.WriteLine("a");
       IO(TL, AL);
       FREE = A.T;
+      Console.WriteLine("b");
+      IO(99.0, [KeyE.A]);
+      Console.WriteLine("c");
     });
   }
 
