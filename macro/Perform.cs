@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queue RUN = new(64);
+  public static readonly Queue QUE = new(64);
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
@@ -13,7 +13,7 @@ class Perform {
 
   public static bool KeyDU() {
     FLMB = A.T;
-    return RUN.TryEnqueue(() => {
+    return QUE.TryEnqueue(() => {
       IO(TL, AL);
       FLMB = A.F;
     });
@@ -21,7 +21,7 @@ class Perform {
 
   public static bool KeyAU() {
     FLMB = A.T;
-    return RUN.TryEnqueue(() => {
+    return QUE.TryEnqueue(() => {
       IO(TL, AR);
       FLMB = A.F;
     });
@@ -73,7 +73,7 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         HLMB = A.T;
-        RUN.TryEnqueue(() => {
+        QUE.TryEnqueue(() => {
           Till(_ => FLMB);
           Till(_ => XO(IL, ML) && HLMB);
         });
