@@ -2,28 +2,24 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queue QUE = new(64);
+  public static readonly Queue QX2 = new(64);
+  public static readonly Queue QX1 = new(64);
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.99999;
-  public static readonly double IL = 9.999999;
-  public static bool HLMB = A.F;
-  public static bool FLMB = A.F;
+  public static readonly double IL = 19.99999;
+  public static bool LMBX = A.F;
 
   public static bool KeyDU() {
-    FLMB = A.T;
-    return QUE.TryEnqueue(() => {
+    return QX2.TryEnqueue(() => {
       IO(TL, AL);
-      FLMB = A.F;
     });
   }
 
   public static bool KeyAU() {
-    FLMB = A.T;
-    return QUE.TryEnqueue(() => {
+    return QX2.TryEnqueue(() => {
       IO(TL, AR);
-      FLMB = A.F;
     });
   }
 
@@ -34,7 +30,8 @@ class Perform {
   };
 
   public static bool XO(double t, uint[] k) {
-    IO(t, k);
+    I(k);
+    O(k);
     Time.IO(t);
     return A.T;
   }
@@ -72,14 +69,13 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        HLMB = A.T;
-        QUE.TryEnqueue(() => {
-          Till(_ => FLMB);
-          Till(_ => XO(IL, ML) && HLMB);
+        LMBX = A.T;
+        QX2.TryEnqueue(() => {
+          Till(_ => XO(IL, ML) && LMBX);
         });
         return next;
       case WM_LBUTTONUP:
-        HLMB = A.F;
+        LMBX = A.F;
         return next;
       default:
         return next;
