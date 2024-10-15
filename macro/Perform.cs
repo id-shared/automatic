@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 class Perform {
   //public static readonly WorkerPool FX = new(16, 1024);
-  public static readonly uint[] ML = [KeyE.C, KeyE.A];
+  public static readonly uint[] ML = [KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
   public static readonly double TL = 99.0;
-  public static readonly double IL = 19.0;
-  public static volatile bool FLMB = A.T;
+  public static readonly double IL = 81.0;
+  public static volatile bool HELD = A.F;
   public static volatile bool FREE = A.T;
 
   public static bool KeyDU() {
@@ -37,8 +37,9 @@ class Perform {
 
   public static bool XO(double t, uint[] k) {
     I(k);
+    Time.Wait(1);
     O(k);
-    Time.Wait(t);
+    Time.Wait(9);
     return A.T;
   }
 
@@ -75,14 +76,14 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        FLMB = A.F;
+        HELD = A.T;
         Task.Run(() => {
-          Till(_ => FREE);
-          Till(_ => IO(IL, ML) && FLMB);
+          //Till(_ => FREE);
+          Till(_ => XO(IL, ML) && HELD);
         });
         return next;
       case WM_LBUTTONUP:
-        FLMB = A.T;
+        HELD = A.F;
         return next;
       default:
         return next;
@@ -90,7 +91,7 @@ class Perform {
   }
 
   public static bool Till(Func<int, bool> z) {
-    while (!z(1)) {
+    while (z(1)) {
       Time.Wait(1);
     }
     return A.T;
