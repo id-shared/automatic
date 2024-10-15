@@ -1,40 +1,40 @@
 ﻿class WorkerPool {
-  readonly DedicatedWorker[] _workers;
-  int _nextWorkerIndex = 0;
+  readonly DedicatedWorker[] worker_list;
+  int worker_next = 0;
 
   public WorkerPool(int workerCount, int bufferSize) {
-    _workers = new DedicatedWorker[workerCount];
+    worker_list = new DedicatedWorker[workerCount];
     for (int i = 0; i < workerCount; i++) {
-      _workers[i] = new DedicatedWorker(bufferSize);
+      worker_list[i] = new DedicatedWorker(bufferSize);
     }
   }
 
   public bool TryEnqueue(Action work) {
-    int index = Interlocked.Increment(ref _nextWorkerIndex) % _workers.Length;
-    return _workers[index].TryEnqueue(work);
+    int index = Interlocked.Increment(ref worker_next) % worker_list.Length;
+    return worker_list[index].TryEnqueue(work);
   }
 }
 
 class DedicatedWorker {
-  readonly LockFreeRingBuffer<Action> _workQueue;
-  readonly Thread _workerThread;
+  readonly LockFreeRingBuffer<Action> queued;
+  readonly Thread thread;
 
   public DedicatedWorker(int bufferSize) {
-    _workQueue = new LockFreeRingBuffer<Action>(bufferSize);
-    _workerThread = new Thread(WorkerLoop) {
+    queued = new LockFreeRingBuffer<Action>(bufferSize);
+    thread = new Thread(WorkerLoop) {
       IsBackground = true
     };
-    _workerThread.Start();
+    thread.Start();
   }
 
   public bool TryEnqueue(Action work) {
-    return _workQueue.TryEnqueue(work);
+    return queued.TryEnqueue(work);
   }
 
   public void WorkerLoop() {
     SpinWait spinner = new();
     while (true) {
-      if (_workQueue.TryDequeue(out var workItem)) {
+      if (queued.TryDequeue(out var workItem)) {
         workItem();
       } else {
         spinner.SpinOnce();
