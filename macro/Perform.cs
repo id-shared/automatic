@@ -2,13 +2,14 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queue QX2 = new(64);
-  public static readonly Queue QX1 = new(64);
-  public static readonly uint[] ML = [KeyE.C, KeyE.A];
+  public static readonly Queue QX2 = new(256);
+  public static readonly Queue QX1 = new(256);
+  public static readonly uint[] ML = [KeyE.A];
+  public static readonly uint[] KC = [KeyE.C];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
+  public static readonly double XL = 99;
   public static readonly double TL = 99;
-  public static readonly double IL = 25;
 
   public static bool KeyDU() {
     return QX2.TryEnqueue(() => {
@@ -28,19 +29,14 @@ class Perform {
     _ => A.F,
   };
 
-  public static bool XO(double t, uint[] k) {
-    I(k);
-    O(k);
-    Time.XO(t);
-    return A.T;
-  }
-
   public static bool IO(double t, uint[] k) {
     I(k);
     Time.XO(t);
     O(k);
     return A.T;
   }
+
+  public static bool W(double i) => Time.XO(i);
 
   public static bool O(uint[] k) => Keyboard.Input(k, A.F);
 
@@ -71,10 +67,13 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         QX2.TryEnqueue(() => {
-          Till(_ => (XO(IL, ML) && H([KeyM.L])) || (XO(IL, ML) && H([KeyM.L])));
+          _ = I(ML) && W(XL) && H([KeyM.L]) && I(KC);
         });
         return next;
       case WM_LBUTTONUP:
+        QX2.TryEnqueue(() => {
+          _ = O(ML) && O(KC);
+        });
         return next;
       default:
         return next;
