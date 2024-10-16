@@ -1,8 +1,8 @@
-﻿class Queue {
+﻿class Queuer {
   public readonly LockFreeRingBuffer<Action> queued;
   public readonly Thread thread;
 
-  public Queue(int bufferSize) {
+  public Queuer(int bufferSize) {
     queued = new LockFreeRingBuffer<Action>(bufferSize);
     thread = new Thread(WorkerLoop) {
       IsBackground = true

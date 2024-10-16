@@ -2,8 +2,8 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queue QX2 = new(256);
-  public static readonly Queue QX1 = new(256);
+  public static readonly Queuer Q2 = new(256);
+  public static readonly Queuer Q1 = new(256);
   public static readonly uint[] ML = [KeyE.A];
   public static readonly uint[] KC = [KeyE.C];
   public static readonly uint[] AR = [KeyA.R];
@@ -12,13 +12,13 @@ class Perform {
   public static readonly double TL = 99;
 
   public static bool KeyDU() {
-    return QX2.TryEnqueue(() => {
+    return Q2.TryEnqueue(() => {
       IO(TL, AL);
     });
   }
 
   public static bool KeyAU() {
-    return QX2.TryEnqueue(() => {
+    return Q2.TryEnqueue(() => {
       IO(TL, AR);
     });
   }
@@ -66,12 +66,12 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        QX2.TryEnqueue(() => {
+        Q2.TryEnqueue(() => {
           _ = I(ML) && W(XL) && H([KeyM.L]) && I(KC);
         });
         return next;
       case WM_LBUTTONUP:
-        QX2.TryEnqueue(() => {
+        Q2.TryEnqueue(() => {
           _ = O(ML) && O(KC);
         });
         return next;
