@@ -2,10 +2,8 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queuer Q2 = new(256);
   public static readonly Queuer Q1 = new(256);
   public static readonly uint[] ML = [KeyM.L];
-  public static readonly uint[] EC = [KeyE.C];
   public static readonly uint[] EA = [KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
@@ -67,17 +65,11 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        Q2.TryEnqueue(() => {
-          _ = W(XL) && H(ML) && I(EC);
-        });
         Q1.TryEnqueue(() => {
           I(EA);
         });
         return next;
       case WM_LBUTTONUP:
-        Q2.TryEnqueue(() => {
-          O(EC);
-        });
         Q1.TryEnqueue(() => {
           O(EA);
         });
