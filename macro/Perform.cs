@@ -7,9 +7,8 @@ class Perform {
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
-  public static readonly double XL = 149.9999;
-  public static readonly double TL = 99.99999;
-  public static readonly double IL = 24.99999;
+  public static readonly double TL = 99;
+  public static readonly double IL = 25;
 
   public static bool KeyDU() {
     return QX2.TryEnqueue(() => {
@@ -72,7 +71,7 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         QX2.TryEnqueue(() => {
-          Till(_ => XO(IL, ML) && (H([KeyM.L]) || (Time.XO(XL) && H([KeyM.L]))));
+          Till(_ => (XO(IL, ML) && H([KeyM.L])) || (XO(IL, ML) && H([KeyM.L])));
         });
         return next;
       case WM_LBUTTONUP:
