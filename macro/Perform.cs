@@ -7,7 +7,7 @@ class Perform {
   public static readonly uint[] ML = [KeyE.C, KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
-  public static readonly double XL = 199.9999;
+  public static readonly double XL = 149.9999;
   public static readonly double TL = 99.99999;
   public static readonly double IL = 24.99999;
 
@@ -32,13 +32,13 @@ class Perform {
   public static bool XO(double t, uint[] k) {
     I(k);
     O(k);
-    Time.IO(t);
+    Time.XO(t);
     return A.T;
   }
 
   public static bool IO(double t, uint[] k) {
     I(k);
-    Time.IO(t);
+    Time.XO(t);
     O(k);
     return A.T;
   }
@@ -47,7 +47,7 @@ class Perform {
 
   public static bool I(uint[] k) => Keyboard.Input(k, A.T);
 
-  public static bool H(uint[] k) => k.All(Keyboard.IsHeld);
+  public static bool H(uint[] k) => Keyboard.IsHeld(k);
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
@@ -72,7 +72,7 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         QX2.TryEnqueue(() => {
-          Till(_ => XO(IL, ML) && (H([KeyM.L]) || (Time.IO(XL) && H([KeyM.L]))));
+          Till(_ => XO(IL, ML) && (H([KeyM.L]) || (Time.XO(XL) && H([KeyM.L]))));
         });
         return next;
       case WM_LBUTTONUP:
@@ -83,8 +83,9 @@ class Perform {
   }
 
   public static bool Till(Func<int, bool> z) {
+    SpinWait till = new();
     while (z(1)) {
-      Time.IO(1);
+      till.SpinOnce();
     }
     return A.T;
   }

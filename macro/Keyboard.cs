@@ -2,23 +2,20 @@
 using System.Runtime.InteropServices;
 
 class Keyboard {
-  public static bool Input(uint[] keys, bool press) {
-    INPUT[] inputs = new INPUT[keys.Length];
-    for (int i = 0; i < keys.Length; i++) {
+  public static bool Input(uint[] k, bool a) {
+    INPUT[] inputs = new INPUT[k.Length];
+    for (int i = 0; i < k.Length; i++) {
       inputs[i].type = I_TYPE;
-      inputs[i].mkhi.ki.wVk = (ushort)keys[i];
+      inputs[i].mkhi.ki.wVk = (ushort)k[i];
       inputs[i].mkhi.ki.wScan = 0;
-      inputs[i].mkhi.ki.dwFlags = press ? E_KEYD : E_KEYU;
+      inputs[i].mkhi.ki.dwFlags = a ? E_KEYD : E_KEYU;
       inputs[i].mkhi.ki.time = 0;
       inputs[i].mkhi.ki.dwExtraInfo = IntPtr.Zero;
     }
     return SendInput((uint)inputs.Length, inputs, I_SIZE) != 0;
   }
 
-  public static bool IsHeld(uint virtualKey) {
-    short state = GetKeyState((int)virtualKey);
-    return (state & 0x8000) != 0;
-  }
+  public static bool IsHeld(uint[] k) => k.All(key => (GetKeyState((int)key) & 0x8000) != 0);
 
   public static readonly uint E_KEYU = 0x0002;
   public static readonly uint E_KEYD = 0x0000;

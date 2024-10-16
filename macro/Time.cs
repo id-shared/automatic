@@ -3,14 +3,14 @@ using System.Runtime.InteropServices;
 
 class Time {
   public static TimeSpan Took(Action action) {
-    Stopwatch stopwatch = Stopwatch.StartNew();
+    Stopwatch tracker = Stopwatch.StartNew();
     action.Invoke();
-    stopwatch.Stop();
-    Console.WriteLine($"Action executed in: {stopwatch.Elapsed.TotalMilliseconds} ms");
-    return stopwatch.Elapsed;
+    tracker.Stop();
+    Console.WriteLine($"{tracker.Elapsed.TotalMilliseconds} ms.");
+    return tracker.Elapsed;
   }
 
-  public static bool IO(double ms) {
+  public static bool XO(double ms) {
     QueryPerformanceFrequency(out long frequency);
     QueryPerformanceCounter(out long start);
 
