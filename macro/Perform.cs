@@ -4,21 +4,22 @@ using System.Diagnostics;
 class Perform {
   public static readonly Queuer Q2 = new(256);
   public static readonly Queuer Q1 = new(256);
-  public static readonly uint[] ML = [KeyE.A];
-  public static readonly uint[] KC = [KeyE.C];
+  public static readonly uint[] ML = [KeyM.L];
+  public static readonly uint[] EC = [KeyE.C];
+  public static readonly uint[] EA = [KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
-  public static readonly double XL = 99;
-  public static readonly double TL = 99;
+  public static readonly double XL = 209.9999;
+  public static readonly double TL = 99.99999;
 
   public static bool KeyDU() {
-    return Q2.TryEnqueue(() => {
+    return Q1.TryEnqueue(() => {
       IO(TL, AL);
     });
   }
 
   public static bool KeyAU() {
-    return Q2.TryEnqueue(() => {
+    return Q1.TryEnqueue(() => {
       IO(TL, AR);
     });
   }
@@ -67,12 +68,18 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         Q2.TryEnqueue(() => {
-          _ = I(ML) && W(XL) && H([KeyM.L]) && I(KC);
+          _ = W(XL) && H(ML) && I(EC);
+        });
+        Q1.TryEnqueue(() => {
+          I(EA);
         });
         return next;
       case WM_LBUTTONUP:
         Q2.TryEnqueue(() => {
-          _ = O(ML) && O(KC);
+          O(EC);
+        });
+        Q1.TryEnqueue(() => {
+          O(EA);
         });
         return next;
       default:
