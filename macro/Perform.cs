@@ -10,8 +10,13 @@ class Perform {
   public static readonly uint[] EA = [KeyE.A];
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
+
+  public static readonly double ZZ = (1 + Math.Sqrt(5)) / 2;
   public static readonly double XL = 209.9999;
   public static readonly double TL = 99.99999;
+
+  public static readonly int YZ = 49;
+  public static volatile int YA = 0;
 
   public static bool KeyDU() {
     return Q1.TryEnqueue(() => {
@@ -71,15 +76,17 @@ class Perform {
         int scale = 100;
         I(EA);
         Q1.TryEnqueue(() => {
-          W(10);
           Till(_ => {
-            return W(_ / scale) && H(ML) && D1.Y(_ / scale);
+            double phi = ZZ * (_ / scale);
+            int y = (int)phi;
+            return W(phi) && H(ML) && D1.Y(y);
           });
         });
         return next;
       case WM_LBUTTONUP:
         O(EA);
         Q1.TryEnqueue(() => {
+          Console.WriteLine(all);
           //D1.Y(-100);
         });
         return next;
