@@ -1,16 +1,16 @@
-﻿class Queuer {
-  public readonly LockFreeRingBuffer<Action> queued;
+﻿class Queued {
+  public readonly LockFreeRingBuffer<Func<int, bool>> queued;
   public readonly Thread thread;
 
-  public Queuer(int bufferSize) {
-    queued = new LockFreeRingBuffer<Action>(bufferSize);
+  public Queued(int bufferSize) {
+    queued = new LockFreeRingBuffer<Func<int, bool>>(bufferSize);
     thread = new Thread(WorkerLoop) {
       IsBackground = true
     };
     thread.Start();
   }
 
-  public bool TryEnqueue(Action work) {
+  public bool TryEnqueue(Func<int, bool> work) {
     return queued.TryEnqueue(work);
   }
 
@@ -19,7 +19,7 @@
     while (true) {
       if (queued.TryDequeue(out var workItem)) {
         try {
-          workItem();
+          workItem(1);
         } catch (Exception ex) {
           Console.WriteLine($"Exception message: {ex.Message}");
         }

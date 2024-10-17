@@ -2,8 +2,8 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queuer Q9 = new(256);
-  public static readonly Queuer Q1 = new(256);
+  public static readonly Queued Q9 = new(256);
+  public static readonly Queued Q1 = new(256);
   public static readonly Driver D1 = new();
 
   public static readonly uint[] ML = [KeyM.L];
@@ -15,19 +15,18 @@ class Perform {
   public static readonly double XL = 209.9999;
   public static readonly double TL = 99.99999;
 
-  public static readonly int YZ = 199;
+  public static volatile bool HR = A.F;
+  public static volatile bool HL = A.F;
+
+  public static volatile int YZ = 199;
   public static volatile int YA = 0;
 
   public static bool KeyDU() {
-    return Q1.TryEnqueue(() => {
-      IO(TL, AL);
-    });
+    return Q1.TryEnqueue(_ => IO(TL, AL));
   }
 
   public static bool KeyAU() {
-    return Q1.TryEnqueue(() => {
-      IO(TL, AR);
-    });
+    return Q1.TryEnqueue(_ => IO(TL, AR));
   }
 
   public static bool OnU(uint i) => i switch {
@@ -73,27 +72,28 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        Q1.TryEnqueue(() => {
+        HL = A.T;
+        Q1.TryEnqueue(_ => {
           I(EA);
 
-          int scale = 100;
-          Till(_ => {
-            double phi = ZZ * (_ / scale);
+          int scale = 9;
+          return Till(_ => {
+            double phi = Math.Sqrt(_) / scale;
             int y = (int)phi;
             YA = YA + y;
-            return YZ >= YA && W(phi) && H(ML) && D1.Y(y);
+            return HL && YZ >= YA && D1.Y(y) && W(phi);
           });
         });
         return next;
       case WM_LBUTTONUP:
-        Q1.TryEnqueue(() => {
+        HL = A.F;
+        Q1.TryEnqueue(_ => {
           O(EA);
 
-          //Console.WriteLine(ZZ);
-          //Console.WriteLine(YA);
           //Thread.Sleep(100);
-          //D1.Y(YA * - 1);
-          YA = 0;
+          //D1.Y(YA * - 1);   //Console.WriteLine(ZZ);
+          YA = 0;             //Console.WriteLine(YA);
+          return A.T;
         });
         return next;
       default:
