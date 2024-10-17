@@ -75,22 +75,22 @@ class Perform {
     if (nCode < 0) return next;
 
     switch ((uint)wParam) {
-      case WM_LBUTTONUP:
-        S1.TryEnqueue(_ => {
-          HL = A.F;
-          O(LA);
-          return S9.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA >= _) && D1.X(XAxis(_) * -1) && D1.Y(YAxis(_) * -1) && W(YE), 0);
-            return A.T;
-          });
-        });
-        return next;
       case WM_LBUTTONDOWN:
         S1.TryEnqueue(_ => {
           HL = A.T;
           I(LA);
           return S9.TryEnqueue(_ => {
-            YA = Till(_ => (57 > _) && HL && D1.X(XAxis(_)) && D1.Y(YAxis(_)) && W(YE), YA) - 1;
+            YA = Till(_ => (57 > _) && HL && D1.X(XAxis(_) * -1) && D1.Y(YAxis(_)) && W(YE), YA) - 1;
+            return A.T;
+          });
+        });
+        return next;
+      case WM_LBUTTONUP:
+        S1.TryEnqueue(_ => {
+          HL = A.F;
+          O(LA);
+          return S9.TryEnqueue(_ => {
+            YA = YA - Till(_ => (YA >= _) && D1.X(XAxis(_)) && D1.Y(YAxis(_) * -1) && W(YE), 0);
             return A.T;
           });
         });
