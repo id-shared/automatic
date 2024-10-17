@@ -76,20 +76,23 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        HL = A.T;
-        I(LA);
         S1.TryEnqueue(_ => {
-          YA = Till(_ => HL && (57 > _) && D1.Y(YAxis(_)) && W(YE));
-          return A.T;
+          HL = A.T;
+          I(LA);
+          return S9.TryEnqueue(_ => {
+            YA = Till(_ => (57 > _) && D1.Y(YAxis(_)) && HL && W(YE), YA);
+            return A.T;
+          });
         });
         return next;
       case WM_LBUTTONUP:
-        HL = A.F;
-        O(LA);
         S1.TryEnqueue(_ => {
-          //D1.Y(YA * - 1);
-          //YA = 0;
-          return A.T;
+          HL = A.F;
+          O(LA);
+          return S9.TryEnqueue(_ => {
+            YA = YA - Till(_ => (YA > _) && D1.Y(YAxis(_) * -1) && W(YE / 2), 0);
+            return A.T;
+          });
         });
         return next;
       default:
@@ -161,21 +164,12 @@ class Perform {
     };
   }
 
-  public static int Upon(Func<int, bool> z, int n) {
-    for (int i = 0; i < n; i++) {
-      z(i);
-    }
-    return n;
+  public static int Upon(Func<int, bool> z, int i) {
+    return z(i) ? Upon(z, i - 1) : i;
   }
 
-  public static int Till(Func<int, bool> z) {
-    SpinWait till = new();
-    int i = 0;
-    while (z(i)) {
-      i = i + 1;
-      till.SpinOnce();
-    }
-    return i;
+  public static int Till(Func<int, bool> z, int i) {
+    return z(i) ? Till(z, i + 1) : i;
   }
 
   public static void Exit() => Environment.Exit(0);
