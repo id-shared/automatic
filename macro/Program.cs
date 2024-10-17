@@ -1,23 +1,26 @@
 ﻿class Program {
   public static void Main() {
     try {
-      DD dd = new();
+      //DD dd = new();
 
-      int ret = dd.Load("DD.dll");
+      //int ret = dd.Load("DD.dll");
 
-      if (ret != 1) { Console.WriteLine("Load Error"); return; }
+      //if (ret != 1) { Console.WriteLine("Load Error"); return; }
 
-      ret = dd.btn(0);
-      if (ret != 1) { Console.WriteLine("Initialize Error"); return; }
+      //ret = dd.btn(0);
+      //if (ret != 1) { Console.WriteLine("Initialize Error"); return; }
 
-      Thread.Sleep(2000);
+      //Thread.Sleep(2000);
 
-      dd.btn(1);
-      Thread.Sleep(50);
-      dd.btn(2);
+      //dd.btn(1);
+      //Thread.Sleep(50);
+      //dd.btn(2);
 
-      //Mouse.H(1);
-      //Mouse.H(2);
+      Mouse mouse = new();
+
+      mouse.I(1);
+      mouse.I(2);
+
       //Perform _ = new();
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");

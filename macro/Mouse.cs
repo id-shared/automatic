@@ -1,31 +1,28 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 class Mouse {
-  public static bool Input(int y, int x) {
-    Console.WriteLine(DD_movR(x, y));
-    return A.T;
+  public readonly DD dd;
+
+  public Mouse() {
+    dd = new();
+    Console.WriteLine($"{GetType().Name}: {dd.Load("DD.dll") == 1 && dd.btn(0) == 1}");
   }
 
-  public static bool btn(int k) {
-    Console.WriteLine(DD_btn(k));
+  public bool I(int x) {
+    Console.WriteLine(dd.btn(x));
     return A.T;
   }
-
-  [DllImport("DD.dll")]
-  private static extern int DD_movR(int x, int y);
-
-  [DllImport("DD.dll")]
-  private static extern int DD_btn(int x);
 }
 
 class DD {
-  public pDD_btn btn;
-  public pDD_whl whl;
-  public pDD_mov mov;
-  public pDD_movR movR;
-  public pDD_key key;
-  public pDD_str str;
-  public pDD_todc todc;
+  public pDD_btn btn { get; private set; } = null!;
+  public pDD_whl whl { get; private set; } = null!;
+  public pDD_mov mov { get; private set; } = null!;
+  public pDD_movR movR { get; private set; } = null!;
+  public pDD_key key { get; private set; } = null!;
+  public pDD_str str { get; private set; } = null!;
+  public pDD_todc todc { get; private set; } = null!;
 
   public delegate int pDD_btn(int btn);
   public delegate int pDD_whl(int whl);
@@ -35,64 +32,44 @@ class DD {
   public delegate int pDD_str(string str);
   public delegate int pDD_todc(int vkcode);
 
-  private IntPtr m_hinst;
+  private IntPtr _libraryHandle = IntPtr.Zero;
 
-  ~DD() {
-    if (!m_hinst.Equals(IntPtr.Zero)) {
-      bool b = FreeLibrary(m_hinst);
-    }
+  ~DD() => FreeLibrary(_libraryHandle);
+
+  public int Load(string dllFile) {
+    _libraryHandle = LoadLibrary(dllFile);
+    return _libraryHandle == IntPtr.Zero ? -2 : LoadFunctionAddresses();
   }
 
-  public int Load(string dllfile) {
-    m_hinst = LoadLibrary(dllfile);
-    if (m_hinst.Equals(IntPtr.Zero)) {
-      return -2;
-    } else {
-      return GetDDfunAddress(m_hinst);
-    }
-  }
-
-  private int GetDDfunAddress(IntPtr hinst) {
-    IntPtr ptr;
-
-    ptr = GetProcAddress(hinst, "DD_btn");
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    btn = Marshal.GetDelegateForFunctionPointer<pDD_btn>(ptr);
-
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    ptr = GetProcAddress(hinst, "DD_whl");
-    whl = Marshal.GetDelegateForFunctionPointer<pDD_whl>(ptr);
-
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    ptr = GetProcAddress(hinst, "DD_mov");
-    mov = Marshal.GetDelegateForFunctionPointer<pDD_mov>(ptr);
-
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    ptr = GetProcAddress(hinst, "DD_key");
-    key = Marshal.GetDelegateForFunctionPointer<pDD_key>(ptr);
-
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    ptr = GetProcAddress(hinst, "DD_movR");
-    movR = Marshal.GetDelegateForFunctionPointer<pDD_movR>(ptr);
-
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    ptr = GetProcAddress(hinst, "DD_str");
-    str = Marshal.GetDelegateForFunctionPointer<pDD_str>(ptr);
-
-    if (ptr.Equals(IntPtr.Zero)) { return -1; }
-    ptr = GetProcAddress(hinst, "DD_todc");
-    todc = Marshal.GetDelegateForFunctionPointer<pDD_todc>(ptr);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private int LoadFunctionAddresses() {
+    btn = LoadFunction<pDD_btn>("DD_btn");
+    whl = LoadFunction<pDD_whl>("DD_whl");
+    mov = LoadFunction<pDD_mov>("DD_mov");
+    movR = LoadFunction<pDD_movR>("DD_movR");
+    key = LoadFunction<pDD_key>("DD_key");
+    str = LoadFunction<pDD_str>("DD_str");
+    todc = LoadFunction<pDD_todc>("DD_todc");
 
     return 1;
   }
 
-  [DllImport("Kernel32")]
-  private static extern IntPtr LoadLibrary(string dllfile);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private T LoadFunction<T>(string functionName) where T : Delegate {
+    IntPtr ptr = GetProcAddress(_libraryHandle, functionName);
+    if (ptr == IntPtr.Zero) {
+      throw new InvalidOperationException($"Failed to load {functionName}");
+    }
+    return Marshal.GetDelegateForFunctionPointer<T>(ptr);
+  }
 
-  [DllImport("Kernel32")]
+  [DllImport("kernel32.dll", SetLastError = true)]
+  private static extern IntPtr LoadLibrary(string dllFile);
+
+  [DllImport("kernel32.dll", SetLastError = true)]
   private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
-  [DllImport("kernel32.dll")]
+  [DllImport("kernel32.dll", SetLastError = true)]
   private static extern bool FreeLibrary(IntPtr hModule);
 }
 
