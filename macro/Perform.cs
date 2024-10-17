@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 class Perform {
+  public static readonly Queuer Q9 = new(256);
   public static readonly Queuer Q1 = new(256);
   public static readonly Driver D1 = new();
 
@@ -67,14 +68,19 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
+        int scale = 100;
+        I(EA);
         Q1.TryEnqueue(() => {
-          I(EA);
-          D1.Y(10);
+          W(10);
+          Till(_ => {
+            return W(_ / scale) && H(ML) && D1.Y(_ / scale);
+          });
         });
         return next;
       case WM_LBUTTONUP:
+        O(EA);
         Q1.TryEnqueue(() => {
-          O(EA);
+          //D1.Y(-100);
         });
         return next;
       default:
@@ -84,7 +90,9 @@ class Perform {
 
   public static bool Till(Func<int, bool> z) {
     SpinWait till = new();
-    while (z(1)) {
+    int i = 1;
+    while (z(i)) {
+      i = i + 1;
       till.SpinOnce();
     }
     return A.T;
@@ -177,3 +185,11 @@ class Perform {
   [DllImport("user32.dll")]
   public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 }
+
+
+//Random random = new();
+//Q9.TryEnqueue(() => {
+//  if (random.Next(1, 99) == 1) {
+//    Console.WriteLine(_ / scale);
+//  }
+//});
