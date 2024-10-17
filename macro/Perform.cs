@@ -15,7 +15,7 @@ class Perform {
   public static readonly double XL = 209.9999;
   public static readonly double TL = 99.99999;
 
-  public static readonly int YZ = 49;
+  public static readonly int YZ = 199;
   public static volatile int YA = 0;
 
   public static bool KeyDU() {
@@ -73,21 +73,27 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
-        int scale = 100;
-        I(EA);
         Q1.TryEnqueue(() => {
+          I(EA);
+
+          int scale = 100;
           Till(_ => {
             double phi = ZZ * (_ / scale);
             int y = (int)phi;
-            return W(phi) && H(ML) && D1.Y(y);
+            YA = YA + y;
+            return YZ >= YA && W(phi) && H(ML) && D1.Y(y);
           });
         });
         return next;
       case WM_LBUTTONUP:
-        O(EA);
         Q1.TryEnqueue(() => {
-          Console.WriteLine(all);
-          //D1.Y(-100);
+          O(EA);
+
+          //Console.WriteLine(ZZ);
+          //Console.WriteLine(YA);
+          //Thread.Sleep(100);
+          //D1.Y(YA * - 1);
+          YA = 0;
         });
         return next;
       default:
