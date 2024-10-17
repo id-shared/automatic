@@ -69,6 +69,7 @@ class Perform {
       case WM_LBUTTONDOWN:
         Q1.TryEnqueue(() => {
           I(EA);
+          D1.X(99, 99);
         });
         return next;
       case WM_LBUTTONUP:

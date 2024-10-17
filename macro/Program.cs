@@ -1,26 +1,7 @@
 ﻿class Program {
   public static void Main() {
     try {
-      //DD dd = new();
-
-      //int ret = dd.Load("DD.dll");
-
-      //if (ret != 1) { Console.WriteLine("Load Error"); return; }
-
-      //ret = dd.btn(0);
-      //if (ret != 1) { Console.WriteLine("Initialize Error"); return; }
-
-      //Thread.Sleep(2000);
-
-      //dd.btn(1);
-      //dd.btn(2);
-
-      Driver mouse = new();
-
-      Thread.Sleep(1000);
-      mouse.X(10, 10);
-
-      //Perform _ = new();
+      Perform _ = new();
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");
     } finally {
