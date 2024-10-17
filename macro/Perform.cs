@@ -3,7 +3,9 @@ using System.Diagnostics;
 
 class Perform {
   public static readonly Specter S9 = new(256);
+  public static readonly Specter S5 = new(256);
   public static readonly Specter S1 = new(256);
+
   public static readonly Driver1 D1 = new();
 
   public static readonly uint[] ML = [KeyM.L];
@@ -17,9 +19,15 @@ class Perform {
 
   public static volatile bool HR = A.F;
   public static volatile bool HL = A.F;
+  public static volatile bool HD = A.F;
+  public static volatile bool HA = A.F;
 
   public static volatile int YZ = 199;
+  public static volatile int YN = 99;
   public static volatile int YA = 0;
+  public static volatile int XZ = 199;
+  public static volatile int XN = 99;
+  public static volatile int XA = 0;
 
   public static bool KeyDU() {
     return S1.TryEnqueue(_ => IO(TL, AL));
@@ -75,13 +83,14 @@ class Perform {
         HL = A.T;
         S1.TryEnqueue(_ => {
           I(EA);
-
-          int scale = 9;
+         
+          int scale = 10;
           return Till(_ => {
             double phi = Math.Sqrt(_) / scale;
             int y = (int)phi;
             YA = YA + y;
-            return HL && YZ >= YA && D1.Y(y) && W(phi);
+            S9.TryEnqueue(_ => D1.Y(y));
+            return HL && (YN >= YA || (O(EA) && A.F)) && W(phi);
           });
         });
         return next;
@@ -91,8 +100,8 @@ class Perform {
           O(EA);
 
           //Thread.Sleep(100);
-          //D1.Y(YA * - 1);   //Console.WriteLine(ZZ);
-          YA = 0;             //Console.WriteLine(YA);
+          //D1.Y(YA * - 1);
+          YA = 0;
           return A.T;
         });
         return next;
