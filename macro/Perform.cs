@@ -3,31 +3,28 @@ using System.Diagnostics;
 
 class Perform {
   public static readonly Specter S9 = new(256);
-  public static readonly Specter S5 = new(256);
   public static readonly Specter S1 = new(256);
 
+  public static readonly Driver1 D9 = new();
   public static readonly Driver1 D1 = new();
 
-  public static readonly uint[] ML = [KeyM.L];
-  public static readonly uint[] EA = [KeyE.A];
+  public static readonly uint[] LZ = [KeyM.L];
+  public static readonly uint[] LA = [KeyE.A];
+
   public static readonly uint[] AR = [KeyA.R];
   public static readonly uint[] AL = [KeyA.L];
 
-  public static readonly double ZZ = (1 + Math.Sqrt(5)) / 2;
   public static readonly double XL = 209.9999;
   public static readonly double TL = 99.99999;
 
   public static volatile bool HR = A.F;
   public static volatile bool HL = A.F;
-  public static volatile bool HD = A.F;
-  public static volatile bool HA = A.F;
 
-  public static volatile int YZ = 199;
-  public static volatile int YN = 99;
-  public static volatile int YA = 0;
-  public static volatile int XZ = 199;
-  public static volatile int XN = 99;
-  public static volatile int XA = 0;
+  public static readonly int YI = 99;
+  public static volatile int YA;
+
+  public static readonly int XI = 99;
+  public static volatile int XA;
 
   public static bool KeyDU() {
     return S1.TryEnqueue(_ => IO(TL, AL));
@@ -82,22 +79,20 @@ class Perform {
       case WM_LBUTTONDOWN:
         HL = A.T;
         S1.TryEnqueue(_ => {
-          I(EA);
+          I(LA);
          
-          int scale = 10;
           return Till(_ => {
-            double phi = Math.Sqrt(_) / scale;
-            int y = (int)phi;
-            YA = YA + y;
-            S9.TryEnqueue(_ => D1.Y(y));
-            return HL && (YN >= YA || (O(EA) && A.F)) && W(phi);
+            int yAxis = YAxis(_);
+            YA = YA + yAxis;
+            D1.Y(yAxis);
+            return HL && W(YI);
           });
         });
         return next;
       case WM_LBUTTONUP:
         HL = A.F;
         S1.TryEnqueue(_ => {
-          O(EA);
+          O(LA);
 
           //Thread.Sleep(100);
           //D1.Y(YA * - 1);
@@ -110,9 +105,25 @@ class Perform {
     }
   }
 
+  public static int YAxis(int i) {
+    return i switch {
+      9 => 10,
+      8 => 10,
+      7 => 10,
+      6 => 10,
+      5 => 10,
+      4 => 10,
+      3 => 10,
+      2 => 10,
+      1 => 10,
+      0 => 0,
+      _ => 0
+    };
+  }
+
   public static bool Till(Func<int, bool> z) {
     SpinWait till = new();
-    int i = 1;
+    int i = 0;
     while (z(i)) {
       i = i + 1;
       till.SpinOnce();
@@ -207,11 +218,3 @@ class Perform {
   [DllImport("user32.dll")]
   public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 }
-
-
-//Random random = new();
-//Q9.TryEnqueue(() => {
-//  if (random.Next(1, 99) == 1) {
-//    Console.WriteLine(_ / scale);
-//  }
-//});
