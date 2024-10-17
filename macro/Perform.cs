@@ -5,7 +5,6 @@ class Perform {
   public static readonly Specter S9 = new(256);
   public static readonly Specter S1 = new(256);
 
-  public static readonly Driver1 D9 = new();
   public static readonly Driver1 D1 = new();
 
   public static readonly uint[] LZ = [KeyM.L];
@@ -20,11 +19,11 @@ class Perform {
   public static volatile bool HR = A.F;
   public static volatile bool HL = A.F;
 
-  public static readonly int YI = 99;
-  public static volatile int YA;
+  public static readonly int YE = 9;
+  public static volatile int YA = 0;
 
-  public static readonly int XI = 99;
-  public static volatile int XA;
+  public static readonly int XE = 9;
+  public static volatile int XA = 0;
 
   public static bool KeyDU() {
     return S1.TryEnqueue(_ => IO(TL, AL));
@@ -80,12 +79,15 @@ class Perform {
         HL = A.T;
         S1.TryEnqueue(_ => {
           I(LA);
-         
+
           return Till(_ => {
             int yAxis = YAxis(_);
+
             YA = YA + yAxis;
-            D1.Y(yAxis);
-            return HL && W(YI);
+
+            From(_ => D1.Y(1), yAxis);
+
+            return HL && W(YE);
           });
         });
         return next;
@@ -107,15 +109,15 @@ class Perform {
 
   public static int YAxis(int i) {
     return i switch {
-      9 => 10,
-      8 => 10,
-      7 => 10,
-      6 => 10,
-      5 => 10,
-      4 => 10,
-      3 => 10,
-      2 => 10,
-      1 => 10,
+      9 => 3,
+      8 => 3,
+      7 => 3,
+      6 => 2,
+      5 => 2,
+      4 => 2,
+      3 => 1,
+      2 => 1,
+      1 => 1,
       0 => 0,
       _ => 0
     };
@@ -129,6 +131,12 @@ class Perform {
       till.SpinOnce();
     }
     return A.T;
+  }
+
+  public static void From(Func<int, bool> z, int n) {
+    for (int i = 0; i < n; i++) {
+      z(i);
+    }
   }
 
   public static void Exit() => Environment.Exit(0);
