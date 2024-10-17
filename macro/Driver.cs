@@ -9,8 +9,13 @@ class Driver {
     Console.WriteLine($"{GetType().Name}: {dd.Load("DD.dll") == 1 && dd.btn(0) == 1}");
   }
 
-  public bool X(int y, int x) {
-    dd.movR(x, y);
+  public bool Y(int y) {
+    dd.movR(0, y);
+    return A.T;
+  }
+
+  public bool X(int x) {
+    dd.movR(x, 0);
     return A.T;
   }
 
