@@ -75,22 +75,22 @@ class Perform {
     if (nCode < 0) return next;
 
     switch ((uint)wParam) {
-      case WM_LBUTTONDOWN:
-        S1.TryEnqueue(_ => {
-          HL = A.T;
-          I(LA);
-          return S9.TryEnqueue(_ => {
-            YA = Till(_ => (57 > _) && HL && D1.Y(YAxis(_)) && W(YE), YA) - 1;
-            return A.T;
-          });
-        });
-        return next;
       case WM_LBUTTONUP:
         S1.TryEnqueue(_ => {
           HL = A.F;
           O(LA);
           return S9.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA >= _) && D1.Y(YAxis(_) * -1) && W(YE), 0);
+            YA = YA - Till(_ => (YA >= _) && D1.X(XAxis(_) * -1) && D1.Y(YAxis(_) * -1) && W(YE), 0);
+            return A.T;
+          });
+        });
+        return next;
+      case WM_LBUTTONDOWN:
+        S1.TryEnqueue(_ => {
+          HL = A.T;
+          I(LA);
+          return S9.TryEnqueue(_ => {
+            YA = Till(_ => (57 > _) && HL && D1.X(XAxis(_)) && D1.Y(YAxis(_)) && W(YE), YA) - 1;
             return A.T;
           });
         });
@@ -101,6 +101,70 @@ class Perform {
   }
 
   public static int YAxis(int i) {
+    return i switch {
+      57 => 3,
+      56 => 3,
+      55 => 3,
+      54 => 3,
+      53 => 3,
+      52 => 3,
+      51 => 3,
+      50 => 3,
+      49 => 3,
+      48 => 3,
+      47 => 3,
+      46 => 3,
+      45 => 3,
+      44 => 3,
+      43 => 3,
+      42 => 3,
+      41 => 3,
+      40 => 3,
+      39 => 3,
+      38 => 3,
+      37 => 3,
+      36 => 3,
+      35 => 3,
+      34 => 3,
+      33 => 3,
+      32 => 3,
+      31 => 3,
+      30 => 3,
+      29 => 3,
+      28 => 3,
+      27 => 3,
+      26 => 3,
+      25 => 3,
+      24 => 2,
+      23 => 2,
+      22 => 2,
+      21 => 2,
+      20 => 2,
+      19 => 2,
+      18 => 2,
+      17 => 2,
+      16 => 2,
+      15 => 2,
+      14 => 1,
+      13 => 1,
+      12 => 1,
+      11 => 1,
+      10 => 1,
+      9 => 1,
+      8 => 1,
+      7 => 1,
+      6 => 1,
+      5 => 1,
+      4 => 0,
+      3 => 0,
+      2 => 0,
+      1 => 0,
+      0 => 0,
+      _ => 0
+    };
+  }
+
+  public static int XAxis(int i) {
     return i switch {
       57 => 3,
       56 => 3,
