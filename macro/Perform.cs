@@ -2,8 +2,8 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Specter Q9 = new(256);
-  public static readonly Specter Q1 = new(256);
+  public static readonly Specter S9 = new(256);
+  public static readonly Specter S1 = new(256);
   public static readonly Driver1 D1 = new();
 
   public static readonly uint[] ML = [KeyM.L];
@@ -22,11 +22,11 @@ class Perform {
   public static volatile int YA = 0;
 
   public static bool KeyDU() {
-    return Q1.TryEnqueue(_ => IO(TL, AL));
+    return S1.TryEnqueue(_ => IO(TL, AL));
   }
 
   public static bool KeyAU() {
-    return Q1.TryEnqueue(_ => IO(TL, AR));
+    return S1.TryEnqueue(_ => IO(TL, AR));
   }
 
   public static bool OnU(uint i) => i switch {
@@ -73,7 +73,7 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         HL = A.T;
-        Q1.TryEnqueue(_ => {
+        S1.TryEnqueue(_ => {
           I(EA);
 
           int scale = 9;
@@ -87,7 +87,7 @@ class Perform {
         return next;
       case WM_LBUTTONUP:
         HL = A.F;
-        Q1.TryEnqueue(_ => {
+        S1.TryEnqueue(_ => {
           O(EA);
 
           //Thread.Sleep(100);
