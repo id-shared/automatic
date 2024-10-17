@@ -80,7 +80,7 @@ class Perform {
           HL = A.T;
           I(LA);
           return S9.TryEnqueue(_ => {
-            YA = Till(_ => (57 > _) && D1.Y(YAxis(_)) && HL && W(YE), YA);
+            YA = Till(_ => (57 > _) && HL && D1.Y(YAxis(_)) && W(YE), YA) - 1;
             return A.T;
           });
         });
@@ -90,7 +90,7 @@ class Perform {
           HL = A.F;
           O(LA);
           return S9.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA > _) && D1.Y(YAxis(_) * -1) && W(YE / 2), 0);
+            YA = YA - Till(_ => (YA >= _) && D1.Y(YAxis(_) * -1) && W(YE), 0);
             return A.T;
           });
         });
@@ -102,24 +102,24 @@ class Perform {
 
   public static int YAxis(int i) {
     return i switch {
-      57 => 4,
-      56 => 4,
-      55 => 4,
-      54 => 4,
-      53 => 4,
-      52 => 4,
-      51 => 4,
-      50 => 4,
-      49 => 4,
-      48 => 4,
-      47 => 4,
-      46 => 4,
-      45 => 4,
-      44 => 4,
-      43 => 4,
-      42 => 4,
-      41 => 4,
-      40 => 4,
+      57 => 3,
+      56 => 3,
+      55 => 3,
+      54 => 3,
+      53 => 3,
+      52 => 3,
+      51 => 3,
+      50 => 3,
+      49 => 3,
+      48 => 3,
+      47 => 3,
+      46 => 3,
+      45 => 3,
+      44 => 3,
+      43 => 3,
+      42 => 3,
+      41 => 3,
+      40 => 3,
       39 => 3,
       38 => 3,
       37 => 3,
