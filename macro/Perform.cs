@@ -77,33 +77,18 @@ class Perform {
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         HL = A.T;
+        I(LA);
         S1.TryEnqueue(_ => {
-          I(LA);
-
-          return Till(_ => {
-            int actor = _; // % 50;
-            int yAxis = YAxis(actor);
-
-            YA = YA + yAxis;
-
-            D1.Y(yAxis);
-
-            if (_ > 57) {
-              O(LA);
-            }
-
-            return HL && W(YE);
-          });
+          YA = Till(_ => HL && (57 > _) && D1.Y(YAxis(_)) && W(YE));
+          return A.T;
         });
         return next;
       case WM_LBUTTONUP:
         HL = A.F;
+        O(LA);
         S1.TryEnqueue(_ => {
-          O(LA);
-
-          //Thread.Sleep(100);
           //D1.Y(YA * - 1);
-          YA = 0;
+          //YA = 0;
           return A.T;
         });
         return next;
@@ -176,20 +161,21 @@ class Perform {
     };
   }
 
-  public static bool Till(Func<int, bool> z) {
+  public static int Upon(Func<int, bool> z, int n) {
+    for (int i = 0; i < n; i++) {
+      z(i);
+    }
+    return n;
+  }
+
+  public static int Till(Func<int, bool> z) {
     SpinWait till = new();
     int i = 0;
     while (z(i)) {
       i = i + 1;
       till.SpinOnce();
     }
-    return A.T;
-  }
-
-  public static void From(Func<int, bool> z, int n) {
-    for (int i = 0; i < n; i++) {
-      z(i);
-    }
+    return i;
   }
 
   public static void Exit() => Environment.Exit(0);
