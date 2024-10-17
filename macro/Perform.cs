@@ -2,9 +2,9 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Queued Q9 = new(256);
-  public static readonly Queued Q1 = new(256);
-  public static readonly Driver D1 = new();
+  public static readonly Specter Q9 = new(256);
+  public static readonly Specter Q1 = new(256);
+  public static readonly Driver1 D1 = new();
 
   public static readonly uint[] ML = [KeyM.L];
   public static readonly uint[] EA = [KeyE.A];
@@ -44,11 +44,11 @@ class Perform {
 
   public static bool W(double i) => Time.XO(i);
 
-  public static bool O(uint[] k) => Keyboard.Input(k, A.F);
+  public static bool O(uint[] k) => Driver2.Input(k, A.F);
 
-  public static bool I(uint[] k) => Keyboard.Input(k, A.T);
+  public static bool I(uint[] k) => Driver2.Input(k, A.T);
 
-  public static bool H(uint[] k) => Keyboard.IsHeld(k);
+  public static bool H(uint[] k) => Driver2.IsHeld(k);
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);

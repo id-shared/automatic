@@ -1,8 +1,8 @@
-﻿class Queued {
+﻿class Specter {
   public readonly LockFreeRingBuffer<Func<int, bool>> queued;
   public readonly Thread thread;
 
-  public Queued(int bufferSize) {
+  public Specter(int bufferSize) {
     queued = new LockFreeRingBuffer<Func<int, bool>>(bufferSize);
     thread = new Thread(WorkerLoop) {
       IsBackground = true

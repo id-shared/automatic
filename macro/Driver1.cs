@@ -1,10 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-class Driver {
+class Driver1 {
   public readonly DD dd;
 
-  public Driver() {
+  public Driver1() {
     dd = new();
     Console.WriteLine($"{GetType().Name}: {dd.Load("DD.dll") == 1 && dd.btn(0) == 1}");
   }
