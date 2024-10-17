@@ -1,27 +1,21 @@
 ﻿class Program {
   public static void Main() {
     try {
-      CDD DD = new();
+      DD dd = new();
 
-      DD.Load(@"C:\Users\x\Downloads\dd.2024.07\dd.43390\dd43390.dll");
+      int ret = dd.Load("DD.dll");
 
-      // Example usage: Initialize, move mouse, and simulate a key press
-      int status = DD.btn(1);  // Initialize DD.dll or mouse click
+      if (ret != 1) { Console.WriteLine("Load Error"); return; }
 
-      if (status != 1) {
-        Console.WriteLine("DD.dll initialization failed.");
-        return;
-      }
+      ret = dd.btn(0);
+      if (ret != 1) { Console.WriteLine("Initialize Error"); return; }
 
-      // Move the mouse to (500, 500)
-      DD.mov(500, 500);
+      Thread.Sleep(2000);
 
-      // Simulate pressing the 'A' key (assuming the virtual keycode for 'A' is 601)
-      DD.key(601, 1);  // Key down
-      DD.key(601, 2);  // Key up
+      dd.btn(1);
+      Thread.Sleep(50);
+      dd.btn(2);
 
-      Console.WriteLine("Mouse moved and key pressed successfully.");
-      //Thread.Sleep(2000);
       //Mouse.H(1);
       //Mouse.H(2);
       //Perform _ = new();

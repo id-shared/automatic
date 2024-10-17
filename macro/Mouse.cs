@@ -6,7 +6,7 @@ class Mouse {
     return A.T;
   }
 
-  public static bool H(int k) {
+  public static bool btn(int k) {
     Console.WriteLine(DD_btn(k));
     return A.T;
   }
@@ -19,46 +19,6 @@ class Mouse {
 }
 
 class DD {
-  // Import DD_mov (e.g., a function to move the mouse)
-  [DllImport(@"C:\Users\x\Downloads\dd.2024.07\dd.43390\dd43390.dll")]
-  public static extern int DD_mov(int x, int y);
-
-  // Import DD_key (for key presses)
-  [DllImport(@"C:\Users\x\Downloads\dd.2024.07\dd.43390\dd43390.dll")]
-  public static extern int DD_key(int keycode, int flag);
-
-  // Import initialization function, if needed
-  [DllImport(@"C:\Users\x\Downloads\dd.2024.07\dd.43390\dd43390.dll")]
-  public static extern int DD_btn(int btn);
-}
-
-public enum KeyModifiers {
-  None = 0,
-  Alt = 1,
-  Control = 2,
-  Shift = 4,
-  Windows = 8
-}
-
-class CDD {
-  [DllImport("Kernel32")]
-  private static extern System.IntPtr LoadLibrary(string dllfile);
-
-  [DllImport("Kernel32")]
-  private static extern System.IntPtr GetProcAddress(System.IntPtr hModule, string lpProcName);
-
-  [DllImport("kernel32.dll")]
-  public static extern bool FreeLibrary(IntPtr hModule);
-
-
-  public delegate int pDD_btn(int btn);
-  public delegate int pDD_whl(int whl);
-  public delegate int pDD_key(int ddcode, int flag);
-  public delegate int pDD_mov(int x, int y);
-  public delegate int pDD_movR(int dx, int dy);
-  public delegate int pDD_str(string str);
-  public delegate int pDD_todc(int vkcode);
-
   public pDD_btn btn;         //Mouse button 
   public pDD_whl whl;         //Mouse wheel
   public pDD_mov mov;      //Mouse move abs. 
@@ -67,9 +27,7 @@ class CDD {
   public pDD_str str;            //Input visible char
   public pDD_todc todc;      //VK to ddcode
 
-  private System.IntPtr m_hinst;
-
-  ~CDD() {
+  ~DD() {
     if (!m_hinst.Equals(IntPtr.Zero)) {
       bool b = FreeLibrary(m_hinst);
     }
@@ -117,4 +75,31 @@ class CDD {
 
     return 1;
   }
+
+  public delegate int pDD_btn(int btn);
+  public delegate int pDD_whl(int whl);
+  public delegate int pDD_key(int ddcode, int flag);
+  public delegate int pDD_mov(int x, int y);
+  public delegate int pDD_movR(int dx, int dy);
+  public delegate int pDD_str(string str);
+  public delegate int pDD_todc(int vkcode);
+
+  private IntPtr m_hinst;
+
+  [DllImport("Kernel32")]
+  private static extern IntPtr LoadLibrary(string dllfile);
+
+  [DllImport("Kernel32")]
+  private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+
+  [DllImport("kernel32.dll")]
+  public static extern bool FreeLibrary(IntPtr hModule);
+}
+
+enum KeyModifiers {
+  None = 0,
+  Alt = 1,
+  Control = 2,
+  Shift = 4,
+  Windows = 8
 }
