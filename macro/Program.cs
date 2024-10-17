@@ -13,13 +13,12 @@
       //Thread.Sleep(2000);
 
       //dd.btn(1);
-      //Thread.Sleep(50);
       //dd.btn(2);
 
-      Mouse mouse = new();
+      Driver mouse = new();
 
-      mouse.I(1);
-      mouse.I(2);
+      Thread.Sleep(1000);
+      mouse.X(10, 10);
 
       //Perform _ = new();
     } catch (Exception ex) {

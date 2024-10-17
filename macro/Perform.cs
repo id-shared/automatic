@@ -3,6 +3,8 @@ using System.Diagnostics;
 
 class Perform {
   public static readonly Queuer Q1 = new(256);
+  public static readonly Driver D1 = new();
+
   public static readonly uint[] ML = [KeyM.L];
   public static readonly uint[] EA = [KeyE.A];
   public static readonly uint[] AR = [KeyA.R];

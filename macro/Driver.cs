@@ -1,16 +1,21 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-class Mouse {
+class Driver {
   public readonly DD dd;
 
-  public Mouse() {
+  public Driver() {
     dd = new();
     Console.WriteLine($"{GetType().Name}: {dd.Load("DD.dll") == 1 && dd.btn(0) == 1}");
   }
 
+  public bool X(int y, int x) {
+    dd.movR(x, y);
+    return A.T;
+  }
+
   public bool I(int x) {
-    Console.WriteLine(dd.btn(x));
+    dd.btn(x);
     return A.T;
   }
 }
