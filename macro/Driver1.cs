@@ -8,6 +8,11 @@ class Driver1 {
     dd = new();
     Console.WriteLine($"{GetType().Name}: {dd.Load("DD.dll") == 1 && dd.btn(0) == 1}");
   }
+  
+  public bool YX(int y, int x) {
+    dd.movR(x, y);
+    return A.T;
+  }
 
   public bool Y(int y) {
     dd.movR(0, y);

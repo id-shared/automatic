@@ -80,7 +80,7 @@ class Perform {
           HL = A.T;
           I(LA);
           return S9.TryEnqueue(_ => {
-            YA = Till(_ => (57 > _) && HL && D1.X(XAxis(_) * -1) && D1.Y(YAxis(_)) && W(YE), YA) - 1;
+            YA = Till(_ => (57 > _) && HL && D1.YX(YAxis(_), XAxis(_) * -1) && W(YE), YA) - 1;
             return A.T;
           });
         });
@@ -90,7 +90,7 @@ class Perform {
           HL = A.F;
           O(LA);
           return S9.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA >= _) && D1.X(XAxis(_)) && D1.Y(YAxis(_) * -1) && W(YE), 0);
+            YA = YA - Till(_ => (YA >= _) && D1.YX(YAxis(_) * -1, XAxis(_)) && W(YE), 0);
             return A.T;
           });
         });
