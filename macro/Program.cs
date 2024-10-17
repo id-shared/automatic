@@ -1,9 +1,12 @@
 ﻿class Program {
   public static void Main() {
     try {
-      // Example usage: Initialize, move mouse, and simulate a key press
+      CDD DD = new();
 
-      int status = DD.DD_btn(1);  // Initialize DD.dll or mouse click
+      DD.Load(@"C:\Users\x\Downloads\dd.2024.07\dd.43390\dd43390.dll");
+
+      // Example usage: Initialize, move mouse, and simulate a key press
+      int status = DD.btn(1);  // Initialize DD.dll or mouse click
 
       if (status != 1) {
         Console.WriteLine("DD.dll initialization failed.");
@@ -11,11 +14,11 @@
       }
 
       // Move the mouse to (500, 500)
-      DD.DD_mov(500, 500);
+      DD.mov(500, 500);
 
       // Simulate pressing the 'A' key (assuming the virtual keycode for 'A' is 601)
-      DD.DD_key(601, 1);  // Key down
-      DD.DD_key(601, 2);  // Key up
+      DD.key(601, 1);  // Key down
+      DD.key(601, 2);  // Key up
 
       Console.WriteLine("Mouse moved and key pressed successfully.");
       //Thread.Sleep(2000);
