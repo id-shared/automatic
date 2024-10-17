@@ -9,6 +9,7 @@
     <StartupObject>Program</StartupObject>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <ApplicationIcon>z.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>9999</WarningLevel>
