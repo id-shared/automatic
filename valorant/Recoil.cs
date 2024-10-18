@@ -1,14 +1,20 @@
 ﻿class Recoil {
-  public static readonly Random CN = new();
+  public static readonly Random ZN = new();
+  public static volatile bool YS;
+  public static volatile bool XS;
 
-  public static bool State() {
-    return CN.Next(1, 3) == 1;
+  public Recoil() {
+    YS = State();
+    XS = State();
   }
 
-  public static int YAxis(int n) {
-    bool state = State();
-    int o = state == 1 ? 0 : 1;
-    int i = state == 1 ? 1 : 0;
+  public bool State() {
+    return ZN.Next(1, 3) == 1;
+  }
+
+  public int YAxis(int n) {
+    int o = YS ? 0 : 1;
+    int i = YS ? 1 : 0;
 
     return n switch {
       99 => 1,
