@@ -2,23 +2,20 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Specter S9 = new(256);
-  public static readonly Specter S3 = new(256);
+  public static readonly Specter S2 = new(256);
   public static readonly Specter S1 = new(256);
 
   public static readonly Driver1 D1 = new();
 
-
   public static readonly uint[] RA = [KeyA.R];
+  public static volatile bool R = A.F;
 
   public static readonly double LX = 209.9999;
   public static readonly double LT = 99.99999;
   public static readonly uint[] LE = [KeyM.L];
   public static readonly uint[] LC = [KeyE.A];
   public static readonly uint[] LA = [KeyA.L];
-
-  public static volatile bool HR = A.F;
-  public static volatile bool HL = A.F;
+  public static volatile bool L = A.F;
 
   public static readonly int ZE = 8;
   public static readonly int ZC = 2;
@@ -27,10 +24,10 @@ class Perform {
   public static volatile int XA;
 
   public static bool KeyETU() {
-    HL = A.F;
+    L = A.F;
     S1.TryEnqueue(_ => {
       O(LC);
-      return S3.TryEnqueue(_ => {
+      return S2.TryEnqueue(_ => {
         YA = YA - Till(e => (YA >= e) && D1.YX(Recoil.YAxis(e) * -ZC, Recoil.XAxis(e) / ZC) && C(ZE / 1.2), 0);
         return A.T;
       });
@@ -39,11 +36,11 @@ class Perform {
   }
 
   public static bool KeyETD() {
-    HL = A.T;
+    L = A.T;
     S1.TryEnqueue(_ => {
       I(LC);
-      return S3.TryEnqueue(_ => {
-        YA = Till(e => (99 >= e) && HL && D1.YX(Recoil.YAxis(e) * ZC, Recoil.XAxis(e) / -ZC) && C(ZE), YA) - 1;
+      return S2.TryEnqueue(_ => {
+        YA = Till(e => (99 >= e) && L && D1.YX(Recoil.YAxis(e) * ZC, Recoil.XAxis(e) / -ZC) && C(ZE), YA) - 1;
         return A.T;
       });
     });
