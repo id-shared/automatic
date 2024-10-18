@@ -8,26 +8,26 @@ class Perform {
   public static readonly Device1 D1 = new();
 
   public static readonly uint[] RA = [KeyA.R];
-  public static volatile bool R = A.F;
+  public static bool R = A.F;
 
   public static readonly double LI = 209.9999;
   public static readonly double LE = 99.99999;
   public static readonly uint[] LC = [KeyM.L];
   public static readonly uint[] LA = [KeyA.L];
-  public static volatile bool L = A.F;
+  public static bool L = A.F;
 
   public static readonly int EY = 8;
   public static readonly int CY = 2;
-  public static volatile int AY = 0;
-  public static volatile int AX = 0;
+  public static int AY = 0;
+  public static int AX = 0;
 
   public static bool KeyIU() {
+    L = A.F;
     S1.TryEnqueue(_ => {
-      L = A.F;
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = Upon(ci => (ci >= 00) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.0), AY);
-        Console.WriteLine($"z: {AY}");
+        AY = AY - Till(ci => (AY >= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.2), 00);
+        Console.WriteLine($"zz: {AY}");
         return A.T;
       });
     });
@@ -35,12 +35,12 @@ class Perform {
   }
 
   public static bool KeyID() {
-    S1.TryEnqueue(_ => {
     L = A.T;
+    S1.TryEnqueue(_ => {
       I(LC);
       return S2.TryEnqueue(_ => {
-        AY = Till(ci => (99 >= ci) && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0) && L, AY);
-        Console.WriteLine($"a: {AY}");
+        AY = Till(ci => (99 >= ci) && L && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0), AY);
+        Console.WriteLine($"aa: {AY}");
         return A.T;
       });
     });
