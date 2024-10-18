@@ -10,10 +10,9 @@ class Perform {
   public static readonly uint[] RA = [KeyA.R];
   public static volatile bool R = A.F;
 
-  public static readonly double LX = 209.9999;
-  public static readonly double LT = 99.99999;
-  public static readonly uint[] LE = [KeyM.L];
-  public static readonly uint[] LC = [KeyE.A];
+  public static readonly double LI = 209.9999;
+  public static readonly double LE = 99.99999;
+  public static readonly uint[] LC = [KeyM.L];
   public static readonly uint[] LA = [KeyA.L];
   public static volatile bool L = A.F;
 
@@ -47,11 +46,11 @@ class Perform {
   }
 
   public static bool KeyDU() {
-    return S1.TryEnqueue(_ => IO(LT, LA));
+    return S1.TryEnqueue(_ => IO(LE, LA));
   }
 
   public static bool KeyAU() {
-    return S1.TryEnqueue(_ => IO(LT, RA));
+    return S1.TryEnqueue(_ => IO(LE, RA));
   }
 
   public static bool OnU(uint i) => i switch {
