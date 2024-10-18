@@ -1,9 +1,9 @@
-﻿class Recoil {
+﻿class Pattern {
   public static readonly Random ZN = new();
   public static volatile bool YS;
   public static volatile bool XS;
 
-  public Recoil() {
+  public Pattern() {
     YS = State();
     XS = State();
   }

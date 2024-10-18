@@ -2,10 +2,10 @@
 using System.Diagnostics;
 
 class Perform {
-  public static readonly Specter S2 = new(256);
-  public static readonly Specter S1 = new(256);
-
-  public static readonly Device1 D1 = new();
+  public static volatile Specter S2 = new(256);
+  public static volatile Specter S1 = new(256);
+  public static volatile Pattern P1 = new();
+  public static volatile Device1 D1 = new();
 
   public static readonly uint[] RC = [KeyM.R];
   public static readonly uint[] RA = [KeyA.R];
@@ -24,18 +24,17 @@ class Perform {
 
   public static bool KeyEAU() {
     L = A.F;
-    S1.TryEnqueue(_ => I(LC) && S2.TryEnqueue(_ => {
-      Recoil recoil = new Recoil();
-      AY = Upon(ci => !L && (0 <= ci) && D1.YX(recoil.YAxis(ci) * -CY, recoil.XAxis(ci) / CY) && C(EY), AY) + 1;
+    S1.TryEnqueue(_ => O(LC) && S2.TryEnqueue(_ => {
+      AY = Upon(ci => !L && (0 <= ci) && D1.YX(P1.YAxis(ci) * -CY, P1.XAxis(ci) / CY) && C(EY), AY) + 1;
       return A.T;
     }));
     return L;
   }
 
   public static bool KeyEAD() {
-    Recoil recoil = new Recoil();
+    P1 = new Pattern();
     L = L || S1.TryEnqueue(_ => I(LC) && S2.TryEnqueue(_ => {
-      AY = Till(ci => L && (99 >= ci) && D1.YX(recoil.YAxis(ci) * CY, recoil.XAxis(ci) / -CY) && C(EY), AY) - 1;
+      AY = Till(ci => L && (99 >= ci) && D1.YX(P1.YAxis(ci) * CY, P1.XAxis(ci) / -CY) && C(EY), AY) - 1;
       return A.T;
     }));
     return L;
