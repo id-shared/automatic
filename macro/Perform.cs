@@ -16,7 +16,7 @@ class Perform {
   public static readonly uint[] LA = [KeyA.L];
   public static bool L = A.F;
 
-  public static readonly int EY = 8;
+  public static readonly int EY = 36;
   public static readonly int CY = 2;
   public static int AY = 0;
   public static int AX = 0;
@@ -26,8 +26,7 @@ class Perform {
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = AY - Till(ci => (AY >= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.2), 00);
-        //Console.WriteLine($"zz: {AY}");
+        AY = Upon(ci => (00 <= ci) && IX("2", ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.2), AY);
         return A.T;
       });
     });
@@ -39,8 +38,7 @@ class Perform {
     S1.TryEnqueue(_ => {
       I(LC);
       return S2.TryEnqueue(_ => {
-        AY = Till(ci => (99 >= ci) && L && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0), 00);
-        //Console.WriteLine($"aa: {AY}");
+        AY = Till(ci => (99 >= ci) && IX("1", ci) && L && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0), AY);
         return A.T;
       });
     });
@@ -117,11 +115,11 @@ class Perform {
   }
 
   public static int Upon(Func<int, bool> z, int i) {
-    return z(i) ? Upon(z, i - 1) : i + 1;
+    return z(i) ? Upon(z, i - 1) : i;
   }
 
   public static int Till(Func<int, bool> z, int i) {
-    return z(i) ? Till(z, i + 1) : i - 1;
+    return z(i) ? Till(z, i + 1) : i;
   }
 
   public static void Exit() => Environment.Exit(0);
