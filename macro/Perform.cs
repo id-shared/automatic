@@ -26,7 +26,7 @@ class Perform {
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = AY - Till(e => (AY >= e) && D1.YX(Recoil.YAxis(e) * -CY, Recoil.XAxis(e) / CY) && C(EY / 1.0), 0);
+        AY = Upon(e => e >= 0 && D1.YX(Recoil.YAxis(e) * -CY, Recoil.XAxis(e) / CY) && C(EY / 1.20000), AY);
         Console.WriteLine($"z: {AY}");
         return A.T;
       });
@@ -39,7 +39,7 @@ class Perform {
     S1.TryEnqueue(_ => {
       I(LC);
       return S2.TryEnqueue(_ => {
-        AY = Till(e => (99 >= e) && L && D1.YX(Recoil.YAxis(e) * CY, Recoil.XAxis(e) / -CY) && C(EY), AY) - 1;
+        AY = Till(e => 99 >= e && L && D1.YX(Recoil.YAxis(e) * CY, Recoil.XAxis(e) / -CY) && C(EY), AY) - 1;
         Console.WriteLine($"a: {AY}");
         return A.T;
       });
