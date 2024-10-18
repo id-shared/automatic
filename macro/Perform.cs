@@ -16,7 +16,7 @@ class Perform {
   public static readonly uint[] LA = [KeyA.L];
   public static volatile bool L = A.F;
 
-  public static readonly int EY = 36;
+  public static readonly int EY = 8;
   public static readonly int CY = 2;
   public static volatile int AY = 0;
   public static volatile int AX = 0;
@@ -26,7 +26,7 @@ class Perform {
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = Upon(ci => (0 <= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY), AY) + 1;
+        AY = Upon(ci => !L && (0 <= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY), AY) + 1;
         return A.T;
       });
     });
