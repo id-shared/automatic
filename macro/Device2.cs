@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-class Driver2 {
+class Device2 {
   public static bool Input(uint[] k, bool a) {
     INPUT[] inputs = new INPUT[k.Length];
     for (int i = 0; i < k.Length; i++) {

@@ -5,7 +5,7 @@ class Perform {
   public static readonly Specter S2 = new(256);
   public static readonly Specter S1 = new(256);
 
-  public static readonly Driver1 D1 = new();
+  public static readonly Device1 D1 = new();
 
   public static readonly uint[] RA = [KeyA.R];
   public static volatile bool R = A.F;
@@ -17,18 +17,17 @@ class Perform {
   public static readonly uint[] LA = [KeyA.L];
   public static volatile bool L = A.F;
 
-  public static readonly int ZE = 8;
-  public static readonly int ZC = 2;
-
-  public static volatile int YA;
-  public static volatile int XA;
+  public static readonly int EY = 8;
+  public static readonly int CY = 2;
+  public static volatile int AY;
+  public static volatile int AX;
 
   public static bool KeyETU() {
     L = A.F;
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
-        YA = YA - Till(e => (YA >= e) && D1.YX(Recoil.YAxis(e) * -ZC, Recoil.XAxis(e) / ZC) && C(ZE / 1.2), 0);
+        AY = AY - Till(e => (AY >= e) && D1.YX(Recoil.YAxis(e) * -CY, Recoil.XAxis(e) / CY) && C(EY / 1.2), 0);
         return A.T;
       });
     });
@@ -40,7 +39,7 @@ class Perform {
     S1.TryEnqueue(_ => {
       I(LC);
       return S2.TryEnqueue(_ => {
-        YA = Till(e => (99 >= e) && L && D1.YX(Recoil.YAxis(e) * ZC, Recoil.XAxis(e) / -ZC) && C(ZE), YA) - 1;
+        AY = Till(e => (99 >= e) && L && D1.YX(Recoil.YAxis(e) * CY, Recoil.XAxis(e) / -CY) && C(EY), AY) - 1;
         return A.T;
       });
     });
@@ -73,11 +72,11 @@ class Perform {
     return A.T;
   }
 
-  public static bool O(uint[] k) => Driver2.Input(k, A.F);
+  public static bool O(uint[] k) => Device2.Input(k, A.F);
 
-  public static bool I(uint[] k) => Driver2.Input(k, A.T);
+  public static bool I(uint[] k) => Device2.Input(k, A.T);
 
-  public static bool H(uint[] k) => Driver2.IsHeld(k);
+  public static bool H(uint[] k) => Device2.IsHeld(k);
 
   public static bool C(double i) => Time.XO(i);
 
