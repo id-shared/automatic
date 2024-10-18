@@ -76,8 +76,6 @@ class Perform {
   public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX1, nCode, wParam, lParam);
     if (nCode < 0) return next;
-    int scale = 4;
-
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         HL = A.T;
