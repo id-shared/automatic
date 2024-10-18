@@ -8,41 +8,40 @@ class Perform {
   public static readonly Device1 D1 = new();
 
   public static readonly uint[] RA = [KeyA.R];
-  public static bool R = A.F;
+  public static volatile bool R = A.F;
 
   public static readonly double LI = 209.9999;
   public static readonly double LE = 99.99999;
   public static readonly uint[] LC = [KeyM.L];
   public static readonly uint[] LA = [KeyA.L];
-  public static bool L = A.F;
+  public static volatile bool L = A.F;
 
   public static readonly int EY = 36;
   public static readonly int CY = 2;
-  public static int AY = 0;
-  public static int AX = 0;
+  public static volatile int AY = 0;
+  public static volatile int AX = 0;
 
   public static bool KeyEAU() {
-    L = A.F;
+    L = L ? A.F : L;
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = Upon(ci => (00 <= ci) && IX("2", ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.2), AY);
+        AY = Upon(ci => (0 <= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY), AY) + 1;
         return A.T;
       });
     });
-    return A.T;
+    return L;
   }
 
   public static bool KeyEAD() {
-    L = A.T;
-    S1.TryEnqueue(_ => {
+    L = L || S1.TryEnqueue(_ => {
       I(LC);
       return S2.TryEnqueue(_ => {
-        AY = Till(ci => (99 >= ci) && IX("1", ci) && L && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0), AY);
+        AY = Till(ci => L && (99 >= ci) && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY), AY) - 1;
         return A.T;
       });
     });
-    return A.T;
+    return L;
   }
 
   public static bool KeyDU() {
@@ -72,7 +71,7 @@ class Perform {
     KeyE.A => KeyEAD(),
     KeyX.D => KeyDD(),
     KeyX.A => KeyAD(),
-    _ => A.F,
+    _ => A.T,
   };
 
   public static bool IX<X>(string e, X _) {
