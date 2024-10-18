@@ -21,26 +21,26 @@ class Perform {
   public static int AY = 0;
   public static int AX = 0;
 
-  public static bool KeyIU() {
+  public static bool KeyEAU() {
     L = A.F;
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
         AY = AY - Till(ci => (AY >= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.2), 00);
-        Console.WriteLine($"zz: {AY}");
+        //Console.WriteLine($"zz: {AY}");
         return A.T;
       });
     });
     return A.T;
   }
 
-  public static bool KeyID() {
+  public static bool KeyEAD() {
     L = A.T;
     S1.TryEnqueue(_ => {
       I(LC);
       return S2.TryEnqueue(_ => {
-        AY = Till(ci => (99 >= ci) && L && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0), AY);
-        Console.WriteLine($"aa: {AY}");
+        AY = Till(ci => (99 >= ci) && L && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0), 00);
+        //Console.WriteLine($"aa: {AY}");
         return A.T;
       });
     });
@@ -64,14 +64,14 @@ class Perform {
   }
 
   public static bool OnU(uint i) => i switch {
-    KeyX.I => KeyIU(),
+    KeyE.A => KeyEAU(),
     KeyX.D => KeyDU(),
     KeyX.A => KeyAU(),
     _ => A.F,
   };
 
   public static bool OnD(uint i) => i switch {
-    KeyX.I => KeyID(),
+    KeyE.A => KeyEAD(),
     KeyX.D => KeyDD(),
     KeyX.A => KeyAD(),
     _ => A.F,
