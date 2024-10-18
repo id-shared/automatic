@@ -17,8 +17,8 @@ class Perform {
   public static readonly uint[] LC = [KeyE.A];
   public static readonly uint[] LA = [KeyA.L];
 
-  public static volatile bool HR = global::A.F;
-  public static volatile bool HL = global::A.F;
+  public static volatile bool HR = A.F;
+  public static volatile bool HL = A.F;
 
   public static readonly int ZE = 8;
   public static readonly int ZC = 2;
@@ -27,27 +27,27 @@ class Perform {
   public static volatile int XA;
 
   public static bool KeyETU() {
-    HL = global::A.F;
+    HL = A.F;
     S1.TryEnqueue(_ => {
       O(LC);
       return S3.TryEnqueue(_ => {
-        YA = YA - Till(e => (YA >= e) && D1.YX(Recoil.YAxis(e) * -ZC, Recoil.XAxis(e) / ZC) && A(ZE / 1.2), 0);
-        return global::A.T;
+        YA = YA - Till(e => (YA >= e) && D1.YX(Recoil.YAxis(e) * -ZC, Recoil.XAxis(e) / ZC) && C(ZE / 1.2), 0);
+        return A.T;
       });
     });
-    return global::A.T;
+    return A.T;
   }
 
   public static bool KeyETD() {
-    HL = global::A.T;
+    HL = A.T;
     S1.TryEnqueue(_ => {
       I(LC);
       return S3.TryEnqueue(_ => {
-        YA = Till(e => (99 >= e) && HL && D1.YX(Recoil.YAxis(e) * ZC, Recoil.XAxis(e) / -ZC) && A(ZE), YA) - 1;
-        return global::A.T;
+        YA = Till(e => (99 >= e) && HL && D1.YX(Recoil.YAxis(e) * ZC, Recoil.XAxis(e) / -ZC) && C(ZE), YA) - 1;
+        return A.T;
       });
     });
-    return global::A.T;
+    return A.T;
   }
 
   public static bool KeyDU() {
@@ -61,28 +61,28 @@ class Perform {
   public static bool OnU(uint i) => i switch {
     KeyX.D => KeyDU(),
     KeyX.A => KeyAU(),
-    _ => global::A.F,
+    _ => A.F,
   };
 
   public static bool OnD(uint i) => i switch {
     KeyE.T => KeyETD(),
-    _ => global::A.F,
+    _ => A.F,
   };
 
   public static bool IO(double t, uint[] k) {
     I(k);
     Time.XO(t);
     O(k);
-    return global::A.T;
+    return A.T;
   }
 
-  public static bool O(uint[] k) => Driver2.Input(k, global::A.F);
+  public static bool O(uint[] k) => Driver2.Input(k, A.F);
 
-  public static bool I(uint[] k) => Driver2.Input(k, global::A.T);
+  public static bool I(uint[] k) => Driver2.Input(k, A.T);
 
   public static bool H(uint[] k) => Driver2.IsHeld(k);
 
-  public static bool A(double i) => Time.XO(i);
+  public static bool C(double i) => Time.XO(i);
 
   public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
