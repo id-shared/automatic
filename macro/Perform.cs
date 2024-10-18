@@ -1,5 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 class Perform {
   public static readonly Specter S2 = new(256);
@@ -19,8 +19,8 @@ class Perform {
 
   public static readonly int EY = 8;
   public static readonly int CY = 2;
-  public static volatile int AY;
-  public static volatile int AX;
+  public static volatile int AY = 0;
+  public static volatile int AX = 0;
 
   public static bool KeyETU() {
     L = A.F;
