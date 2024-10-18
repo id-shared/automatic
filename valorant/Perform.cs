@@ -26,13 +26,13 @@ class Perform {
     L = A.F;
     S1.TryEnqueue(_ => O(LC) && S2.TryEnqueue(_ => {
       AY = Upon(ci => !L && (0 <= ci) && D1.YX(P1.YAxis(ci) * -CY, P1.XAxis(ci) / CY) && C(EY), AY) + 1;
+      P1 = new Pattern();
       return A.T;
     }));
     return L;
   }
 
   public static bool KeyEAD() {
-    P1 = new Pattern();
     L = L || S1.TryEnqueue(_ => I(LC) && S2.TryEnqueue(_ => {
       AY = Till(ci => L && (99 >= ci) && D1.YX(P1.YAxis(ci) * CY, P1.XAxis(ci) / -CY) && C(EY), AY) - 1;
       return A.T;
