@@ -76,21 +76,21 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
+        HL = A.T;
         S1.TryEnqueue(_ => {
-          HL = A.T;
           I(LA);
           return S9.TryEnqueue(_ => {
-            YA = Till(_ => (57 > _) && HL && D1.YX(YAxis(_), XAxis(_) * -1) && W(YE), YA) - 1;
+            YA = Till(_ => (57 > _) && HL && D1.Y(YAxis(_)) && W(YE), YA) - 1;
             return A.T;
           });
         });
         return next;
       case WM_LBUTTONUP:
+        HL = A.F;
         S1.TryEnqueue(_ => {
-          HL = A.F;
           O(LA);
           return S9.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA >= _) && D1.YX(YAxis(_) * -1, XAxis(_)) && W(YE), 0);
+            YA = YA - Till(_ => (YA >= _) && D1.Y(YAxis(_) * -1) && W(YE), 0);
             return A.T;
           });
         });
@@ -160,70 +160,6 @@ class Perform {
       2 => 2,
       1 => 2,
       0 => 2,
-      _ => 0
-    };
-  }
-
-  public static int XAxis(int i) {
-    return i switch {
-      57 => 1,
-      56 => 0,
-      55 => 1,
-      54 => 0,
-      53 => 1,
-      52 => 0,
-      51 => 1,
-      50 => 0,
-      49 => 1,
-      48 => 0,
-      47 => 1,
-      46 => 0,
-      45 => 1,
-      44 => 0,
-      43 => 1,
-      42 => 0,
-      41 => 1,
-      40 => 0,
-      39 => 1,
-      38 => 0,
-      37 => 0,
-      36 => 0,
-      35 => 1,
-      34 => 1,
-      33 => 0,
-      32 => 0,
-      31 => 0,
-      30 => 1,
-      29 => 1,
-      28 => 0,
-      27 => 0,
-      26 => 0,
-      25 => 1,
-      24 => 1,
-      23 => 0,
-      22 => 0,
-      21 => 0,
-      20 => 1,
-      19 => 1,
-      18 => 0,
-      17 => 0,
-      16 => 0,
-      15 => 1,
-      14 => 1,
-      13 => 0,
-      12 => 0,
-      11 => 0,
-      10 => 1,
-      9 => 0,
-      8 => 0,
-      7 => 0,
-      6 => 0,
-      5 => 0,
-      4 => 0,
-      3 => 0,
-      2 => 0,
-      1 => 0,
-      0 => 0,
       _ => 0
     };
   }
