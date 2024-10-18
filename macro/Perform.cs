@@ -22,11 +22,11 @@ class Perform {
   public static volatile int AX = 0;
 
   public static bool KeyIU() {
-    L = A.F;
     S1.TryEnqueue(_ => {
+      L = A.F;
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = Upon(e => e >= 0 && D1.YX(Recoil.YAxis(e) * -CY, Recoil.XAxis(e) / CY) && C(EY / 1.20000), AY);
+        AY = Upon(ci => (ci >= 00) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY / 1.0), AY);
         Console.WriteLine($"z: {AY}");
         return A.T;
       });
@@ -35,11 +35,11 @@ class Perform {
   }
 
   public static bool KeyID() {
-    L = A.T;
     S1.TryEnqueue(_ => {
+    L = A.T;
       I(LC);
       return S2.TryEnqueue(_ => {
-        AY = Till(e => 99 >= e && L && D1.YX(Recoil.YAxis(e) * CY, Recoil.XAxis(e) / -CY) && C(EY), AY) - 1;
+        AY = Till(ci => (99 >= ci) && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY / 1.0) && L, AY);
         Console.WriteLine($"a: {AY}");
         return A.T;
       });
@@ -117,11 +117,11 @@ class Perform {
   }
 
   public static int Upon(Func<int, bool> z, int i) {
-    return z(i) ? Upon(z, i - 1) : i;
+    return z(i) ? Upon(z, i - 1) : i + 1;
   }
 
   public static int Till(Func<int, bool> z, int i) {
-    return z(i) ? Till(z, i + 1) : i;
+    return z(i) ? Till(z, i + 1) : i - 1;
   }
 
   public static void Exit() => Environment.Exit(0);
