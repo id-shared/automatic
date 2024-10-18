@@ -80,19 +80,21 @@ class Perform {
 
   public static bool C(double i) => Time.XO(i);
 
-  public static IntPtr HookCallbackX2(int nCode, IntPtr wParam, IntPtr lParam) {
-    IntPtr next = CallNextHookEx(hookX2, nCode, wParam, lParam);
+  public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+    IntPtr next = CallNextHookEx(hook, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
     if (key == KeyE.W) Exit();
 
     switch ((uint)wParam) {
+      case WM_SYSKEYDOWN or WM_KEYDOWN:
+        OnD(key);
+        return next;
       case WM_SYSKEYUP or WM_KEYUP:
         OnU(key);
         return next;
       default:
-        OnD(key);
         return next;
     }
   }
@@ -125,19 +127,18 @@ class Perform {
   }
 
   public Perform() {
-    hookX2 = SetHook(hookCallBackX2, WH_KEYBOARD_LL);
+    hook = SetHook(hookCallBack, 13);
     Subscribe(new MSG());
   }
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
-  public static readonly LowLevelProc hookCallBackX2 = HookCallbackX2;
+  public static readonly LowLevelProc hookCallBack = HookCallback;
+  public static volatile IntPtr hook = IntPtr.Zero;
 
-  public static volatile IntPtr hookX2 = IntPtr.Zero;
-  public static volatile IntPtr hookX1 = IntPtr.Zero;
-
-  public const uint WM_LBUTTONDOWN = 0x0201, WM_LBUTTONUP = 0x0202;
-  public const uint WM_KEYUP = 0x0101, WM_SYSKEYUP = 0x0105;
-  public const uint WH_KEYBOARD_LL = 13, WH_MOUSE_LL = 14;
+  public const uint WM_SYSKEYDOWN = 0x0104;
+  public const uint WM_SYSKEYUP = 0x0105;
+  public const uint WM_KEYDOWN = 0x0100;
+  public const uint WM_KEYUP = 0x0101;
 
   [StructLayout(LayoutKind.Sequential)]
   public struct MSG {
