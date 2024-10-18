@@ -20,16 +20,14 @@ class Perform {
   public static volatile bool HR = A.F;
   public static volatile bool HL = A.F;
 
-  public static readonly int YE = 8;
-  public static readonly int YC = 2;
-  public static volatile int YA;
+  public static readonly int ZE = 8;
+  public static readonly int ZC = 2;
 
-  public static readonly int XE = 2;
-  public static readonly int XC = 1;
+  public static volatile int YA;
   public static volatile int XA;
 
   public static bool KeyDU() {
-    return S1.TryEnqueue(_ => IO(LT, LA));
+    return S1.TryEnqueue(_ => IO(LT, LA) && IO(800, LC));
   }
 
   public static bool KeyAU() {
@@ -82,7 +80,7 @@ class Perform {
         S1.TryEnqueue(_ => {
           I(LC);
           return S3.TryEnqueue(_ => {
-            YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.YX(YAxis(e) * YC, 0)) && W(YE), YA) - 1;
+            YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.YX(YAxis(e) * ZC, -XAxis(e) / ZC)) && W(ZE), YA) - 1;
             return A.T;
           });
         });
@@ -92,7 +90,7 @@ class Perform {
         S1.TryEnqueue(_ => {
           O(LC);
           return S3.TryEnqueue(_ => {
-            YA = YA - Till(e => (YA >= e) && S9.TryEnqueue(_ => D1.YX(YAxis(e) * -YC, 0)) && W(YE), 0);
+            YA = YA - Till(e => (YA >= e) && S9.TryEnqueue(_ => D1.YX(YAxis(e) * -ZC, XAxis(e) / ZC)) && W(ZE), 0);
             return A.T;
           });
         });
@@ -203,6 +201,112 @@ class Perform {
       3 => 1,
       2 => 0,
       1 => 1,
+      0 => 0,
+      _ => 0
+    };
+  }
+
+  public static int XAxis(int i) {
+    return i switch {
+      99 => 2,
+      98 => 1,
+      97 => 0,
+      96 => 2,
+      95 => 1,
+      94 => 0,
+      93 => 2,
+      92 => 1,
+      91 => 0,
+      90 => 2,
+      89 => 1,
+      88 => 0,
+      87 => 2,
+      86 => 1,
+      85 => 0,
+      84 => 2,
+      83 => 1,
+      82 => 0,
+      81 => 2,
+      80 => 1,
+      79 => 0,
+      78 => 2,
+      77 => 1,
+      76 => 0,
+      75 => 2,
+      74 => 1,
+      73 => 0,
+      72 => 2,
+      71 => 1,
+      70 => 0,
+      69 => 2,
+      68 => 1,
+      67 => 0,
+      66 => 2,
+      65 => 1,
+      64 => 0,
+      63 => 2,
+      62 => 1,
+      61 => 0,
+      60 => 2,
+      59 => 1,
+      58 => 0,
+      57 => 2,
+      56 => 1,
+      55 => 0,
+      54 => 2,
+      53 => 1,
+      52 => 0,
+      51 => 2,
+      50 => 1,
+      49 => 0,
+      48 => 2,
+      47 => 1,
+      46 => 0,
+      45 => 2,
+      44 => 1,
+      43 => 0,
+      42 => 2,
+      41 => 1,
+      40 => 0,
+      39 => 2,
+      38 => 1,
+      37 => 0,
+      36 => 2,
+      35 => 1,
+      34 => 0,
+      33 => 2,
+      32 => 1,
+      31 => 0,
+      30 => 2,
+      29 => 1,
+      28 => 0,
+      27 => 2,
+      26 => 1,
+      25 => 0,
+      24 => 2,
+      23 => 1,
+      22 => 0,
+      21 => 2,
+      20 => 1,
+      19 => 0,
+      18 => 2,
+      17 => 1,
+      16 => 0,
+      15 => 2,
+      14 => 1,
+      13 => 0,
+      12 => 2,
+      11 => 1,
+      10 => 0,
+      9 => 2,
+      8 => 1,
+      7 => 0,
+      6 => 2,
+      5 => 1,
+      4 => 0,
+      3 => 2,
+      2 => 1,
+      1 => 0,
       0 => 0,
       _ => 0
     };
