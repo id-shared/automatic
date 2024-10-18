@@ -84,7 +84,7 @@ class Perform {
         S1.TryEnqueue(_ => {
           I(LC);
           return S3.TryEnqueue(_ => {
-            YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.Y(YAxis(e) * (int)YC)) && W(YE), YA) - 1;
+            YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.YX(YAxis(e) * YC, 0)) && W(YE), YA) - 1;
             return A.T;
           });
         });
@@ -94,7 +94,7 @@ class Perform {
         S1.TryEnqueue(_ => {
           O(LC);
           return S3.TryEnqueue(_ => {
-            YA = YA - Till(e => (YA >= e) && S9.TryEnqueue(_ => D1.Y(YAxis(e) * -(int)YC)) && W(YE), 0);
+            YA = YA - Till(e => (YA >= e) && S9.TryEnqueue(_ => D1.YX(YAxis(e) * -YC, 0)) && W(YE), 0);
             return A.T;
           });
         });
