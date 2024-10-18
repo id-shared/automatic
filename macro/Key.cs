@@ -12,6 +12,7 @@ class KeyM {
 
 class KeyE {
   public const uint W = (uint)ConsoleKey.LeftWindows;
+  public const uint T = (uint)ConsoleKey.Tab;
   public const uint S = 160;
   public const uint C = 162;
   public const uint A = 164;
