@@ -81,7 +81,6 @@ class Perform {
           I(LC);
           return S3.TryEnqueue(_ => {
             YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.YX(YAxis(e) * ZC, -XAxis(e) / ZC)) && W(ZE), YA) - 1;
-            O(LC);
             return A.T;
           });
         });
@@ -283,7 +282,7 @@ class Perform {
       28 => 1,
       27 => 1,
       26 => 1,
-      25 => 1,
+      25 => 0,
       24 => 2,
       23 => 1,
       22 => 0,
