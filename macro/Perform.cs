@@ -3,6 +3,7 @@ using System.Diagnostics;
 
 class Perform {
   public static readonly Specter S9 = new(256);
+  public static readonly Specter S3 = new(256);
   public static readonly Specter S1 = new(256);
 
   public static readonly Driver1 D1 = new();
@@ -73,14 +74,15 @@ class Perform {
   public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX1, nCode, wParam, lParam);
     if (nCode < 0) return next;
+    int scale = 2;
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         HL = A.T;
         S1.TryEnqueue(_ => {
           I(LA);
-          return S9.TryEnqueue(_ => {
-            YA = Till(_ => (59 > _) && HL && D1.Y(YAxis(_)) && W(YE), YA) - 1;
+          return S3.TryEnqueue(_ => {
+            YA = Till(_ => (99 >= _) && HL && D1.Y(YAxis(_) * scale) && W(4.05 * scale), YA) - 1;
             return A.T;
           });
         });
@@ -89,8 +91,8 @@ class Perform {
         HL = A.F;
         S1.TryEnqueue(_ => {
           O(LA);
-          return S9.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA >= _) && D1.Y(YAxis(_) * -1) && W(YE), 0);
+          return S3.TryEnqueue(_ => {
+            YA = YA - Till(_ => (YA >= _) && D1.Y(YAxis(_) * -scale) && W(4.05 * scale), 0);
             return A.T;
           });
         });
@@ -102,56 +104,96 @@ class Perform {
 
   public static int YAxis(int i) {
     return i switch {
-      59 => 8,
-      58 => 8,
-      57 => 8,
-      56 => 8,
-      55 => 8,
-      54 => 8,
-      53 => 8,
-      52 => 8,
-      51 => 8,
-      50 => 8,
-      49 => 5,
-      48 => 5,
-      47 => 5,
-      46 => 5,
-      45 => 5,
-      44 => 5,
-      43 => 5,
-      42 => 5,
-      41 => 5,
-      40 => 5,
-      39 => 3,
-      38 => 3,
-      37 => 3,
-      36 => 3,
-      35 => 3,
-      34 => 3,
-      33 => 3,
-      32 => 3,
-      31 => 3,
-      30 => 3,
-      29 => 2,
-      28 => 2,
-      27 => 2,
-      26 => 2,
-      25 => 2,
-      24 => 2,
-      23 => 2,
-      22 => 2,
-      21 => 2,
-      20 => 2,
+      99 => 2,
+      98 => 2,
+      97 => 2,
+      96 => 2,
+      95 => 2,
+      94 => 2,
+      93 => 2,
+      92 => 2,
+      91 => 2,
+      90 => 1,
+      89 => 1,
+      88 => 1,
+      87 => 1,
+      86 => 1,
+      85 => 1,
+      84 => 1,
+      83 => 1,
+      82 => 1,
+      81 => 1,
+      80 => 1,
+      79 => 1,
+      78 => 1,
+      77 => 1,
+      76 => 1,
+      75 => 1,
+      74 => 1,
+      73 => 1,
+      72 => 1,
+      71 => 1,
+      70 => 1,
+      69 => 1,
+      68 => 1,
+      67 => 1,
+      66 => 1,
+      65 => 1,
+      64 => 1,
+      63 => 1,
+      62 => 1,
+      61 => 1,
+      60 => 1,
+      59 => 1,
+      58 => 1,
+      57 => 1,
+      56 => 1,
+      55 => 1,
+      54 => 1,
+      53 => 1,
+      52 => 1,
+      51 => 1,
+      50 => 1,
+      49 => 1,
+      48 => 1,
+      47 => 1,
+      46 => 1,
+      45 => 1,
+      44 => 1,
+      43 => 1,
+      42 => 1,
+      41 => 1,
+      40 => 1,
+      39 => 1,
+      38 => 1,
+      37 => 1,
+      36 => 1,
+      35 => 1,
+      34 => 1,
+      33 => 1,
+      32 => 1,
+      31 => 1,
+      30 => 1,
+      29 => 1,
+      28 => 0,
+      27 => 1,
+      26 => 0,
+      25 => 1,
+      24 => 0,
+      23 => 1,
+      22 => 0,
+      21 => 1,
+      20 => 0,
       19 => 1,
-      18 => 1,
+      18 => 0,
       17 => 1,
-      16 => 1,
+      16 => 0,
       15 => 1,
-      14 => 1,
+      14 => 0,
       13 => 1,
-      12 => 1,
+      12 => 0,
       11 => 1,
-      10 => 1,
+      10 => 0,
       9 => 0,
       8 => 0,
       7 => 0,
