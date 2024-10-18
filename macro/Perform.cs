@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 class Perform {
   public static readonly Specter S2 = new(256);
@@ -127,12 +127,12 @@ class Perform {
   }
 
   public Perform() {
-    hook = SetHook(hookCallBack, 13);
+    hook = SetHook(hookCallback, 13);
     Subscribe(new MSG());
   }
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
-  public static readonly LowLevelProc hookCallBack = HookCallback;
+  public static readonly LowLevelProc hookCallback = HookCallback;
   public static volatile IntPtr hook = IntPtr.Zero;
 
   public const uint WM_SYSKEYDOWN = 0x0104;
