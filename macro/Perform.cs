@@ -80,7 +80,7 @@ class Perform {
         S1.TryEnqueue(_ => {
           I(LC);
           return S3.TryEnqueue(_ => {
-            YA = Till(e => (39 >= e) && HL && S9.TryEnqueue(_ => D1.YX(YAxis(e) * ZC, -XAxis(e) / ZC)) && W(ZE), YA) - 1;
+            YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.YX(YAxis(e) * ZC, -XAxis(e) / ZC)) && W(ZE), YA) - 1;
             O(LC);
             return A.T;
           });
@@ -211,26 +211,26 @@ class Perform {
     return i switch {
       99 => 2,
       98 => 2,
-      97 => 2,
+      97 => 1,
       96 => 1,
       95 => 1,
       94 => 2,
       93 => 2,
-      92 => 2,
+      92 => 1,
       91 => 1,
       90 => 1,
       89 => 2,
-      88 => 2,
+      88 => 1,
       87 => 1,
       86 => 1,
       85 => 1,
       84 => 2,
-      83 => 2,
+      83 => 1,
       82 => 1,
       81 => 1,
       80 => 1,
       79 => 2,
-      78 => 2,
+      78 => 1,
       77 => 1,
       76 => 1,
       75 => 1,
