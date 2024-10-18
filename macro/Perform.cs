@@ -90,7 +90,7 @@ class Perform {
 
   public static bool C(double i) => Time.XO(i);
 
-  public static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
+  public static IntPtr OnHook(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hook, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
@@ -137,12 +137,12 @@ class Perform {
   }
 
   public Perform() {
-    hook = SetHook(hookCallback, 13);
+    hook = SetHook(onHook, 13);
     Subscribe(new MSG());
   }
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
-  public static readonly LowLevelProc hookCallback = HookCallback;
+  public static readonly LowLevelProc onHook = OnHook;
   public static volatile IntPtr hook = IntPtr.Zero;
 
   public const uint WM_SYSKEYDOWN = 0x0104;
