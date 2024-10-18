@@ -26,7 +26,8 @@ class Perform {
     S1.TryEnqueue(_ => {
       O(LC);
       return S2.TryEnqueue(_ => {
-        AY = AY - Till(e => (AY >= e) && D1.YX(Recoil.YAxis(e) * -CY, Recoil.XAxis(e) / CY) && C(EY / 1.2), 0);
+        AY = AY - Till(e => (AY >= e) && D1.YX(Recoil.YAxis(e) * -CY, Recoil.XAxis(e) / CY) && C(EY / 1.0), 0);
+        Console.WriteLine($"z: {AY}");
         return A.T;
       });
     });
@@ -39,6 +40,7 @@ class Perform {
       I(LC);
       return S2.TryEnqueue(_ => {
         AY = Till(e => (99 >= e) && L && D1.YX(Recoil.YAxis(e) * CY, Recoil.XAxis(e) / -CY) && C(EY), AY) - 1;
+        Console.WriteLine($"a: {AY}");
         return A.T;
       });
     });
@@ -75,6 +77,11 @@ class Perform {
     _ => A.F,
   };
 
+  public static bool IX<X>(string e, X _) {
+    Console.WriteLine($"{e}: {_}.");
+    return A.T;
+  }
+
   public static bool IO(double t, uint[] k) {
     I(k);
     Time.XO(t);
@@ -95,10 +102,10 @@ class Perform {
     if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
-    if (key == KeyE.W) Exit();
 
     switch ((uint)wParam) {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
+        if (key == KeyE.W) Exit();
         OnD(key);
         return next;
       case WM_SYSKEYUP or WM_KEYUP:
@@ -107,6 +114,10 @@ class Perform {
       default:
         return next;
     }
+  }
+
+  public static int Upon(Func<int, bool> z, int i) {
+    return z(i) ? Upon(z, i - 1) : i;
   }
 
   public static int Till(Func<int, bool> z, int i) {
