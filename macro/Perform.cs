@@ -21,7 +21,7 @@ class Perform {
   public static volatile int AY = 0;
   public static volatile int AX = 0;
 
-  public static bool KeyETU() {
+  public static bool KeyIU() {
     L = A.F;
     S1.TryEnqueue(_ => {
       O(LC);
@@ -33,7 +33,7 @@ class Perform {
     return A.T;
   }
 
-  public static bool KeyETD() {
+  public static bool KeyID() {
     L = A.T;
     S1.TryEnqueue(_ => {
       I(LC);
@@ -49,18 +49,29 @@ class Perform {
     return S1.TryEnqueue(_ => IO(LE, LA));
   }
 
+  public static bool KeyDD() {
+    return A.T;
+  }
+
   public static bool KeyAU() {
     return S1.TryEnqueue(_ => IO(LE, RA));
   }
 
+  public static bool KeyAD() {
+    return A.T;
+  }
+
   public static bool OnU(uint i) => i switch {
+    KeyX.I => KeyIU(),
     KeyX.D => KeyDU(),
     KeyX.A => KeyAU(),
     _ => A.F,
   };
 
   public static bool OnD(uint i) => i switch {
-    KeyE.T => KeyETD(),
+    KeyX.I => KeyID(),
+    KeyX.D => KeyDD(),
+    KeyX.A => KeyAD(),
     _ => A.F,
   };
 

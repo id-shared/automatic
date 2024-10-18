@@ -1,6 +1,5 @@
 ﻿class KeyX {
-  public const uint W = (uint)ConsoleKey.W;
-  public const uint S = (uint)ConsoleKey.S;
+  public const uint I = (uint)ConsoleKey.I;
   public const uint D = (uint)ConsoleKey.D;
   public const uint A = (uint)ConsoleKey.A;
 }
