@@ -8,30 +8,32 @@ class Perform {
 
   public static readonly Driver1 D1 = new();
 
-  public static readonly uint[] LZ = [KeyM.L];
-  public static readonly uint[] LA = [KeyE.A];
 
-  public static readonly uint[] AR = [KeyA.R];
-  public static readonly uint[] AL = [KeyA.L];
+  public static readonly uint[] RA = [KeyA.R];
 
-  public static readonly double XL = 209.9999;
-  public static readonly double TL = 99.99999;
+  public static readonly double LX = 209.9999;
+  public static readonly double LT = 99.99999;
+  public static readonly uint[] LE = [KeyM.L];
+  public static readonly uint[] LC = [KeyE.A];
+  public static readonly uint[] LA = [KeyA.L];
 
   public static volatile bool HR = A.F;
   public static volatile bool HL = A.F;
 
-  public static readonly int YE = 9;
-  public static volatile int YA = 0;
+  public static readonly int YE = 8;
+  public static readonly int YC = 2;
+  public static volatile int YA;
 
-  public static readonly int XE = 9;
-  public static volatile int XA = 0;
+  public static readonly int XE = 2;
+  public static readonly int XC = 1;
+  public static volatile int XA;
 
   public static bool KeyDU() {
-    return S1.TryEnqueue(_ => IO(TL, AL));
+    return S1.TryEnqueue(_ => IO(LT, LA));
   }
 
   public static bool KeyAU() {
-    return S1.TryEnqueue(_ => IO(TL, AR));
+    return S1.TryEnqueue(_ => IO(LT, RA));
   }
 
   public static bool OnU(uint i) => i switch {
@@ -74,16 +76,15 @@ class Perform {
   public static IntPtr HookCallbackX1(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = CallNextHookEx(hookX1, nCode, wParam, lParam);
     if (nCode < 0) return next;
-    int scale = 2;
+    int scale = 4;
 
     switch ((uint)wParam) {
       case WM_LBUTTONDOWN:
         HL = A.T;
         S1.TryEnqueue(_ => {
-          I(LA);
+          I(LC);
           return S3.TryEnqueue(_ => {
-            YA = Till(_ => (99 >= _) && HL && D1.Y(YAxis(_) * scale) && W(4.05 * scale), YA) - 1;
-            O(LA);
+            YA = Till(e => (99 >= e) && HL && S9.TryEnqueue(_ => D1.Y(YAxis(e) * (int)YC)) && W(YE), YA) - 1;
             return A.T;
           });
         });
@@ -91,9 +92,9 @@ class Perform {
       case WM_LBUTTONUP:
         HL = A.F;
         S1.TryEnqueue(_ => {
-          O(LA);
+          O(LC);
           return S3.TryEnqueue(_ => {
-            YA = YA - Till(_ => (YA >= _) && D1.Y(YAxis(_) * -scale) && W(4.05 * scale), 0);
+            YA = YA - Till(e => (YA >= e) && S9.TryEnqueue(_ => D1.Y(YAxis(e) * -(int)YC)) && W(YE), 0);
             return A.T;
           });
         });
