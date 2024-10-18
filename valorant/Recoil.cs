@@ -121,7 +121,7 @@
     };
   }
 
-  public static int XAxis(int n) {
+  public int XAxis(int n) {
     int o = XS ? 2 : 1;
     int i = XS ? 1 : 2;
 

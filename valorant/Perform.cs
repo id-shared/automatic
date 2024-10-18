@@ -23,15 +23,17 @@ class Perform {
   public static bool KeyEAU() {
     L = A.F;
     S1.TryEnqueue(_ => D1.I(2) && S2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (0 <= ci) && D1.YX(Recoil.YAxis(ci) * -CY, Recoil.XAxis(ci) / CY) && C(EY), AY) + 1;
+      Recoil recoil = new Recoil();
+      AY = Upon(ci => !L && (0 <= ci) && D1.YX(recoil.YAxis(ci) * -CY, recoil.XAxis(ci) / CY) && C(EY), AY) + 1;
       return A.T;
     }));
     return L;
   }
 
   public static bool KeyEAD() {
+    Recoil recoil = new Recoil();
     L = L || S1.TryEnqueue(_ => D1.I(1) && S2.TryEnqueue(_ => {
-      AY = Till(ci => L && (99 >= ci) && D1.YX(Recoil.YAxis(ci) * CY, Recoil.XAxis(ci) / -CY) && C(EY), AY) - 1;
+      AY = Till(ci => L && (99 >= ci) && D1.YX(recoil.YAxis(ci) * CY, recoil.XAxis(ci) / -CY) && C(EY), AY) - 1;
       return A.T;
     }));
     return L;
