@@ -6,15 +6,6 @@ public static class MouseInjection {
   private static bool _isInitialized = false;
   private static SafeFileHandle _deviceHandle = null;
 
-  private const uint IOCTL_INIT_DRIVER = 0x80000000; // Replace with actual IOCTL code from your driver
-  private const uint IOCTL_START_LISTENING = 0x80000001; // Replace with actual IOCTL code from your driver
-  private const uint IOCTL_INJECT_MOUSE_BUTTON = 0x80000002; // Replace with actual IOCTL code from your driver
-  private const uint IOCTL_INJECT_MOUSE_MOVEMENT = 0x80000003; // Replace with actual IOCTL code from your driver
-
-  private const uint METHOD_BUFFERED = 0;
-  private const uint FILE_DEVICE_MOUSE = 0x0000000F;
-  private const uint FILE_ANY_ACCESS = 0;
-
   // Call this method to initialize the driver and start capturing input
   public static void Initialize() {
     if (!_isInitialized) {
@@ -26,14 +17,8 @@ public static class MouseInjection {
 
       Console.WriteLine(IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
 
-      // Initialize the driver
       if (!DeviceIoControl(_deviceHandle, IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT, IntPtr.Zero, 0, IntPtr.Zero, 0, out _, IntPtr.Zero)) {
         throw new InvalidOperationException("Failed to initialize driver. Error code: " + Marshal.GetLastWin32Error());
-      }
-
-      // Start listening for input events
-      if (!DeviceIoControl(_deviceHandle, IOCTL_START_LISTENING, IntPtr.Zero, 0, IntPtr.Zero, 0, out _, IntPtr.Zero)) {
-        throw new InvalidOperationException("Failed to start listening for input. Error code: " + Marshal.GetLastWin32Error());
       }
 
       _isInitialized = true;
@@ -52,14 +37,6 @@ public static class MouseInjection {
     out uint lpBytesReturned,
     IntPtr lpOverlapped
   );
-
-  public static void InjectMouseButton(ushort buttonFlags) {
-    // Implement similarly as before, ensuring proper error handling
-  }
-
-  public static void InjectMouseMovement(short deltaX, short deltaY) {
-    // Implement similarly as before, ensuring proper error handling
-  }
 }
 
 public class DriverHandleManager : IDisposable {
@@ -120,28 +97,37 @@ public static class IoctlCodes {
   public const uint FILE_DEVICE_MOUCLASS_INPUT_INJECTION = 48781u;
 
   public static readonly uint IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT;
-  public static readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
   public static readonly uint IOCTL_INJECT_MOUSE_MOVEMENT_INPUT;
+  public static readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
   public static readonly uint IOCTL_INJECT_MOUSE_INPUT_PACKET;
 
   // Static constructor to initialize the IOCTL codes
   static IoctlCodes() {
-    IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT =
-        CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
 
-    IOCTL_INJECT_MOUSE_BUTTON_INPUT =
-        CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INJECT_MOUSE_MOVEMENT_INPUT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
 
-    IOCTL_INJECT_MOUSE_MOVEMENT_INPUT =
-        CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INJECT_MOUSE_BUTTON_INPUT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
 
-    IOCTL_INJECT_MOUSE_INPUT_PACKET =
-        CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INJECT_MOUSE_INPUT_PACKET = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
   }
 
   private static uint CTL_CODE(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
     return ((deviceType << 16) | ((uint)access << 14) | (function << 2) | (uint)method);
   }
+}
+
+public enum DeviceMethod {
+  MethodBuffered = 0,
+  MethodInDirect = 1,
+  MethodOutDirect = 2,
+  MethodNeither = 3
+}
+
+public enum FileAccess : uint {
+  FileAnyAccess = 0,
+  FileReadAccess = 1,
+  FileWriteAccess = 2
 }
 
 //=============================================================================
@@ -202,20 +188,6 @@ public struct INJECT_MOUSE_INPUT_PACKET_REQUEST {
   [MarshalAs(UnmanagedType.I1)]
   public bool UseButtonDevice;
   public MOUSE_INPUT_DATA InputPacket;  // Assuming MOUSE_INPUT_DATA is defined elsewhere
-}
-
-// Definitions for DeviceMethod and FileAccess
-public enum DeviceMethod {
-  MethodBuffered = 0,
-  MethodInDirect = 1,
-  MethodOutDirect = 2,
-  MethodNeither = 3
-}
-
-public enum FileAccess : uint {
-  FileAnyAccess = 0,
-  FileReadAccess = 1,
-  FileWriteAccess = 2
 }
 
 // Assuming MOUSE_INPUT_DATA is defined elsewhere
