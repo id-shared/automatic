@@ -17,7 +17,22 @@ public static class MouseInjection {
 
       Console.WriteLine(IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
 
-      if (!DeviceIoControl(_deviceHandle, IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT, IntPtr.Zero, 0, IntPtr.Zero, 0, out _, IntPtr.Zero)) {
+      MOUSE_DEVICE_STACK_INFORMATION deviceStackInformation = new();
+      uint cbReturned = 0;
+
+      IntPtr inBuffer = IntPtr.Zero;
+      IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInformation));
+
+      if (!DeviceIoControl(
+        _deviceHandle,
+        IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
+        inBuffer,
+        0,
+        outBuffer,
+        (uint)Marshal.SizeOf<MOUSE_DEVICE_STACK_INFORMATION>(),
+        ref cbReturned,
+        IntPtr.Zero)
+      ) {
         throw new InvalidOperationException("Failed to initialize driver. Error code: " + Marshal.GetLastWin32Error());
       }
 
@@ -34,7 +49,7 @@ public static class MouseInjection {
     uint nInBufferSize,
     IntPtr lpOutBuffer,
     uint nOutBufferSize,
-    out uint lpBytesReturned,
+    ref uint lpBytesReturned,
     IntPtr lpOverlapped
   );
 }
