@@ -4,19 +4,24 @@ using System.Runtime.InteropServices;
 public static class MouseInjection {
   private static readonly DriverHandleManager _handleManager = new();
   private static bool _isInitialized = false;
-  private const uint FILE_DEVICE_MOUSE = 0x0000000F;
-  private const uint FILE_ANY_ACCESS = 0;
+
+  private static readonly uint IOCTL_INJECT_MOUSE_BUTTON;
+  private static readonly uint IOCTL_INJECT_MOUSE_MOVEMENT;
+  private static readonly uint IOCTL_INIT_DRIVER;
+  private static readonly uint IOCTL_START_LISTENING;
+
+  static MouseInjection() {
+    IOCTL_INJECT_MOUSE_BUTTON = CTL_CODE(FILE_DEVICE_MOUSE, 0x801, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    IOCTL_INJECT_MOUSE_MOVEMENT = CTL_CODE(FILE_DEVICE_MOUSE, 0x802, METHOD_BUFFERED, FILE_ANY_ACCESS);
+  }
 
   private const uint METHOD_BUFFERED = 0;
-  private const uint IOCTL_INJECT_MOUSE_BUTTON = CTL_CODE(FILE_DEVICE_MOUSE, 0x801, METHOD_BUFFERED, FILE_ANY_ACCESS);
-  private const uint IOCTL_INJECT_MOUSE_MOVEMENT = CTL_CODE(FILE_DEVICE_MOUSE, 0x802, METHOD_BUFFERED, FILE_ANY_ACCESS);
+  private const uint FILE_DEVICE_MOUSE = 0x0000000F;
+  private const uint FILE_ANY_ACCESS = 0;
 
   private static uint CTL_CODE(uint DeviceType, uint Function, uint Method, uint Access) {
     return ((DeviceType << 16) | (Access << 14) | (Function << 2) | Method);
   }
-
-  private const uint IOCTL_INIT_DRIVER = 0x800; // Replace with actual IOCTL code for initialization
-  private const uint IOCTL_START_LISTENING = 0x801; // Replace with actual IOCTL code for starting listening
 
   // Call this method to initialize the driver and start capturing input
   public static void Initialize() {
@@ -86,6 +91,7 @@ public static class MouseInjection {
   );
 }
 
+
 public class DriverHandleManager : IDisposable {
   private const uint OPEN_EXISTING = 3;
 
@@ -96,7 +102,7 @@ public class DriverHandleManager : IDisposable {
   }
 
   private void OpenHandle() {
-    _handle = CreateFile(@"\\.\MouClassInputInjection", 0xC0000000, 0, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
+    _handle = CreateFile(@"\\.\Device1", 0xC0000000, 0, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
     if (_handle.IsInvalid) {
       throw new InvalidOperationException("Failed to open device.");
     }
