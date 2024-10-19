@@ -18,7 +18,7 @@ public static class MouseInjection {
   // Call this method to initialize the driver and start capturing input
   public static void Initialize() {
     if (!_isInitialized) {
-      _deviceHandle = CreateDeviceHandle();
+      _deviceHandle = _handleManager.GetHandle();
 
       if (_deviceHandle.IsInvalid) {
         throw new InvalidOperationException("Failed to obtain a valid handle to the device. Check if the driver is installed and the device path is correct.");
@@ -38,31 +38,6 @@ public static class MouseInjection {
       Console.WriteLine("Driver initialized and listening for input.");
     }
   }
-
-  private static SafeFileHandle CreateDeviceHandle() {
-    SafeFileHandle handle = CreateFile(
-      @"\\.\MouClassInputInjection", // Replace with your actual device path
-      FileAccess.ReadWrite,
-      FileShare.Read | FileShare.Write,
-      IntPtr.Zero,
-      FileMode.Open,
-      0,
-      IntPtr.Zero
-    );
-
-    return handle;
-  }
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  private static extern SafeFileHandle CreateFile(
-    string lpFileName,
-    FileAccess dwDesiredAccess,
-    FileShare dwShareMode,
-    IntPtr lpSecurityAttributes,
-    FileMode dwCreationDisposition,
-    uint dwFlagsAndAttributes,
-    IntPtr hTemplateFile
-  );
 
   [DllImport("kernel32.dll", SetLastError = true)]
   private static extern bool DeviceIoControl(
