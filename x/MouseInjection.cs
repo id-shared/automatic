@@ -22,7 +22,11 @@ public static class MouseInjection {
       Console.WriteLine(abc.MovementDevice.UnitId);
       Console.WriteLine(abc);
 
-      Console.WriteLine(MouiiIoInjectMouseMovementInput(_deviceHandle, 4012, 0x0000, -99, 99));
+      MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION abc2 = MouiiIoInjectMouseMovementInput(_deviceHandle, 4012, 0, -99, 99);
+
+      Console.WriteLine("yy");
+
+      Console.WriteLine(abc2.UnitId);
 
       Console.WriteLine("xx");
 
@@ -79,7 +83,7 @@ public static class MouseInjection {
     }
   }
 
-  public static bool MouiiIoInjectMouseMovementInput(SafeFileHandle handle, UIntPtr processId, ushort indicatorFlags, int movementX, int movementY) {
+  public static MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION MouiiIoInjectMouseMovementInput(SafeFileHandle handle, UIntPtr processId, ushort indicatorFlags, int movementX, int movementY) {
     INJECT_MOUSE_MOVEMENT_INPUT_REQUEST request = new() {
       ProcessId = processId,
       IndicatorFlags = indicatorFlags,
@@ -92,6 +96,9 @@ public static class MouseInjection {
 
     GCHandle inBuffer = GCHandle.Alloc(request, GCHandleType.Pinned);
 
+    // Allocate memory for the output buffer.
+    IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION)));
+
     try {
       IntPtr requestPtr = inBuffer.AddrOfPinnedObject();
 
@@ -100,13 +107,21 @@ public static class MouseInjection {
         IoctlCodes.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT,
         requestPtr,
         Marshal.SizeOf(request),
-        IntPtr.Zero,
+        outBuffer,
         0,
         ref bytesReturned,
         IntPtr.Zero
       );
 
-      return status;
+      if (!status) {
+        throw new InvalidOperationException("DeviceIoControl x. Error: " + Marshal.GetLastWin32Error());
+      }
+
+      if (bytesReturned == 0) {
+        throw new InvalidOperationException("DeviceIoControl x succeeded, but no data was written.");
+      }
+
+      return Marshal.PtrToStructure<MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION>(outBuffer);
     } finally {
       inBuffer.Free();
     }
