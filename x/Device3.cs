@@ -6,8 +6,8 @@ class Device3 {
     context = new(@"\\.\Device1");
     MOUSE_DEVICE_STACK_INFORMATION i = Initialize();
     Console.WriteLine($"Next: {i.ButtonDevice.UnitId}");
-    InjectMouseMovementInputRequest n = Move();
-    Console.WriteLine($"Move: {n.ProcessId}");
+    bool a = Move();
+    Console.WriteLine($"Move: {a}");
   }
 
   public MOUSE_DEVICE_STACK_INFORMATION Initialize() {
@@ -43,44 +43,61 @@ class Device3 {
     return deviceStackInfo;
   }
 
-  public InjectMouseMovementInputRequest Move() {
-    InjectMouseMovementInputRequest inputRequest = new() {
+  public bool Move() {
+    return React(new InjectMouseMovementInputRequest() {
       ProcessId = 4012,
       IndicatorFlags = 0,
       MovementX = 10,
       MovementY = 10
-    };
+    }, code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT, A.F);
+  }
 
-    uint cbReturned = 0;
-
-    IntPtr deviceInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(inputRequest));
+  public bool React<X>(X x, uint e, bool a) {
+    IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(x));
 
     try {
-      IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(inputRequest));
-      Marshal.StructureToPtr(inputRequest, outBuffer, false);
+      Marshal.StructureToPtr(x, buffer, false);
+      uint bytesReturned = 0;
 
-      bool status = Native.DeviceIoControl(
+      return Native.DeviceIoControl(
         context.contact,
-        code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT,
-        outBuffer,
-        (uint)Marshal.SizeOf(inputRequest),
+        e,
+        buffer,
+        (uint)Marshal.SizeOf(x),
         IntPtr.Zero,
         0,
-        out cbReturned,
+        out bytesReturned,
         IntPtr.Zero
       );
-
-      if (!status) {
-        Console.WriteLine($"DeviceIoControl failed: {Marshal.GetLastWin32Error()}");
-      }
-
-      Console.WriteLine(cbReturned);
+    } catch {
+      return A.F;
     } finally {
-      Marshal.FreeHGlobal(deviceInfoPtr);
+      Marshal.FreeHGlobal(buffer);
     }
-
-    return inputRequest;
   }
+
+  //public bool DeviceIoControl(bool a) => A.T switch {
+  //  a => Native.DeviceIoControl(
+  //      context.contact,
+  //      e,
+  //      outBuffer,
+  //      (uint)Marshal.SizeOf(x),
+  //      IntPtr.Zero,
+  //      0,
+  //      out bytesReturned,
+  //      IntPtr.Zero
+  //    ),
+  //  _ => Native.DeviceIoControl(
+  //      context.contact,
+  //      e,
+  //      outBuffer,
+  //      (uint)Marshal.SizeOf(x),
+  //      IntPtr.Zero,
+  //      0,
+  //      out bytesReturned,
+  //      IntPtr.Zero
+  //    ),
+  //};
 
   private readonly IOCode code = new();
   private readonly Context context;
