@@ -2,7 +2,7 @@
   static void Main() {
     try {
       Device3 mi = new();
-      Console.WriteLine("Done");
+      Console.WriteLine("OK.");
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");
     } finally {

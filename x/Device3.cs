@@ -3,9 +3,45 @@ using System.Runtime.InteropServices;
 
 class Device3 {
   public Device3() {
-    Context context = new(@"\\.\Device1");
+    context = new(@"\\.\Device1");
+    Initialize();
     Console.WriteLine("Next");
   }
+
+  public bool Initialize() {
+    MOUSE_DEVICE_STACK_INFORMATION deviceStackInfo = new();
+    uint cbReturned = 0;
+
+    IntPtr deviceInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInfo));
+
+    try {
+      IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInfo));
+      Marshal.StructureToPtr(deviceStackInfo, outBuffer, false);
+
+      bool status = Native.DeviceIoControl(
+        context.contact,
+        code.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
+        IntPtr.Zero,
+        0,
+        outBuffer,
+        (uint)Marshal.SizeOf<MOUSE_DEVICE_STACK_INFORMATION>(),
+        out cbReturned,
+        IntPtr.Zero
+      );
+
+      if (!status) {
+        Console.WriteLine($"DeviceIoControl failed: {Marshal.GetLastWin32Error()}");
+        return false;
+      }
+    } finally {
+      Marshal.FreeHGlobal(deviceInfoPtr);
+    }
+
+    return true;
+  }
+
+  private readonly IOCode code = new();
+  private readonly Context context;
 }
 
 partial class Context : IDisposable {
@@ -99,4 +135,95 @@ class Native {
   [DllImport("kernel32.dll", SetLastError = true)]
   [return: MarshalAs(UnmanagedType.Bool)]
   public static extern bool CloseHandle(IntPtr hObject);
+}
+
+class IOCode {
+  public IOCode() {
+    IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+
+    IOCTL_INJECT_MOUSE_MOVEMENT_INPUT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+
+    IOCTL_INJECT_MOUSE_BUTTON_INPUT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+
+    IOCTL_INJECT_MOUSE_INPUT_PACKET = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+  }
+
+  private static uint CTL_CODE(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
+    return ((deviceType << 16) | ((uint)access << 14) | (function << 2) | (uint)method);
+  }
+
+  public readonly uint IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT;
+  public readonly uint IOCTL_INJECT_MOUSE_MOVEMENT_INPUT;
+  public readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
+  public readonly uint IOCTL_INJECT_MOUSE_INPUT_PACKET;
+  public const uint FILE_DEVICE_MOUCLASS_INPUT_INJECTION = 48781u;
+
+  public enum DeviceMethod {
+    MethodBuffered = 0,
+    MethodInDirect = 1,
+    MethodOutDirect = 2,
+    MethodNeither = 3
+  }
+
+  public enum FileAccess : uint {
+    FileAnyAccess = 0,
+    FileReadAccess = 1,
+    FileWriteAccess = 2
+  }
+}
+
+//=============================================================================
+// IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT
+//=============================================================================
+[StructLayout(LayoutKind.Sequential)]
+public struct MOUSE_CLASS_BUTTON_DEVICE_INFORMATION {
+  public ushort UnitId;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION {
+  public ushort UnitId;
+  [MarshalAs(UnmanagedType.I1)]
+  public bool AbsoluteMovement;
+  [MarshalAs(UnmanagedType.I1)]
+  public bool VirtualDesktop;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct MOUSE_DEVICE_STACK_INFORMATION {
+  public MOUSE_CLASS_BUTTON_DEVICE_INFORMATION ButtonDevice;
+  public MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION MovementDevice;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY {
+  public MOUSE_DEVICE_STACK_INFORMATION DeviceStackInformation;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct INJECT_MOUSE_MOVEMENT_INPUT_REQUEST {
+  public nint ProcessId;
+  public ushort IndicatorFlags;
+  public int MovementX;
+  public int MovementY;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct INJECT_MOUSE_BUTTON_INPUT_REQUEST {
+  public nint ProcessId; // Corrected to UIntPtr.
+  public ushort ButtonFlags;
+  public ushort ButtonData;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct INJECT_MOUSE_INPUT_PACKET_REQUEST {
+  public UIntPtr ProcessId; // Corrected to UIntPtr.
+  public bool UseButtonDevice;
+  public MOUSE_INPUT_DATA InputPacket;
+}
+
+// Assuming MOUSE_INPUT_DATA is defined elsewhere
+[StructLayout(LayoutKind.Sequential)]
+public struct MOUSE_INPUT_DATA {
+  // Define members here based on your requirements
 }
