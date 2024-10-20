@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 class Device3 {
   public Device3() {
     context = new(@"\\.\Device1");
-    Initialize();
-    Console.WriteLine("Next");
+    MOUSE_DEVICE_STACK_INFORMATION i = Initialize();
+    Console.WriteLine($"Next: {i.ButtonDevice.UnitId}");
   }
 
-  public bool Initialize() {
+  public MOUSE_DEVICE_STACK_INFORMATION Initialize() {
     MOUSE_DEVICE_STACK_INFORMATION deviceStackInfo = new();
     uint cbReturned = 0;
 
@@ -31,13 +31,14 @@ class Device3 {
 
       if (!status) {
         Console.WriteLine($"DeviceIoControl failed: {Marshal.GetLastWin32Error()}");
-        return false;
       }
+
+      Console.WriteLine(cbReturned);
     } finally {
       Marshal.FreeHGlobal(deviceInfoPtr);
     }
 
-    return true;
+    return deviceStackInfo;
   }
 
   private readonly IOCode code = new();
