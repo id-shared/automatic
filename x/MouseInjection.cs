@@ -22,6 +22,8 @@ public static class MouseInjection {
       Console.WriteLine(abc.MovementDevice.UnitId);
       Console.WriteLine(abc);
 
+      MouiiIoInjectMouseMovementInput(_deviceHandle, 4012, 0x0001, 50, 50);
+
       //uint cbReturned = 0;
 
       //IntPtr inBuffer = IntPtr.Zero;
@@ -72,6 +74,37 @@ public static class MouseInjection {
       return Marshal.PtrToStructure<MOUSE_DEVICE_STACK_INFORMATION>(outBuffer);
     } finally {
       Marshal.FreeHGlobal(outBuffer);
+    }
+  }
+
+  public static bool MouiiIoInjectMouseMovementInput(SafeFileHandle handle, UIntPtr processId, ushort indicatorFlags, int movementX, int movementY) {
+    INJECT_MOUSE_MOVEMENT_INPUT_REQUEST request = new() {
+      ProcessId = processId,
+      IndicatorFlags = indicatorFlags,
+      MovementX = movementX,
+      MovementY = movementY
+    };
+
+    uint cbReturned = 0;
+    IntPtr inBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(request));
+
+    try {
+      Marshal.StructureToPtr(request, inBuffer, false);
+
+      bool status = DeviceIoControl(
+        handle,
+        IoctlCodes.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT,
+        inBuffer,
+        (uint)Marshal.SizeOf<INJECT_MOUSE_MOVEMENT_INPUT_REQUEST>(),
+        IntPtr.Zero,
+        0,
+        ref cbReturned,
+        IntPtr.Zero
+      );
+
+      return status;
+    } finally {
+      Marshal.FreeHGlobal(inBuffer);
     }
   }
 
@@ -207,36 +240,26 @@ public struct INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY {
   public MOUSE_DEVICE_STACK_INFORMATION DeviceStackInformation;
 }
 
-//=============================================================================
-// IOCTL_INJECT_MOUSE_BUTTON_INPUT
-//=============================================================================
-[StructLayout(LayoutKind.Sequential)]
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct INJECT_MOUSE_MOVEMENT_INPUT_REQUEST {
+  public UIntPtr ProcessId; // Use UIntPtr to match ULONG_PTR behavior.
+  public ushort IndicatorFlags;
+  public int MovementX;
+  public int MovementY;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct INJECT_MOUSE_BUTTON_INPUT_REQUEST {
-  public IntPtr ProcessId;  // Use IntPtr for ULONG_PTR
+  public UIntPtr ProcessId; // Corrected to UIntPtr.
   public ushort ButtonFlags;
   public ushort ButtonData;
 }
 
-//=============================================================================
-// IOCTL_INJECT_MOUSE_MOVEMENT_INPUT
-//=============================================================================
-[StructLayout(LayoutKind.Sequential)]
-public struct INJECT_MOUSE_MOVEMENT_INPUT_REQUEST {
-  public IntPtr ProcessId;  // Use IntPtr for ULONG_PTR
-  public ushort IndicatorFlags;
-  public int MovementX;  // Use int for LONG
-  public int MovementY;  // Use int for LONG
-}
-
-//=============================================================================
-// IOCTL_INJECT_MOUSE_INPUT_PACKET
-//=============================================================================
-[StructLayout(LayoutKind.Sequential)]
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct INJECT_MOUSE_INPUT_PACKET_REQUEST {
-  public IntPtr ProcessId;  // Use IntPtr for ULONG_PTR
-  [MarshalAs(UnmanagedType.I1)]
+  public UIntPtr ProcessId; // Corrected to UIntPtr.
   public bool UseButtonDevice;
-  public MOUSE_INPUT_DATA InputPacket;  // Assuming MOUSE_INPUT_DATA is defined elsewhere
+  public MOUSE_INPUT_DATA InputPacket;
 }
 
 // Assuming MOUSE_INPUT_DATA is defined elsewhere
