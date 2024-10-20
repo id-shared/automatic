@@ -1,8 +1,8 @@
 ﻿class Program {
   static void Main() {
     try {
-      Device3 mi = new("Device1");
-      mi.YX(10, 10);
+      Device3 mi = new(Current.process("explorer").Last().Id, "Device1");
+      mi.YX(-99, 99);
       Console.WriteLine("OK.");
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");

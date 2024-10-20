@@ -1,17 +1,18 @@
 ﻿using System.Runtime.InteropServices;
 
 class Device3 {
-  public Device3(string e) {
-    context = new(@$"\\.\{e}");
+  public Device3(IntPtr e, string c) {
+    context = new(@$"\\.\{c}");
+    process = e;
     _ = Act(new MOUSE_DEVICE_STACK_INFORMATION(), code.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device3));
   }
 
   public bool YX(int y, int x) {
     return Act(new InjectMouseMovementInputRequest() {
-      ProcessId = 4012,
+      ProcessId = process,
       IndicatorFlags = 0,
-      MovementX = y,
-      MovementY = x
+      MovementX = x,
+      MovementY = y,
     }, code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT, A.T);
   }
 
@@ -34,6 +35,7 @@ class Device3 {
   }
 
   private readonly IOCode code = new();
+  private readonly IntPtr process;
   private readonly Context context;
 }
 
