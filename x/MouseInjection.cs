@@ -12,19 +12,9 @@ partial class Context : IDisposable {
   public SafeFileHandle contact = new(IntPtr.Zero, true);
   public bool isDisconnected = false;
 
-  public SafeFileHandle DeviceHandle => contact;
-
-  private const uint GENERIC_READ = 0x80000000;
-  private const uint GENERIC_WRITE = 0x40000000;
-  private const uint FILE_SHARE_READ = 0x00000001;
-  private const uint FILE_SHARE_WRITE = 0x00000002;
-  private const uint OPEN_EXISTING = 3;
-  private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
-  private const string LOCAL_DEVICE_PATH_U = @"\\.\Device1";
-
   public Context(string e) {
     contact = Native.CreateFile(
-      LOCAL_DEVICE_PATH_U,
+      e,
       GENERIC_READ | GENERIC_WRITE,
       FILE_SHARE_READ | FILE_SHARE_WRITE,
       IntPtr.Zero,
@@ -52,6 +42,13 @@ partial class Context : IDisposable {
 
     GC.SuppressFinalize(this);
   }
+
+  private const uint GENERIC_READ = 0x80000000;
+  private const uint GENERIC_WRITE = 0x40000000;
+  private const uint FILE_SHARE_READ = 0x00000001;
+  private const uint FILE_SHARE_WRITE = 0x00000002;
+  private const uint OPEN_EXISTING = 3;
+  private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
 }
 
 class Native {
