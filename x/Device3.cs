@@ -147,10 +147,10 @@ class Native {
     string lpFileName,
     uint dwDesiredAccess,
     uint dwShareMode,
-    IntPtr lpSecurityAttributes, // Use IntPtr.Zero if not needed
+    IntPtr lpSecurityAttributes,
     uint dwCreationDisposition,
     uint dwFlagsAndAttributes,
-    IntPtr hTemplateFile // Use IntPtr.Zero if not needed
+    IntPtr hTemplateFile
   );
 
   [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
@@ -158,10 +158,10 @@ class Native {
     string lpFileName,
     uint dwDesiredAccess,
     uint dwShareMode,
-    IntPtr lpSecurityAttributes, // Use IntPtr.Zero if not needed
+    IntPtr lpSecurityAttributes,
     uint dwCreationDisposition,
     uint dwFlagsAndAttributes,
-    IntPtr hTemplateFile // Use IntPtr.Zero if not needed
+    IntPtr hTemplateFile
   );
 
   [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -214,9 +214,6 @@ class IOCode {
   }
 }
 
-//=============================================================================
-// IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT
-//=============================================================================
 [StructLayout(LayoutKind.Sequential)]
 public struct MOUSE_CLASS_BUTTON_DEVICE_INFORMATION {
   public ushort UnitId;
@@ -238,11 +235,6 @@ public struct MOUSE_DEVICE_STACK_INFORMATION {
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY {
-  public MOUSE_DEVICE_STACK_INFORMATION DeviceStackInformation;
-}
-
-[StructLayout(LayoutKind.Sequential)]
 public struct InjectMouseMovementInputRequest {
   public IntPtr ProcessId;
   public ushort IndicatorFlags;
@@ -251,15 +243,8 @@ public struct InjectMouseMovementInputRequest {
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct INJECT_MOUSE_BUTTON_INPUT_REQUEST {
-  public nint ProcessId; // Corrected to UIntPtr.
-  public ushort ButtonFlags;
-  public ushort ButtonData;
-}
-
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct INJECT_MOUSE_INPUT_PACKET_REQUEST {
-  public UIntPtr ProcessId; // Corrected to UIntPtr.
+  public UIntPtr ProcessId;
   public bool UseButtonDevice;
   public MOUSE_INPUT_DATA InputPacket;
 }
