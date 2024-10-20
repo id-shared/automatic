@@ -22,7 +22,9 @@ public static class MouseInjection {
       Console.WriteLine(abc.MovementDevice.UnitId);
       Console.WriteLine(abc);
 
-      MouiiIoInjectMouseMovementInput(_deviceHandle, 4012, 0x0001, 50, 50);
+      Console.WriteLine(MouiiIoInjectMouseMovementInput(_deviceHandle, 4012, 0x0000, -99, 99));
+
+      Console.WriteLine("xx");
 
       //uint cbReturned = 0;
 
@@ -47,7 +49,7 @@ public static class MouseInjection {
     }
   }
   public static MOUSE_DEVICE_STACK_INFORMATION MouiiIoInitializeMouseDeviceStackContext(SafeFileHandle handle) {
-    uint cbReturned = 0;
+    int bytesReturned = 0;
 
     // Allocate memory for the output buffer.
     IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)));
@@ -59,15 +61,15 @@ public static class MouseInjection {
           IntPtr.Zero,
           0,
           outBuffer,
-          (uint)Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)),
-          ref cbReturned,
+          Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)),
+          ref bytesReturned,
           IntPtr.Zero);
 
       if (!status) {
         throw new InvalidOperationException("DeviceIoControl failed. Error: " + Marshal.GetLastWin32Error());
       }
 
-      if (cbReturned == 0) {
+      if (bytesReturned == 0) {
         throw new InvalidOperationException("DeviceIoControl succeeded, but no data was written.");
       }
 
@@ -85,39 +87,41 @@ public static class MouseInjection {
       MovementY = movementY
     };
 
-    uint cbReturned = 0;
-    IntPtr inBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(request));
+    int bytesReturned = 0;
+    //IntPtr inBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(request));
+
+    GCHandle inBuffer = GCHandle.Alloc(request, GCHandleType.Pinned);
 
     try {
-      Marshal.StructureToPtr(request, inBuffer, false);
+      IntPtr requestPtr = inBuffer.AddrOfPinnedObject();
 
       bool status = DeviceIoControl(
         handle,
         IoctlCodes.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT,
-        inBuffer,
-        (uint)Marshal.SizeOf<INJECT_MOUSE_MOVEMENT_INPUT_REQUEST>(),
+        requestPtr,
+        Marshal.SizeOf(request),
         IntPtr.Zero,
         0,
-        ref cbReturned,
+        ref bytesReturned,
         IntPtr.Zero
       );
 
       return status;
     } finally {
-      Marshal.FreeHGlobal(inBuffer);
+      inBuffer.Free();
     }
   }
 
   [DllImport("kernel32.dll", SetLastError = true)]
   private static extern bool DeviceIoControl(
-    SafeFileHandle hDevice,
-    uint dwIoControlCode,
-    IntPtr lpInBuffer,
-    uint nInBufferSize,
-    IntPtr lpOutBuffer,
-    uint nOutBufferSize,
-    ref uint lpBytesReturned,
-    IntPtr lpOverlapped
+    SafeFileHandle hDevice,                // Handle to the device
+    uint dwIoControlCode,          // Control code for the operation
+    IntPtr lpInBuffer,             // Pointer to the input buffer
+    int nInBufferSize,             // Size of the input buffer
+    IntPtr lpOutBuffer,            // Pointer to the output buffer
+    int nOutBufferSize,            // Size of the output buffer
+    ref int lpBytesReturned,       // Pointer to the number of bytes returned
+    IntPtr lpOverlapped            // Pointer to an OVERLAPPED structure (can be null)
   );
 }
 
