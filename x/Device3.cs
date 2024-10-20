@@ -6,6 +6,8 @@ class Device3 {
     context = new(@"\\.\Device1");
     MOUSE_DEVICE_STACK_INFORMATION i = Initialize();
     Console.WriteLine($"Next: {i.ButtonDevice.UnitId}");
+    InjectMouseMovementInputRequest n = Move();
+    Console.WriteLine($"Move: {n.ProcessId}");
   }
 
   public MOUSE_DEVICE_STACK_INFORMATION Initialize() {
@@ -24,7 +26,7 @@ class Device3 {
         IntPtr.Zero,
         0,
         outBuffer,
-        (uint)Marshal.SizeOf<MOUSE_DEVICE_STACK_INFORMATION>(),
+        (uint)Marshal.SizeOf(deviceStackInfo),
         out cbReturned,
         IntPtr.Zero
       );
@@ -39,6 +41,45 @@ class Device3 {
     }
 
     return deviceStackInfo;
+  }
+
+  public InjectMouseMovementInputRequest Move() {
+    InjectMouseMovementInputRequest inputRequest = new() {
+      ProcessId = 4012,
+      IndicatorFlags = 0,
+      MovementX = 10,
+      MovementY = 10
+    };
+
+    uint cbReturned = 0;
+
+    IntPtr deviceInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(inputRequest));
+
+    try {
+      IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(inputRequest));
+      Marshal.StructureToPtr(inputRequest, outBuffer, false);
+
+      bool status = Native.DeviceIoControl(
+        context.contact,
+        code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT,
+        outBuffer,
+        (uint)Marshal.SizeOf(inputRequest),
+        IntPtr.Zero,
+        0,
+        out cbReturned,
+        IntPtr.Zero
+      );
+
+      if (!status) {
+        Console.WriteLine($"DeviceIoControl failed: {Marshal.GetLastWin32Error()}");
+      }
+
+      Console.WriteLine(cbReturned);
+    } finally {
+      Marshal.FreeHGlobal(deviceInfoPtr);
+    }
+
+    return inputRequest;
   }
 
   private readonly IOCode code = new();
@@ -201,9 +242,9 @@ public struct INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY {
   public MOUSE_DEVICE_STACK_INFORMATION DeviceStackInformation;
 }
 
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct INJECT_MOUSE_MOVEMENT_INPUT_REQUEST {
-  public nint ProcessId;
+[StructLayout(LayoutKind.Sequential)]
+public struct InjectMouseMovementInputRequest {
+  public IntPtr ProcessId;
   public ushort IndicatorFlags;
   public int MovementX;
   public int MovementY;
