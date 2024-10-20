@@ -1,8 +1,8 @@
 ﻿class Program {
   static void Main() {
     try {
-      MouseInjection.Initialize();
-      Console.WriteLine("Mouse input injected successfully.");
+      MouseInjection mi = new();
+      Console.WriteLine("Done");
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");
     } finally {
