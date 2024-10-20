@@ -1,7 +1,7 @@
 ﻿class Program {
   static void Main() {
     try {
-      MouseInjection mi = new();
+      Device3 mi = new();
       Console.WriteLine("Done");
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");

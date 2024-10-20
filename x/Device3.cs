@@ -1,8 +1,8 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 
-class MouseInjection {
-  public MouseInjection() {
+class Device3 {
+  public Device3() {
     Context context = new(@"\\.\Device1");
     Console.WriteLine("Next");
   }
