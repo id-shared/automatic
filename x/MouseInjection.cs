@@ -2,32 +2,26 @@
 using System.Runtime.InteropServices;
 
 public static class MouseInjection {
-  private static readonly DriverHandleManager _handleManager = new();
-  private static bool _isInitialized = false;
-  private static SafeFileHandle _deviceHandle = null;
-
   // Call this method to initialize the driver and start capturing input
   public static void Initialize() {
-    if (!_isInitialized) {
-      _deviceHandle = _handleManager.GetHandle();
+    if (MouClassInput.InitializeDeviceHandle()) {
+      IntPtr fs = MouClassInput.DeviceHandle;
 
-      if (_deviceHandle.IsInvalid) {
-        throw new InvalidOperationException("Failed to obtain a valid handle to the device. Check if the driver is installed and the device path is correct.");
-      }
+      Console.WriteLine("Abc.");
+      // Prepare a structure to hold the mouse device stack information
+      MOUSE_DEVICE_STACK_INFORMATION deviceStackInfo = new();
 
-      MOUSE_DEVICE_STACK_INFORMATION abc = MouiiIoInitializeMouseDeviceStackContext(_deviceHandle);
+      bool abc = MouiiIoInitializeMouseDeviceStackContext(fs, ref deviceStackInfo);
 
       //Console.WriteLine(IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
-      Console.WriteLine(abc.ButtonDevice.UnitId);
-      Console.WriteLine(abc.MovementDevice.UnitId);
-      Console.WriteLine(abc);
+      Console.WriteLine(deviceStackInfo.ButtonDevice.UnitId);
+      Console.WriteLine(deviceStackInfo.MovementDevice.UnitId);
+      Console.WriteLine(deviceStackInfo);
 
-      MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION abc2 = MouiiIoInjectMouseMovementInput(_deviceHandle, 4012, 0, -99, 99);
+      bool abc2 = MouiiIoInjectMouseMovementInput(fs, 4012, 0, 11, -11);
 
       Console.WriteLine("yy");
-
-      Console.WriteLine(abc2.UnitId);
-
+      Console.WriteLine(abc2);
       Console.WriteLine("xx");
 
       //uint cbReturned = 0;
@@ -48,42 +42,45 @@ public static class MouseInjection {
       //  throw new InvalidOperationException("Failed to initialize driver. Error code: " + Marshal.GetLastWin32Error());
       //}
 
-      _isInitialized = true;
       Console.WriteLine("Driver initialized and listening for input.");
+    } else {
+      throw new InvalidOperationException("Failed to obtain a valid handle to the device. Check if the driver is installed and the device path is correct.");
     }
   }
-  public static MOUSE_DEVICE_STACK_INFORMATION MouiiIoInitializeMouseDeviceStackContext(SafeFileHandle handle) {
-    int bytesReturned = 0;
 
-    // Allocate memory for the output buffer.
-    IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)));
+  public static bool MouiiIoInitializeMouseDeviceStackContext(IntPtr handle, ref MOUSE_DEVICE_STACK_INFORMATION pDeviceStackInformation) {
+    // Prepare for the IOCTL request
+    uint bytesReturned = 0;
+    // This assumes the device stack information is zeroed out before this call
+    IntPtr pStackInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)));
 
     try {
-      bool status = DeviceIoControl(
+      // Call the DeviceIoControl function
+      bool result = DeviceIoControl(
           handle,
           IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
-          IntPtr.Zero,
-          0,
-          outBuffer,
-          Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)),
-          ref bytesReturned,
-          IntPtr.Zero);
+          IntPtr.Zero,       // No input buffer needed
+          0,                 // Input buffer size
+          pStackInfoPtr,    // Output buffer
+          (uint)Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)), // Output buffer size
+          out bytesReturned, // Bytes returned
+          IntPtr.Zero);      // No overlapped structure needed
 
-      if (!status) {
-        throw new InvalidOperationException("DeviceIoControl failed. Error: " + Marshal.GetLastWin32Error());
+      if (!result) {
+        // Handle the error as needed
+        return false;
       }
 
-      if (bytesReturned == 0) {
-        throw new InvalidOperationException("DeviceIoControl succeeded, but no data was written.");
-      }
-
-      return Marshal.PtrToStructure<MOUSE_DEVICE_STACK_INFORMATION>(outBuffer);
+      // Marshal the data from the pointer to the structure
+      pDeviceStackInformation = Marshal.PtrToStructure<MOUSE_DEVICE_STACK_INFORMATION>(pStackInfoPtr);
+      return true;
     } finally {
-      Marshal.FreeHGlobal(outBuffer);
+      // Free the allocated memory
+      Marshal.FreeHGlobal(pStackInfoPtr);
     }
   }
 
-  public static MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION MouiiIoInjectMouseMovementInput(SafeFileHandle handle, UIntPtr processId, ushort indicatorFlags, int movementX, int movementY) {
+  public static bool MouiiIoInjectMouseMovementInput(IntPtr handle, nint processId, ushort indicatorFlags, int movementX, int movementY) {
     INJECT_MOUSE_MOVEMENT_INPUT_REQUEST request = new() {
       ProcessId = processId,
       IndicatorFlags = indicatorFlags,
@@ -91,25 +88,23 @@ public static class MouseInjection {
       MovementY = movementY
     };
 
-    int bytesReturned = 0;
-    //IntPtr inBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(request));
+    uint bytesReturned = 0;
 
-    GCHandle inBuffer = GCHandle.Alloc(request, GCHandleType.Pinned);
-
-    // Allocate memory for the output buffer.
-    IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION)));
+    IntPtr requestPtr = Marshal.AllocHGlobal(Marshal.SizeOf(request));
 
     try {
-      IntPtr requestPtr = inBuffer.AddrOfPinnedObject();
+      Marshal.StructureToPtr(request, requestPtr, false);
+
+      Console.WriteLine(IoctlCodes.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT);
 
       bool status = DeviceIoControl(
         handle,
         IoctlCodes.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT,
         requestPtr,
-        Marshal.SizeOf(request),
-        outBuffer,
+        (uint)Marshal.SizeOf(request),
+        IntPtr.Zero,
         0,
-        ref bytesReturned,
+        out bytesReturned,
         IntPtr.Zero
       );
 
@@ -121,23 +116,84 @@ public static class MouseInjection {
         throw new InvalidOperationException("DeviceIoControl x succeeded, but no data was written.");
       }
 
-      return Marshal.PtrToStructure<MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION>(outBuffer);
+      return status;
     } finally {
-      inBuffer.Free();
+      Marshal.FreeHGlobal(requestPtr);
     }
   }
 
   [DllImport("kernel32.dll", SetLastError = true)]
   private static extern bool DeviceIoControl(
-    SafeFileHandle hDevice,                // Handle to the device
+    IntPtr hDevice,                // Handle to the device
     uint dwIoControlCode,          // Control code for the operation
     IntPtr lpInBuffer,             // Pointer to the input buffer
-    int nInBufferSize,             // Size of the input buffer
+    uint nInBufferSize,             // Size of the input buffer
     IntPtr lpOutBuffer,            // Pointer to the output buffer
-    int nOutBufferSize,            // Size of the output buffer
-    ref int lpBytesReturned,       // Pointer to the number of bytes returned
+    uint nOutBufferSize,            // Size of the output buffer
+    out uint lpBytesReturned,       // Pointer to the number of bytes returned
     IntPtr lpOverlapped            // Pointer to an OVERLAPPED structure (can be null)
   );
+}
+
+public class MouClassInput {
+  public static IntPtr DeviceHandle { get; private set; } = IntPtr.Zero;
+
+  // Importing CreateFile from kernel32.dll
+  [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+  private static extern IntPtr CreateFile(
+      string lpFileName,
+      uint dwDesiredAccess,
+      uint dwShareMode,
+      IntPtr lpSecurityAttributes,
+      uint dwCreationDisposition,
+      uint dwFlagsAndAttributes,
+      IntPtr hTemplateFile
+  );
+
+  // Constants for CreateFile
+  private const uint GENERIC_READ = 0x80000000;
+  private const uint GENERIC_WRITE = 0x40000000;
+  private const uint FILE_SHARE_READ = 0x00000001;
+  private const uint FILE_SHARE_WRITE = 0x00000002;
+  private const uint OPEN_EXISTING = 3;
+  private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+
+  // The device path must match the symbolic link to your MouClassInput driver.
+  private const string DevicePath = @"\\.\Device1";
+
+  public static bool InitializeDeviceHandle() {
+    // Acquire the device handle
+    DeviceHandle = CreateFile(
+        DevicePath,
+        GENERIC_READ | GENERIC_WRITE,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        IntPtr.Zero,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        IntPtr.Zero
+    );
+
+    // Check if the handle is valid
+    if (DeviceHandle == IntPtr.Zero || DeviceHandle.ToInt64() == -1) {
+      Console.WriteLine($"Failed to open device. Error: {Marshal.GetLastWin32Error()}");
+      return false;
+    }
+
+    Console.WriteLine("Successfully opened the device handle.");
+    return true;
+  }
+
+  public static void CloseDeviceHandle() {
+    if (DeviceHandle != IntPtr.Zero) {
+      CloseHandle(DeviceHandle);
+      DeviceHandle = IntPtr.Zero;
+      Console.WriteLine("Device handle closed.");
+    }
+  }
+
+  // Importing CloseHandle from kernel32.dll
+  [DllImport("kernel32.dll", SetLastError = true)]
+  private static extern bool CloseHandle(IntPtr hObject);
 }
 
 public class DriverHandleManager : IDisposable {
@@ -261,7 +317,7 @@ public struct INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT_REPLY {
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct INJECT_MOUSE_MOVEMENT_INPUT_REQUEST {
-  public UIntPtr ProcessId; // Use UIntPtr to match ULONG_PTR behavior.
+  public nint ProcessId;
   public ushort IndicatorFlags;
   public int MovementX;
   public int MovementY;
@@ -269,7 +325,7 @@ public struct INJECT_MOUSE_MOVEMENT_INPUT_REQUEST {
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct INJECT_MOUSE_BUTTON_INPUT_REQUEST {
-  public UIntPtr ProcessId; // Corrected to UIntPtr.
+  public nint ProcessId; // Corrected to UIntPtr.
   public ushort ButtonFlags;
   public ushort ButtonData;
 }
