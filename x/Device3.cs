@@ -194,11 +194,11 @@ class IOCode {
     return ((deviceType << 16) | ((uint)access << 14) | (function << 2) | (uint)method);
   }
 
-  public readonly uint IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT;
-  public readonly uint IOCTL_INJECT_MOUSE_MOVEMENT_INPUT;
-  public readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
-  public readonly uint IOCTL_INJECT_MOUSE_INPUT_PACKET;
-  public const uint FILE_DEVICE_MOUCLASS_INPUT_INJECTION = 48781u;
+  public enum FileAccess {
+    FileAnyAccess = 0,
+    FileReadAccess = 1,
+    FileWriteAccess = 2
+  }
 
   public enum DeviceMethod {
     MethodBuffered = 0,
@@ -207,11 +207,11 @@ class IOCode {
     MethodNeither = 3
   }
 
-  public enum FileAccess : uint {
-    FileAnyAccess = 0,
-    FileReadAccess = 1,
-    FileWriteAccess = 2
-  }
+  public readonly uint IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT;
+  public readonly uint IOCTL_INJECT_MOUSE_MOVEMENT_INPUT;
+  public readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
+  public readonly uint IOCTL_INJECT_MOUSE_INPUT_PACKET;
+  public const uint FILE_DEVICE_MOUCLASS_INPUT_INJECTION = 48781u;
 }
 
 [StructLayout(LayoutKind.Sequential)]
