@@ -15,29 +15,63 @@ public static class MouseInjection {
         throw new InvalidOperationException("Failed to obtain a valid handle to the device. Check if the driver is installed and the device path is correct.");
       }
 
-      Console.WriteLine(IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
+      MOUSE_DEVICE_STACK_INFORMATION abc = MouiiIoInitializeMouseDeviceStackContext(_deviceHandle);
 
-      MOUSE_DEVICE_STACK_INFORMATION deviceStackInformation = new();
-      uint cbReturned = 0;
+      //Console.WriteLine(IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT);
+      Console.WriteLine(abc.ButtonDevice.UnitId);
+      Console.WriteLine(abc.MovementDevice.UnitId);
+      Console.WriteLine(abc);
 
-      IntPtr inBuffer = IntPtr.Zero;
-      IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInformation));
+      //uint cbReturned = 0;
 
-      if (!DeviceIoControl(
-        _deviceHandle,
-        IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
-        inBuffer,
-        0,
-        outBuffer,
-        (uint)Marshal.SizeOf<MOUSE_DEVICE_STACK_INFORMATION>(),
-        ref cbReturned,
-        IntPtr.Zero)
-      ) {
-        throw new InvalidOperationException("Failed to initialize driver. Error code: " + Marshal.GetLastWin32Error());
-      }
+      //IntPtr inBuffer = IntPtr.Zero;
+      //IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInformation));
+
+      //if (!DeviceIoControl(
+      //  _deviceHandle,
+      //  IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
+      //  inBuffer,
+      //  0,
+      //  outBuffer,
+      //  (uint)Marshal.SizeOf<MOUSE_DEVICE_STACK_INFORMATION>(),
+      //  ref cbReturned,
+      //  IntPtr.Zero)
+      //) {
+      //  throw new InvalidOperationException("Failed to initialize driver. Error code: " + Marshal.GetLastWin32Error());
+      //}
 
       _isInitialized = true;
       Console.WriteLine("Driver initialized and listening for input.");
+    }
+  }
+  public static MOUSE_DEVICE_STACK_INFORMATION MouiiIoInitializeMouseDeviceStackContext(SafeFileHandle handle) {
+    uint cbReturned = 0;
+
+    // Allocate memory for the output buffer.
+    IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)));
+
+    try {
+      bool status = DeviceIoControl(
+          handle,
+          IoctlCodes.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
+          IntPtr.Zero,
+          0,
+          outBuffer,
+          (uint)Marshal.SizeOf(typeof(MOUSE_DEVICE_STACK_INFORMATION)),
+          ref cbReturned,
+          IntPtr.Zero);
+
+      if (!status) {
+        throw new InvalidOperationException("DeviceIoControl failed. Error: " + Marshal.GetLastWin32Error());
+      }
+
+      if (cbReturned == 0) {
+        throw new InvalidOperationException("DeviceIoControl succeeded, but no data was written.");
+      }
+
+      return Marshal.PtrToStructure<MOUSE_DEVICE_STACK_INFORMATION>(outBuffer);
+    } finally {
+      Marshal.FreeHGlobal(outBuffer);
     }
   }
 
