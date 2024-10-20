@@ -6,7 +6,7 @@ class Device3 {
     context = new(@"\\.\Device1");
     MOUSE_DEVICE_STACK_INFORMATION i = Initialize();
     Console.WriteLine($"Next: {i.ButtonDevice.UnitId}");
-    bool a = Move();
+    bool a = YX(10, 10);
     Console.WriteLine($"Move: {a}");
   }
 
@@ -43,12 +43,12 @@ class Device3 {
     return deviceStackInfo;
   }
 
-  public bool Move() {
+  public bool YX(int y, int x) {
     return React(new InjectMouseMovementInputRequest() {
       ProcessId = 4012,
       IndicatorFlags = 0,
-      MovementX = 10,
-      MovementY = 10
+      MovementX = y,
+      MovementY = x
     }, code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT, A.F);
   }
 
