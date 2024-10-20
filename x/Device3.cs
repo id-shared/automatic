@@ -1,74 +1,31 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 class Device3 {
-  public Device3() {
-    context = new(@"\\.\Device1");
-    MOUSE_DEVICE_STACK_INFORMATION i = Initialize();
-    Console.WriteLine($"Next: {i.ButtonDevice.UnitId}");
-    bool a = YX(10, 10);
-    Console.WriteLine($"Move: {a}");
-  }
-
-  public MOUSE_DEVICE_STACK_INFORMATION Initialize() {
-    MOUSE_DEVICE_STACK_INFORMATION deviceStackInfo = new();
-    uint cbReturned = 0;
-
-    IntPtr deviceInfoPtr = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInfo));
-
-    try {
-      IntPtr outBuffer = Marshal.AllocHGlobal(Marshal.SizeOf(deviceStackInfo));
-      Marshal.StructureToPtr(deviceStackInfo, outBuffer, false);
-
-      bool status = Native.DeviceIoControl(
-        context.contact,
-        code.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT,
-        IntPtr.Zero,
-        0,
-        outBuffer,
-        (uint)Marshal.SizeOf(deviceStackInfo),
-        out cbReturned,
-        IntPtr.Zero
-      );
-
-      if (!status) {
-        Console.WriteLine($"DeviceIoControl failed: {Marshal.GetLastWin32Error()}");
-      }
-
-      Console.WriteLine(cbReturned);
-    } finally {
-      Marshal.FreeHGlobal(deviceInfoPtr);
-    }
-
-    return deviceStackInfo;
+  public Device3(string e) {
+    context = new(@$"\\.\{e}");
+    _ = Act(new MOUSE_DEVICE_STACK_INFORMATION(), code.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device3));
   }
 
   public bool YX(int y, int x) {
-    return React(new InjectMouseMovementInputRequest() {
+    return Act(new InjectMouseMovementInputRequest() {
       ProcessId = 4012,
       IndicatorFlags = 0,
       MovementX = y,
       MovementY = x
-    }, code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT, A.F);
+    }, code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT, A.T);
   }
 
-  public bool React<X>(X x, uint e, bool a) {
+  public bool Act<X>(X x, uint e, bool a) {
     IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(x));
 
     try {
       Marshal.StructureToPtr(x, buffer, false);
       uint bytesReturned = 0;
 
-      return Native.DeviceIoControl(
-        context.contact,
-        e,
-        buffer,
-        (uint)Marshal.SizeOf(x),
-        IntPtr.Zero,
-        0,
-        out bytesReturned,
-        IntPtr.Zero
-      );
+      return a switch {
+        A.T => Native.DeviceIoControl(context.contact, e, buffer, (uint)Marshal.SizeOf(x), IntPtr.Zero, 0, out bytesReturned, IntPtr.Zero),
+        _ => Native.DeviceIoControl(context.contact, e, IntPtr.Zero, 0, buffer, (uint)Marshal.SizeOf(x), out bytesReturned, IntPtr.Zero),
+      };
     } catch {
       return A.F;
     } finally {
@@ -76,135 +33,19 @@ class Device3 {
     }
   }
 
-  //public bool DeviceIoControl(bool a) => A.T switch {
-  //  a => Native.DeviceIoControl(
-  //      context.contact,
-  //      e,
-  //      outBuffer,
-  //      (uint)Marshal.SizeOf(x),
-  //      IntPtr.Zero,
-  //      0,
-  //      out bytesReturned,
-  //      IntPtr.Zero
-  //    ),
-  //  _ => Native.DeviceIoControl(
-  //      context.contact,
-  //      e,
-  //      outBuffer,
-  //      (uint)Marshal.SizeOf(x),
-  //      IntPtr.Zero,
-  //      0,
-  //      out bytesReturned,
-  //      IntPtr.Zero
-  //    ),
-  //};
-
   private readonly IOCode code = new();
   private readonly Context context;
 }
 
-partial class Context : IDisposable {
-  public SafeFileHandle contact = new(IntPtr.Zero, true);
-  public bool isDisconnected = false;
-
-  public Context(string e) {
-    contact = Native.CreateFile(
-      e,
-      GENERIC_READ | GENERIC_WRITE,
-      FILE_SHARE_READ | FILE_SHARE_WRITE,
-      IntPtr.Zero,
-      OPEN_EXISTING,
-      FILE_ATTRIBUTE_NORMAL,
-      IntPtr.Zero
-    );
-
-    if (contact.IsInvalid) {
-      contact.Dispose();
-    }
-  }
-
-  public void Terminate() {
-    if (!contact.IsInvalid) {
-      contact.Dispose();
-    }
-  }
-
-  public void Dispose() {
-    if (!isDisconnected) {
-      Terminate();
-      isDisconnected = true;
-    }
-
-    GC.SuppressFinalize(this);
-  }
-
-  private const uint GENERIC_READ = 0x80000000;
-  private const uint GENERIC_WRITE = 0x40000000;
-  private const uint FILE_SHARE_READ = 0x00000001;
-  private const uint FILE_SHARE_WRITE = 0x00000002;
-  private const uint OPEN_EXISTING = 3;
-  private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
-}
-
-class Native {
-  [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-  public static extern bool DeviceIoControl(
-    SafeFileHandle hDevice,
-    uint dwIoControlCode,
-    IntPtr lpInBuffer,
-    uint nInBufferSize,
-    IntPtr lpOutBuffer,
-    uint nOutBufferSize,
-    out uint lpBytesReturned,
-    IntPtr lpOverlapped
-  );
-
-  [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-  public static extern SafeFileHandle CreateFileW(
-    string lpFileName,
-    uint dwDesiredAccess,
-    uint dwShareMode,
-    IntPtr lpSecurityAttributes,
-    uint dwCreationDisposition,
-    uint dwFlagsAndAttributes,
-    IntPtr hTemplateFile
-  );
-
-  [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
-  public static extern SafeFileHandle CreateFileA(
-    string lpFileName,
-    uint dwDesiredAccess,
-    uint dwShareMode,
-    IntPtr lpSecurityAttributes,
-    uint dwCreationDisposition,
-    uint dwFlagsAndAttributes,
-    IntPtr hTemplateFile
-  );
-
-  [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-  public static extern SafeFileHandle CreateFile(
-    string lpFileName,
-    uint dwDesiredAccess,
-    uint dwShareMode,
-    IntPtr lpSecurityAttributes,
-    uint dwCreationDisposition,
-    uint dwFlagsAndAttributes,
-    IntPtr hTemplateFile);
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  public static extern bool CloseHandle(IntPtr hObject);
-}
-
 class IOCode {
   public IOCode() {
-    IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT = CTL_CODE(AX, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
 
-    IOCTL_INJECT_MOUSE_MOVEMENT_INPUT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INJECT_MOUSE_MOVEMENT_INPUT = CTL_CODE(AX, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
 
-    IOCTL_INJECT_MOUSE_BUTTON_INPUT = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INJECT_MOUSE_BUTTON_INPUT = CTL_CODE(AX, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
 
-    IOCTL_INJECT_MOUSE_INPUT_PACKET = CTL_CODE(FILE_DEVICE_MOUCLASS_INPUT_INJECTION, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    IOCTL_INJECT_MOUSE_INPUT_PACKET = CTL_CODE(AX, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
   }
 
   private static uint CTL_CODE(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
@@ -228,7 +69,7 @@ class IOCode {
   public readonly uint IOCTL_INJECT_MOUSE_MOVEMENT_INPUT;
   public readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
   public readonly uint IOCTL_INJECT_MOUSE_INPUT_PACKET;
-  public const uint FILE_DEVICE_MOUCLASS_INPUT_INJECTION = 48781u;
+  public const uint AX = 48781u;
 }
 
 [StructLayout(LayoutKind.Sequential)]

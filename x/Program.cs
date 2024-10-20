@@ -1,7 +1,8 @@
 ﻿class Program {
   static void Main() {
     try {
-      Device3 mi = new();
+      Device3 mi = new("Device1");
+      mi.YX(10, 10);
       Console.WriteLine("OK.");
     } catch (Exception ex) {
       Console.WriteLine($"Error: {ex.Message}");
