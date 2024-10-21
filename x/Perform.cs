@@ -5,7 +5,7 @@ class Perform {
   public static volatile Specter S2 = new(256);
   public static volatile Specter S1 = new(256);
   public static volatile Pattern P1 = new();
-  public static volatile Device1 D1 = new(Current.process("explorer").Last().Id, "Device1");
+  public static volatile Device1 D1 = new(Current.process("explorer").Last().Id, "d1");
 
   public static readonly uint[] RC = [KeyM.R];
   public static readonly uint[] RA = [KeyA.R];
