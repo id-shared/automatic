@@ -16,6 +16,14 @@ class Device1 {
     }, code.MOVE, A.T);
   }
 
+  public bool E(int e) {
+    return Act(new BtnI() {
+      ProcessId = process,
+      ButtonFlags = (ushort)e,
+      ButtonData = 0
+    }, code.BTN, A.T);
+  }
+
   public bool Act<X>(X x, uint e, bool a) {
     IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(x));
 
@@ -42,9 +50,9 @@ class Device1 {
 class IOCode {
   public IOCode() {
     CONTEXT = Code(CODE, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-    BUTTON = Code(CODE, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
     PACKET = Code(CODE, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
     MOVE = Code(CODE, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    BTN = Code(CODE, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
   }
 
   private static uint Code(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
@@ -65,7 +73,7 @@ class IOCode {
   }
 
   public readonly uint CONTEXT;
-  public readonly uint BUTTON;
+  public readonly uint BTN;
   public readonly uint PACKET;
   public readonly uint MOVE;
   public readonly uint CODE = 48781u;
@@ -77,6 +85,13 @@ public struct MoveI {
   public ushort IndicatorFlags;
   public int MovementX;
   public int MovementY;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct BtnI {
+  public IntPtr ProcessId;
+  public ushort ButtonFlags;
+  public ushort ButtonData;
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -92,9 +107,9 @@ public struct ContextButtonO {
 
 [StructLayout(LayoutKind.Sequential)]
 public struct ContextMoveO {
-  public ushort UnitId;
   [MarshalAs(UnmanagedType.I1)]
   public bool AbsoluteMovement;
   [MarshalAs(UnmanagedType.I1)]
   public bool VirtualDesktop;
+  public ushort UnitId;
 }
