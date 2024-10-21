@@ -41,13 +41,13 @@ class Device1 {
 
 class IOCode {
   public IOCode() {
-    CONTEXT = CTL_CODE(CODE, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-    BUTTON = CTL_CODE(CODE, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-    PACKET = CTL_CODE(CODE, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-    MOVE = CTL_CODE(CODE, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    CONTEXT = Code(CODE, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    BUTTON = Code(CODE, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    PACKET = Code(CODE, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    MOVE = Code(CODE, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
   }
 
-  private static uint CTL_CODE(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
+  private static uint Code(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
     return ((deviceType << 16) | ((uint)access << 14) | (function << 2) | (uint)method);
   }
 
