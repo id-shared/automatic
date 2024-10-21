@@ -91,7 +91,7 @@ class Perform {
   public static bool C(double i) => Time.XO(i);
 
   public static IntPtr OnHook(int nCode, IntPtr wParam, IntPtr lParam) {
-    IntPtr next = CallNextHookEx(hook, nCode, wParam, lParam);
+    IntPtr next = Native.CallNextHookEx(hook, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
@@ -128,21 +128,21 @@ class Perform {
     using var module = Process.GetCurrentProcess().MainModule;
     if (module == null) return IntPtr.Zero;
 
-    IntPtr handle = GetModuleHandle(module.ModuleName);
+    IntPtr handle = Native.GetModuleHandle(module.ModuleName);
     return handle == IntPtr.Zero ? IntPtr.Zero :
-      SetWindowsHookEx((int)hookType, proc, handle, 0);
+      Native.SetWindowsHookEx((int)hookType, proc, handle, 0);
   }
 
-  public static void Subscribe(MSG msg) {
-    while (GetMessage(out msg, IntPtr.Zero, 0, 0)) {
-      TranslateMessage(ref msg);
-      DispatchMessage(ref msg);
+  public static void Subscribe(Native.MSG msg) {
+    while (Native.GetMessage(out msg, IntPtr.Zero, 0, 0)) {
+      Native.TranslateMessage(ref msg);
+      Native.DispatchMessage(ref msg);
     }
   }
 
   public Perform() {
     hook = SetHook(onHook, 13);
-    Subscribe(new MSG());
+    Subscribe(new Native.MSG());
   }
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -153,51 +153,4 @@ class Perform {
   public const uint WM_SYSKEYUP = 0x0105;
   public const uint WM_KEYDOWN = 0x0100;
   public const uint WM_KEYUP = 0x0101;
-
-  [StructLayout(LayoutKind.Sequential)]
-  public struct MSG {
-    public IntPtr hWnd;
-    public uint message;
-    public IntPtr wParam, lParam;
-    public uint time;
-    public POINT pt;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  public struct POINT {
-    public int x, y;
-  }
-
-  [StructLayout(LayoutKind.Sequential)]
-  public struct MSLLHOOKSTRUCT {
-    public POINT pt;
-    public uint mouseData;
-    public uint flags;
-    public uint time;
-    public IntPtr dwExtraInfo;
-  }
-
-  [DllImport("user32.dll")]
-  public static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
-
-  [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  public static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-  public static extern IntPtr GetModuleHandle(string lpModuleName);
-
-  [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  public static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-
-  [DllImport("user32.dll")]
-  [return: MarshalAs(UnmanagedType.Bool)]
-  public static extern bool TranslateMessage(ref MSG lpMsg);
-
-  [DllImport("user32.dll")]
-  public static extern IntPtr DispatchMessage(ref MSG lpMsg);
-
-  [DllImport("user32.dll")]
-  public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 }
