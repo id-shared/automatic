@@ -4,16 +4,16 @@ class Device1 {
   public Device1(IntPtr e, string c) {
     context = new(@$"\\.\{c}");
     process = e;
-    _ = Act(new MOUSE_DEVICE_STACK_INFORMATION(), code.IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device1));
+    _ = Act(new ContextO(), code.CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device1));
   }
 
   public bool YX(int y, int x) {
-    return Act(new InjectMouseMovementInputRequest() {
+    return Act(new MoveI() {
       ProcessId = process,
       IndicatorFlags = 0,
       MovementX = x,
       MovementY = y,
-    }, code.IOCTL_INJECT_MOUSE_MOVEMENT_INPUT, A.T);
+    }, code.MOVE, A.T);
   }
 
   public bool Act<X>(X x, uint e, bool a) {
@@ -41,13 +41,10 @@ class Device1 {
 
 class IOCode {
   public IOCode() {
-    IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT = CTL_CODE(AX, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-
-    IOCTL_INJECT_MOUSE_MOVEMENT_INPUT = CTL_CODE(AX, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-
-    IOCTL_INJECT_MOUSE_BUTTON_INPUT = CTL_CODE(AX, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
-
-    IOCTL_INJECT_MOUSE_INPUT_PACKET = CTL_CODE(AX, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    CONTEXT = CTL_CODE(CODE, 2600, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    BUTTON = CTL_CODE(CODE, 2850, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    PACKET = CTL_CODE(CODE, 2870, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
+    MOVE = CTL_CODE(CODE, 2851, DeviceMethod.MethodBuffered, FileAccess.FileAnyAccess);
   }
 
   private static uint CTL_CODE(uint deviceType, uint function, DeviceMethod method, FileAccess access) {
@@ -67,50 +64,37 @@ class IOCode {
     MethodNeither = 3
   }
 
-  public readonly uint IOCTL_INITIALIZE_MOUSE_DEVICE_STACK_CONTEXT;
-  public readonly uint IOCTL_INJECT_MOUSE_MOVEMENT_INPUT;
-  public readonly uint IOCTL_INJECT_MOUSE_BUTTON_INPUT;
-  public readonly uint IOCTL_INJECT_MOUSE_INPUT_PACKET;
-  public const uint AX = 48781u;
+  public readonly uint CONTEXT;
+  public readonly uint BUTTON;
+  public readonly uint PACKET;
+  public readonly uint MOVE;
+  public readonly uint CODE = 48781u;
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public struct MOUSE_CLASS_BUTTON_DEVICE_INFORMATION {
-  public ushort UnitId;
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public struct MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION {
-  public ushort UnitId;
-  [MarshalAs(UnmanagedType.I1)]
-  public bool AbsoluteMovement;
-  [MarshalAs(UnmanagedType.I1)]
-  public bool VirtualDesktop;
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public struct MOUSE_DEVICE_STACK_INFORMATION {
-  public MOUSE_CLASS_BUTTON_DEVICE_INFORMATION ButtonDevice;
-  public MOUSE_CLASS_MOVEMENT_DEVICE_INFORMATION MovementDevice;
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public struct InjectMouseMovementInputRequest {
+public struct MoveI {
   public IntPtr ProcessId;
   public ushort IndicatorFlags;
   public int MovementX;
   public int MovementY;
 }
 
-[StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct INJECT_MOUSE_INPUT_PACKET_REQUEST {
-  public UIntPtr ProcessId;
-  public bool UseButtonDevice;
-  public MOUSE_INPUT_DATA InputPacket;
+[StructLayout(LayoutKind.Sequential)]
+public struct ContextO {
+  public ContextButtonO ButtonDevice;
+  public ContextMoveO MovementDevice;
 }
 
-// Assuming MOUSE_INPUT_DATA is defined elsewhere
 [StructLayout(LayoutKind.Sequential)]
-public struct MOUSE_INPUT_DATA {
-  // Define members here based on your requirements
+public struct ContextButtonO {
+  public ushort UnitId;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct ContextMoveO {
+  public ushort UnitId;
+  [MarshalAs(UnmanagedType.I1)]
+  public bool AbsoluteMovement;
+  [MarshalAs(UnmanagedType.I1)]
+  public bool VirtualDesktop;
 }
