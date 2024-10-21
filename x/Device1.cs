@@ -16,10 +16,10 @@ class Device1 {
     }, code.MOVE, A.T);
   }
 
-  public bool E(int e) {
+  public bool E(ushort e) {
     return Act(new BtnI() {
       ProcessId = process,
-      ButtonFlags = (ushort)e,
+      ButtonFlags = e,
       ButtonData = 0
     }, code.BTN, A.T);
   }
