@@ -2,11 +2,12 @@
 
 class Program {
   static void Main(string[] args) {
-    string a = DeviceFinder.FindDevice(args => args.Contains("ROOT#"));
+    string a = DeviceFinder.FindDevice(args => args.Contains("ROOT#S"));
     Console.WriteLine(a);
     Console.ReadLine();
   }
 }
+
 public class DeviceFinder {
   const uint STATUS_SUCCESS = 0x00000000;
   const uint STATUS_MORE_ENTRIES = 0x00000105;
