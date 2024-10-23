@@ -6,13 +6,14 @@ class Device1 {
   }
 
   public bool YX(int y, int x) {
-    return Act(new MouseReport { y = (short)y , x = (short)x }, 0x2A2010, A.T);
+    return Act(new MouseReport { y = (short)y, x = (short)x }, CODE, A.T);
   }
 
   public bool E(int e, bool a) {
+    // && Input([a ? L_KEYD : L_KEYU])
     return e switch {
-      1 => Act(new MouseReport { Button = new MouseButton { LButton = a }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([a ? L_KEYD : L_KEYU]),
-      _ => Act(new MouseReport { Button = new MouseButton { LButton = a }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([a ? L_KEYD : L_KEYU]),
+      1 => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T),
+      _ => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T) && Time.XO(1000),
     };
   }
 
@@ -43,8 +44,9 @@ class Device1 {
     }
   }
 
-  public static readonly uint L_KEYU = 0x0004;
-  public static readonly uint L_KEYD = 0x0002;
+  private readonly uint L_KEYU = 0x0004;
+  private readonly uint L_KEYD = 0x0002;
+  private readonly uint CODE = 0x2A2010;
   private readonly Context context;
 }
 
