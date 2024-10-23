@@ -3,22 +3,17 @@
 class Device1 {
   public Device1(string c) {
     context = new(@$"\??\ROOT#SYSTEM#0001#{{{c}}}");
-    Console.WriteLine(c);
-    Console.WriteLine(Act(new MOUSEINPUT() {
-      dx = 5,
-      dy = 5,
-    }, 0x2A2010, A.T));
   }
 
-  public bool YX(int y, int x) {
-    return A.T;
+  public bool YX(short y, short x) {
+    return Act(new MouseReport { y = y , x = x }, 0x2A2010, A.T);
   }
 
   public bool E(ushort e) {
     return e switch {
-      2 => Device2.Input([KeyM.L], A.F),
-      1 => Device2.Input([KeyM.L], A.T),
-      _ => Device2.Input([KeyM.L], A.T),
+      2 => Act(new MouseReport { Button = new MouseButton { LButton = A.F } }, 0x2A2010, A.T),
+      1 => Act(new MouseReport { Button = new MouseButton { LButton = A.T } }, 0x2A2010, A.T),
+      _ => Act(new MouseReport { Button = new MouseButton { LButton = A.T } }, 0x2A2010, A.T),
     };
   }
 
@@ -43,30 +38,96 @@ class Device1 {
   private readonly Context context;
 }
 
-[StructLayout(LayoutKind.Sequential)]
-public struct MOUSEINPUT {
-  public int dx;
-  public int dy;
-  public int mouseData;
-  public uint dwFlags;
-  public uint time;
-  public IntPtr dwExtraInfo;
-}
+[StructLayout(LayoutKind.Explicit, Size = 8)]
+struct MouseReport {
+  [FieldOffset(0)]
+  private byte button_byte;
 
-// Constants for dwFlags field (Mouse Event Flags)
-public static class MouseEventFlags {
-  public const uint MOUSEEVENTF_MOVE = 0x0001;
-  public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
-  public const uint MOUSEEVENTF_LEFTUP = 0x0004;
-  public const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
-  public const uint MOUSEEVENTF_RIGHTUP = 0x0010;
-  public const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
-  public const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
-  public const uint MOUSEEVENTF_XDOWN = 0x0080;
-  public const uint MOUSEEVENTF_XUP = 0x0100;
-  public const uint MOUSEEVENTF_WHEEL = 0x0800;
-  public const uint MOUSEEVENTF_HWHEEL = 0x01000;
-  public const uint MOUSEEVENTF_MOVE_NOCOALESCE = 0x2000;
-  public const uint MOUSEEVENTF_VIRTUALDESK = 0x4000;
-  public const uint MOUSEEVENTF_ABSOLUTE = 0x8000;
+  [FieldOffset(0)]
+  private MouseButton button;
+
+  [FieldOffset(2)]
+  public short x;
+
+  [FieldOffset(4)]
+  public short y;
+
+  [FieldOffset(6)]
+  public byte wheel;
+
+  [FieldOffset(7)]
+  public byte unknown_T;
+
+  public MouseButton Button {
+    get => button;
+    set => button = value;
+  }
+
+  public byte ButtonByte {
+    get => button_byte;
+    set => button_byte = value;
+  }
+}
+struct MouseButton {
+  private byte buttons; // Use a single byte to store 8 bits
+
+  public bool LButton {
+    get => (buttons & 0b00000001) != 0;
+    set {
+      if (value)
+        buttons |= 0b00000001;
+      else
+        buttons &= 0b11111110;
+    }
+  }
+
+  public bool RButton {
+    get => (buttons & 0b00000010) != 0;
+    set {
+      if (value)
+        buttons |= 0b00000010;
+      else
+        buttons &= 0b11111101;
+    }
+  }
+
+  public bool MButton {
+    get => (buttons & 0b00000100) != 0;
+    set {
+      if (value)
+        buttons |= 0b00000100;
+      else
+        buttons &= 0b11111011;
+    }
+  }
+
+  public bool XButton1 {
+    get => (buttons & 0b00001000) != 0;
+    set {
+      if (value)
+        buttons |= 0b00001000;
+      else
+        buttons &= 0b11110111;
+    }
+  }
+
+  public bool XButton2 {
+    get => (buttons & 0b00010000) != 0;
+    set {
+      if (value)
+        buttons |= 0b00010000;
+      else
+        buttons &= 0b11101111;
+    }
+  }
+
+  public bool Unknown {
+    get => (buttons & 0b11100000) != 0;
+    set {
+      if (value)
+        buttons |= 0b11100000;
+      else
+        buttons &= 0b00011111;
+    }
+  }
 }
