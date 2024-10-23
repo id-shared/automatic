@@ -2,6 +2,8 @@
 using System.Runtime.InteropServices;
 
 class Native {
+  public static readonly int INPUT_SIZE = Marshal.SizeOf<INPUT>();
+
   [StructLayout(LayoutKind.Sequential)]
   public struct INPUT {
     public uint type;
