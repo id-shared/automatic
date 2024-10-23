@@ -10,10 +10,10 @@ class Device1 {
   }
 
   public bool E(int e, bool a) {
-    // && Input([a ? L_KEYD : L_KEYU])
+    // HINT: Input([a ? L_KEYD : L_KEYU]);
     return e switch {
       1 => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T),
-      _ => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T) && Time.XO(1000),
+      _ => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T),
     };
   }
 
