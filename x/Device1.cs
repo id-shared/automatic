@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using static Native;
 
 class Device1 {
   public Device1(string c) {
@@ -10,24 +11,18 @@ class Device1 {
   }
 
   public bool E(int e) {
-    // HINT: Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T);
-
     return e switch {
-      2 => Device2.Input([KeyM.L], A.F),
-      1 => Device2.Input([KeyM.L], A.T),
-      _ => Device2.Input([KeyM.L], A.T),
+      2 => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([0x0004]),
+      1 => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([0x0002]),
+      _ => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([0x0002]),
     };
   }
 
-  public static bool Input(uint[] k, bool a) {
+  public static bool Input(uint[] k) {
     Native.INPUT[] inputs = new Native.INPUT[k.Length];
     for (int i = 0; i < k.Length; i++) {
       inputs[i].type = 0;
-      inputs[i].mkhi.ki.wVk = (ushort)k[i];
-      inputs[i].mkhi.ki.wScan = 0;
-      inputs[i].mkhi.ki.dwFlags = a ? E_KEYD : E_KEYU;
-      inputs[i].mkhi.ki.time = 0;
-      inputs[i].mkhi.ki.dwExtraInfo = IntPtr.Zero;
+      inputs[i].mkhi.mi = new Native.MOUSEINPUT { dwFlags = k[i] };
     }
     return Native.SendInput((uint)inputs.Length, inputs, Native.INPUT_SIZE) != 0;
   }
