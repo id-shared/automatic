@@ -2,8 +2,8 @@
 
 class Program {
   static void Main(string[] args) {
-    string a = DeviceFinder.FindDevice(args => args.Contains("ROOT#S"));
-    Console.WriteLine(a);
+    string a = DeviceFinder.FindDevice(args => args.Contains("ROOT#SYSTEM#0001#{1abc05c0-c378-41b9-9cef-df1aba82b015}"));
+    Console.WriteLine(a != null ? a : "not found.");
     Console.ReadLine();
   }
 }
