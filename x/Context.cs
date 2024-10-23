@@ -17,6 +17,7 @@ partial class Context : IDisposable {
 
     if (contact.IsInvalid) {
       contact.Dispose();
+      throw new InvalidOperationException(nameof(Context));
     }
   }
 

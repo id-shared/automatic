@@ -1,19 +1,14 @@
 ﻿using System.Runtime.InteropServices;
 
 class Device1 {
-  public Device1(IntPtr e, string c) {
-    context = new(@$"\\.\{c}");
-    process = e;
+  public Device1(string c) {
+    context = new(@$"\??\ROOT#SYSTEM#0001#{{{c}}}");
+    Console.WriteLine(c);
     _ = Act(new ContextO(), code.CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device1));
   }
 
   public bool YX(int y, int x) {
-    return Act(new MoveI() {
-      ProcessId = process,
-      IndicatorFlags = 0,
-      MovementX = x,
-      MovementY = y,
-    }, code.MOVE, A.T);
+    return A.T;
   }
 
   public bool E(ushort e) {
@@ -21,7 +16,7 @@ class Device1 {
       2 => Device2.Input([KeyM.L], A.F),
       1 => Device2.Input([KeyM.L], A.T),
       _ => Device2.Input([KeyM.L], A.T),
-    }; 
+    };
   }
 
   public bool Act<X>(X x, uint e, bool a) {
@@ -43,6 +38,5 @@ class Device1 {
   }
 
   private readonly IOCode code = new();
-  private readonly IntPtr process;
   private readonly Context context;
 }
