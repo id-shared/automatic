@@ -2,8 +2,8 @@
 using System.Runtime.InteropServices;
 
 class Perform {
-  public static volatile Specter S2 = new(256);
-  public static volatile Specter S1 = new(256);
+  public static volatile Specter S2 = new(16);
+  public static volatile Specter S1 = new(16);
   public static volatile Pattern P1 = new();
   public static volatile Device1 D1 = new("1abc05c0-c378-41b9-9cef-df1aba82b015");
 

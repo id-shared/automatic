@@ -5,11 +5,11 @@ class Device1 {
     context = new(@$"\??\ROOT#SYSTEM#0001#{{{c}}}");
   }
 
-  public bool YX(short y, short x) {
-    return Act(new MouseReport { y = y , x = x }, 0x2A2010, A.T);
+  public bool YX(int y, int x) {
+    return Act(new MouseReport { y = (short)y , x = (short)x }, 0x2A2010, A.T);
   }
 
-  public bool E(ushort e) {
+  public bool E(int e) {
     return e switch {
       2 => Act(new MouseReport { Button = new MouseButton { LButton = A.F } }, 0x2A2010, A.T),
       1 => Act(new MouseReport { Button = new MouseButton { LButton = A.T } }, 0x2A2010, A.T),
@@ -69,7 +69,7 @@ struct MouseReport {
   }
 }
 struct MouseButton {
-  private byte buttons; // Use a single byte to store 8 bits
+  private byte buttons;
 
   public bool LButton {
     get => (buttons & 0b00000001) != 0;
