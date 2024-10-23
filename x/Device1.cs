@@ -5,16 +5,12 @@ class Device1 {
     context = new(@$"\??\ROOT#SYSTEM#0001#{{{c}}}");
   }
 
-  public bool YX(int y, int x) {
-    return Act(new MouseReport { y = (short)y, x = (short)x }, CODE, A.T);
+  public bool YXL(int y, int x, bool a) {
+    return Act(new MouseReport { Button = new MouseButton { LButton = a }, y = (short)y, x = (short)x }, CODE, A.T);
   }
 
-  public bool E(int e, bool a) {
-    // HINT: Input([a ? L_KEYD : L_KEYU]);
-    return e switch {
-      1 => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T),
-      _ => Act(new MouseReport { Button = new MouseButton { LButton = a } }, CODE, A.T),
-    };
+  public bool L(bool a) {
+    return Input([a ? L_KEYD : L_KEYU]);
   }
 
   public static bool Input(uint[] k) {
