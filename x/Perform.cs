@@ -7,13 +7,11 @@ class Perform {
   public static volatile Pattern P1 = new();
   public static volatile Device1 D1 = new("1abc05c0-c378-41b9-9cef-df1aba82b015");
 
-  public static readonly uint[] RC = [KeyM.R];
   public static readonly uint[] RA = [KeyA.R];
   public static volatile bool R = A.F;
 
-  public static readonly double LI = 209.9999;
-  public static readonly double LE = 99.99999;
-  public static readonly uint[] LC = [KeyM.L];
+  public static readonly double LE = 209.9999;
+  public static readonly double LC = 99.99999;
   public static readonly uint[] LA = [KeyA.L];
   public static volatile bool L = A.F;
 
@@ -24,7 +22,7 @@ class Perform {
 
   public static bool KeyEAU() {
     L = A.F;
-    S1.TryEnqueue(_ => D1.E(2) && S2.TryEnqueue(_ => {
+    S1.TryEnqueue(_ => D1.E(1, A.F) && S2.TryEnqueue(_ => {
       AY = Upon(ci => !L && (0 <= ci) && D1.YX(P1.YAxis(ci) * -CY, P1.XAxis(ci) / CY) && C(EY), AY) + 1;
       P1 = new Pattern();
       return A.T;
@@ -33,7 +31,7 @@ class Perform {
   }
 
   public static bool KeyEAD() {
-    L = L || S1.TryEnqueue(_ => D1.E(1) && S2.TryEnqueue(_ => {
+    L = L || S1.TryEnqueue(_ => D1.E(1, A.T) && S2.TryEnqueue(_ => {
       AY = Till(ci => L && (99 >= ci) && D1.YX(P1.YAxis(ci) * CY, P1.XAxis(ci) / -CY) && C(EY), AY) - 1;
       return A.T;
     }));
@@ -41,7 +39,7 @@ class Perform {
   }
 
   public static bool KeyDU() {
-    return S1.TryEnqueue(_ => IO(LE, LA));
+    return S1.TryEnqueue(_ => IO(LC, LA));
   }
 
   public static bool KeyDD() {
@@ -49,7 +47,7 @@ class Perform {
   }
 
   public static bool KeyAU() {
-    return S1.TryEnqueue(_ => IO(LE, RA));
+    return S1.TryEnqueue(_ => IO(LC, RA));
   }
 
   public static bool KeyAD() {
@@ -85,8 +83,6 @@ class Perform {
   public static bool O(uint[] k) => Device2.Input(k, A.F);
 
   public static bool I(uint[] k) => Device2.Input(k, A.T);
-
-  public static bool H(uint[] k) => Device2.IsHeld(k);
 
   public static bool C(double i) => Time.XO(i);
 

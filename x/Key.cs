@@ -4,11 +4,6 @@
   public const uint A = (uint)ConsoleKey.A;
 }
 
-class KeyM {
-  public const uint R = 0x02;
-  public const uint L = 0x01;
-}
-
 class KeyE {
   public const uint W = (uint)ConsoleKey.LeftWindows;
   public const uint T = (uint)ConsoleKey.Tab;

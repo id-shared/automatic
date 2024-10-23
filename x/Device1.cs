@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using static Native;
 
 class Device1 {
   public Device1(string c) {
@@ -10,11 +9,10 @@ class Device1 {
     return Act(new MouseReport { y = (short)y , x = (short)x }, 0x2A2010, A.T);
   }
 
-  public bool E(int e) {
+  public bool E(int e, bool a) {
     return e switch {
-      2 => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([0x0004]),
-      1 => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([0x0002]),
-      _ => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([0x0002]),
+      1 => Act(new MouseReport { Button = new MouseButton { LButton = a }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([a ? L_KEYD : L_KEYU]),
+      _ => Act(new MouseReport { Button = new MouseButton { LButton = a }, y = 0, x = 0 }, 0x2A2010, A.T) && Input([a ? L_KEYD : L_KEYU]),
     };
   }
 
@@ -45,8 +43,8 @@ class Device1 {
     }
   }
 
-  public static readonly uint E_KEYU = 0x0002;
-  public static readonly uint E_KEYD = 0x0000;
+  public static readonly uint L_KEYU = 0x0004;
+  public static readonly uint L_KEYD = 0x0002;
   private readonly Context context;
 }
 

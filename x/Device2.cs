@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-class Device2 {
+﻿class Device2 {
   public static bool Input(uint[] k, bool a) {
     Native.INPUT[] inputs = new Native.INPUT[k.Length];
     for (int i = 0; i < k.Length; i++) {
