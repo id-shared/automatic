@@ -11,9 +11,9 @@ class Device1 {
 
   public bool E(int e) {
     return e switch {
-      2 => Act(new MouseReport { Button = new MouseButton { LButton = A.F } }, 0x2A2010, A.T),
-      1 => Act(new MouseReport { Button = new MouseButton { LButton = A.T } }, 0x2A2010, A.T),
-      _ => Act(new MouseReport { Button = new MouseButton { LButton = A.T } }, 0x2A2010, A.T),
+      2 => Act(new MouseReport { Button = new MouseButton { LButton = A.F }, y = 0, x = 0 }, 0x2A2010, A.T),
+      1 => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T),
+      _ => Act(new MouseReport { Button = new MouseButton { LButton = A.T }, y = 0, x = 0 }, 0x2A2010, A.T),
     };
   }
 
@@ -40,11 +40,19 @@ class Device1 {
 
 [StructLayout(LayoutKind.Explicit, Size = 8)]
 struct MouseReport {
-  [FieldOffset(0)]
-  private byte button_byte;
-
+  public MouseButton Button {
+    get => button;
+    set => button = value;
+  }
   [FieldOffset(0)]
   private MouseButton button;
+
+  public byte ButtonByte {
+    get => button_byte;
+    set => button_byte = value;
+  }
+  [FieldOffset(0)]
+  private byte button_byte;
 
   [FieldOffset(2)]
   public short x;
@@ -57,17 +65,8 @@ struct MouseReport {
 
   [FieldOffset(7)]
   public byte unknown_T;
-
-  public MouseButton Button {
-    get => button;
-    set => button = value;
-  }
-
-  public byte ButtonByte {
-    get => button_byte;
-    set => button_byte = value;
-  }
 }
+
 struct MouseButton {
   private byte buttons;
 
