@@ -2,8 +2,9 @@
 using System.Runtime.InteropServices;
 
 class Perform {
-  public static volatile Specter S2 = new(16);
-  public static volatile Specter S1 = new(16);
+  public static volatile Specter S3 = new(256);
+  public static volatile Specter S2 = new(256);
+  public static volatile Specter S1 = new(256);
   public static volatile Pattern P1 = new();
   public static volatile Device1 D1 = new("d1.dll");
 
@@ -109,14 +110,23 @@ class Perform {
     if (nCode >= 0) {
       switch ((uint)wParam) {
         case WM_MOUSEMOVE:
-          Native.POINT point = (Native.POINT)Marshal.PtrToStructure(lParam, typeof(Native.POINT));
-          Console.WriteLine($"Mouse moved to X: {point.x}, Y: {point.y}");
+          S3.TryEnqueue(_ => {
+            Native.POINT point = (Native.POINT)Marshal.PtrToStructure(lParam, typeof(Native.POINT));
+            Console.WriteLine($"Mouse moved to X: {point.x}, Y: {point.y}");
+            return A.T;
+          });
           break;
         case WM_LBUTTONDOWN:
-          Console.WriteLine("Left mouse button down");
+          S3.TryEnqueue(_ => {
+            Console.WriteLine("Left mouse button down");
+            return A.T;
+          });
           break;
         case WM_LBUTTONUP:
-          Console.WriteLine("Left mouse button up");
+          S3.TryEnqueue(_ => {
+            Console.WriteLine("Left mouse button up");
+            return A.T;
+          });
           break;
       }
     }
