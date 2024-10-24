@@ -2,7 +2,7 @@
 
 class Device1 {
   public Device1(string c) {
-    context = new(@$"\??\ROOT#SYSTEM#0001#{{{c}}}");
+    context = new(c);
   }
 
   public bool YXL(int y, int x, bool a) {
