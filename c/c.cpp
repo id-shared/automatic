@@ -1,103 +1,73 @@
-#include <chrono>
-#include <hidapi/hidapi.h>
-#include <iostream>
-#include <thread>
-#include <iomanip>  // For std::setw
+#include <libusb-1.0/libusb.h>
+#include <stdio.h>
+#include <signal.h>
+#include <stdbool.h>
+
+volatile bool keep_running = true;
+
+void handle_sigint(int sig) {
+  keep_running = false;
+}
 
 int main() {
-  // Initialize the hidapi library
-  if (hid_init()) {
-    std::cerr << "Failed to initialize HID library." << std::endl;
-    return 1;
-  }
+  libusb_context* ctx = NULL;
+  libusb_device** devs;
+  ssize_t cnt;
+  libusb_device_handle* handle = NULL;
 
-  // Enumerate all HID devices
-  struct hid_device_info* devices, * current;
-  devices = hid_enumerate(0x046D, 0xC547); // Change the VID and PID if needed
-  current = devices;
+  // Register signal handler
+  signal(SIGINT, handle_sigint);
 
-  // Display all devices and their info
-  std::cout << "Available HID devices:" << std::endl;
-  int index = 0;
-  while (current) {
-    std::cout << "Device " << index++ << ":"
-      << "\n  Path: " << current->path
-      << "\n" << std::endl;
-    current = current->next;
-  }
+  // Initialize libusb
+  libusb_init(&ctx);
 
-  // Get device selection from user
-  int selected_device;
-  std::cout << "Select a device number to open: ";
-  std::cin >> selected_device;
+  // Find the device (using VID and PID of your mouse)
+  cnt = libusb_get_device_list(ctx, &devs);
+  for (ssize_t i = 0; i < cnt; i++) {
+    struct libusb_device_descriptor desc;
+    libusb_get_device_descriptor(devs[i], &desc);
 
-  // Navigate to the selected device
-  current = devices;
-  for (int i = 0; i < selected_device; ++i) {
-    if (current->next == nullptr) {
-      std::cerr << "Invalid selection." << std::endl;
-      hid_free_enumeration(devices);
-      return 1;
-    }
-    current = current->next;
-  }
+    printf("Device found: VID: %04x, PID: %04x\n", desc.idVendor, desc.idProduct);
 
-  // Open the selected HID device
-  hid_device* device_handle = hid_open_path(current->path);
-  if (!device_handle) {
-    std::cerr << "Failed to open device." << std::endl;
-    hid_free_enumeration(devices);
-    return 1;
-  }
-
-  std::cout << "Device successfully opened." << std::endl;
-
-  // Buffer for reading data
-  unsigned char buf[8];  // Typical size for mouse input report
-  int res;
-
-  // Read data from the device in a loop
-  while (true) {
-    std::cout << "Attempting to read from device..." << std::endl;
-    res = hid_read_timeout(device_handle, buf, sizeof(buf), 100);
-    std::cout << "Read result: " << res << std::endl;
-
-    if (res < 0) {
-      std::cerr << "Failed to read from device." << std::endl;
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    if (desc.idVendor == YOUR_VENDOR_ID && desc.idProduct == YOUR_PRODUCT_ID) {
+      libusb_open(devs[i], &handle);
       break;
     }
-    else if (res == 0) {
-      // No data read
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      continue;
+  }
+
+  if (handle == NULL) {
+    printf("Device not found.\n");
+    libusb_free_device_list(devs, 1);
+    libusb_exit(ctx);
+    return 1; // Exit if device not found
+  }
+
+  // Claim the interface and set the configuration
+  libusb_set_configuration(handle, 1); // Adjust as necessary
+  libusb_claim_interface(handle, 0);    // Adjust as necessary
+
+  // Set up the endpoint and read data
+  unsigned char data[8]; // Adjust size based on the report length
+  int actual_length;
+
+  while (keep_running) {
+    int res = libusb_interrupt_transfer(handle, YOUR_ENDPOINT, data, sizeof(data), &actual_length, 0);
+    if (res == 0) {
+      // Process the data
+      int x_movement = data[1]; // Typically X movement is at index 1
+      int y_movement = data[2]; // Y movement at index 2
+      printf("X: %d, Y: %d\n", x_movement, y_movement);
     }
-
-    // Process and display the received data
-    std::cout << "Received data: ";
-    for (int i = 0; i < res; i++) {
-      std::cout << std::setw(2) << std::setfill('0') << std::hex << (int)buf[i] << " ";
-    }
-    std::cout << std::dec << std::endl;  // Reset to decimal format
-
-    // Parse the mouse input data (first byte often represents button states)
-    if (res >= 3) {  // Check if we have enough data for movement
-      int buttons = buf[0]; // Button states
-      int x = buf[1];       // X movement
-      int y = buf[2];       // Y movement
-
-      //std::cout << "Buttons: " << std::bitset<8>(buttons) << " | " << "X: " << x << ", Y: " << y << std::endl;
+    else {
+      printf("Error reading data: %d (%s)\n", res, libusb_error_name(res));
     }
   }
 
-  // Close the device and clean up
-  hid_close(device_handle);
-  hid_free_enumeration(devices);
-  hid_exit();
-
-  std::cout << "Press Enter to exit..." << std::endl;
-  std::cin.get();  // Wait for user input to exit
+  // Cleanup
+  libusb_release_interface(handle, 0); // Release interface
+  libusb_close(handle);
+  libusb_free_device_list(devs, 1);
+  libusb_exit(ctx);
 
   return 0;
 }
