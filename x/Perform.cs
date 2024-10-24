@@ -86,8 +86,8 @@ class Perform {
 
   public static bool C(double i) => Time.XO(i);
 
-  public static IntPtr OnHook(int nCode, IntPtr wParam, IntPtr lParam) {
-    IntPtr next = Native.CallNextHookEx(hook, nCode, wParam, lParam);
+  public static IntPtr OnHookD2(int nCode, IntPtr wParam, IntPtr lParam) {
+    IntPtr next = Native.CallNextHookEx(hookD2, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
@@ -103,6 +103,24 @@ class Perform {
       default:
         return next;
     }
+  }
+
+  public static IntPtr OnHookD1(int nCode, IntPtr wParam, IntPtr lParam) {
+    if (nCode >= 0) {
+      switch ((uint)wParam) {
+        case WM_MOUSEMOVE:
+          Native.POINT point = (Native.POINT)Marshal.PtrToStructure(lParam, typeof(Native.POINT));
+          Console.WriteLine($"Mouse moved to X: {point.x}, Y: {point.y}");
+          break;
+        case WM_LBUTTONDOWN:
+          Console.WriteLine("Left mouse button down");
+          break;
+        case WM_LBUTTONUP:
+          Console.WriteLine("Left mouse button up");
+          break;
+      }
+    }
+    return Native.CallNextHookEx(hookD1, nCode, wParam, lParam);
   }
 
   public static int Upon(Func<int, bool> z, int i) {
@@ -137,16 +155,24 @@ class Perform {
   }
 
   public Perform() {
-    hook = SetHook(onHook, 13);
+    hookD2 = SetHook(onHookD2, 13);
+    hookD1 = SetHook(onHookD1, 14);
     Subscribe(new Native.MSG());
   }
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
-  public static readonly LowLevelProc onHook = OnHook;
-  public static volatile IntPtr hook = IntPtr.Zero;
+  public static readonly LowLevelProc onHookD2 = OnHookD2;
+  public static readonly LowLevelProc onHookD1 = OnHookD1;
+  public static volatile IntPtr hookD2 = IntPtr.Zero;
+  public static volatile IntPtr hookD1 = IntPtr.Zero;
 
   public const uint WM_SYSKEYDOWN = 0x0104;
   public const uint WM_SYSKEYUP = 0x0105;
   public const uint WM_KEYDOWN = 0x0100;
   public const uint WM_KEYUP = 0x0101;
+
+  public const uint WM_MOUSEMOVE = 0x0200;
+  public const uint WM_LBUTTONDOWN = 0x0201;
+  public const uint WM_LBUTTONUP = 0x0202;
+
 }
