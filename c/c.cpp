@@ -1,50 +1,64 @@
-#include <iostream>
-#include <hidapi/hidapi.h>
-#include <thread>
 #include <chrono>
+#include <hidapi/hidapi.h>
+#include <iostream>
+#include <thread>
 
-void logMousePackets() {
-  // Initialize HIDAPI
-  if (hid_init() != 0) {
-    std::cerr << "Failed to initialize HIDAPI." << std::endl;
-    return;
+int main() {
+  // Initialize the hidapi library
+  if (hid_init()) {
+    std::cerr << "Failed to initialize HID library." << std::endl;
+    return 1;
   }
 
-  // Open the HID device (replace with your mouse's VID and PID)
-  const uint16_t VID = 0x046D; // Example: Logitech
-  const uint16_t PID = 0xC547; // Example: G602
+  // Enumerate all HID devices
+  struct hid_device_info* devices, * current;
+  devices = hid_enumerate(0x046D, 0xC547); // Enumerate all devices (0x0, 0x0 means all VIDs and PIDs)
+  current = devices;
 
-  struct hid_device_info* devs, * cur_dev;
+  // Display all devices and their info
+  std::cout << "Available HID devices:" << std::endl;
+  int index = 0;
+  while (current) {
+    std::cout << "Device " << index++ << ":"
+      << "\n  Path: " << current->path
+      << "\n" << std::endl;
 
-  devs = hid_enumerate(VID, PID);
-  cur_dev = devs;
-
-  while (cur_dev) {
-    std::wcout << L"Device Found:" << std::endl;
-    std::wcout << L"  Vendor ID: " << std::hex << cur_dev->vendor_id << std::endl;
-    std::wcout << L"  Product ID: " << cur_dev->product_id << std::endl;
-    std::wcout << L"  Serial Number: " << (cur_dev->serial_number ? cur_dev->serial_number : L"N/A") << std::endl;
-    std::wcout << L"  Manufacturer: " << cur_dev->manufacturer_string << std::endl;
-    std::wcout << L"  Product: " << cur_dev->product_string << std::endl;
-    cur_dev = cur_dev->next;
+    current = current->next;
   }
 
-  hid_free_enumeration(devs);
+  // Get device selection from user
+  int selected_device;
+  std::cout << "Select a device number to open: ";
+  std::cin >> selected_device;
 
-  hid_device* handle = hid_open(VID, PID, nullptr);
-
-  if (!handle) {
-    std::cerr << "Unable to open HID device." << std::endl;
-    hid_exit();
-    return;
+  // Navigate to the selected device
+  current = devices;
+  for (int i = 0; i < selected_device; ++i) {
+    if (current->next == nullptr) {
+      std::cerr << "Invalid selection." << std::endl;
+      hid_free_enumeration(devices);
+      return 1;
+    }
+    current = current->next;
   }
 
+  // Open the selected HID device
+  hid_device* device_handle = hid_open_path(current->path);
+  if (!device_handle) {
+    std::cerr << "Failed to open device." << std::endl;
+    hid_free_enumeration(devices);
+    return 1;
+  }
+
+  std::cout << "Device successfully opened." << std::endl;
+
+  // You can now communicate with the device using the `device_handle`
   std::cout << "Listening for mouse packets..." << std::endl;
 
   unsigned char buf[65]; // Buffer to store data
   while (true) {
     // Read packets from the HID device
-    int res = hid_read(handle, buf, sizeof(buf));
+    int res = hid_read(device_handle, buf, sizeof(buf));
 
     if (res > 0) {
       std::cout << "Received: ";
@@ -61,14 +75,13 @@ void logMousePackets() {
     std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Throttle reading
   }
 
-  // Close the HID device and cleanup
-  hid_close(handle);
+  // Close the device and clean up
+  hid_close(device_handle);
+  hid_free_enumeration(devices);
   hid_exit();
-}
 
-int main() {
-  logMousePackets();
   std::cout << "Press Enter to exit..." << std::endl;
   std::cin.get();  // Wait for user input to exit
+
   return 0;
 }
