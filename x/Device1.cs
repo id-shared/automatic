@@ -9,23 +9,13 @@ class Device1 {
     Console.WriteLine($"{GetType().Name}: {dd.Load("d1.dll") == 1 && dd.btn(0) == 1}");
   }
 
-  public bool YX(int y, int x) {
+  public bool YXL(int y, int x, bool a) {
     dd.movR(x, y);
     return A.T;
   }
 
-  public bool Y(int y) {
-    dd.movR(0, y);
-    return A.T;
-  }
-
-  public bool X(int x) {
-    dd.movR(x, 0);
-    return A.T;
-  }
-
-  public bool I(int x) {
-    dd.btn(x);
+  public bool L(int x, bool a) {
+    dd.btn(a ? 1 : 2);
     return A.T;
   }
 }
@@ -65,7 +55,6 @@ class DD {
     key = LoadFunction<pDD_key>("DD_key");
     str = LoadFunction<pDD_str>("DD_str");
     todc = LoadFunction<pDD_todc>("DD_todc");
-
     return 1;
   }
 
