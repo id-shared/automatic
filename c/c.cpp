@@ -52,27 +52,43 @@ int main() {
 
   std::cout << "Device successfully opened." << std::endl;
 
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Throttle reading
+
   // You can now communicate with the device using the `device_handle`
   std::cout << "Listening for mouse packets..." << std::endl;
 
   unsigned char buf[65]; // Buffer to store data
   while (true) {
-    // Read packets from the HID device
-    int res = hid_read(device_handle, buf, sizeof(buf));
+    try {
+      // Read packets from the HID device
+      int res = hid_read(device_handle, buf, sizeof(buf));
 
-    if (res > 0) {
-      std::cout << "Received: ";
-      for (int i = 0; i < res; ++i) {
-        std::cout << std::hex << (int)buf[i] << " ";
+      if (res > 0) {
+        std::cout << "Received: ";
+        for (int i = 0; i < res; ++i) {
+          std::cout << std::hex << (int)buf[i] << " ";
+        }
+        std::cout << std::dec << std::endl; // Switch back to decimal
       }
-      std::cout << std::dec << std::endl; // Switch back to decimal
-    }
-    else if (res < 0) {
-      std::cerr << "Error reading from device." << std::endl;
-      break; // Exit on error
-    }
+      else if (res == 0) {
+        std::cerr << "Read timed out, no data received." << std::endl;
+        continue; // Continue the loop
+      }
+      else if (res < 0) {
+        std::cerr << "Error reading from device: " << hid_error(device_handle) << std::endl;
+        break; // Exit on error
+      }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Throttle reading
+      std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Throttle reading
+    }
+    catch (const std::exception& e) {
+      std::cerr << "Exception caught: " << e.what() << std::endl;
+      break; // Exit the loop on exception
+    }
+    catch (...) {
+      std::cerr << "Unknown exception caught!" << std::endl;
+      break; // Exit the loop on unknown exception
+    }
   }
 
   // Close the device and clean up
