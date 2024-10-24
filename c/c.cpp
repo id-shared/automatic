@@ -9,10 +9,6 @@
 #pragma comment(lib, "winusb.lib")
 #pragma comment(lib, "hid.lib")
 
-// Replace these with your device's VID and PID
-const int TARGET_VID = 0x046D; // Your VID
-const int TARGET_PID = 0xC547; // Your PID
-
 void ProcessMouseData(BYTE* data, int length) {
   if (length >= 3) {
     int mouseX = (int)(signed char)data[1];
@@ -38,8 +34,8 @@ void ReadFromDevice(WINUSB_INTERFACE_HANDLE hWinUSB) {
 }
 
 bool IsMatchingDevice(const std::wstring& deviceId) {
-  return deviceId.find(L"VID_" + std::to_wstring(TARGET_VID)) != std::wstring::npos &&
-    deviceId.find(L"PID_" + std::to_wstring(TARGET_PID)) != std::wstring::npos;
+  // Check if the device ID starts with "HID\VID_046D"
+  return deviceId.find(L"HID\\VID_046D&PID_C547") == 0; // 0 means it starts with this string
 }
 
 int main() {
@@ -77,7 +73,7 @@ int main() {
       SetupDiGetDeviceInstanceId(hDevInfo, &DeviceInfoData, deviceId, sizeof(deviceId) / sizeof(WCHAR), nullptr)) {
       std::wcout << L"Device ID: " << deviceId << std::endl; // Debug output
 
-      // Check if the device matches the target VID and PID
+      // Check if the device matches the target VID
       if (!IsMatchingDevice(deviceId)) {
         free(pInterfaceDetailData);
         continue; // Skip to the next device if it doesn't match
@@ -86,15 +82,37 @@ int main() {
 
     std::wcout << L"Matching device found: " << pInterfaceDetailData->DevicePath << std::endl;
 
-    HANDLE hDevice = CreateFile(pInterfaceDetailData->DevicePath, GENERIC_READ | GENERIC_WRITE,
-      FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+    HANDLE hDevice = CreateFileW(
+      pInterfaceDetailData->DevicePath,
+      GENERIC_READ | GENERIC_WRITE,
+      FILE_SHARE_READ | FILE_SHARE_WRITE,
+      nullptr,
+      OPEN_EXISTING,
+      0,
+      nullptr
+    );
 
     if (hDevice == INVALID_HANDLE_VALUE) {
-      std::cerr << "Failed to open device. Error Code: " << GetLastError() << std::endl;
+      DWORD dwError = GetLastError();
+      std::cerr << "Failed to open device. Error Code: " << dwError << std::endl;
+
+      // Log additional information based on the error code
+      if (dwError == ERROR_ACCESS_DENIED) {
+        std::cerr << "Access denied. Try running the program as an administrator." << std::endl;
+      }
+      else if (dwError == ERROR_FILE_NOT_FOUND) {
+        std::cerr << "The specified device was not found." << std::endl;
+      }
+      else {
+        std::cerr << "Error Code Description: " << std::system_category().message(dwError) << std::endl;
+      }
       free(pInterfaceDetailData);
       continue; // Skip to the next device
     }
 
+    std::wcout << L"Device opened successfully: " << pInterfaceDetailData->DevicePath << std::endl;
+
+    // Initialize WinUSB
     WINUSB_INTERFACE_HANDLE hWinUSB;
     if (!WinUsb_Initialize(hDevice, &hWinUSB)) {
       std::cerr << "Failed to initialize WinUSB. Error Code: " << GetLastError() << std::endl;
@@ -114,7 +132,7 @@ int main() {
   SetupDiDestroyDeviceInfoList(hDevInfo);
 
   // Wait for user input to exit
-  std::cout << "Hello" << std::endl;
+  std::cout << "Press Enter to exit." << std::endl;
   std::cin.get();
 
   return 0;
