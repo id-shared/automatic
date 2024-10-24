@@ -1,12 +1,10 @@
 #include <windows.h>
 #include <setupapi.h>
-#include <winusb.h>
 #include <hidsdi.h>
 #include <iostream>
 #include <string>
 
 #pragma comment(lib, "setupapi.lib")
-#pragma comment(lib, "winusb.lib")
 #pragma comment(lib, "hid.lib")
 
 void ProcessMouseData(BYTE* data, int length) {
@@ -17,25 +15,23 @@ void ProcessMouseData(BYTE* data, int length) {
   }
 }
 
-void ReadFromDevice(WINUSB_INTERFACE_HANDLE hWinUSB) {
+void ReadFromDevice(HANDLE hDevice) {
   BYTE buffer[64]; // Buffer size for HID reports
-  DWORD bytesRead;
 
   while (true) {
-    if (WinUsb_ReadPipe(hWinUSB, 0x81, buffer, sizeof(buffer), &bytesRead, nullptr)) {
-      ProcessMouseData(buffer, bytesRead);
+    if (HidD_GetInputReport(hDevice, buffer, sizeof(buffer))) {
+      ProcessMouseData(buffer, sizeof(buffer));
     }
     else {
-      std::cerr << "Error reading from device. Error Code: " << GetLastError() << std::endl;
+      std::cerr << "Failed to read input report. Error Code: " << GetLastError() << std::endl;
     }
-
     Sleep(10); // Adjust polling interval as necessary
   }
 }
 
 bool IsMatchingDevice(const std::wstring& deviceId) {
-  // Check if the device ID starts with "HID\VID_046D"
-  return deviceId.find(L"HID\\VID_046D&PID_C547") == 0; // 0 means it starts with this string
+  // Check if the device ID matches the target VID and PID
+  return deviceId.find(L"HID\\VID_046D&PID_C547") == 0; // Replace with your mouse's VID and PID
 }
 
 int main() {
@@ -67,7 +63,6 @@ int main() {
     SP_DEVINFO_DATA DeviceInfoData;
     DeviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
 
-    // Now get the device instance ID using the interface detail
     WCHAR deviceId[MAX_PATH];
     if (SetupDiEnumDeviceInfo(hDevInfo, i, &DeviceInfoData) &&
       SetupDiGetDeviceInstanceId(hDevInfo, &DeviceInfoData, deviceId, sizeof(deviceId) / sizeof(WCHAR), nullptr)) {
@@ -112,18 +107,9 @@ int main() {
 
     std::wcout << L"Device opened successfully: " << pInterfaceDetailData->DevicePath << std::endl;
 
-    // Initialize WinUSB
-    WINUSB_INTERFACE_HANDLE hWinUSB;
-    if (!WinUsb_Initialize(hDevice, &hWinUSB)) {
-      std::cerr << "Failed to initialize WinUSB. Error Code: " << GetLastError() << std::endl;
-      CloseHandle(hDevice);
-      free(pInterfaceDetailData);
-      continue; // Skip to the next device
-    }
-
     // Start reading from the device
-    ReadFromDevice(hWinUSB);
-    WinUsb_Free(hWinUSB);
+    ReadFromDevice(hDevice);
+
     CloseHandle(hDevice);
     free(pInterfaceDetailData);
     break; // Exit after the first successful device for testing
