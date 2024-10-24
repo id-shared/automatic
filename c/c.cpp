@@ -5,18 +5,11 @@
 
 volatile bool keep_running = true;
 
-void handle_sigint(int sig) {
-  keep_running = false;
-}
-
 int main() {
   libusb_context* ctx = NULL;
   libusb_device** devs;
   ssize_t cnt;
   libusb_device_handle* handle = NULL;
-
-  // Register signal handler
-  signal(SIGINT, handle_sigint);
 
   // Initialize libusb
   libusb_init(&ctx);
@@ -29,7 +22,7 @@ int main() {
 
     printf("Device found: VID: %04x, PID: %04x\n", desc.idVendor, desc.idProduct);
 
-    if (desc.idVendor == YOUR_VENDOR_ID && desc.idProduct == YOUR_PRODUCT_ID) {
+    if (desc.idVendor == 0x046d && desc.idProduct == 0xc547) {
       libusb_open(devs[i], &handle);
       break;
     }
@@ -43,15 +36,17 @@ int main() {
   }
 
   // Claim the interface and set the configuration
-  libusb_set_configuration(handle, 1); // Adjust as necessary
-  libusb_claim_interface(handle, 0);    // Adjust as necessary
+  int config = 1; // Usually 1, adjust as necessary
+  int interface = 0; // Usually 0 for the first interface, adjust as necessary
+  libusb_set_configuration(handle, config);
+  libusb_claim_interface(handle, interface);
 
   // Set up the endpoint and read data
   unsigned char data[8]; // Adjust size based on the report length
   int actual_length;
 
   while (keep_running) {
-    int res = libusb_interrupt_transfer(handle, YOUR_ENDPOINT, data, sizeof(data), &actual_length, 0);
+    int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0); // 0x81 is commonly used for HID input
     if (res == 0) {
       // Process the data
       int x_movement = data[1]; // Typically X movement is at index 1
@@ -64,7 +59,7 @@ int main() {
   }
 
   // Cleanup
-  libusb_release_interface(handle, 0); // Release interface
+  libusb_release_interface(handle, interface); // Release interface
   libusb_close(handle);
   libusb_free_device_list(devs, 1);
   libusb_exit(ctx);
