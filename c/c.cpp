@@ -2,6 +2,7 @@
 #include <hidapi/hidapi.h>
 #include <iostream>
 #include <thread>
+#include <iomanip>  // For std::setw
 
 int main() {
   // Initialize the hidapi library
@@ -12,7 +13,7 @@ int main() {
 
   // Enumerate all HID devices
   struct hid_device_info* devices, * current;
-  devices = hid_enumerate(0x046D, 0xC547);
+  devices = hid_enumerate(0x046D, 0xC547); // Change the VID and PID if needed
   current = devices;
 
   // Display all devices and their info
@@ -51,7 +52,44 @@ int main() {
 
   std::cout << "Device successfully opened." << std::endl;
 
-  // HERE.
+  // Buffer for reading data
+  unsigned char buf[8];  // Typical size for mouse input report
+  int res;
+
+  // Read data from the device in a loop
+  while (true) {
+    std::cout << "Attempting to read from device..." << std::endl;
+    res = hid_read_timeout(device_handle, buf, sizeof(buf), 100);
+    std::cout << "Read result: " << res << std::endl;
+
+    if (res < 0) {
+      std::cerr << "Failed to read from device." << std::endl;
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+      break;
+    }
+    else if (res == 0) {
+      // No data read
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      continue;
+    }
+
+    // Process and display the received data
+    std::cout << "Received data: ";
+    for (int i = 0; i < res; i++) {
+      std::cout << std::setw(2) << std::setfill('0') << std::hex << (int)buf[i] << " ";
+    }
+    std::cout << std::dec << std::endl;  // Reset to decimal format
+
+    // Parse the mouse input data (first byte often represents button states)
+    if (res >= 3) {  // Check if we have enough data for movement
+      int buttons = buf[0]; // Button states
+      int x = buf[1];       // X movement
+      int y = buf[2];       // Y movement
+
+      //std::cout << "Buttons: " << std::bitset<8>(buttons) << " | " << "X: " << x << ", Y: " << y << std::endl;
+    }
+  }
 
   // Close the device and clean up
   hid_close(device_handle);
