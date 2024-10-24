@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 class Device1 {
   public readonly DD dd;
 
-  public Device1() {
+  public Device1(string c) {
     dd = new();
-    Console.WriteLine($"{GetType().Name}: {dd.Load("d1.dll") == 1 && dd.btn(0) == 1}");
+    Console.WriteLine($"{GetType().Name}: {dd.Load(c) == 1 && dd.btn(0) == 1}");
   }
 
   public bool YXL(int y, int x, bool a) {
@@ -14,7 +14,7 @@ class Device1 {
     return A.T;
   }
 
-  public bool L(int x, bool a) {
+  public bool L(bool a) {
     dd.btn(a ? 1 : 2);
     return A.T;
   }

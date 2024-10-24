@@ -5,7 +5,7 @@ class Perform {
   public static volatile Specter S2 = new(16);
   public static volatile Specter S1 = new(16);
   public static volatile Pattern P1 = new();
-  public static volatile Device1 D1 = new(@$"\??\ROOT#SYSTEM#0002#{{df31f106-d870-453d-8fa1-ec8ab43fa1d2}}");
+  public static volatile Device1 D1 = new("d1.dll");
 
   public static readonly uint[] RA = [KeyA.R];
   public static volatile bool R = A.F;

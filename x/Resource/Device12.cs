@@ -2,6 +2,7 @@
 
 class Device12 {
   public Device12(string c) {
+    // HINT: @$"\??\ROOT#SYSTEM#0002#{{df31f106-d870-453d-8fa1-ec8ab43fa1d2}}"
     context = new(c);
   }
 
