@@ -1,10 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 
-class Device1x {
-  public Device1x(IntPtr e, string c) {
+class Device11 {
+  public Device11(IntPtr e, string c) {
     context = new(@$"\\.\{c}");
     process = e;
-    _ = Act(new ContextO(), code.CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device1x));
+    _ = Act(new ContextO(), code.CONTEXT, A.F) ? A.T : throw new InvalidOperationException(nameof(Device11));
   }
 
   public bool YX(int y, int x) {
