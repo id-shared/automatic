@@ -1,74 +1,121 @@
 #include <windows.h>
+#include <setupapi.h>
+#include <winusb.h>
+#include <hidsdi.h>
 #include <iostream>
+#include <string>
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  switch (uMsg) {
-  case WM_INPUT: {
-    UINT dwSize;
-    GetRawInputData((HRAWINPUT)lParam, RID_INPUT, nullptr, &dwSize, sizeof(RAWINPUTHEADER));
-    LPBYTE lpb = new BYTE[dwSize];
-    if (lpb == nullptr) return 0;
+#pragma comment(lib, "setupapi.lib")
+#pragma comment(lib, "winusb.lib")
+#pragma comment(lib, "hid.lib")
 
-    if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, lpb, &dwSize, sizeof(RAWINPUTHEADER)) != dwSize) {
-      std::cerr << "Error getting raw input data." << std::endl;
+// Replace these with your device's VID and PID
+const int TARGET_VID = 0x046D; // Your VID
+const int TARGET_PID = 0xC547; // Your PID
+
+void ProcessMouseData(BYTE* data, int length) {
+  if (length >= 3) {
+    int mouseX = (int)(signed char)data[1];
+    int mouseY = (int)(signed char)data[2];
+    std::cout << "Mouse moved: X=" << mouseX << ", Y=" << mouseY << std::endl;
+  }
+}
+
+void ReadFromDevice(WINUSB_INTERFACE_HANDLE hWinUSB) {
+  BYTE buffer[64]; // Buffer size for HID reports
+  DWORD bytesRead;
+
+  while (true) {
+    if (WinUsb_ReadPipe(hWinUSB, 0x81, buffer, sizeof(buffer), &bytesRead, nullptr)) {
+      ProcessMouseData(buffer, bytesRead);
+    }
+    else {
+      std::cerr << "Error reading from device. Error Code: " << GetLastError() << std::endl;
     }
 
-    RAWINPUT* rawInput = (RAWINPUT*)lpb;
-    if (rawInput->header.dwType == RIM_TYPEMOUSE) {
-      // Process mouse movement data
-      int mouseX = rawInput->data.mouse.lLastX;
-      int mouseY = rawInput->data.mouse.lLastY;
-      std::cout << "Mouse moved: X=" << mouseX << ", Y=" << mouseY << std::endl;
-    }
-
-    delete[] lpb;
-    return 0;
+    Sleep(10); // Adjust polling interval as necessary
   }
-  case WM_DESTROY:
-    PostQuitMessage(0);
-    return 0;
-  }
+}
 
-  return DefWindowProc(hwnd, uMsg, wParam, lParam);
+bool IsMatchingDevice(const std::wstring& deviceId) {
+  return deviceId.find(L"VID_" + std::to_wstring(TARGET_VID)) != std::wstring::npos &&
+    deviceId.find(L"PID_" + std::to_wstring(TARGET_PID)) != std::wstring::npos;
 }
 
 int main() {
-  // Register the window class
-  const wchar_t CLASS_NAME[] = L"RawInputWindowClass"; // Use wide-character literal
-  WNDCLASS wc = {};
-  wc.lpfnWndProc = WindowProc;
-  wc.hInstance = GetModuleHandle(nullptr);
-  wc.lpszClassName = CLASS_NAME;
+  GUID InterfaceGuid;
+  HidD_GetHidGuid(&InterfaceGuid);
 
-  RegisterClass(&wc);
-
-  // Create the window
-  HWND hwnd = CreateWindowEx(
-    0, CLASS_NAME, L"HID Mouse Movement Detector", WS_OVERLAPPEDWINDOW, // Use wide-character literal
-    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-    nullptr, nullptr, GetModuleHandle(nullptr), nullptr
-  );
-
-  // Register for raw input
-  RAWINPUTDEVICE rid;
-  rid.usUsagePage = 0x01;  // Generic desktop controls
-  rid.usUsage = 0x02;       // Mouse
-  rid.dwFlags = RIDEV_INPUTSINK; // Receive input even when not in the foreground
-  rid.hwndTarget = hwnd;
-
-  if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == -1) {
-    std::cerr << "Failed to register raw input devices." << std::endl;
+  HDEVINFO hDevInfo = SetupDiGetClassDevs(&InterfaceGuid, nullptr, nullptr, DIGCF_PRESENT | DIGCF_INTERFACEDEVICE);
+  if (hDevInfo == INVALID_HANDLE_VALUE) {
+    std::cerr << "Failed to get device information set. Error Code: " << GetLastError() << std::endl;
     return 1;
   }
 
-  ShowWindow(hwnd, SW_HIDE); // Hide the window
+  SP_DEVICE_INTERFACE_DATA DeviceInterfaceData;
+  DeviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
 
-  // Message loop
-  MSG msg;
-  while (GetMessage(&msg, nullptr, 0, 0)) {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
+  for (DWORD i = 0; SetupDiEnumDeviceInterfaces(hDevInfo, nullptr, &InterfaceGuid, i, &DeviceInterfaceData); i++) {
+    DWORD requiredSize;
+    SetupDiGetDeviceInterfaceDetail(hDevInfo, &DeviceInterfaceData, nullptr, 0, &requiredSize, nullptr);
+    PSP_DEVICE_INTERFACE_DETAIL_DATA pInterfaceDetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(requiredSize);
+    pInterfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+
+    if (!SetupDiGetDeviceInterfaceDetail(hDevInfo, &DeviceInterfaceData, pInterfaceDetailData, requiredSize, nullptr, nullptr)) {
+      std::cerr << "Failed to get device interface detail. Error Code: " << GetLastError() << std::endl;
+      free(pInterfaceDetailData);
+      continue;
+    }
+
+    // Retrieve the device info
+    SP_DEVINFO_DATA DeviceInfoData;
+    DeviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
+
+    // Now get the device instance ID using the interface detail
+    WCHAR deviceId[MAX_PATH];
+    if (SetupDiEnumDeviceInfo(hDevInfo, i, &DeviceInfoData) &&
+      SetupDiGetDeviceInstanceId(hDevInfo, &DeviceInfoData, deviceId, sizeof(deviceId) / sizeof(WCHAR), nullptr)) {
+      std::wcout << L"Device ID: " << deviceId << std::endl; // Debug output
+
+      // Check if the device matches the target VID and PID
+      if (!IsMatchingDevice(deviceId)) {
+        free(pInterfaceDetailData);
+        continue; // Skip to the next device if it doesn't match
+      }
+    }
+
+    std::wcout << L"Matching device found: " << pInterfaceDetailData->DevicePath << std::endl;
+
+    HANDLE hDevice = CreateFile(pInterfaceDetailData->DevicePath, GENERIC_READ | GENERIC_WRITE,
+      FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+
+    if (hDevice == INVALID_HANDLE_VALUE) {
+      std::cerr << "Failed to open device. Error Code: " << GetLastError() << std::endl;
+      free(pInterfaceDetailData);
+      continue; // Skip to the next device
+    }
+
+    WINUSB_INTERFACE_HANDLE hWinUSB;
+    if (!WinUsb_Initialize(hDevice, &hWinUSB)) {
+      std::cerr << "Failed to initialize WinUSB. Error Code: " << GetLastError() << std::endl;
+      CloseHandle(hDevice);
+      free(pInterfaceDetailData);
+      continue; // Skip to the next device
+    }
+
+    // Start reading from the device
+    ReadFromDevice(hWinUSB);
+    WinUsb_Free(hWinUSB);
+    CloseHandle(hDevice);
+    free(pInterfaceDetailData);
+    break; // Exit after the first successful device for testing
   }
+
+  SetupDiDestroyDeviceInfoList(hDevInfo);
+
+  // Wait for user input to exit
+  std::cout << "Hello" << std::endl;
+  std::cin.get();
 
   return 0;
 }
