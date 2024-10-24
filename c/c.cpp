@@ -51,46 +51,7 @@ int main() {
 
   std::cout << "Device successfully opened." << std::endl;
 
-  // Sleep for a moment to ensure everything is ready
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-  // Reading packets
-  unsigned char buf[65] = { 0 }; // Initialize buffer with report ID set to 0
-  while (true) {
-    try {
-      int res = hid_read_timeout(device_handle, buf, sizeof(buf), 100); // Use timeout
-
-      std::cout << "X." << std::endl;
-
-      // Sleep for a moment to ensure everything is ready
-      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-      if (res > 0) {
-        std::cout << "Received: ";
-        for (int i = 0; i < res; ++i) {
-          std::cout << std::hex << (int)buf[i] << " ";
-        }
-        std::cout << std::dec << std::endl; // Switch back to decimal
-      }
-      else if (res == 0) {
-        std::cerr << "Read timed out, no data received." << std::endl;
-      }
-      else {
-        std::cerr << "Error reading from device: " << hid_error(device_handle) << std::endl;
-        break; // Exit on error
-      }
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Throttle reading
-    }
-    catch (const std::exception& e) {
-      std::cerr << "Exception caught: " << e.what() << std::endl;
-      break; // Exit on exception
-    }
-    catch (...) {
-      std::cerr << "Unknown exception caught!" << std::endl;
-      break; // Exit on unknown exception
-    }
-  }
+  // HERE.
 
   // Close the device and clean up
   hid_close(device_handle);
