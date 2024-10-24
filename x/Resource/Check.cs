@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 
-class Program {
-  static void Main(string[] args) {
-    string a = DeviceFinder.FindDevice(args => args.Contains("ROOT#SYSTEM#0001#{1abc05c0-c378-41b9-9cef-df1aba82b015}"));
-    Console.WriteLine(a != null ? a : "not found.");
-    Console.ReadLine();
-  }
+class Programs {
+  //static void Main(string[] args) {
+  //  string a = DeviceFinder.FindDevice(args => args.Contains("ROOT#SYSTEM#0001#{1abc05c0-c378-41b9-9cef-df1aba82b015}"));
+  //  Console.WriteLine(a != null ? a : "not found.");
+  //  Console.ReadLine();
+  //}
 }
 
 public class DeviceFinder {

@@ -95,7 +95,7 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
-        if (key == KeyE.W) Exit();
+        //if (key == KeyE.W) Exit();
         OnD(key);
         return next;
       case WM_SYSKEYUP or WM_KEYUP:
