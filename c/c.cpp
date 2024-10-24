@@ -12,7 +12,7 @@ int main() {
 
   // Enumerate all HID devices
   struct hid_device_info* devices, * current;
-  devices = hid_enumerate(0x046D, 0xC547); // Enumerate all devices (0x0, 0x0 means all VIDs and PIDs)
+  devices = hid_enumerate(0x046D, 0xC547);
   current = devices;
 
   // Display all devices and their info
@@ -22,7 +22,6 @@ int main() {
     std::cout << "Device " << index++ << ":"
       << "\n  Path: " << current->path
       << "\n" << std::endl;
-
     current = current->next;
   }
 
@@ -52,16 +51,19 @@ int main() {
 
   std::cout << "Device successfully opened." << std::endl;
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Throttle reading
+  // Sleep for a moment to ensure everything is ready
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-  // You can now communicate with the device using the `device_handle`
-  std::cout << "Listening for mouse packets..." << std::endl;
-
-  unsigned char buf[65]; // Buffer to store data
+  // Reading packets
+  unsigned char buf[65] = { 0 }; // Initialize buffer with report ID set to 0
   while (true) {
     try {
-      // Read packets from the HID device
-      int res = hid_read(device_handle, buf, sizeof(buf));
+      int res = hid_read_timeout(device_handle, buf, sizeof(buf), 100); // Use timeout
+
+      std::cout << "X." << std::endl;
+
+      // Sleep for a moment to ensure everything is ready
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
       if (res > 0) {
         std::cout << "Received: ";
@@ -72,9 +74,8 @@ int main() {
       }
       else if (res == 0) {
         std::cerr << "Read timed out, no data received." << std::endl;
-        continue; // Continue the loop
       }
-      else if (res < 0) {
+      else {
         std::cerr << "Error reading from device: " << hid_error(device_handle) << std::endl;
         break; // Exit on error
       }
@@ -83,11 +84,11 @@ int main() {
     }
     catch (const std::exception& e) {
       std::cerr << "Exception caught: " << e.what() << std::endl;
-      break; // Exit the loop on exception
+      break; // Exit on exception
     }
     catch (...) {
       std::cerr << "Unknown exception caught!" << std::endl;
-      break; // Exit the loop on unknown exception
+      break; // Exit on unknown exception
     }
   }
 
