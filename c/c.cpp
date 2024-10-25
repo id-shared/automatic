@@ -79,17 +79,15 @@ int main() {
 
       }
       else {
-        int abc = btn(x1_ ? 1 : 2);
-        printf("%d\n", abc);
-        Sleep(100);
+        printf("%d\n", x1_);
+        btn(x1_ ? 1 : 2);
       }
       x1 = x1_;
 
       int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
       int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+      printf("%d, %d\n", ax, ay);
       movR(ax, ay * -1);
-
-      //printf("%d, %d\n", ax, ay);
 
       //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
     }
