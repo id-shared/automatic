@@ -9,28 +9,33 @@ int main() {
   HMODULE hModule = LoadLibraryW(L"d1.dll");
 
   if (hModule != NULL) {
-    FARPROC pFunc = GetProcAddress(hModule, "DD_movR");
+    FARPROC pDD_btn = GetProcAddress(hModule, "DD_btn");
 
-    if (pFunc != NULL) {
-      printf("ace");
+    if (pDD_btn != NULL) {
+      typedef int (WINAPI* DD_btn)(INT);
+      DD_btn btn = (DD_btn)pDD_btn;
 
-      // Cast the function pointer to the correct signature and call it
-      typedef int (WINAPI* DD_btn)(INT, UINT);
-      DD_btn moveR = (DD_btn)pFunc;
-
-      // Cast the function pointer to the correct signature and call it
-      typedef int (WINAPI* DD_movR)(INT, UINT);
-      DD_movR moveR = (DD_movR)pFunc;
-
-      // Now you can call the MessageBoxA function
-      moveR(99, 99);
+      printf("result: %d\n", btn(0));
     }
     else {
       printf("Function not found!\n");
     }
 
-    // Free the loaded library
-    FreeLibrary(hModule);
+    /*FARPROC pDD_movR = GetProcAddress(hModule, "DD_movR");
+
+    if (pDD_movR != NULL) {
+      typedef int (WINAPI* DD_btn)(INT);
+      DD_btn movR = (DD_btn)pDD_movR;
+
+      printf("result: %d\n", movR(0));
+
+      btn(0);
+    }
+    else {
+      printf("Function not found!\n");
+    }*/
+
+    //FreeLibrary(hModule);
   }
   else {
     printf("Failed to load the DLL!\n");
