@@ -52,12 +52,17 @@ int main() {
   libusb_set_configuration(handle, configuration);
   libusb_claim_interface(handle, interface);
 
-  unsigned char data[8];
+  unsigned char data[13];
   int actual_length;
 
   while (true) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
+      int n13 = data[12];
+      int n12 = data[11];
+      int n11 = data[10];
+      int n10 = data[9];
+      int n9 = data[8];
       int n8 = data[7];
       int n7 = data[6];
       int n6 = data[5];
@@ -78,15 +83,13 @@ int main() {
       else {
         printf("%d\n", n4);
       }*/
-      if (n1 == 1 && n2 == 147) {
-      }
-      else {
-        int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
-        int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
-        //printf("%d, %d\n", ax, ay);
-        movR(ax, ay * -1);
-      }
-      //printf("%d, %d, %d, %d, %d\n", n3, n4, n5, n6, n7);
+
+      int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
+      int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+      //printf("%d, %d\n", ax, ay);
+      movR(ax, ay * -1);
+
+      //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
       //printf("%d, %d\n", n1, n2);
     }
     else {
