@@ -3,7 +3,7 @@
 #include <iostream>
 
 namespace Ram {
-  struct SharedData {
+  struct Data {
     uint32_t data;
     uint32_t flag;
   };

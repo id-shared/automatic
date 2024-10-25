@@ -14,7 +14,7 @@ int main() {
   HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
-  Ram::SharedData* ptr = static_cast<Ram::SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::SharedData)));
+  Ram::Data* ptr = static_cast<Ram::Data*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::Data)));
   ptr != NULL ? ptr : throw ptr;
 
   while (true) {
