@@ -4,11 +4,11 @@
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
-const int SHM_SIZE = sizeof(uint32_t) * 2; // 8 bytes for data + 4 bytes for flag
+const int SHM_SIZE = sizeof(uint32_t) * 2;
 
 struct SharedData {
-  uint32_t data; // The actual data
-  uint32_t flag; // 0: no new data, 1: new data available
+  uint32_t data;
+  uint32_t flag;
 };
 
 int main() {
