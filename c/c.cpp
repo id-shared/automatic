@@ -7,10 +7,15 @@
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
-const int SHM_SIZE = 4; // 4 bytes
+const int SHM_SIZE = sizeof(uint32_t) * 2;
+
+struct SharedData {
+  uint32_t data;
+  uint32_t flag;
+};
 
 int main() {
-  srand(static_cast<unsigned int>(time(NULL))); // Seed random number generator
+  srand(static_cast<unsigned int>(time(NULL)));
 
   HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   if (shm_handle == NULL) {
@@ -18,7 +23,7 @@ int main() {
     return 1;
   }
 
-  void* ptr = MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE);
+  SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
   if (ptr == NULL) {
     std::cerr << "Could not map view of file: " << GetLastError() << std::endl;
     CloseHandle(shm_handle);
@@ -34,23 +39,13 @@ int main() {
   }
 
   while (true) {
-    // Generate 4 bytes of data (for example, random bytes)
     uint32_t data = rand() % 0xFFFFFFFF;
-
-    // Wait for semaphore
     WaitForSingleObject(sem, INFINITE);
-
-    // Write data to shared memory
-    memcpy(ptr, &data, SHM_SIZE);
-
-    // Signal semaphore
+    ptr->data = data;
+    ptr->flag = 1;
     ReleaseSemaphore(sem, 1, NULL);
-
-    // Sleep for 1 microsecond
-    std::this_thread::sleep_for(std::chrono::microseconds(1));
   }
 
-  // Cleanup (not reached in this example)
   UnmapViewOfFile(ptr);
   CloseHandle(shm_handle);
   CloseHandle(sem);
