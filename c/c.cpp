@@ -3,45 +3,29 @@
 #include <cstring>
 #include <thread>
 #include <cstdlib>
+#include <ctime>
 
-LPCWSTR SHM_NAME = L"my_shm";  // Windows uses a different naming convention
-LPCWSTR SEM_NAME = L"my_sem";  // Same here
-const int SHM_SIZE = 4;            // 4 bytes
+LPCWSTR SHM_NAME = L"my_shm";
+LPCWSTR SEM_NAME = L"my_sem";
+const int SHM_SIZE = 4; // 4 bytes
 
 int main() {
-  // Open existing shared memory
-  HANDLE shm_handle = OpenFileMapping(
-    FILE_MAP_ALL_ACCESS,      // Read/write access
-    FALSE,                    // Do not inherit the name
-    SHM_NAME                  // Name of the mapping object
-  );
+  srand(static_cast<unsigned int>(time(NULL))); // Seed random number generator
 
+  HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   if (shm_handle == NULL) {
     std::cerr << "Could not open file mapping object: " << GetLastError() << std::endl;
     return 1;
   }
 
-  void* ptr = MapViewOfFile(
-    shm_handle,              // Handle to map object
-    FILE_MAP_ALL_ACCESS,     // Read/write access
-    0,                       // Offset (high-order DWORD)
-    0,                       // Offset (low-order DWORD)
-    SHM_SIZE                 // Size of mapping
-  );
-
+  void* ptr = MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE);
   if (ptr == NULL) {
     std::cerr << "Could not map view of file: " << GetLastError() << std::endl;
     CloseHandle(shm_handle);
     return 1;
   }
 
-  // Open existing semaphore
-  HANDLE sem = OpenSemaphore(
-    SEMAPHORE_MODIFY_STATE,   // Required access
-    FALSE,                    // Do not inherit the name
-    SEM_NAME                  // Semaphore name
-  );
-
+  HANDLE sem = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
   if (sem == NULL) {
     std::cerr << "Could not open semaphore: " << GetLastError() << std::endl;
     UnmapViewOfFile(ptr);
@@ -53,13 +37,13 @@ int main() {
     // Generate 4 bytes of data (for example, random bytes)
     uint32_t data = rand() % 0xFFFFFFFF;
 
-    // Wait for semaphore (equivalent to sem_wait)
+    // Wait for semaphore
     WaitForSingleObject(sem, INFINITE);
 
     // Write data to shared memory
     memcpy(ptr, &data, SHM_SIZE);
 
-    // Signal semaphore (equivalent to sem_post)
+    // Signal semaphore
     ReleaseSemaphore(sem, 1, NULL);
 
     // Sleep for 1 microsecond

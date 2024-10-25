@@ -5,6 +5,7 @@
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 const int SHM_SIZE = 4; // 4 bytes
+const uint32_t SENTINEL_VALUE = 0xFFFFFFFF; // Example sentinel value indicating client disconnection
 
 int main() {
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);
@@ -20,7 +21,7 @@ int main() {
     return 1;
   }
 
-  void* ptr = MapViewOfFile(shm_handle, FILE_MAP_READ, 0, 0, SHM_SIZE);
+  void* ptr = MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE);
   if (ptr == NULL) {
     std::cerr << "Could not map view of file: " << GetLastError() << std::endl;
     CloseHandle(shm_handle);
@@ -34,15 +35,23 @@ int main() {
     // Read data from shared memory
     uint32_t data;
     memcpy(&data, ptr, SHM_SIZE);
+
+    // Check for the sentinel value indicating client disconnection
+    if (data == SENTINEL_VALUE) {
+      std::cout << "Client has disconnected." << std::endl;
+      break; // Exit the loop if the client has disconnected
+    }
+
     std::cout << "Received data: " << data << std::endl;
 
     // Signal semaphore
     ReleaseSemaphore(sem_handle, 1, NULL);
 
-    // You can sleep or process data further as needed
+    // Optional: Sleep to reduce CPU usage
+    Sleep(10); // Sleep for 10 milliseconds or adjust as needed
   }
 
-  // Cleanup (not reached in this example)
+  // Cleanup
   UnmapViewOfFile(ptr);
   CloseHandle(shm_handle);
   CloseHandle(sem_handle);
