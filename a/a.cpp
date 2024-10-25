@@ -17,9 +17,11 @@ Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
     std::cout << "Value is 3\n";
     return 0;
   case 2:
+    std::cout << "2: " << n2 << " " << n3 << "\n";
     contact.movR(n2, n3 * -1);
     return 0;
   case 1:
+    std::cout << "1: " << n2 << "\n";
     contact.btn(n2);
     return 0;
   default:

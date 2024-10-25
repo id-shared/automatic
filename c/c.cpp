@@ -89,14 +89,19 @@ void main() {
       int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
       int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
 
-      WaitForSingleObject(sem_handle, INFINITE);
-      ptr->n4 = 1;
-      ptr->n3 = ay;
-      ptr->n2 = ax;
-      ptr->n1 = 2;
-      ReleaseSemaphore(sem_handle, 1, NULL);
+      if (ax == 0 && ay == 0) {
 
-      printf("%d, %d\n", ax, ay);
+      }
+      else {
+        printf("%d, %d\n", ax, ay);
+        WaitForSingleObject(sem_handle, INFINITE);
+        ptr->n4 = 1;
+        ptr->n3 = ay;
+        ptr->n2 = ax;
+        ptr->n1 = 2;
+        ReleaseSemaphore(sem_handle, 1, NULL);
+      }
+
       //movR(ax, ay * -1);
 
       //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);

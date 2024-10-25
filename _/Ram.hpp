@@ -4,13 +4,13 @@
 #include <Windows.h>
 
 namespace Ram {
-  using Byte = uint32_t;
+  using Byte = unsigned char;
 
   struct Detail {
-    Byte n4;
-    Byte n3;
-    Byte n2;
-    Byte n1;
+    unsigned char n4;
+    unsigned char n3;
+    unsigned char n2;
+    unsigned char n1;
   };
 
   static bool XO(double ms) {
