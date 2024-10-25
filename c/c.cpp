@@ -12,23 +12,6 @@ struct SharedData {
 
 int abc = 1;
 
-bool XO(double ms) {
-  LARGE_INTEGER frequency;
-  LARGE_INTEGER start;
-
-  QueryPerformanceFrequency(&frequency);
-  QueryPerformanceCounter(&start);
-
-  double ticksToWait = (ms / 1000.0) * frequency.QuadPart;
-  LARGE_INTEGER current;
-
-  do {
-    QueryPerformanceCounter(&current);
-  } while (current.QuadPart - start.QuadPart < ticksToWait);
-
-  return true;
-}
-
 int main() {
   srand(static_cast<unsigned int>(time(NULL)));
 
@@ -46,11 +29,11 @@ int main() {
   }
 
   while (true) {
-    ptr->data = rand() % 100;
     ptr->flag = 1;
+    ptr->data = rand() % 100;
     abc = abc + 1;
     std::cout << "Sent data: " << abc << " " << ptr->data << std::endl;
-    XO(1);
+    Time::XO(1);
   }
 
   UnmapViewOfFile(ptr);
