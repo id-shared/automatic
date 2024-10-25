@@ -57,9 +57,9 @@ int main() {
       if(n1 == 1 && n2 == 147) {
       }
       else {
-        //printf("%d, %d, %d, %d\n", n3, n4, n5, n6);
-        printf("%d, %d\n", n1, n2);
+        printf("%d, %d, %d, %d\n", n3, n4, n5, n6);
       }
+      //printf("%d, %d\n", n1, n2);
     }
     else {
       printf("Error reading data: %d (%s)\n", res, libusb_error_name(res));
