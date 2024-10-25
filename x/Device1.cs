@@ -9,7 +9,7 @@ class Device1 {
     Console.WriteLine($"{GetType().Name}: {dd.Load(c) == 1 && dd.btn(0) == 1}");
   }
 
-  public bool YXL(int y, int x, bool a) {
+  public bool YX(int y, int x, bool a) {
     dd.movR(x, y);
     return A.T;
   }
@@ -37,13 +37,13 @@ class DD {
   public delegate int pDD_str(string str);
   public delegate int pDD_todc(int vkcode);
 
-  private IntPtr _libraryHandle = IntPtr.Zero;
+  private IntPtr contact = IntPtr.Zero;
 
-  ~DD() => FreeLibrary(_libraryHandle);
+  ~DD() => FreeLibrary(contact);
 
   public int Load(string dllFile) {
-    _libraryHandle = LoadLibrary(dllFile);
-    return _libraryHandle == IntPtr.Zero ? -2 : LoadFunctionAddresses();
+    contact = LoadLibrary(dllFile);
+    return contact == IntPtr.Zero ? -2 : LoadFunctionAddresses();
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60,7 +60,7 @@ class DD {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private T LoadFunction<T>(string functionName) where T : Delegate {
-    IntPtr ptr = GetProcAddress(_libraryHandle, functionName);
+    IntPtr ptr = GetProcAddress(contact, functionName);
     if (ptr == IntPtr.Zero) {
       throw new InvalidOperationException($"Failed to load {functionName}");
     }

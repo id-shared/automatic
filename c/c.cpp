@@ -54,6 +54,18 @@ int main() {
       int n3 = data[2];
       int n2 = data[1];
       int n1 = data[0];
+      /*if (n6 == 0 || n6 == 255) {
+
+      }
+      else {
+        printf("%d\n", n6);
+      }
+      if (n4 == 0 || n4 == 255) {
+
+      }
+      else {
+        printf("%d\n", n4);
+      }*/
       if(n1 == 1 && n2 == 147) {
       }
       else {

@@ -24,7 +24,7 @@ class Perform {
   public static bool KeyEAU() {
     L = A.F;
     S1.TryEnqueue(_ => D1.L(A.F) && S2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (0 <= ci) && D1.YXL(P1.YAxis(ci) * -CY, P1.XAxis(ci) / CY, A.F) && C(EY), AY) + 1;
+      AY = Upon(ci => !L && (0 <= ci) && D1.YX(P1.YAxis(ci) * -CY, P1.XAxis(ci) / CY, A.F) && C(EY), AY) + 1;
       P1 = new Pattern();
       return A.T;
     }));
@@ -33,7 +33,7 @@ class Perform {
 
   public static bool KeyEAD() {
     L = L || S1.TryEnqueue(_ => D1.L(A.T) && S2.TryEnqueue(_ => {
-      AY = Till(ci => L && (99 >= ci) && D1.YXL(P1.YAxis(ci) * CY, P1.XAxis(ci) / -CY, A.T) && C(EY), AY) - 1;
+      AY = Till(ci => L && (99 >= ci) && D1.YX(P1.YAxis(ci) * CY, P1.XAxis(ci) / -CY, A.T) && C(EY), AY) - 1;
       return A.T;
     }));
     return L;
