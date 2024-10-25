@@ -9,20 +9,18 @@ LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 int CURRENT_NAME = 1;
 
-//DD::Contact contact = DD::contact(L"d1.dll");
+DD::Contact contact = DD::contact(L"d1.dll");
 
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
-  //contact.movR(99, 99);
-
   switch (n1) {
   case 3:
     std::cout << "Value is 3\n";
     return 0;
   case 2:
-    std::cout << "Value is 2\n";
+    contact.movR(n2, n3 * -1);
     return 0;
   case 1:
-    std::cout << "Value is 1\n";
+    contact.btn(n2);
     return 0;
   default:
     return 0;

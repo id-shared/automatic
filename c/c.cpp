@@ -14,13 +14,6 @@ void main() {
   Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::Detail)));
   ptr != NULL ? ptr : throw ptr;
 
-  WaitForSingleObject(sem_handle, INFINITE);
-  ptr->n4 = 1;
-  ptr->n3 = 1;
-  ptr->n2 = 1;
-  ptr->n1 = 1;
-  ReleaseSemaphore(sem_handle, 1, NULL);
-
   int configuration = 1;
   int interface = 0;
 
@@ -83,12 +76,26 @@ void main() {
       }
       else {
         printf("%d\n", x1_);
-        //btn(x1_ ? 1 : 2);
+
+        WaitForSingleObject(sem_handle, INFINITE);
+        ptr->n4 = 1;
+        ptr->n3 = 1;
+        ptr->n2 = x1_ ? 1 : 2;
+        ptr->n1 = 1;
+        ReleaseSemaphore(sem_handle, 1, NULL);
       }
       x1 = x1_;
 
       int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
       int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+
+      WaitForSingleObject(sem_handle, INFINITE);
+      ptr->n4 = 1;
+      ptr->n3 = ay;
+      ptr->n2 = ax;
+      ptr->n1 = 2;
+      ReleaseSemaphore(sem_handle, 1, NULL);
+
       printf("%d, %d\n", ax, ay);
       //movR(ax, ay * -1);
 
