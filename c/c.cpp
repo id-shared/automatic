@@ -1,19 +1,28 @@
+#include "Dll.hpp"
 #include <libusb-1.0/libusb.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "Dll.hpp"
+#include <windows.h>
 
 //volatile bool keep_running = true;
 
 int main() {
   HMODULE contact = Dll::dll(L"d1.dll");
 
+  FARPROC pDD_btn = GetProcAddress(contact, "DD_btn");
+  typedef int (WINAPI* DD_btn)(int);
+  DD_btn btn = (DD_btn)pDD_btn;
+
+  FARPROC pDD_movR = GetProcAddress(contact, "DD_movR");
   typedef int (WINAPI* DD_movR)(int, int);
+  DD_movR movR = (DD_movR)pDD_movR;
+
+  /*typedef int (WINAPI* DD_movR)(int, int);
   DD_movR movR = Dll::fn<DD_movR>(contact, "DD_movR");
 
   typedef int (WINAPI* DD_btn)(int);
-  DD_btn btn = Dll::fn<DD_btn>(contact, "DD_btn");
+  DD_btn btn = Dll::fn<DD_btn>(contact, "DD_btn");*/
 
   btn(0);
 
@@ -56,6 +65,20 @@ int main() {
   int actual_length;
   bool x1 = false;
 
+  Sleep(5000);
+
+  movR(599, -599);
+
+  //Sleep(1);
+
+  btn(1);
+  //Sleep(1);
+  movR(99, -99);
+  //Sleep(1);
+  btn(2);
+  //Sleep(1);
+  movR(99, -99);
+
   while (true) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
@@ -73,16 +96,15 @@ int main() {
       int n2 = data[1];
       int n1 = data[0];
 
-      int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
-      int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
-      //printf("%d, %d\n", ax, ay);
-      movR(ax, ay * -1);
-
       int x1_ = n1 == 1;
-
-      x1_ == x1 ? x1 : (x1_ ? btn(1) : printf(false));
-
+      int z1 = x1_ == x1 ? x1 : (x1_ ? btn(1) : btn(2));
       x1 = x1_;
+
+      /*int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
+      int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+      movR(ax, ay * -1);*/
+
+      //printf("%d, %d\n", ax, ay);
 
       //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
     }
