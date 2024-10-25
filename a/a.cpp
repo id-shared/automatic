@@ -29,7 +29,7 @@ Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
   }
 }
 
-int main() {
+void main() {
 
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, _SHM_SIZE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
@@ -48,6 +48,4 @@ int main() {
     ptr->n1 = ptr->n1 == 0 ? ptr->n1 : raw(ptr->n1, ptr->n2, ptr->n3, ptr->n4);
     ReleaseSemaphore(sem_handle, 1, NULL);
   }
-
-  return 0;
 }

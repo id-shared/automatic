@@ -6,7 +6,7 @@
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
-int main() {
+void main() {
   HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
@@ -22,6 +22,4 @@ int main() {
   ptr->n2 = 1;
   ptr->n1 = 1;
   ReleaseSemaphore(sem_handle, 1, NULL);
-
-  return 0;
 }
