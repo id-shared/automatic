@@ -15,20 +15,17 @@ bool XO(double ms) {
   LARGE_INTEGER frequency;
   LARGE_INTEGER start;
 
-  // Get the frequency of the high-resolution performance counter
   QueryPerformanceFrequency(&frequency);
-  // Get the current value of the high-resolution performance counter
   QueryPerformanceCounter(&start);
 
   double ticksToWait = (ms / 1000.0) * frequency.QuadPart;
   LARGE_INTEGER current;
 
-  // Loop until the elapsed time is greater than or equal to ticksToWait
   do {
     QueryPerformanceCounter(&current);
   } while (current.QuadPart - start.QuadPart < ticksToWait);
 
-  return true; // Return the static member of class A
+  return true;
 }
 
 int main() {
