@@ -69,8 +69,11 @@ int main() {
       if(n1 == 1 && n2 == 147) {
       }
       else {
-        printf("%d, %d, %d, %d\n", n3, n4, n5, n6);
+        int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
+        int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+        printf("%d, %d\n", ax, ay);
       }
+      printf("%d, %d, %d, %d, %d\n", n3, n4, n5, n6, n7);
       //printf("%d, %d\n", n1, n2);
     }
     else {
