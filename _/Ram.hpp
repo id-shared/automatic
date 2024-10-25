@@ -28,4 +28,10 @@ namespace Ram {
 
     return true;
   }
+
+  static bool end(HANDLE shm_handle, Detail* ptr) {
+    UnmapViewOfFile(ptr);
+    CloseHandle(shm_handle);
+    return true;
+  }
 }

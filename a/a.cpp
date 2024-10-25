@@ -6,11 +6,10 @@
 
 LPCWSTR SHM_NAME = L"my_shm";
 
-int abc = 1;
+//DD::Contact contact = DD::contact(L"d1.dll");
 
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
-  std::cout << abc << ": " << n2 << std::endl;
-  abc = abc + 1;
+  //contact.movR(99, 99);
 
   switch (n1) {
   case 3:
@@ -28,8 +27,6 @@ Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
 }
 
 int main() {
-  //DD::Contact contact = DD::contact(L"d1.dll");
-  //contact.movR(99, 99);
   const int SHM_SIZE = sizeof(Ram::Detail);
 
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);
@@ -42,7 +39,5 @@ int main() {
     ptr->n1 = ptr->n1 == 0 ? ptr->n1 : raw(ptr->n1, ptr->n2, ptr->n3, ptr->n4);
   }
 
-  UnmapViewOfFile(ptr);
-  CloseHandle(shm_handle);
   return 0;
 }
