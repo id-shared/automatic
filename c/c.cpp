@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <windows.h>
 
-//volatile bool keep_running = true;
-
 int main() {
   HMODULE contact = Dll::dll(L"d1.dll");
 
