@@ -2,39 +2,20 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "Dll.h"
+#include "Dll.hpp"
 
 volatile bool keep_running = true;
 
 int main() {
-  HMODULE hModule = Dll::LoadLibraryModule(L"d1.dll");
-
-  FARPROC pDD_btn = GetProcAddress(hModule, "DD_btn");
-
-  typedef int (WINAPI* DD_btn)(int);
-  DD_btn btn = (DD_btn)pDD_btn;
-
-  printf("result: %d\n", btn(0));
-
-  FARPROC pDD_movR = GetProcAddress(hModule, "DD_movR");
+  HMODULE contact = Dll::dll(L"d1.dll");
 
   typedef int (WINAPI* DD_movR)(int, int);
-  DD_movR movR = (DD_movR)pDD_movR;
+  DD_movR movR = Dll::fn<DD_movR>(contact, "DD_movR");
 
-  printf("result: %d\n", movR(99, 99));
+  typedef int (WINAPI* DD_btn)(int);
+  DD_btn btn = Dll::fn<DD_btn>(contact, "DD_btn");
 
-  //if (hModule != NULL) {
-  //  //FreeLibrary(hModule);
-  //}
-  //else {
-  //  printf("Failed to load the DLL!\n");
-  //}
-
-  /*if (pDD_btn != NULL) {
-  }
-  else {
-    printf("Function not found!\n");
-  }*/
+  printf("result: %d\n", btn(0));
 
   libusb_context* ctx = NULL;
   libusb_device** devs;

@@ -134,10 +134,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="c.cpp" />
-    <ClCompile Include="Dll.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dll.h" />
+    <ClInclude Include="Dll.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
