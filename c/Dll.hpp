@@ -8,7 +8,7 @@ namespace Dll {
   }
 
   template <typename T>
-  static T fn(HMODULE x, const char* c) {
+  static T fn(HMODULE x, LPCSTR c) {
     FARPROC back = GetProcAddress(x, c);
     return back != NULL ? reinterpret_cast<T>(back) : throw "Failed to retrieve function address.";
   }
