@@ -32,34 +32,36 @@ int main() {
     printf("Device not found.\n");
     libusb_free_device_list(devs, 1);
     libusb_exit(ctx);
-    return 1; // Exit if device not found
+    return 1;
   }
 
-  // Claim the interface and set the configuration
-  int config = 1; // Usually 1, adjust as necessary
-  int interface = 0; // Usually 0 for the first interface, adjust as necessary
+  int config = 1;
+  int interface = 0;
   libusb_set_configuration(handle, config);
   libusb_claim_interface(handle, interface);
 
-  // Set up the endpoint and read data
-  unsigned char data[8]; // Adjust size based on the report length
+  unsigned char data[8];
   int actual_length;
 
   while (keep_running) {
-    int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0); // 0x81 is commonly used for HID input
+    int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
-      // Process the data
-      int x_movement = data[1]; // Typically X movement is at index 1
-      int y_movement = data[2]; // Y movement at index 2
-      printf("X: %d, Y: %d\n", x_movement, y_movement);
+      int n7 = data[7];
+      int n6 = data[6];
+      int n5 = data[5];
+      int n4 = data[4];
+      int n3 = data[3];
+      int n2 = data[2];
+      int n1 = data[1];
+      int n = data[0];
+      printf("%d, %d, %d, %d, %d, %d, %d, %d\n", n7, n6, n5, n4, n3, n2, n1, n);
     }
     else {
       printf("Error reading data: %d (%s)\n", res, libusb_error_name(res));
     }
   }
 
-  // Cleanup
-  libusb_release_interface(handle, interface); // Release interface
+  libusb_release_interface(handle, interface);
   libusb_close(handle);
   libusb_free_device_list(devs, 1);
   libusb_exit(ctx);
