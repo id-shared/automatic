@@ -11,6 +11,8 @@ struct SharedData {
   uint32_t flag;
 };
 
+int abc = 1;
+
 int main() {
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);
   if (shm_handle == NULL) {
@@ -36,7 +38,8 @@ int main() {
     WaitForSingleObject(sem_handle, INFINITE);
 
     if (ptr->flag == 1) {
-      std::cout << "Received data: " << ptr->data << std::endl;
+      abc = abc + 1;
+      std::cout << "Received data: " << abc << " " << ptr->data << std::endl;
       ptr->flag = 0;
     }
 

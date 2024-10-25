@@ -14,6 +14,8 @@ struct SharedData {
   uint32_t flag;
 };
 
+int abc = 1;
+
 int main() {
   srand(static_cast<unsigned int>(time(NULL)));
 
@@ -43,7 +45,10 @@ int main() {
     WaitForSingleObject(sem, INFINITE);
     ptr->data = data;
     ptr->flag = 1;
+    abc = abc + 1;
+    std::cout << "Sent data: " << abc << " " << ptr->data << std::endl;
     ReleaseSemaphore(sem, 1, NULL);
+    std::this_thread::sleep_for(std::chrono::microseconds(1));
   }
 
   UnmapViewOfFile(ptr);
