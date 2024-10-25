@@ -3,9 +3,11 @@
 #include <iostream>
 
 namespace Ram {
-  struct Data {
-    uint32_t data;
-    uint32_t flag;
+  struct Detail {
+    uint8_t n4;
+    uint8_t n3;
+    uint8_t n2;
+    uint8_t n1;
   };
 
   static bool XO(double ms) {
