@@ -7,7 +7,6 @@
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
-const int SHM_SIZE = sizeof(uint32_t) * 2;
 
 struct SharedData {
   uint32_t data;
@@ -25,7 +24,7 @@ int main() {
     return 1;
   }
 
-  SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
+  SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(SharedData)));
   if (ptr == NULL) {
     std::cerr << "Could not map view of file: " << GetLastError() << std::endl;
     CloseHandle(shm_handle);
@@ -41,7 +40,7 @@ int main() {
   }
 
   while (true) {
-    uint32_t data = rand() % 0xFFFFFFFF;
+    uint32_t data = 100;
     WaitForSingleObject(sem, INFINITE);
     ptr->data = data;
     ptr->flag = 1;
