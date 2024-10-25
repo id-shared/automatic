@@ -1,9 +1,5 @@
 #include <iostream>
 #include <windows.h>
-#include <cstring>
-#include <thread>
-#include <cstdlib>
-#include <ctime>
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
@@ -14,6 +10,26 @@ struct SharedData {
 };
 
 int abc = 1;
+
+bool XO(double ms) {
+  LARGE_INTEGER frequency;
+  LARGE_INTEGER start;
+
+  // Get the frequency of the high-resolution performance counter
+  QueryPerformanceFrequency(&frequency);
+  // Get the current value of the high-resolution performance counter
+  QueryPerformanceCounter(&start);
+
+  double ticksToWait = (ms / 1000.0) * frequency.QuadPart;
+  LARGE_INTEGER current;
+
+  // Loop until the elapsed time is greater than or equal to ticksToWait
+  do {
+    QueryPerformanceCounter(&current);
+  } while (current.QuadPart - start.QuadPart < ticksToWait);
+
+  return true; // Return the static member of class A
+}
 
 int main() {
   srand(static_cast<unsigned int>(time(NULL)));
@@ -31,27 +47,15 @@ int main() {
     return 1;
   }
 
-  HANDLE sem = OpenSemaphore(SEMAPHORE_MODIFY_STATE, FALSE, SEM_NAME);
-  if (sem == NULL) {
-    std::cerr << "Could not open semaphore: " << GetLastError() << std::endl;
-    UnmapViewOfFile(ptr);
-    CloseHandle(shm_handle);
-    return 1;
-  }
-
   while (true) {
-    uint32_t data = 100;
-    WaitForSingleObject(sem, INFINITE);
-    ptr->data = data;
+    ptr->data = rand() % 100;
     ptr->flag = 1;
     abc = abc + 1;
     std::cout << "Sent data: " << abc << " " << ptr->data << std::endl;
-    ReleaseSemaphore(sem, 1, NULL);
-    std::this_thread::sleep_for(std::chrono::microseconds(1));
+    XO(1);
   }
 
   UnmapViewOfFile(ptr);
   CloseHandle(shm_handle);
-  CloseHandle(sem);
   return 0;
 }

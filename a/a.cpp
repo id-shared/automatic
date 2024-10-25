@@ -4,7 +4,6 @@
 #include <thread>
 
 LPCWSTR SHM_NAME = L"my_shm";
-LPCWSTR SEM_NAME = L"my_sem";
 
 struct SharedData {
   uint32_t data;
@@ -22,35 +21,22 @@ int main() {
     return 1;
   }
 
-  HANDLE sem_handle = CreateSemaphore(NULL, 1, 1, SEM_NAME);
-  if (sem_handle == NULL) {
-    std::cerr << "Could not create semaphore: " << GetLastError() << std::endl;
-    CloseHandle(shm_handle);
-    return 1;
-  }
-
   SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
   if (ptr == NULL) {
     std::cerr << "Could not map view of file: " << GetLastError() << std::endl;
-    CloseHandle(sem_handle);
     CloseHandle(shm_handle);
     return 1;
   }
 
   while (true) {
-    WaitForSingleObject(sem_handle, INFINITE);
-
     if (ptr->flag == 1) {
       abc = abc + 1;
       std::cout << "Received data: " << abc << " " << ptr->data << std::endl;
       ptr->flag = 0;
     }
-
-    ReleaseSemaphore(sem_handle, 1, NULL);
   }
 
   UnmapViewOfFile(ptr);
   CloseHandle(shm_handle);
-  CloseHandle(sem_handle);
   return 0;
 }
