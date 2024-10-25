@@ -5,11 +5,14 @@
 #include <windows.h>
 
 LPCWSTR SHM_NAME = L"my_shm";
+SIZE_T _SHM_SIZE = sizeof(Ram::Detail);
 
 //DD::Contact contact = DD::contact(L"d1.dll");
 
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
   //contact.movR(99, 99);
+
+  std::cout << n1 << ": " << n2 << std::endl;
 
   switch (n1) {
   case 3:
@@ -27,15 +30,17 @@ Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
 }
 
 int main() {
-  const int SHM_SIZE = sizeof(Ram::Detail);
 
-  HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);
+  HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, _SHM_SIZE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
-  Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
+  Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, _SHM_SIZE));
   ptr != NULL ? ptr : throw ptr;
 
+  ptr->n1 = 0;
   while (true) {
+    //std::cout << ptr->n1 << ": " << ptr->n2 << std::endl;
+
     ptr->n1 = ptr->n1 == 0 ? ptr->n1 : raw(ptr->n1, ptr->n2, ptr->n3, ptr->n4);
   }
 
