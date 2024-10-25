@@ -8,6 +8,25 @@ LPCWSTR SHM_NAME = L"my_shm";
 
 int abc = 1;
 
+Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
+  std::cout << abc << ": " << n2 << std::endl;
+  abc = abc + 1;
+
+  switch (n1) {
+  case 3:
+    std::cout << "Value is 3\n";
+    return 0;
+  case 2:
+    std::cout << "Value is 2\n";
+    return 0;
+  case 1:
+    std::cout << "Value is 1\n";
+    return 0;
+  default:
+    return 0;
+  }
+}
+
 int main() {
   //DD::Contact contact = DD::contact(L"d1.dll");
   //contact.movR(99, 99);
@@ -20,17 +39,7 @@ int main() {
   ptr != NULL ? ptr : throw ptr;
 
   while (true) {
-    Ram::Byte n4 = ptr->n4;
-    Ram::Byte n3 = ptr->n3;
-    Ram::Byte n2 = ptr->n2;
-    Ram::Byte n1 = ptr->n1;
-
-    if (ptr->n1 != 0) {
-      ptr->n1 = 0;
-
-      std::cout << abc << ": " << ptr->n2 << std::endl;
-      abc = abc + 1;
-    }
+    ptr->n1 = ptr->n1 == 0 ? ptr->n1 : raw(ptr->n1, ptr->n2, ptr->n3, ptr->n4);
   }
 
   UnmapViewOfFile(ptr);
