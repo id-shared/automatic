@@ -7,13 +7,12 @@
 SIZE_T _SHM_SIZE = sizeof(Ram::Detail);
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
+int CURRENT_NAME = 1;
 
 //DD::Contact contact = DD::contact(L"d1.dll");
 
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
   //contact.movR(99, 99);
-
-  std::cout << n1 << ": " << n2 << std::endl;
 
   switch (n1) {
   case 3:
@@ -44,6 +43,8 @@ int main() {
   ptr->n1 = 0;
   while (true) {
     WaitForSingleObject(sem_handle, INFINITE);
+    //std::cout << CURRENT_NAME << "\n" << std::endl;
+    //CURRENT_NAME = CURRENT_NAME + 1;
     ptr->n1 = ptr->n1 == 0 ? ptr->n1 : raw(ptr->n1, ptr->n2, ptr->n3, ptr->n4);
     ReleaseSemaphore(sem_handle, 1, NULL);
   }
