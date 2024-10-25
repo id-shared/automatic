@@ -9,8 +9,6 @@ LPCWSTR SEM_NAME = L"my_sem";
 int abc = 1;
 
 int main() {
-  srand(static_cast<unsigned int>(time(NULL)));
-
   HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
@@ -25,7 +23,5 @@ int main() {
     Time::XO(1);
   }
 
-  UnmapViewOfFile(ptr);
-  CloseHandle(shm_handle);
   return 0;
 }
