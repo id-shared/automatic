@@ -8,19 +8,6 @@ volatile bool keep_running = true;
 int main() {
   HMODULE hModule = LoadLibraryW(L"d1.dll");
 
-  //if (hModule != NULL) {
-  //  //FreeLibrary(hModule);
-  //}
-  //else {
-  //  printf("Failed to load the DLL!\n");
-  //}
-
-  /*if (pDD_btn != NULL) {
-  }
-  else {
-    printf("Function not found!\n");
-  }*/
-
   FARPROC pDD_btn = GetProcAddress(hModule, "DD_btn");
 
   typedef int (WINAPI* DD_btn)(int);
@@ -34,6 +21,19 @@ int main() {
   DD_movR movR = (DD_movR)pDD_movR;
 
   printf("result: %d\n", movR(99, 99));
+
+  //if (hModule != NULL) {
+  //  //FreeLibrary(hModule);
+  //}
+  //else {
+  //  printf("Failed to load the DLL!\n");
+  //}
+
+  /*if (pDD_btn != NULL) {
+  }
+  else {
+    printf("Function not found!\n");
+  }*/
 
   libusb_context* ctx = NULL;
   libusb_device** devs;
@@ -101,9 +101,9 @@ int main() {
         int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
         int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
         //printf("%d, %d\n", ax, ay);
-        movR(ax, 0);
+        movR(ax, ay * -1);
       }
-      printf("%d, %d, %d, %d, %d\n", n3, n4, n5, n6, n7);
+      //printf("%d, %d, %d, %d, %d\n", n3, n4, n5, n6, n7);
       //printf("%d, %d\n", n1, n2);
     }
     else {
