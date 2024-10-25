@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "Dll.hpp"
 
-volatile bool keep_running = true;
+//volatile bool keep_running = true;
 
 int main() {
   HMODULE contact = Dll::dll(L"d1.dll");
@@ -15,7 +15,10 @@ int main() {
   typedef int (WINAPI* DD_btn)(int);
   DD_btn btn = Dll::fn<DD_btn>(contact, "DD_btn");
 
-  printf("result: %d\n", btn(0));
+  btn(0);
+
+  int configuration = 1;
+  int interface = 0;
 
   libusb_context* ctx = NULL;
   libusb_device** devs;
@@ -46,15 +49,13 @@ int main() {
     return 1;
   }
 
-  int config = 1;
-  int interface = 0;
-  libusb_set_configuration(handle, config);
+  libusb_set_configuration(handle, configuration);
   libusb_claim_interface(handle, interface);
 
   unsigned char data[8];
   int actual_length;
 
-  while (keep_running) {
+  while (true) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
       int n8 = data[7];
@@ -89,7 +90,7 @@ int main() {
       //printf("%d, %d\n", n1, n2);
     }
     else {
-      printf("Error reading data: %d (%s)\n", res, libusb_error_name(res));
+      printf("Error reading data: %d (%s).\n", res, libusb_error_name(res));
     }
   }
 
