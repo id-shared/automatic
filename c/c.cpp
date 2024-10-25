@@ -1,14 +1,10 @@
+#include "Ram.hpp"
 #include "Time.hpp"
 #include <iostream>
 #include <windows.h>
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
-
-struct SharedData {
-  uint32_t data;
-  uint32_t flag;
-};
 
 int abc = 1;
 
@@ -18,7 +14,7 @@ int main() {
   HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
-  SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(SharedData)));
+  Ram::SharedData* ptr = static_cast<Ram::SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::SharedData)));
   ptr != NULL ? ptr : throw ptr;
 
   while (true) {

@@ -1,7 +1,13 @@
 #pragma once
 #include <Windows.h>
+#include <iostream>
 
 namespace Ram {
+  struct SharedData {
+    uint32_t data;
+    uint32_t flag;
+  };
+
   static bool XO(double ms) {
     LARGE_INTEGER frequency;
     LARGE_INTEGER start;

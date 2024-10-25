@@ -1,26 +1,22 @@
 #include "DD.hpp"
+#include "Ram.hpp"
 #include "Time.hpp"
 #include <iostream>
 #include <windows.h>
 
 LPCWSTR SHM_NAME = L"my_shm";
 
-struct SharedData {
-  uint32_t data;
-  uint32_t flag;
-};
-
 int abc = 1;
 
 int main() {
   DD::Contact contact = DD::contact(L"d1.dll");
   //contact.movR(99, 99);
-  const int SHM_SIZE = sizeof(SharedData);
+  const int SHM_SIZE = sizeof(Ram::Data);
 
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
-  SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
+  Ram::Data* ptr = static_cast<Ram::Data*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
   ptr != NULL ? ptr : throw ptr;
 
   while (true) {
