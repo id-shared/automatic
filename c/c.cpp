@@ -2,11 +2,12 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "Dll.h"
 
 volatile bool keep_running = true;
 
 int main() {
-  HMODULE hModule = LoadLibraryW(L"d1.dll");
+  HMODULE hModule = Dll::LoadLibraryModule(L"d1.dll");
 
   FARPROC pDD_btn = GetProcAddress(hModule, "DD_btn");
 

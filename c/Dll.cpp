@@ -1,7 +1,7 @@
 #include "Dll.h"
 #include <Windows.h>
 
-namespace DLLLoader {
+namespace Dll {
   static HMODULE LoadLibraryModule(const wchar_t* c) {
     HMODULE back = LoadLibraryW(c);
     return back ? back : throw "Failed to load library";
