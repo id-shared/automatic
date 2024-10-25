@@ -6,6 +6,7 @@
 
 SIZE_T _SHM_SIZE = sizeof(Ram::Detail);
 LPCWSTR SHM_NAME = L"my_shm";
+LPCWSTR SEM_NAME = L"my_sem";
 
 //DD::Contact contact = DD::contact(L"d1.dll");
 
@@ -34,14 +35,17 @@ int main() {
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, _SHM_SIZE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
+  HANDLE sem_handle = CreateSemaphore(NULL, 1, 1, SEM_NAME);
+  sem_handle != NULL ? sem_handle : throw sem_handle;
+
   Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, _SHM_SIZE));
   ptr != NULL ? ptr : throw ptr;
 
   ptr->n1 = 0;
   while (true) {
-    //std::cout << ptr->n1 << ": " << ptr->n2 << std::endl;
-
+    WaitForSingleObject(sem_handle, INFINITE);
     ptr->n1 = ptr->n1 == 0 ? ptr->n1 : raw(ptr->n1, ptr->n2, ptr->n3, ptr->n4);
+    ReleaseSemaphore(sem_handle, 1, NULL);
   }
 
   return 0;
