@@ -1,3 +1,4 @@
+#include "Time.hpp"
 #include <iostream>
 #include <windows.h>
 
@@ -14,24 +15,18 @@ int main() {
   const int SHM_SIZE = sizeof(SharedData);
 
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);
-  if (shm_handle == NULL) {
-    std::cerr << "Could not create shared memory: " << GetLastError() << std::endl;
-    return 1;
-  }
+  shm_handle != NULL ? shm_handle : throw shm_handle;
 
   SharedData* ptr = static_cast<SharedData*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, SHM_SIZE));
-  if (ptr == NULL) {
-    std::cerr << "Could not map view of file: " << GetLastError() << std::endl;
-    CloseHandle(shm_handle);
-    return 1;
-  }
+  ptr != NULL ? ptr : throw ptr;
 
   while (true) {
     if (ptr->flag == 1) {
       abc = abc + 1;
-      std::cout << "Received data: " << abc << " " << ptr->data << std::endl;
+      std::cout << abc << ": " << ptr->data << std::endl;
       ptr->flag = 0;
     }
+    Time::XO(0.01);
   }
 
   UnmapViewOfFile(ptr);
