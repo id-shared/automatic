@@ -1,45 +1,39 @@
 #include <libusb-1.0/libusb.h>
-#include <stdio.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 volatile bool keep_running = true;
 
 int main() {
   HMODULE hModule = LoadLibraryW(L"d1.dll");
 
-  if (hModule != NULL) {
-    FARPROC pDD_btn = GetProcAddress(hModule, "DD_btn");
+  //if (hModule != NULL) {
+  //  //FreeLibrary(hModule);
+  //}
+  //else {
+  //  printf("Failed to load the DLL!\n");
+  //}
 
-    if (pDD_btn != NULL) {
-      typedef int (WINAPI* DD_btn)(INT);
-      DD_btn btn = (DD_btn)pDD_btn;
-
-      printf("result: %d\n", btn(0));
-    }
-    else {
-      printf("Function not found!\n");
-    }
-
-    /*FARPROC pDD_movR = GetProcAddress(hModule, "DD_movR");
-
-    if (pDD_movR != NULL) {
-      typedef int (WINAPI* DD_btn)(INT);
-      DD_btn movR = (DD_btn)pDD_movR;
-
-      printf("result: %d\n", movR(0));
-
-      btn(0);
-    }
-    else {
-      printf("Function not found!\n");
-    }*/
-
-    //FreeLibrary(hModule);
+  /*if (pDD_btn != NULL) {
   }
   else {
-    printf("Failed to load the DLL!\n");
-  }
+    printf("Function not found!\n");
+  }*/
+
+  FARPROC pDD_btn = GetProcAddress(hModule, "DD_btn");
+
+  typedef int (WINAPI* DD_btn)(int);
+  DD_btn btn = (DD_btn)pDD_btn;
+
+  printf("result: %d\n", btn(0));
+
+  FARPROC pDD_movR = GetProcAddress(hModule, "DD_movR");
+
+  typedef int (WINAPI* DD_movR)(int, int);
+  DD_movR movR = (DD_movR)pDD_movR;
+
+  printf("result: %d\n", movR(99, 99));
 
   libusb_context* ctx = NULL;
   libusb_device** devs;
@@ -101,12 +95,13 @@ int main() {
       else {
         printf("%d\n", n4);
       }*/
-      if(n1 == 1 && n2 == 147) {
+      if (n1 == 1 && n2 == 147) {
       }
       else {
         int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
         int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
-        printf("%d, %d\n", ax, ay);
+        //printf("%d, %d\n", ax, ay);
+        movR(ax, 0);
       }
       printf("%d, %d, %d, %d, %d\n", n3, n4, n5, n6, n7);
       //printf("%d, %d\n", n1, n2);
