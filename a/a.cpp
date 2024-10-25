@@ -4,8 +4,8 @@
 #include <iostream>
 #include <windows.h>
 
-LPCWSTR SHM_NAME = L"my_shm";
 SIZE_T _SHM_SIZE = sizeof(Ram::Detail);
+LPCWSTR SHM_NAME = L"my_shm";
 
 //DD::Contact contact = DD::contact(L"d1.dll");
 
