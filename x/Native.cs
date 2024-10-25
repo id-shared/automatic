@@ -67,6 +67,15 @@ class Native {
     public IntPtr dwExtraInfo;
   }
 
+  [DllImport("kernel32.dll", SetLastError = true)]
+  public static extern IntPtr LoadLibrary(string dllFile);
+
+  [DllImport("kernel32.dll", SetLastError = true)]
+  public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+
+  [DllImport("kernel32.dll", SetLastError = true)]
+  public static extern bool FreeLibrary(IntPtr hModule);
+
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
   public static extern bool UnhookWindowsHookEx(IntPtr hhk);

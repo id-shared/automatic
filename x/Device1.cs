@@ -39,10 +39,10 @@ class DD {
 
   private IntPtr contact = IntPtr.Zero;
 
-  ~DD() => FreeLibrary(contact);
+  ~DD() => Native.FreeLibrary(contact);
 
   public int Load(string dllFile) {
-    contact = LoadLibrary(dllFile);
+    contact = Native.LoadLibrary(dllFile);
     return contact == IntPtr.Zero ? -2 : LoadFunctionAddresses();
   }
 
@@ -60,21 +60,12 @@ class DD {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private T LoadFunction<T>(string functionName) where T : Delegate {
-    IntPtr ptr = GetProcAddress(contact, functionName);
+    IntPtr ptr = Native.GetProcAddress(contact, functionName);
     if (ptr == IntPtr.Zero) {
       throw new InvalidOperationException($"Failed to load {functionName}");
     }
     return Marshal.GetDelegateForFunctionPointer<T>(ptr);
   }
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  private static extern IntPtr LoadLibrary(string dllFile);
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  private static extern bool FreeLibrary(IntPtr hModule);
 }
 
 enum KeyModifiers {
