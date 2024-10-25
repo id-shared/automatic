@@ -46,15 +46,20 @@ int main() {
   while (keep_running) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
-      int n7 = data[7];
-      int n6 = data[6];
-      int n5 = data[5];
-      int n4 = data[4];
-      int n3 = data[3];
-      int n2 = data[2];
-      int n1 = data[1];
-      int n = data[0];
-      printf("%d, %d, %d, %d, %d, %d, %d, %d\n", n7, n6, n5, n4, n3, n2, n1, n);
+      int n8 = data[7];
+      int n7 = data[6];
+      int n6 = data[5];
+      int n5 = data[4];
+      int n4 = data[3];
+      int n3 = data[2];
+      int n2 = data[1];
+      int n1 = data[0];
+      if(n1 == 1 && n2 == 147) {
+      }
+      else {
+        //printf("%d, %d, %d, %d\n", n3, n4, n5, n6);
+        printf("%d, %d\n", n1, n2);
+      }
     }
     else {
       printf("Error reading data: %d (%s)\n", res, libusb_error_name(res));
