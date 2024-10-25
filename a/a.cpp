@@ -1,7 +1,5 @@
-#include <cstring>
 #include <iostream>
 #include <windows.h>
-#include <thread>
 
 LPCWSTR SHM_NAME = L"my_shm";
 

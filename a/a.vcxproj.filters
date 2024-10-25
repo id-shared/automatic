@@ -22,4 +22,9 @@
   <ItemGroup>
     <Text Include="a.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\_\Ram.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

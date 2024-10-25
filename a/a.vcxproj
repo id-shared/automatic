@@ -133,6 +133,9 @@
   <ItemGroup>
     <Text Include="a.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\_\Ram.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -33,7 +33,7 @@ int main() {
     ptr->data = rand() % 100;
     abc = abc + 1;
     std::cout << "Sent data: " << abc << " " << ptr->data << std::endl;
-    Time::XO(1);
+    Time::XO(0.001);
   }
 
   UnmapViewOfFile(ptr);
