@@ -6,16 +6,6 @@
 #include <windows.h>
 
 int main() {
-  HMODULE contact = Dll::dll(L"d1.dll");
-
-  typedef int (WINAPI* DD_movR)(int, int);
-  DD_movR movR = Dll::fn<DD_movR>(contact, "DD_movR");
-
-  typedef int (WINAPI* DD_btn)(int);
-  DD_btn btn = Dll::fn<DD_btn>(contact, "DD_btn");
-
-  btn(0);
-
   int configuration = 1;
   int interface = 0;
 

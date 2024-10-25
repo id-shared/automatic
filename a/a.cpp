@@ -30,7 +30,6 @@ Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
 }
 
 void main() {
-
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, _SHM_SIZE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
