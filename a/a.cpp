@@ -13,15 +13,12 @@ DD::Contact contact = DD::contact(L"d1.dll");
 
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
   switch (n1) {
-  case 3:
-    std::cout << "Value is 3\n";
-    return 0;
   case 2:
-    std::cout << "2: " << n2 << " " << n3 << "\n";
+    printf("2: %d %d.\n", n2, n3);
     contact.movR(n2, n3 * -1);
     return 0;
   case 1:
-    std::cout << "1: " << n2 << "\n";
+    printf("1: %d.\n", n2);
     contact.btn(n2);
     return 0;
   default:

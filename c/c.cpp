@@ -1,18 +1,21 @@
-#include "Ram.hpp"
+#include "DD.hpp"
+#include <iostream>
 #include <libusb-1.0/libusb.h>
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
 void main() {
-  HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
+  /*HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
   shm_handle != NULL ? shm_handle : throw shm_handle;
 
   HANDLE sem_handle = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, SEM_NAME);
   sem_handle != NULL ? sem_handle : throw sem_handle;
 
   Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::Detail)));
-  ptr != NULL ? ptr : throw ptr;
+  ptr != NULL ? ptr : throw ptr;*/
+
+  DD::Contact contact = DD::contact(L"d1.dll");
 
   int configuration = 1;
   int interface = 0;
@@ -77,12 +80,12 @@ void main() {
       else {
         printf("%d\n", x1_);
 
-        WaitForSingleObject(sem_handle, INFINITE);
+        /*WaitForSingleObject(sem_handle, INFINITE);
         ptr->n4 = 1;
         ptr->n3 = 1;
         ptr->n2 = x1_ ? 1 : 2;
         ptr->n1 = 1;
-        ReleaseSemaphore(sem_handle, 1, NULL);
+        ReleaseSemaphore(sem_handle, 1, NULL);*/
       }
       x1 = x1_;
 
@@ -94,12 +97,12 @@ void main() {
       }
       else {
         printf("%d, %d\n", ax, ay);
-        WaitForSingleObject(sem_handle, INFINITE);
+        /*WaitForSingleObject(sem_handle, INFINITE);
         ptr->n4 = 1;
         ptr->n3 = ay;
         ptr->n2 = ax;
         ptr->n1 = 2;
-        ReleaseSemaphore(sem_handle, 1, NULL);
+        ReleaseSemaphore(sem_handle, 1, NULL);*/
       }
 
       //movR(ax, ay * -1);
