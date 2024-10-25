@@ -1,3 +1,4 @@
+#include "DD.hpp"
 #include "Time.hpp"
 #include <iostream>
 #include <windows.h>
@@ -12,6 +13,8 @@ struct SharedData {
 int abc = 1;
 
 int main() {
+  DD::Contact contact = DD::contact(L"d1.dll");
+  //contact.movR(99, 99);
   const int SHM_SIZE = sizeof(SharedData);
 
   HANDLE shm_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHM_SIZE, SHM_NAME);

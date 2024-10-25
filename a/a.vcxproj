@@ -136,7 +136,9 @@
     <Text Include="a.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\_\Dll.hpp" />
     <ClInclude Include="..\_\Ram.hpp" />
+    <ClInclude Include="DD.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
