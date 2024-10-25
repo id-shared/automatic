@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include "Time.hpp"
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
