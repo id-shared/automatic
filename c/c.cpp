@@ -54,6 +54,7 @@ int main() {
 
   unsigned char data[13];
   int actual_length;
+  bool x1 = false;
 
   while (true) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
@@ -71,26 +72,19 @@ int main() {
       int n3 = data[2];
       int n2 = data[1];
       int n1 = data[0];
-      /*if (n6 == 0 || n6 == 255) {
-
-      }
-      else {
-        printf("%d\n", n6);
-      }
-      if (n4 == 0 || n4 == 255) {
-
-      }
-      else {
-        printf("%d\n", n4);
-      }*/
 
       int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
       int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
       //printf("%d, %d\n", ax, ay);
       movR(ax, ay * -1);
 
+      int x1_ = n1 == 1;
+
+      x1_ == x1 ? x1 : (x1_ ? btn(1) : printf(false));
+
+      x1 = x1_;
+
       //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
-      //printf("%d, %d\n", n1, n2);
     }
     else {
       printf("Error reading data: %d (%s).\n", res, libusb_error_name(res));
