@@ -20,11 +20,12 @@ int main() {
   ptr != NULL ? ptr : throw ptr;
 
   while (true) {
+    Ram::Byte n4 = ptr->n4;
+    Ram::Byte n3 = ptr->n3;
+    Ram::Byte n2 = ptr->n2;
+    Ram::Byte n1 = ptr->n1;
+
     if (ptr->n1 != 0) {
-      uint8_t n4 = ptr->n4;
-      uint8_t n3 = ptr->n3;
-      uint8_t n2 = ptr->n2;
-      uint8_t n1 = ptr->n1;
       ptr->n1 = 0;
 
       std::cout << abc << ": " << ptr->n2 << std::endl;

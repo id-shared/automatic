@@ -3,11 +3,13 @@
 #include <iostream>
 
 namespace Ram {
+  using Byte = uint32_t;
+
   struct Detail {
-    uint8_t n4;
-    uint8_t n3;
-    uint8_t n2;
-    uint8_t n1;
+    Byte n4;
+    Byte n3;
+    Byte n2;
+    Byte n1;
   };
 
   static bool XO(double ms) {
