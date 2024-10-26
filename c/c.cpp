@@ -5,9 +5,6 @@
 #include <ntddmou.h>
 #include <windows.h>
 
-LPCWSTR SHM_NAME = L"my_shm";
-LPCWSTR SEM_NAME = L"my_sem";
-
 struct D1Control {
   uint32_t unk1;
   enum class Type : uint32_t {
