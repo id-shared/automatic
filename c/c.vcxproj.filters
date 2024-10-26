@@ -29,10 +29,10 @@
     <ClInclude Include="..\_\Contact.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\_\Device.hpp">
+    <ClInclude Include="..\_\Driver.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\_\Driver.hpp">
+    <ClInclude Include="..\_\Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\_\Mouse.hpp">
