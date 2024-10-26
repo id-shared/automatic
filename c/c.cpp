@@ -8,71 +8,30 @@
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
-struct RzControl {
+struct Control {
   uint32_t unk1;
   enum class Type : uint32_t {
     Keyboard = 1,
     Mouse = 2
   } type;
   union {
-    //struct {
-    //    uint32_t absolute_coord;
-    //    struct {
-    //        bool LButtonDown : 1;
-    //        bool LButtonUp : 1;
-    //        bool RButtonDown : 1;
-    //        bool RButtonUp : 1;
-    //        bool MButtonDown : 1;
-    //        bool MButtonUp : 1;
-    //        bool XButton1Down : 1;
-    //        bool XButton1Up : 1;
-    //        bool XButton2Down : 1;
-    //        bool XButton2Up : 1;
-    //        bool Wheel : 1;
-    //        bool HWheel : 1;
-    //        uint8_t unk : 4;
-    //    private:
-    //        void assert_size() {
-    //            static_assert(sizeof(*this) == 2);
-    //        }
-    //    } btn;
-    //    int16_t movement;
-    //    uint32_t unk1;
-    //    int32_t x;
-    //    int32_t y;
-    //    uint32_t unk2;
-    //} mi;
-
-    MOUSE_INPUT_DATA mi;
-
-    //struct {
-    //    uint16_t unk1;
-    //    int16_t key;
-    //    uint16_t action;
-    //    uint16_t unk2;
-    //    uint32_t unk3;
-    //    uint32_t unk4;
-    //    uint32_t unk5;
-    //    uint32_t unk6;
-    //} ki;
-
-    /// The high byte of MakeCode has no effect, extended keys are supported by Flags
     KEYBOARD_INPUT_DATA ki;
+    MOUSE_INPUT_DATA mi;
   };
 private:
   void assert_size() {
-    static_assert(sizeof RzControl == 32);
+    static_assert(sizeof Control == 32);
   }
 };
 
-bool ab(HANDLE x1, RzControl x) {
+bool ab(HANDLE x1, Control x) {
   DWORD bytes_returned;
   return DeviceIoControl(x1, 0x88883020, &x, sizeof x, nullptr, 0, &bytes_returned, nullptr);
 }
 
 bool yx(HANDLE x1, int y, int x) {
-  RzControl control = RzControl{
-    .type = RzControl::Type::Mouse,
+  Control control = Control{
+    .type = Control::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {
       .LastX = x,
       .LastY = y,
@@ -83,8 +42,8 @@ bool yx(HANDLE x1, int y, int x) {
 }
 
 bool ee(HANDLE x1, bool e) {
-  RzControl control = RzControl{
-    .type = RzControl::Type::Mouse,
+  Control control = Control{
+    .type = Control::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {
     },
   };
