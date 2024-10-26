@@ -51,8 +51,7 @@ bool ee(HANDLE x1, bool e) {
 }
 
 void main() {
-  const wchar_t* device_name = find_device([](std::wstring_view sv) {
-    //const wchar_t* x = L"\\??\\RZCONTROL#VID_1532&PID_0306&MI_00#3&2CD34B8&0#{e3be005d-d130-4910-88ff-09ae02f680e9}";
+  LPCWSTR device_name = find_device([](std::wstring_view sv) {
     using namespace std::literals;
     return sv.starts_with(L"RZCONTROL#"sv) && sv.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
   });
@@ -60,15 +59,7 @@ void main() {
   std::wcout << device_name << std::endl;
 
   HANDLE device = CreateFileW(device_name, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
-
-  if (device == INVALID_HANDLE_VALUE) {
-    // Handle the error
-    DWORD error = GetLastError();
-    std::wcerr << L"Failed to open device." << device_name << "Error code: " << error << std::endl;
-  }
-  else {
-    std::wcout << L"Device opened successfully." << std::endl;
-  }
+  device != INVALID_HANDLE_VALUE ? device : throw device;
 
   int configuration = 1;
   int interface = 0;

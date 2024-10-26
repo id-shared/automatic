@@ -40,7 +40,7 @@ extern "C" {
   );
 }
 
-inline const wchar_t* find_device(std::function<bool(std::wstring_view name)> predicate) {
+inline LPCWSTR find_device(std::function<bool(std::wstring_view name)> predicate) {
   OBJECT_ATTRIBUTES obj_attr;
   UNICODE_STRING obj_name;
   HANDLE dir_handle;
