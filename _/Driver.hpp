@@ -16,6 +16,7 @@ extern "C" {
   constexpr NTSTATUS STATUS_MORE_ENTRIES = 0x00000105;
   constexpr NTSTATUS STATUS_BUFFER_TOO_SMALL = 0xC0000023;
   constexpr ACCESS_MASK DIRECTORY_QUERY = 0x0001;
+  constexpr ACCESS_MASK DIRECTORY_TRAVERSE = 0x0002;
 
   NTSTATUS WINAPI NtOpenDirectoryObject(
     _Out_ PHANDLE            DirectoryHandle,
@@ -39,7 +40,7 @@ extern "C" {
   );
 }
 
-inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
+inline std::wstring find_device(std::function<bool(std::wstring_view name)> predicate) {
   OBJECT_ATTRIBUTES obj_attr;
   UNICODE_STRING obj_name;
   HANDLE dir_handle;
@@ -48,11 +49,11 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
   RtlInitUnicodeString(&obj_name, L"\\GLOBAL??");
   InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
 
-  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {   //TODO: or DIRECTORY_TRAVERSE?
+  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {
     const size_t buffer_size = 2048; // Define buffer size
     std::vector<unsigned char> buf(buffer_size); // Dynamic buffer
     ULONG context = 0; // Initialize context
-    NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), false, true, &context, NULL);
+    NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), FALSE, TRUE, &context, NULL);
 
     while (NT_SUCCESS(status)) {
       bool found = false;
@@ -60,7 +61,7 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
       POBJECT_DIRECTORY_INFORMATION info = reinterpret_cast<POBJECT_DIRECTORY_INFORMATION>(buf.data());
       for (ULONG i = 0; info[i].Name.Buffer; i++) {
         std::wstring_view sv{ info[i].Name.Buffer, info[i].Name.Length / sizeof(wchar_t) };
-        if (p(sv)) {
+        if (predicate(sv)) {
           result = LR"(\??\)" + std::wstring(sv);
           found = true;
           break;
@@ -69,7 +70,7 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
       if (found || status != STATUS_MORE_ENTRIES)
         break;
 
-      status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), false, false, &context, NULL);
+      status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), FALSE, FALSE, &context, NULL);
     }
 
     CloseHandle(dir_handle);
