@@ -56,7 +56,7 @@ void main() {
 
     //RZCONTROL#VID_1532&PID_0306&MI_00#3&1c65d7f8&0#{e3be005d-d130-4910-88ff-09ae02f680e9}
     return sv.starts_with(L"RZCONTROL#"sv) && sv.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
-    });
+  });
 
   std::wcout << device_name << std::endl;
 
