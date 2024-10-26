@@ -10,16 +10,7 @@ class Device1 {
   }
 
   public bool E1(bool a) {
-    return Input([a ? L_KEYD : L_KEYU]);
-  }
-
-  public static bool Input(uint[] k) {
-    Native.INPUT[] inputs = new Native.INPUT[k.Length];
-    for (int i = 0; i < k.Length; i++) {
-      inputs[i].type = 0;
-      inputs[i].mkhi.mi = new Native.MOUSEINPUT { dwFlags = k[i] };
-    }
-    return Native.SendInput((uint)inputs.Length, inputs, Native.INPUT_SIZE) != 0;
+    return A.T;
   }
 
   public bool Act<X>(X x, uint e, bool a) {
@@ -40,8 +31,6 @@ class Device1 {
     }
   }
 
-  private readonly uint L_KEYU = 0x0004;
-  private readonly uint L_KEYD = 0x0002;
   private readonly uint CODE = 0x2A2010;
   private readonly Context context;
 }
