@@ -1,77 +1,142 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 class Device1 {
-  public readonly DD dd;
-
   public Device1(string c) {
-    dd = new();
-    Console.WriteLine($"{GetType().Name}: {dd.Load(c) == 1 && dd.btn(0) == 1}");
+    context = new(c);
   }
 
   public bool YX(int y, int x, bool a) {
-    dd.movR(x, y);
-    return A.T;
+    return Act(new MouseReport { Button = new MouseButton { LButton = a }, y = (short)y, x = (short)x }, CODE, A.T);
   }
 
-  public bool L(bool a) {
-    dd.btn(a ? 1 : 2);
-    return A.T;
-  }
-}
-
-class DD {
-  public pDD_btn btn { get; private set; } = null!;
-  public pDD_whl whl { get; private set; } = null!;
-  public pDD_mov mov { get; private set; } = null!;
-  public pDD_movR movR { get; private set; } = null!;
-  public pDD_key key { get; private set; } = null!;
-  public pDD_str str { get; private set; } = null!;
-  public pDD_todc todc { get; private set; } = null!;
-
-  public delegate int pDD_btn(int btn);
-  public delegate int pDD_whl(int whl);
-  public delegate int pDD_key(int ddcode, int flag);
-  public delegate int pDD_mov(int x, int y);
-  public delegate int pDD_movR(int dx, int dy);
-  public delegate int pDD_str(string str);
-  public delegate int pDD_todc(int vkcode);
-
-  private IntPtr contact = IntPtr.Zero;
-
-  ~DD() => Native.FreeLibrary(contact);
-
-  public int Load(string dllFile) {
-    contact = Native.LoadLibrary(dllFile);
-    return contact == IntPtr.Zero ? -2 : LoadFunctionAddresses();
+  public bool E1(bool a) {
+    return Input([a ? L_KEYD : L_KEYU]);
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private int LoadFunctionAddresses() {
-    btn = LoadFunction<pDD_btn>("DD_btn");
-    whl = LoadFunction<pDD_whl>("DD_whl");
-    mov = LoadFunction<pDD_mov>("DD_mov");
-    movR = LoadFunction<pDD_movR>("DD_movR");
-    key = LoadFunction<pDD_key>("DD_key");
-    str = LoadFunction<pDD_str>("DD_str");
-    todc = LoadFunction<pDD_todc>("DD_todc");
-    return 1;
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private T LoadFunction<T>(string functionName) where T : Delegate {
-    IntPtr ptr = Native.GetProcAddress(contact, functionName);
-    if (ptr == IntPtr.Zero) {
-      throw new InvalidOperationException($"Failed to load {functionName}");
+  public static bool Input(uint[] k) {
+    Native.INPUT[] inputs = new Native.INPUT[k.Length];
+    for (int i = 0; i < k.Length; i++) {
+      inputs[i].type = 0;
+      inputs[i].mkhi.mi = new Native.MOUSEINPUT { dwFlags = k[i] };
     }
-    return Marshal.GetDelegateForFunctionPointer<T>(ptr);
+    return Native.SendInput((uint)inputs.Length, inputs, Native.INPUT_SIZE) != 0;
   }
+
+  public bool Act<X>(X x, uint e, bool a) {
+    IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(x));
+
+    try {
+      Marshal.StructureToPtr(x, buffer, false);
+      uint bytesReturned = 0;
+
+      return a switch {
+        A.T => Native.DeviceIoControl(context.contact, e, buffer, (uint)Marshal.SizeOf(x), IntPtr.Zero, 0, out bytesReturned, IntPtr.Zero),
+        _ => Native.DeviceIoControl(context.contact, e, IntPtr.Zero, 0, buffer, (uint)Marshal.SizeOf(x), out bytesReturned, IntPtr.Zero),
+      };
+    } catch {
+      return A.F;
+    } finally {
+      Marshal.FreeHGlobal(buffer);
+    }
+  }
+
+  private readonly uint L_KEYU = 0x0004;
+  private readonly uint L_KEYD = 0x0002;
+  private readonly uint CODE = 0x2A2010;
+  private readonly Context context;
 }
 
-enum KeyModifiers {
-  None = 0,
-  Alt = 1,
-  Control = 2,
-  Shift = 4,
-  Windows = 8
+[StructLayout(LayoutKind.Explicit, Size = 8)]
+struct MouseReport {
+  public MouseButton Button {
+    get => button;
+    set => button = value;
+  }
+
+  public byte ButtonByte {
+    get => button_byte;
+    set => button_byte = value;
+  }
+
+  [FieldOffset(0)]
+  private MouseButton button;
+
+  [FieldOffset(0)]
+  private byte button_byte;
+
+  [FieldOffset(2)]
+  public short x;
+
+  [FieldOffset(4)]
+  public short y;
+
+  [FieldOffset(6)]
+  public byte wheel;
+
+  [FieldOffset(7)]
+  public byte unknown_T;
+}
+
+struct MouseButton {
+  private byte buttons;
+
+  public bool LButton {
+    get => (buttons & 0b00000001) != 0;
+    set {
+      if (value)
+        buttons |= 0b00000001;
+      else
+        buttons &= 0b11111110;
+    }
+  }
+
+  public bool RButton {
+    get => (buttons & 0b00000010) != 0;
+    set {
+      if (value)
+        buttons |= 0b00000010;
+      else
+        buttons &= 0b11111101;
+    }
+  }
+
+  public bool MButton {
+    get => (buttons & 0b00000100) != 0;
+    set {
+      if (value)
+        buttons |= 0b00000100;
+      else
+        buttons &= 0b11111011;
+    }
+  }
+
+  public bool XButton1 {
+    get => (buttons & 0b00001000) != 0;
+    set {
+      if (value)
+        buttons |= 0b00001000;
+      else
+        buttons &= 0b11110111;
+    }
+  }
+
+  public bool XButton2 {
+    get => (buttons & 0b00010000) != 0;
+    set {
+      if (value)
+        buttons |= 0b00010000;
+      else
+        buttons &= 0b11101111;
+    }
+  }
+
+  public bool Unknown {
+    get => (buttons & 0b11100000) != 0;
+    set {
+      if (value)
+        buttons |= 0b11100000;
+      else
+        buttons &= 0b00011111;
+    }
+  }
 }

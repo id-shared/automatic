@@ -1,13 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 
-class Programs {
-  //static void Main(string[] args) {
-  //  string a = DeviceFinder.FindDevice(args => args.Contains("RZCONTROL"));
-  //  Console.WriteLine(a != null ? a : "not found.");
-  //  Console.ReadLine();
-  //}
-}
-
 public class Contact {
   const uint STATUS_SUCCESS = 0x00000000;
   const uint STATUS_MORE_ENTRIES = 0x00000105;
@@ -18,7 +10,7 @@ public class Contact {
     return Marshal.PtrToStringUni(ptr, length / 2);
   }
 
-  public static string FindDevice(Func<string, bool> predicate) {
+  public static string Device(Func<string, bool> predicate) {
     string result = null;
     IntPtr dirHandle = IntPtr.Zero;
 

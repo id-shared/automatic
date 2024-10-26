@@ -6,7 +6,7 @@ class Perform {
   public static volatile Specter S2 = new(256);
   public static volatile Specter S1 = new(256);
   public static volatile Pattern P1 = new();
-  public static volatile Device1 D1 = new("d1.dll");
+  public static volatile Device1 D1 = new(Contact.Device(args => args.Contains("RZCONTROL")));
 
   public static readonly uint[] RA = [KeyA.R];
   public static volatile bool R = A.F;
@@ -23,7 +23,7 @@ class Perform {
 
   public static bool KeyEAU() {
     L = A.F;
-    S1.TryEnqueue(_ => D1.L(A.F) && S2.TryEnqueue(_ => {
+    S1.TryEnqueue(_ => D1.E1(A.F) && S2.TryEnqueue(_ => {
       AY = Upon(ci => !L && (0 <= ci) && D1.YX(P1.YAxis(ci) * -CY, P1.XAxis(ci) / CY, A.F) && C(EY), AY) + 1;
       P1 = new Pattern();
       return A.T;
@@ -32,7 +32,7 @@ class Perform {
   }
 
   public static bool KeyEAD() {
-    L = L || S1.TryEnqueue(_ => D1.L(A.T) && S2.TryEnqueue(_ => {
+    L = L || S1.TryEnqueue(_ => D1.E1(A.T) && S2.TryEnqueue(_ => {
       AY = Till(ci => L && (99 >= ci) && D1.YX(P1.YAxis(ci) * CY, P1.XAxis(ci) / -CY, A.T) && C(EY), AY) - 1;
       return A.T;
     }));
@@ -106,33 +106,6 @@ class Perform {
     }
   }
 
-  public static IntPtr OnHookD1(int nCode, IntPtr wParam, IntPtr lParam) {
-    if (nCode >= 0) {
-      switch ((uint)wParam) {
-        case WM_MOUSEMOVE:
-          S3.TryEnqueue(_ => {
-            Native.POINT point = (Native.POINT)Marshal.PtrToStructure(lParam, typeof(Native.POINT));
-            Console.WriteLine($"Mouse moved to X: {point.x}, Y: {point.y}");
-            return A.T;
-          });
-          break;
-        case WM_LBUTTONDOWN:
-          S3.TryEnqueue(_ => {
-            Console.WriteLine("Left mouse button down");
-            return A.T;
-          });
-          break;
-        case WM_LBUTTONUP:
-          S3.TryEnqueue(_ => {
-            Console.WriteLine("Left mouse button up");
-            return A.T;
-          });
-          break;
-      }
-    }
-    return Native.CallNextHookEx(hookD1, nCode, wParam, lParam);
-  }
-
   public static int Upon(Func<int, bool> z, int i) {
     return z(i) ? Upon(z, i - 1) : i;
   }
@@ -166,15 +139,12 @@ class Perform {
 
   public Perform() {
     hookD2 = SetHook(onHookD2, 13);
-    hookD1 = SetHook(onHookD1, 14);
     Subscribe(new Native.MSG());
   }
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
   public static readonly LowLevelProc onHookD2 = OnHookD2;
-  public static readonly LowLevelProc onHookD1 = OnHookD1;
   public static volatile IntPtr hookD2 = IntPtr.Zero;
-  public static volatile IntPtr hookD1 = IntPtr.Zero;
 
   public const uint WM_SYSKEYDOWN = 0x0104;
   public const uint WM_SYSKEYUP = 0x0105;
@@ -184,5 +154,4 @@ class Perform {
   public const uint WM_MOUSEMOVE = 0x0200;
   public const uint WM_LBUTTONDOWN = 0x0201;
   public const uint WM_LBUTTONUP = 0x0202;
-
 }

@@ -26,9 +26,4 @@
   <ItemGroup>
     <Content Include="x.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="d1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
