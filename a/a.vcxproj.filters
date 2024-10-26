@@ -29,7 +29,7 @@
     <ClInclude Include="..\_\Dll.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DD.hpp">
+    <ClInclude Include="..\_\DD.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
