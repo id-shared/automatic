@@ -3,7 +3,7 @@
 #include <libusb-1.0/libusb.h>
 #include <ntddkbd.h>
 #include <ntddmou.h>
-#include <Windows.h>
+#include <windows.h>
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
@@ -36,7 +36,7 @@ bool yx(HANDLE x1, int y, int x) {
       .LastX = x,
       .LastY = y,
     },
-  });
+    });
 }
 
 bool ee(HANDLE x1, bool e) {
@@ -47,7 +47,7 @@ bool ee(HANDLE x1, bool e) {
     .mi = MOUSE_INPUT_DATA {
       .Buttons = buttons
     },
-  });
+    });
 }
 
 void main() {
