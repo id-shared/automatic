@@ -23,7 +23,7 @@ class Perform {
   public static bool KeyEAU() {
     L = A.F;
     SD.TryEnqueue(_ => D1.E1(A.F) && SU.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (0 <= ci) && D1.YX(PX.YAxis(ci) * -CY, PX.XAxis(ci) / CY, A.F) && C(EY), AY) + 1;
+      AY = Upon(ci => !L && (0 <= ci) && D1.YX(PX.YAxis(ci) * -CY, PX.XAxis(ci) / CY, A.F) && Time.XO(EY), AY) + 1;
       PX = new Pattern();
       return A.T;
     }));
@@ -32,7 +32,7 @@ class Perform {
 
   public static bool KeyEAD() {
     L = L || SD.TryEnqueue(_ => D1.E1(A.T) && SU.TryEnqueue(_ => {
-      AY = Till(ci => L && (99 >= ci) && D1.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) / -CY, A.T) && C(EY), AY) - 1;
+      AY = Till(ci => L && (99 >= ci) && D1.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) / -CY, A.T) && Time.XO(EY), AY) - 1;
       return A.T;
     }));
     return L;
@@ -74,17 +74,11 @@ class Perform {
   }
 
   public static bool IO(double t, uint[] k) {
-    I(k);
+    Device22.Input(k, A.T);
     Time.XO(t);
-    O(k);
+    Device22.Input(k, A.F);
     return A.T;
   }
-
-  public static bool O(uint[] k) => Device2.Input(k, A.F);
-
-  public static bool I(uint[] k) => Device2.Input(k, A.T);
-
-  public static bool C(double i) => Time.XO(i);
 
   public static IntPtr OnHookD2(int nCode, IntPtr wParam, IntPtr lParam) {
     IntPtr next = Native.CallNextHookEx(hookD2, nCode, wParam, lParam);
