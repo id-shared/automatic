@@ -70,7 +70,7 @@ void main() {
       int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
       int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
 
-      if (ax == 0 || ay == 0) {
+      if (ax == 0 && ay == 0) {
 
       }
       else {
@@ -83,7 +83,7 @@ void main() {
 
       }
       else {
-        printf("%d\n", x1_);
+        //printf("%d\n", x1_);
         x1_ ? mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0) : mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
       }
       x1 = x1_;
