@@ -10,7 +10,7 @@
 #include <winternl.h>
 
 namespace Usb {
-  LPCWSTR read(std::function<bool(std::wstring_view name)> predicate) {
+  LPCWSTR read(std::function<bool(std::wstring_view name)> z) {
     return L"";
   }
 }

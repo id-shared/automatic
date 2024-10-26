@@ -1,4 +1,4 @@
-#include "Driver.hpp"
+#include "Hardware.hpp"
 #include <iostream>
 #include <libusb-1.0/libusb.h>
 #include <ntddkbd.h>
@@ -48,7 +48,7 @@ bool ee(HANDLE x1, bool e) {
 }
 
 void main() {
-  LPCWSTR device_name = Driver::find_device([](std::wstring_view sv) {
+  LPCWSTR device_name = Hardware::find_device([](std::wstring_view sv) {
     using namespace std::literals;
     return sv.starts_with(L"RZCONTROL#"sv) && sv.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
     });
