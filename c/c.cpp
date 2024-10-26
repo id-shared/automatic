@@ -6,15 +6,6 @@ LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
 void main() {
-  /*HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
-  shm_handle != NULL ? shm_handle : throw shm_handle;
-
-  HANDLE sem_handle = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, SEM_NAME);
-  sem_handle != NULL ? sem_handle : throw sem_handle;
-
-  Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::Detail)));
-  ptr != NULL ? ptr : throw ptr;*/
-
   DD::Contact contact = DD::contact(L"d1.dll");
 
   int configuration = 1;
@@ -59,53 +50,42 @@ void main() {
   while (true) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
-      int n13 = data[12];
-      int n12 = data[11];
-      int n11 = data[10];
-      int n10 = data[9];
-      int n9 = data[8];
-      int n8 = data[7];
-      int n7 = data[6];
-      int n6 = data[5];
-      int n5 = data[4];
-      int n4 = data[3];
-      int n3 = data[2];
-      int n2 = data[1];
-      int n1 = data[0];
+      unsigned char n13 = data[12];
+      unsigned char n12 = data[11];
+      unsigned char n11 = data[10];
+      unsigned char n10 = data[9];
+      unsigned char n9 = data[8];
+      unsigned char n8 = data[7];
+      unsigned char n7 = data[6];
+      unsigned char n6 = data[5];
+      unsigned char n5 = data[4];
+      unsigned char n4 = data[3];
+      unsigned char n3 = data[2];
+      unsigned char n2 = data[1];
+      unsigned char n1 = data[0];
 
-      int x1_ = n1 == 1;
-      if (x1_ == x1) {
+      printf("%d %d\n", n1, n2);
 
-      }
-      else {
-        printf("%d\n", x1_);
+      //int x1_ = n1 == 1;
+      //if (x1_ == x1) {
 
-        /*WaitForSingleObject(sem_handle, INFINITE);
-        ptr->n4 = 1;
-        ptr->n3 = 1;
-        ptr->n2 = x1_ ? 1 : 2;
-        ptr->n1 = 1;
-        ReleaseSemaphore(sem_handle, 1, NULL);*/
-      }
-      x1 = x1_;
+      //}
+      //else {
+      //  printf("%d\n", x1_);
 
-      int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
-      int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+      //}
+      //x1 = x1_;
 
-      if (ax == 0 && ay == 0) {
+      //int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
+      //int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
 
-      }
-      else {
-        printf("%d, %d\n", ax, ay);
-        /*WaitForSingleObject(sem_handle, INFINITE);
-        ptr->n4 = 1;
-        ptr->n3 = ay;
-        ptr->n2 = ax;
-        ptr->n1 = 2;
-        ReleaseSemaphore(sem_handle, 1, NULL);*/
-      }
+      //if (ax == 0 && ay == 0) {
 
-      //movR(ax, ay * -1);
+      //}
+      //else {
+      //  printf("%d, %d\n", ax, ay);
+      //  //movR(ax, ay * -1);
+      //}
 
       //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
     }

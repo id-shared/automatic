@@ -1,93 +1,20 @@
-#include "Dll.hpp"
-#include <libusb-1.0/libusb.h>
-#include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <windows.h>
+  /*HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, SHM_NAME);
+  shm_handle != NULL ? shm_handle : throw shm_handle;
 
-int main() {
-  int configuration = 1;
-  int interface = 0;
+  HANDLE sem_handle = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, SEM_NAME);
+  sem_handle != NULL ? sem_handle : throw sem_handle;
 
-  libusb_context* ctx = NULL;
-  libusb_device** devs;
-  ssize_t cnt;
-  libusb_device_handle* handle = NULL;
-
-  // Initialize libusb
-  libusb_init(&ctx);
-
-  // Find the device (using VID and PID of your mouse)
-  cnt = libusb_get_device_list(ctx, &devs);
-  for (ssize_t i = 0; i < cnt; i++) {
-    struct libusb_device_descriptor desc;
-    libusb_get_device_descriptor(devs[i], &desc);
-
-    printf("Device found: VID: %04x, PID: %04x\n", desc.idVendor, desc.idProduct);
-
-    if (desc.idVendor == 0x046d && desc.idProduct == 0xc547) {
-      libusb_open(devs[i], &handle);
-      break;
-    }
-  }
-
-  if (handle == NULL) {
-    printf("Device not found.\n");
-    libusb_free_device_list(devs, 1);
-    libusb_exit(ctx);
-    return 1;
-  }
-
-  libusb_set_configuration(handle, configuration);
-  libusb_claim_interface(handle, interface);
-
-  unsigned char data[13];
-  int actual_length;
-  bool x1 = false;
-
-  while (true) {
-    int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
-    if (res == 0) {
-      int n13 = data[12];
-      int n12 = data[11];
-      int n11 = data[10];
-      int n10 = data[9];
-      int n9 = data[8];
-      int n8 = data[7];
-      int n7 = data[6];
-      int n6 = data[5];
-      int n5 = data[4];
-      int n4 = data[3];
-      int n3 = data[2];
-      int n2 = data[1];
-      int n1 = data[0];
-
-      int x1_ = n1 == 1;
-      if (x1_ == x1) {
-
-      }
-      else {
-        printf("%d\n", x1_);
-        btn(x1_ ? 1 : 2);
-      }
-      x1 = x1_;
-
-      int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
-      int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
-      printf("%d, %d\n", ax, ay);
-      movR(ax, ay * -1);
-
-      //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
-    }
-    else {
-      printf("Error reading data: %d (%s).\n", res, libusb_error_name(res));
-    }
-  }
-
-  libusb_release_interface(handle, interface);
-  libusb_close(handle);
-  libusb_free_device_list(devs, 1);
-  libusb_exit(ctx);
-
-  return 0;
-}
+  Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::Detail)));
+  ptr != NULL ? ptr : throw ptr;*/
+  /*WaitForSingleObject(sem_handle, INFINITE);
+  ptr->n4 = 1;
+  ptr->n3 = 1;
+  ptr->n2 = x1_ ? 1 : 2;
+  ptr->n1 = 1;
+  ReleaseSemaphore(sem_handle, 1, NULL);*/
+  /*WaitForSingleObject(sem_handle, INFINITE);
+  ptr->n4 = 1;
+  ptr->n3 = ay;
+  ptr->n2 = ax;
+  ptr->n1 = 2;
+  ReleaseSemaphore(sem_handle, 1, NULL);*/
