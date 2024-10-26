@@ -139,7 +139,6 @@
     <ClCompile Include="c.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\_\DD.hpp" />
     <ClInclude Include="..\_\Ram.hpp" />
     <ClInclude Include="..\_\Time.hpp" />
   </ItemGroup>
