@@ -40,11 +40,11 @@ extern "C" {
   );
 }
 
-inline std::wstring find_device(std::function<bool(std::wstring_view name)> predicate) {
+inline const wchar_t* find_device(std::function<bool(std::wstring_view name)> predicate) {
   OBJECT_ATTRIBUTES obj_attr;
   UNICODE_STRING obj_name;
   HANDLE dir_handle;
-  std::wstring result{};
+  static std::wstring result{};  // Static to persist after function scope
 
   RtlInitUnicodeString(&obj_name, L"\\GLOBAL??");
   InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
@@ -76,5 +76,5 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> pred
     CloseHandle(dir_handle);
   }
 
-  return result;
+  return result.c_str();
 }
