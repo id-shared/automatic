@@ -1,11 +1,13 @@
 ﻿class Pattern {
-  public static readonly Random ZN = new();
-  public static volatile bool YS;
-  public static volatile bool XS;
+  public readonly Random ZN = new();
+  public volatile bool YS;
+  public volatile bool XS;
+  public string IS;
 
-  public Pattern() {
+  public Pattern(string c) {
     YS = State();
     XS = State();
+    IS = c;
   }
 
   public bool State() {

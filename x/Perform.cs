@@ -5,8 +5,8 @@ class Perform {
   public static volatile Xyloid2 X2 = new(Contact.Device(args => args.Contains("RZCONTROL")));
   public static volatile Xyloid1 X1 = new(Contact.Device(args => args.Contains("RZCONTROL")));
 
-  public static volatile Pattern PY = new(); // TODO: use
-  public static volatile Pattern PX = new();
+  public static volatile Pattern PY = new("vandal"); // TODO: use
+  public static volatile Pattern PX = new("vandal");
 
   public static volatile Partner P2 = new(256);
   public static volatile Partner P1 = new(256);
@@ -28,7 +28,7 @@ class Perform {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
       AY = Upon(ci => !L && (0 <= ci) && X2.YX(PX.YAxis(ci) * -CY, PX.XAxis(ci) / CY, A.F) && Time.XO(EY), AY) + 1;
-      PX = new Pattern();
+      PX = new Pattern("vandal");
       return A.T;
     }));
     return L;
