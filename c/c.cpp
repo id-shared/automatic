@@ -1,4 +1,4 @@
-#include "DD.hpp"
+#include "Driver.hpp"
 #include <iostream>
 #include <libusb-1.0/libusb.h>
 
@@ -6,8 +6,6 @@ LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
 void main() {
-  DD::Contact contact = DD::contact(L"d1.dll");
-
   int configuration = 1;
   int interface = 0;
 
@@ -16,17 +14,12 @@ void main() {
   ssize_t cnt;
   libusb_device_handle* handle = NULL;
 
-  // Initialize libusb
   libusb_init(&ctx);
 
-  // Find the device (using VID and PID of your mouse)
   cnt = libusb_get_device_list(ctx, &devs);
   for (ssize_t i = 0; i < cnt; i++) {
     struct libusb_device_descriptor desc;
     libusb_get_device_descriptor(devs[i], &desc);
-
-    printf("Device found: VID: %04x, PID: %04x\n", desc.idVendor, desc.idProduct);
-
     if (desc.idVendor == 0x046d && desc.idProduct == 0xc547) {
       libusb_open(devs[i], &handle);
       break;
@@ -34,7 +27,6 @@ void main() {
   }
 
   if (handle == NULL) {
-    printf("Device not found.\n");
     libusb_free_device_list(devs, 1);
     libusb_exit(ctx);
     throw cnt;
@@ -74,8 +66,7 @@ void main() {
 
       }
       else {
-        //printf("%d, %d\n", ax, ay);
-        contact.movR(ax, ay * -1);
+        printf("%d, %d\n", ax, ay);
       }
 
       int x1_ = n1 == 1;
@@ -83,8 +74,7 @@ void main() {
 
       }
       else {
-        //printf("%d\n", x1_);
-        x1_ ? mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0) : mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        printf("%d\n", x1_);
       }
       x1 = x1_;
     }
