@@ -143,7 +143,7 @@
     <ClInclude Include="..\_\Hardware.hpp" />
     <ClInclude Include="..\_\Ram.hpp" />
     <ClInclude Include="..\_\Time.hpp" />
-    <ClInclude Include="..\_\Usb.hpp" />
+    <ClInclude Include="..\_\Device.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="c.txt" />

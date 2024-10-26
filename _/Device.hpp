@@ -1,15 +1,8 @@
 #pragma once
-#include "Driver.hpp"
-#include "Hardware.hpp"
 #include <array>
-#include <functional>
-#include <iostream>
 #include <libusb-1.0/libusb.h>
-#include <ntddkbd.h>
-#include <ntddmou.h>
-#include <windows.h>
 
-namespace Usb {
+namespace Device {
   using Byte = unsigned char;
 
   LPCWSTR read(std::function<std::array<bool, 2>(std::array<Byte, 13>, std::array<bool, 2>)> z, uint16_t c_1, uint16_t c) {

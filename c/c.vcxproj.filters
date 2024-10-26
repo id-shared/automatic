@@ -29,7 +29,7 @@
     <ClInclude Include="..\_\Hardware.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\_\Usb.hpp">
+    <ClInclude Include="..\_\Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\_\Driver.hpp">
