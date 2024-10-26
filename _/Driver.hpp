@@ -1,6 +1,5 @@
 #include <windows.h>
 #include <winternl.h>
-#include <ntstatus.h>
 #include <string>
 #include <functional>
 #include <iostream>
@@ -9,8 +8,8 @@
 
 #pragma comment(lib, "ntdll.lib")
 
-// Make sure NTSTATUS is defined
-typedef LONG NTSTATUS; // or #define NTSTATUS LONG
+// Define NTSTATUS manually if not included properly
+typedef LONG NTSTATUS; // NTSTATUS is typically defined as LONG
 
 extern "C" {
   constexpr NTSTATUS STATUS_SUCCESS = 0x00000000;
@@ -38,4 +37,44 @@ extern "C" {
     _Inout_   PULONG  Context,
     _Out_opt_ PULONG  ReturnLength
   );
+}
+
+
+inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
+  std::wstring result{};
+  HANDLE dir_handle;
+
+  OBJECT_ATTRIBUTES obj_attr;
+  UNICODE_STRING obj_name;  //or RTL_CONSTANT_STRING
+  RtlInitUnicodeString(&obj_name, LR"(\GLOBAL??)");
+  InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
+
+  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {  //or DIRECTORY_TRAVERSE?
+    union {
+      uint8_t buf[2048];  //#TODO
+      OBJECT_DIRECTORY_INFORMATION info[1];
+    };
+    ULONG context;
+
+#pragma warning(suppress : 6001)  //Warning C6001: Using uninitialized memory 'context'.
+    NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf, sizeof buf, false, true, &context, NULL);
+    while (NT_SUCCESS(status)) {  //STATUS_SUCCESS, STATUS_MORE_ENTRIES
+      bool found = false;
+      for (ULONG i = 0; info[i].Name.Buffer; i++) {
+        std::wstring_view sv{ info[i].Name.Buffer, info[i].Name.Length / sizeof(wchar_t) };
+        if (p(sv)) {
+          result = LR"(\??\)" + std::wstring(sv);
+          found = true;
+          break;
+        }
+      }
+      if (found || status != STATUS_MORE_ENTRIES)
+        break;
+      status = NtQueryDirectoryObject(dir_handle, buf, sizeof buf, false, false, &context, NULL);
+    }
+
+    CloseHandle(dir_handle);
+  }
+
+  return result;
 }
