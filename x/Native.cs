@@ -59,6 +59,29 @@ class Native {
   }
 
   [StructLayout(LayoutKind.Sequential)]
+  public struct UNICODE_STRING {
+    public ushort Length;
+    public ushort MaximumLength;
+    public IntPtr Buffer;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  public struct OBJECT_DIRECTORY_INFORMATION {
+    public UNICODE_STRING Name;
+    public UNICODE_STRING TypeName;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
+  public struct OBJECT_ATTRIBUTES {
+    public int Length;
+    public IntPtr RootDirectory;
+    public IntPtr ObjectName;
+    public uint Attributes;
+    public IntPtr SecurityDescriptor;
+    public IntPtr SecurityQualityOfService;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
   public struct MSLLHOOKSTRUCT {
     public POINT pt;
     public uint mouseData;
@@ -66,15 +89,6 @@ class Native {
     public uint time;
     public IntPtr dwExtraInfo;
   }
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  public static extern IntPtr LoadLibrary(string dllFile);
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
-
-  [DllImport("kernel32.dll", SetLastError = true)]
-  public static extern bool FreeLibrary(IntPtr hModule);
 
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
@@ -90,9 +104,6 @@ class Native {
   [DllImport("user32.dll")]
   public static extern uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
-  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-  public static extern IntPtr GetModuleHandle(string lpModuleName);
-
   [DllImport("user32.dll")]
   [return: MarshalAs(UnmanagedType.Bool)]
   public static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
@@ -106,11 +117,45 @@ class Native {
   [DllImport("user32.dll")]
   public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
+  [DllImport("ntdll.dll", CharSet = CharSet.Unicode)]
+  public static extern void RtlInitUnicodeString(ref UNICODE_STRING DestinationString, string SourceString);
+
+
+  [DllImport("ntdll.dll")]
+  public static extern int NtOpenDirectoryObject(
+      out IntPtr DirectoryHandle,
+      uint DesiredAccess,
+      ref OBJECT_ATTRIBUTES ObjectAttributes
+  );
+
+  [DllImport("ntdll.dll")]
+  public static extern int NtQueryDirectoryObject(
+      IntPtr DirectoryHandle,
+      IntPtr Buffer,
+      uint Length,
+      bool ReturnSingleEntry,
+      bool RestartScan,
+      ref uint Context,
+      out uint ReturnLength
+  );
+
   [DllImport("kernel32.dll")]
   public static extern bool QueryPerformanceCounter(out long lpPerformanceCount);
 
   [DllImport("kernel32.dll")]
   public static extern bool QueryPerformanceFrequency(out long lpFrequency);
+
+  [DllImport("kernel32.dll", SetLastError = true)]
+  public static extern IntPtr LoadLibrary(string dllFile);
+
+  [DllImport("kernel32.dll", SetLastError = true)]
+  public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+  public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+  [DllImport("kernel32.dll", SetLastError = true)]
+  public static extern bool FreeLibrary(IntPtr hModule);
 
   [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
   public static extern bool DeviceIoControl(
