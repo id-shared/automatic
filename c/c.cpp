@@ -6,7 +6,7 @@ LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
 void main() {
-  DD::Contact contact = DD::contact(L"d1.dll");
+  //DD::Contact contact = DD::contact(L"d1.dll");
 
   int configuration = 1;
   int interface = 0;
@@ -43,6 +43,7 @@ void main() {
   libusb_set_configuration(handle, configuration);
   libusb_claim_interface(handle, interface);
 
+  using Byte = int;
   unsigned char data[13];
   int actual_length;
   bool x1 = false;
@@ -50,21 +51,32 @@ void main() {
   while (true) {
     int res = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
     if (res == 0) {
-      unsigned char n13 = data[12];
-      unsigned char n12 = data[11];
-      unsigned char n11 = data[10];
-      unsigned char n10 = data[9];
-      unsigned char n9 = data[8];
-      unsigned char n8 = data[7];
-      unsigned char n7 = data[6];
-      unsigned char n6 = data[5];
-      unsigned char n5 = data[4];
-      unsigned char n4 = data[3];
-      unsigned char n3 = data[2];
-      unsigned char n2 = data[1];
-      unsigned char n1 = data[0];
+      Byte n13 = data[12];
+      Byte n12 = data[11];
+      Byte n11 = data[10];
+      Byte n10 = data[9];
+      Byte n9 = data[8];
+      Byte n8 = data[7];
+      Byte n7 = data[6];
+      Byte n6 = data[5];
+      Byte n5 = data[4];
+      Byte n4 = data[3];
+      Byte n3 = data[2];
+      Byte n2 = data[1];
+      Byte n1 = data[0];
 
-      printf("%d %d\n", n1, n2);
+      printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
+
+      int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
+      int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+
+      if (ax == 0 && ay == 0) {
+
+      }
+      else {
+        printf("%d, %d\n", ax, ay);
+        //movR(ax, ay * -1);
+      }
 
       //int x1_ = n1 == 1;
       //if (x1_ == x1) {
@@ -75,19 +87,6 @@ void main() {
 
       //}
       //x1 = x1_;
-
-      //int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
-      //int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
-
-      //if (ax == 0 && ay == 0) {
-
-      //}
-      //else {
-      //  printf("%d, %d\n", ax, ay);
-      //  //movR(ax, ay * -1);
-      //}
-
-      //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
     }
     else {
       printf("Error reading data: %d (%s).\n", res, libusb_error_name(res));
