@@ -26,4 +26,7 @@
   <ItemGroup>
     <Content Include="x.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resource\" />
+  </ItemGroup>
 </Project>
