@@ -21,28 +21,34 @@ namespace Mouse {
     }
   };
 
-  bool ab(HANDLE x1, D1Control x) {
+  bool act(HANDLE x1, D1Control x) {
     DWORD bytes_returned;
     return DeviceIoControl(x1, 0x88883020, &x, sizeof x, nullptr, 0, &bytes_returned, nullptr);
   }
 
-  bool yx(HANDLE x1, int y, int x) {
-    return ab(x1, D1Control{
+  bool ee(HANDLE x1, ULONG e) {
+    return act(x1, D1Control{
       .type = D1Control::Type::Mouse,
       .mi = MOUSE_INPUT_DATA {
-        .LastX = x,
-        .LastY = y,
+        .Buttons = e
       },
       });
   }
 
-  bool ee(HANDLE x1, bool e) {
-    ULONG buttons = e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP;
+  bool e1(HANDLE x1, bool e) {
+    return ee(x1, e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP);
+  }
 
-    return ab(x1, D1Control{
+  bool e2(HANDLE x1, bool e) {
+    return ee(x1, e ? MOUSE_RIGHT_BUTTON_DOWN : MOUSE_RIGHT_BUTTON_UP);
+  }
+
+  bool yx(HANDLE x1, int y, int x) {
+    return act(x1, D1Control{
       .type = D1Control::Type::Mouse,
       .mi = MOUSE_INPUT_DATA {
-        .Buttons = buttons
+        .LastX = x,
+        .LastY = y,
       },
       });
   }

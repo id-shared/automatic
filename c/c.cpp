@@ -30,13 +30,16 @@ void main() {
 
     int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
     int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+    int a2 = n1 == 4;
     int a1 = n1 == 1;
 
-    //printf("%d, %d\n", ax, ay);
-
     ax == 0 && ay == 0 ? true : Mouse::yx(driver, ay * -1, ax);
-    a1 == a[0] ? true : Mouse::ee(driver, a1);
+    a2 == a[1] ? true : Mouse::e2(driver, a2);
+    a1 == a[0] ? true : Mouse::e1(driver, a1);
 
+    //printf("%d, %d, %d, %d\n", ay, ax, a2, a1);
+
+    a[1] = a2;
     a[0] = a1;
     return a;
     }, 1, 1);
