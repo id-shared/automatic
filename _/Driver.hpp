@@ -72,16 +72,42 @@ void ListDeviceIoctlPaths() {
     TCHAR deviceInstanceId[MAX_DEVICE_ID_LEN];
     SetupDiGetDeviceInstanceId(deviceInfoSet, &deviceInfoData, deviceInstanceId, sizeof(deviceInstanceId) / sizeof(TCHAR), nullptr);
 
-    if (deviceInstanceId == L"RZCONTROL\\VID_1532&PID_0306&MI_00\\3&2CD34B8&0") {
+    if (deviceInstanceId[0] == L"R"[0] && deviceInstanceId[1] == L"Z"[0] && deviceInstanceId[2] == L"C"[0]) {
       TCHAR abc[MAX_DEVICE_ID_LEN];
       if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, SPDRP_ENUMERATOR_NAME, nullptr, (PBYTE)abc, sizeof(abc), nullptr)) {
-        std::wcout << L"Abc: " << deviceInstanceId << std::endl;
+        std::wcout << L"deviceInstanceId: " << deviceInstanceId << std::endl;
+
+        for (DWORD spdrp : spdrpConstants) {
+          TCHAR act[MAX_DEVICE_ID_LEN];
+          if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, spdrp, nullptr, (PBYTE)act, sizeof(act), nullptr)) {
+            std::wcout << spdrp << L": " << act << std::endl;
+          }
+        }
       }
     }
-
-    std::wcout << std::endl;
     deviceIndex++;
   }
 
+  SP_DEVICE_INTERFACE_DATA deviceInterfaceData;
+  deviceInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+  DWORD index = 0;
+
+  // Iterate through the devices in the device info set.
+  while (SetupDiEnumDeviceInterfaces(deviceInfoSet, NULL, &GUID_DEVINTERFACE_UNKNOWN, index, &deviceInterfaceData)) {
+    index++;
+
+    // Get the required buffer size.
+    DWORD requiredSize = 0;
+    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, &deviceInterfaceData, NULL, 0, &requiredSize, NULL);
+    PSP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData = (PSP_DEVICE_INTERFACE_DETAIL_DATA)malloc(requiredSize);
+    deviceInterfaceDetailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+
+    // Get the device interface details.
+    if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, &deviceInterfaceData, deviceInterfaceDetailData, requiredSize, NULL, NULL)) {
+      std::wcout << L"Found Device Interface: " << deviceInterfaceDetailData->DevicePath << std::endl;
+    }
+
+    free(deviceInterfaceDetailData);
+  }
   SetupDiDestroyDeviceInfoList(deviceInfoSet);
 }
