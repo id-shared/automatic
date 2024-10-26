@@ -2,10 +2,11 @@
 using System.Runtime.InteropServices;
 
 class Perform {
+  public static volatile Xyloid2 D2 = new(Contact.Device(args => args.Contains("RZCONTROL")));
+
   public static volatile Specter SU = new(256);
   public static volatile Specter SD = new(256);
   public static volatile Pattern PX = new();
-  public static volatile Device1 D1 = new(Contact.Device(args => args.Contains("RZCONTROL")));
 
   public static readonly uint[] RA = [KeyA.R];
   public static volatile bool R = A.F;
@@ -22,8 +23,8 @@ class Perform {
 
   public static bool KeyEAU() {
     L = A.F;
-    SD.TryEnqueue(_ => D1.E1(A.F) && SU.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (0 <= ci) && D1.YX(PX.YAxis(ci) * -CY, PX.XAxis(ci) / CY, A.F) && Time.XO(EY), AY) + 1;
+    SD.TryEnqueue(_ => D2.E1(A.F) && SU.TryEnqueue(_ => {
+      AY = Upon(ci => !L && (0 <= ci) && D2.YX(PX.YAxis(ci) * -CY, PX.XAxis(ci) / CY, A.F) && Time.XO(EY), AY) + 1;
       PX = new Pattern();
       return A.T;
     }));
@@ -31,8 +32,8 @@ class Perform {
   }
 
   public static bool KeyEAD() {
-    L = L || SD.TryEnqueue(_ => D1.E1(A.T) && SU.TryEnqueue(_ => {
-      AY = Till(ci => L && (99 >= ci) && D1.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) / -CY, A.T) && Time.XO(EY), AY) - 1;
+    L = L || SD.TryEnqueue(_ => D2.E1(A.T) && SU.TryEnqueue(_ => {
+      AY = Till(ci => L && (99 >= ci) && D2.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) / -CY, A.T) && Time.XO(EY), AY) - 1;
       return A.T;
     }));
     return L;
@@ -74,9 +75,9 @@ class Perform {
   }
 
   public static bool IO(double t, uint[] k) {
-    Device22.Input(k, A.T);
+    Xyloid1.EE(k, A.T);
     Time.XO(t);
-    Device22.Input(k, A.F);
+    Xyloid1.EE(k, A.F);
     return A.T;
   }
 

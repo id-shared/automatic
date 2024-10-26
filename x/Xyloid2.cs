@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
-class Device1 {
-  public Device1(string c) {
+class Xyloid2 {
+  public Xyloid2(string c) {
     context = new(c);
   }
 
