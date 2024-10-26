@@ -50,42 +50,6 @@ bool ee(HANDLE x1, bool e) {
   });
 }
 
-//struct Detail {
-//  union {
-//    KEYBOARD_INPUT_DATA ki;
-//    MOUSE_INPUT_DATA mi;
-//  };
-//  uint32_t type = 2;
-//  uint32_t unk1;
-//private:
-//  void assert_size() {
-//    static_assert(sizeof Detail == 32);
-//  }
-//};
-//
-//bool ab(HANDLE x1, Detail x) {
-//  DWORD bytes_returned;
-//  return DeviceIoControl(x1, 0x88883020, &x, sizeof x, nullptr, 0, &bytes_returned, nullptr);
-//}
-//
-//bool ee(HANDLE x1, bool e) {
-//  Detail control = Detail{};
-//
-//  control.mi.ButtonFlags = e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP;
-//
-//  return ab(x1, control);
-//}
-//
-//bool yx(HANDLE x1, int y, int x) {
-//  Detail control = Detail{};
-//
-//  control.mi.LastY = y * -1;
-//
-//  control.mi.LastX = x;
-//
-//  return ab(x1, control);
-//}
-
 void main() {
   ListDeviceIoctlPaths();
 
