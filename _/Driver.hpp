@@ -51,6 +51,15 @@ namespace Driver {
     );
   }
 
+  inline void RtlInitUnicodeString(UNICODE_STRING* DestinationString, PCWSTR SourceString) {
+    if (DestinationString == nullptr) return;
+
+    size_t length = (SourceString != nullptr) ? wcslen(SourceString) * sizeof(wchar_t) : 0;
+    DestinationString->Length = static_cast<USHORT>(length);
+    DestinationString->MaximumLength = static_cast<USHORT>(length + sizeof(wchar_t));
+    DestinationString->Buffer = const_cast<PWSTR>(SourceString);
+  }
+
   std::wstring PtrToStringUni(PWSTR ptr, int length) {
     return std::wstring(ptr, length / sizeof(wchar_t));
   }
