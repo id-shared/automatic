@@ -21,18 +21,20 @@ namespace Mouse {
     }
   };
 
+  D1Control d1control = D1Control{
+    .type = D1Control::Type::Mouse,
+    .mi = MOUSE_INPUT_DATA {},
+  };
+
   bool act(HANDLE x, D1Control v) {
     DWORD bytes_returned;
     return DeviceIoControl(x, 0x88883020, &v, sizeof v, nullptr, 0, &bytes_returned, nullptr);
   }
 
   bool ee(HANDLE x, ULONG e) {
-    return act(x, D1Control{
-      .type = D1Control::Type::Mouse,
-      .mi = MOUSE_INPUT_DATA {
-        .Buttons = e
-      },
-      });
+    D1Control control = d1control;
+    control.mi.Buttons = e;
+    return act(x, control);
   }
 
   bool e1(HANDLE x, bool a) {
@@ -44,20 +46,23 @@ namespace Mouse {
   }
 
   bool yx(HANDLE x, int e1, int e) {
-    return act(x, D1Control{
-      .type = D1Control::Type::Mouse,
-      .mi = MOUSE_INPUT_DATA {
-        .LastX = e,
-        .LastY = e1,
-      },
-      });
+    D1Control control = d1control;
+    control.mi.LastY = e1;
+    control.mi.LastX = e;
+    return act(x, control);
   }
 
-  bool zz(HANDLE x, bool a) {
-    return act(x, D1Control{
-      .type = D1Control::Type::Mouse,
-      .mi = MOUSE_INPUT_DATA {
-      },
-      });
+  bool zh(HANDLE x, int e) {
+    D1Control control = d1control;
+    control.mi.ButtonFlags = MOUSE_HWHEEL;
+    control.mi.ButtonData = e;
+    return act(x, control);
+  }
+
+  bool zv(HANDLE x, int e) {
+    D1Control control = d1control;
+    control.mi.ButtonFlags = MOUSE_WHEEL;
+    control.mi.ButtonData = e;
+    return act(x, control);
   }
 }

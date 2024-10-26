@@ -37,7 +37,9 @@ void main() {
     a2 == a[1] ? true : Mouse::e2(driver, a2);
     a1 == a[0] ? true : Mouse::e1(driver, a1);
 
-    //printf("%d, %d, %d, %d\n", ay, ax, a2, a1);
+    printf("%d, %d, %d, %d\n", ay, ax, a2, a1);
+
+    Mouse::zv(driver, 10);
 
     a[1] = a2;
     a[0] = a1;
