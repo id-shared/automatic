@@ -24,16 +24,7 @@ void ListDeviceIoctlPaths() {
     SetupDiGetDeviceInstanceId(deviceInfoSet, &deviceInfoData, deviceInstanceId, sizeof(deviceInstanceId) / sizeof(TCHAR), nullptr);
 
     if (deviceInstanceId[0] == L"R"[0] && deviceInstanceId[1] == L"Z"[0] && deviceInstanceId[2] == L"C"[0]) {
-      //std::cout << deviceInfoData.ClassGuid << std::endl;
-      GUID classGuid = deviceInfoData.ClassGuid;
-      WCHAR guidString[39]; // GUID string format is "{XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX}"
-
-      if (StringFromGUID2(classGuid, guidString, sizeof(guidString) / sizeof(WCHAR))) {
-        std::wcout << L"Found Device GUID: " << guidString << classGuid.Data1 << std::endl;
-      }
-      else {
-        std::cerr << "Failed to convert GUID to string." << std::endl;
-      }
+      std::wcout << deviceInstanceId << std::endl;
     }
     deviceIndex++;
   }
