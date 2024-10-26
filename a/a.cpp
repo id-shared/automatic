@@ -1,4 +1,3 @@
-#include "DD.hpp"
 #include "Ram.hpp"
 #include "Time.hpp"
 #include <iostream>
@@ -9,17 +8,13 @@ LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 int CURRENT_NAME = 1;
 
-DD::Contact contact = DD::contact(L"d1.dll");
-
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
   switch (n1) {
   case 2:
     printf("2: %d %d.\n", n2, n3);
-    contact.movR(n2, n3 * -1);
     return 0;
   case 1:
     printf("1: %d.\n", n2);
-    contact.btn(n2);
     return 0;
   default:
     return 0;
