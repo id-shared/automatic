@@ -8,8 +8,7 @@
 
 #pragma comment(lib, "ntdll.lib")
 
-// Define NTSTATUS manually if not included properly
-typedef LONG NTSTATUS; // NTSTATUS is typically defined as LONG
+typedef LONG NTSTATUS;
 
 extern "C" {
   constexpr NTSTATUS STATUS_SUCCESS = 0x00000000;
@@ -51,14 +50,13 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
 
   if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {  //or DIRECTORY_TRAVERSE?
     union {
-      uint8_t buf[2048];  //#TODO
+      unsigned char buf[2048];  //#TODO
       OBJECT_DIRECTORY_INFORMATION info[1];
     };
     ULONG context;
 
-#pragma warning(suppress : 6001)  //Warning C6001: Using uninitialized memory 'context'.
     NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf, sizeof buf, false, true, &context, NULL);
-    while (NT_SUCCESS(status)) {  //STATUS_SUCCESS, STATUS_MORE_ENTRIES
+    while (NT_SUCCESS(status)) {
       bool found = false;
       for (ULONG i = 0; info[i].Name.Buffer; i++) {
         std::wstring_view sv{ info[i].Name.Buffer, info[i].Name.Length / sizeof(wchar_t) };
