@@ -49,10 +49,10 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> pred
   RtlInitUnicodeString(&obj_name, L"\\GLOBAL??");
   InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
 
-  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {
-    const size_t buffer_size = 2048; // Define buffer size
-    std::vector<unsigned char> buf(buffer_size); // Dynamic buffer
-    ULONG context = 0; // Initialize context
+  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY | DIRECTORY_TRAVERSE, &obj_attr))) {
+    const size_t buffer_size = 2048;
+    std::vector<unsigned char> buf(buffer_size);
+    ULONG context = 0;
     NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), FALSE, TRUE, &context, NULL);
 
     while (NT_SUCCESS(status)) {
