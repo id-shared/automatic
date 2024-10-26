@@ -26,13 +26,16 @@
     <ClInclude Include="..\_\Ram.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\_\Hardware.hpp">
+    <ClInclude Include="..\_\Contact.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\_\Device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\_\Driver.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_\Mouse.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

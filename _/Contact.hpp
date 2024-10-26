@@ -2,14 +2,11 @@
 #pragma once
 #include <cstdint>
 #include <functional>
-#include <iostream>
-#include <mutex>
 #include <string>
-#include <vector>
 #include <windows.h>
 #include <winternl.h>
 
-namespace Hardware {
+namespace Contact {
   typedef LONG NTSTATUS;
 
   extern "C" {
@@ -41,11 +38,11 @@ namespace Hardware {
     );
   }
 
-  LPCWSTR find_device(std::function<bool(std::wstring_view name)> z) {
+  LPCWSTR device(std::function<bool(std::wstring_view name)> z) {
     OBJECT_ATTRIBUTES obj_attr;
     UNICODE_STRING obj_name;
     HANDLE dir_handle;
-    static std::wstring result{};  // Static to persist after function scope
+    static std::wstring result{};
 
     RtlInitUnicodeString(&obj_name, L"\\GLOBAL??");
     InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
