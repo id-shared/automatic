@@ -8,7 +8,7 @@
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
-struct Control {
+struct D1Control {
   uint32_t unk1;
   enum class Type : uint32_t {
     Keyboard = 1,
@@ -20,37 +20,34 @@ struct Control {
   };
 private:
   void assert_size() {
-    static_assert(sizeof Control == 32);
+    static_assert(sizeof D1Control == 32);
   }
 };
 
-bool ab(HANDLE x1, Control x) {
+bool ab(HANDLE x1, D1Control x) {
   DWORD bytes_returned;
   return DeviceIoControl(x1, 0x88883020, &x, sizeof x, nullptr, 0, &bytes_returned, nullptr);
 }
 
 bool yx(HANDLE x1, int y, int x) {
-  Control control = Control{
-    .type = Control::Type::Mouse,
+  return ab(x1, D1Control{
+    .type = D1Control::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {
       .LastX = x,
       .LastY = y,
     },
-  };
-
-  return ab(x1, control);
+  });
 }
 
 bool ee(HANDLE x1, bool e) {
-  Control control = Control{
-    .type = Control::Type::Mouse,
+  ULONG buttons = e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP;
+
+  return ab(x1, D1Control{
+    .type = D1Control::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {
+      .Buttons = buttons
     },
-  };
-
-  control.mi.ButtonFlags = e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP;
-
-  return ab(x1, control);
+  });
 }
 
 //struct Detail {
@@ -92,7 +89,7 @@ bool ee(HANDLE x1, bool e) {
 void main() {
   ListDeviceIoctlPaths();
 
-  const wchar_t * x = L"\\??\\RZCONTROL#VID_1532&PID_0306&MI_00#3&2CD34B8&0#{e3be005d-d130-4910-88ff-09ae02f680e9}";
+  const wchar_t* x = L"\\??\\RZCONTROL#VID_1532&PID_0306&MI_00#3&2CD34B8&0#{e3be005d-d130-4910-88ff-09ae02f680e9}";
 
   HANDLE device = CreateFileW(x, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 
