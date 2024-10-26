@@ -2,7 +2,7 @@
 #include <array>
 #include <libusb-1.0/libusb.h>
 
-namespace Device {
+namespace Driver {
   using Byte = unsigned char;
 
   LPCWSTR read(std::function<std::array<bool, 2>(std::array<Byte, 13>, std::array<bool, 2>)> z, uint16_t c_1, uint16_t c) {

@@ -4,27 +4,27 @@
 #include "Mouse.hpp"
 
 void main() {
-  LPCWSTR driver = Contact::device([](std::wstring_view c) {
+  LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
     return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
     });
 
-  HANDLE device = Driver::device(driver);
+  HANDLE driver = Device::driver(device);
 
-  Device::read([device](std::array<Device::Byte, 13> o1, std::array<bool, 2> a) {
-    Device::Byte n13 = o1[12];
-    Device::Byte n12 = o1[11];
-    Device::Byte n11 = o1[10];
-    Device::Byte n10 = o1[9];
-    Device::Byte n9 = o1[8];
-    Device::Byte n8 = o1[7];
-    Device::Byte n7 = o1[6];
-    Device::Byte n6 = o1[5];
-    Device::Byte n5 = o1[4];
-    Device::Byte n4 = o1[3];
-    Device::Byte n3 = o1[2];
-    Device::Byte n2 = o1[1];
-    Device::Byte n1 = o1[0];
+  Driver::read([driver](std::array<Driver::Byte, 13> o1, std::array<bool, 2> a) {
+    Driver::Byte n13 = o1[12];
+    Driver::Byte n12 = o1[11];
+    Driver::Byte n11 = o1[10];
+    Driver::Byte n10 = o1[9];
+    Driver::Byte n9 = o1[8];
+    Driver::Byte n8 = o1[7];
+    Driver::Byte n7 = o1[6];
+    Driver::Byte n6 = o1[5];
+    Driver::Byte n5 = o1[4];
+    Driver::Byte n4 = o1[3];
+    Driver::Byte n3 = o1[2];
+    Driver::Byte n2 = o1[1];
+    Driver::Byte n1 = o1[0];
 
     printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
 
@@ -34,8 +34,8 @@ void main() {
 
     //printf("%d, %d\n", ax, ay);
 
-    ax == 0 && ay == 0 ? true : Mouse::yx(device, ay * -1, ax);
-    a1 == a[0] ? true : Mouse::ee(device, a1);
+    ax == 0 && ay == 0 ? true : Mouse::yx(driver, ay * -1, ax);
+    a1 == a[0] ? true : Mouse::ee(driver, a1);
 
     a[0] = a1;
     return a;
