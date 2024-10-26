@@ -29,6 +29,9 @@
     <ClInclude Include="..\_\Driver.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\_\Usb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="c.txt" />

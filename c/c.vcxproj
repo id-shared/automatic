@@ -142,6 +142,7 @@
     <ClInclude Include="..\_\Driver.hpp" />
     <ClInclude Include="..\_\Ram.hpp" />
     <ClInclude Include="..\_\Time.hpp" />
+    <ClInclude Include="..\_\Usb.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="c.txt" />
