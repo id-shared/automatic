@@ -1,33 +1,41 @@
-#pragma once
-
 #include <windows.h>
-#include <setupapi.h>
-#include <devguid.h>
-#include <iostream>
+#include <winternl.h>
+#include <ntstatus.h>
 #include <string>
-#include <combaseapi.h>
+#include <functional>
+#include <iostream>
+#include <cstdint>
+#include <mutex>
 
-#pragma comment(lib, "setupapi.lib")
+#pragma comment(lib, "ntdll.lib")
 
-const int MAX_DEVICE_ID_LEN = 999;
+// Make sure NTSTATUS is defined
+typedef LONG NTSTATUS; // or #define NTSTATUS LONG
 
-void ListDeviceIoctlPaths() {
-  HDEVINFO deviceInfoSet = SetupDiGetClassDevs(nullptr, nullptr, nullptr, DIGCF_ALLCLASSES | DIGCF_PRESENT);
-  deviceInfoSet != INVALID_HANDLE_VALUE ? deviceInfoSet : throw deviceInfoSet;
+extern "C" {
+  constexpr NTSTATUS STATUS_SUCCESS = 0x00000000;
+  constexpr NTSTATUS STATUS_MORE_ENTRIES = 0x00000105;
+  constexpr NTSTATUS STATUS_BUFFER_TOO_SMALL = 0xC0000023;
+  constexpr ACCESS_MASK DIRECTORY_QUERY = 0x0001;
 
-  SP_DEVINFO_DATA deviceInfoData;
-  deviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
-  DWORD deviceIndex = 0;
+  NTSTATUS WINAPI NtOpenDirectoryObject(
+    _Out_ PHANDLE            DirectoryHandle,
+    _In_  ACCESS_MASK        DesiredAccess,
+    _In_  POBJECT_ATTRIBUTES ObjectAttributes
+  );
 
-  while (SetupDiEnumDeviceInfo(deviceInfoSet, deviceIndex, &deviceInfoData)) {
-    TCHAR deviceInstanceId[MAX_DEVICE_ID_LEN];
-    SetupDiGetDeviceInstanceId(deviceInfoSet, &deviceInfoData, deviceInstanceId, sizeof(deviceInstanceId) / sizeof(TCHAR), nullptr);
+  typedef struct _OBJECT_DIRECTORY_INFORMATION {
+    UNICODE_STRING Name;
+    UNICODE_STRING TypeName;
+  } OBJECT_DIRECTORY_INFORMATION, * POBJECT_DIRECTORY_INFORMATION;
 
-    if (deviceInstanceId[0] == L"R"[0] && deviceInstanceId[1] == L"Z"[0] && deviceInstanceId[2] == L"C"[0]) {
-      std::wcout << deviceInstanceId << std::endl;
-    }
-    deviceIndex++;
-  }
-
-  SetupDiDestroyDeviceInfoList(deviceInfoSet);
+  NTSTATUS WINAPI NtQueryDirectoryObject(
+    _In_      HANDLE  DirectoryHandle,
+    _Out_opt_ PVOID   Buffer,
+    _In_      ULONG   Length,
+    _In_      BOOLEAN ReturnSingleEntry,
+    _In_      BOOLEAN RestartScan,
+    _Inout_   PULONG  Context,
+    _Out_opt_ PULONG  ReturnLength
+  );
 }

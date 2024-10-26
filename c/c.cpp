@@ -51,7 +51,12 @@ bool ee(HANDLE x1, bool e) {
 }
 
 void main() {
-  ListDeviceIoctlPaths();
+  // Example usage of FindDevice
+  std::wstring foundDevice = FindDevice([](const std::wstring& name) {
+    return name.find(L"RZCONTROL") != std::wstring::npos;
+  });
+
+  std::wcout << (foundDevice.empty() ? L"not found." : foundDevice) << std::endl;
 
   const wchar_t* x = L"\\??\\RZCONTROL#VID_1532&PID_0306&MI_00#3&2CD34B8&0#{e3be005d-d130-4910-88ff-09ae02f680e9}";
 
