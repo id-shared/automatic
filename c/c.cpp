@@ -65,21 +65,19 @@ private:
   }
 };
 
-bool yx(HANDLE device, int y, int x) {
+bool yx(HANDLE x1, int y, int x) {
   RzControl control = RzControl{
     .type = RzControl::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {
-      //.Flags = MOUSEEVENTF_MOVE,
       .LastX = x,
       .LastY = y,
     },
   };
 
-  DWORD bytes_returned;
-  return DeviceIoControl(device, 0x88883020, &control, sizeof control, nullptr, 0, &bytes_returned, nullptr);
+  return ab(x1, control);
 }
 
-bool ee(HANDLE device, bool e) {
+bool ee(HANDLE x1, bool e) {
   RzControl control = RzControl{
     .type = RzControl::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {
@@ -88,8 +86,12 @@ bool ee(HANDLE device, bool e) {
 
   control.mi.ButtonFlags = e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP;
 
+  return ab(x1, control);
+}
+
+bool ab(HANDLE x1, RzControl x) {
   DWORD bytes_returned;
-  return DeviceIoControl(device, 0x88883020, &control, sizeof control, nullptr, 0, &bytes_returned, nullptr);
+  return DeviceIoControl(x1, 0x88883020, &x, sizeof x, nullptr, 0, &bytes_returned, nullptr);
 }
 
 void main() {
