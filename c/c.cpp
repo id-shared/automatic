@@ -65,6 +65,33 @@ private:
   }
 };
 
+bool yx(HANDLE device, int y, int x) {
+  RzControl control = RzControl{
+    .type = RzControl::Type::Mouse,
+    .mi = MOUSE_INPUT_DATA {
+      //.Flags = MOUSEEVENTF_MOVE,
+      .LastX = x,
+      .LastY = y,
+    },
+  };
+
+  DWORD bytes_returned;
+  return DeviceIoControl(device, 0x88883020, &control, sizeof control, nullptr, 0, &bytes_returned, nullptr);
+}
+
+bool ee(HANDLE device, bool e) {
+  RzControl control = RzControl{
+    .type = RzControl::Type::Mouse,
+    .mi = MOUSE_INPUT_DATA {
+    },
+  };
+
+  control.mi.ButtonFlags = e ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP;
+
+  DWORD bytes_returned;
+  return DeviceIoControl(device, 0x88883020, &control, sizeof control, nullptr, 0, &bytes_returned, nullptr);
+}
+
 void main() {
   ListDeviceIoctlPaths();
 
@@ -80,18 +107,6 @@ void main() {
   else {
     std::wcout << L"Device opened successfully." << std::endl;
   }
-
-  RzControl control = RzControl{
-    .type = RzControl::Type::Mouse,
-    .mi = MOUSE_INPUT_DATA {
-      .Flags = MOUSEEVENTF_MOVE,
-      .LastX = 99,
-      .LastY = 99,
-    },
-  };
-
-  DWORD bytes_returned;
-  DeviceIoControl(device, 0x88883020, &control, sizeof control, nullptr, 0, &bytes_returned, nullptr);
 
   int configuration = 1;
   int interface = 0;
@@ -154,6 +169,7 @@ void main() {
       }
       else {
         printf("%d, %d\n", ax, ay);
+        yx(device, ay * -1, ax);
       }
 
       int x1_ = n1 == 1;
@@ -162,6 +178,7 @@ void main() {
       }
       else {
         printf("%d\n", x1_);
+        ee(device, x1_);
       }
       x1 = x1_;
     }
