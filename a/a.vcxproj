@@ -136,8 +136,6 @@
     <Text Include="a.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\_\DD.hpp" />
-    <ClInclude Include="..\_\Dll.hpp" />
     <ClInclude Include="..\_\Ram.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
