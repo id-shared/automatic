@@ -8,7 +8,7 @@ class Programs {
   //}
 }
 
-public class DeviceFinder {
+public class Contact {
   const uint STATUS_SUCCESS = 0x00000000;
   const uint STATUS_MORE_ENTRIES = 0x00000105;
   const uint STATUS_BUFFER_TOO_SMALL = 0xC0000023;
@@ -66,5 +66,4 @@ public class DeviceFinder {
 
     return result;
   }
-
 }
