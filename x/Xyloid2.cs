@@ -1,10 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
 class Xyloid2 {
-  public Xyloid2(string c) {
-    context = new(c);
-  }
-
   public bool YX(int y, int x, bool a) {
     return Act(new MouseReport { Button = new MouseButton { LButton = a }, y = (short)y, x = (short)x }, CODE, A.T);
   }
@@ -29,6 +25,10 @@ class Xyloid2 {
     } finally {
       Marshal.FreeHGlobal(buffer);
     }
+  }
+
+  public Xyloid2(string c) {
+    context = new(c);
   }
 
   private readonly uint CODE = 0x2A2010;

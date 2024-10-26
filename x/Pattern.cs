@@ -4,12 +4,6 @@
   public volatile bool XS;
   public string IS;
 
-  public Pattern(string c) {
-    YS = State();
-    XS = State();
-    IS = c;
-  }
-
   public bool State() {
     return ZN.Next(1, 3) == 1;
   }
@@ -230,5 +224,10 @@
       0 => 0,
       _ => 0
     };
+  }
+  public Pattern(string c) {
+    YS = State();
+    XS = State();
+    IS = c;
   }
 }

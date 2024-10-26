@@ -1,8 +1,4 @@
 ﻿class Xyloid1 {
-  public Xyloid1(string c) {
-    context = new(c);
-  }
-
   public bool EE(uint[] k, bool a) {
     Native.INPUT[] inputs = new Native.INPUT[k.Length];
     for (int i = 0; i < k.Length; i++) {
@@ -14,6 +10,10 @@
       inputs[i].mkhi.ki.dwExtraInfo = IntPtr.Zero;
     }
     return Native.SendInput((uint)inputs.Length, inputs, Native.INPUT_SIZE) != 0;
+  }
+
+  public Xyloid1(string c) {
+    context = new(c);
   }
 
   public bool Is(uint[] k) => k.All(key => (Native.GetKeyState((int)key) & 0x8000) != 0);
