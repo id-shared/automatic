@@ -13,7 +13,7 @@
   }
 
   public Xyloid1(string c) {
-    context = new(c);
+    //context = new(c);
   }
 
   public bool Is(uint[] k) => k.All(key => (Native.GetKeyState((int)key) & 0x8000) != 0);
@@ -22,5 +22,5 @@
   private readonly uint E_KEYD = 0x0000;
 
   private readonly uint CODE = 0x2A2010;
-  private readonly Context context;
+  //private readonly Context context;
 }
