@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdint>
 #include <mutex>
+#include <vector>  // Include vector for dynamic buffer management
 
 #pragma comment(lib, "ntdll.lib")
 
@@ -38,7 +39,6 @@ extern "C" {
   );
 }
 
-
 inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
   std::wstring result{};
   HANDLE dir_handle;
@@ -48,16 +48,17 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
   RtlInitUnicodeString(&obj_name, LR"(\GLOBAL??)");
   InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
 
-  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {  //or DIRECTORY_TRAVERSE?
-    union {
-      unsigned char buf[2048];  //#TODO
-      OBJECT_DIRECTORY_INFORMATION info[1];
-    };
-    ULONG context;
+  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {
+    const size_t buffer_size = 2048; // Define buffer size
+    std::vector<unsigned char> buf(buffer_size); // Dynamic buffer
+    ULONG context = 0; // Initialize context
+    NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), false, true, &context, NULL);
 
-    NTSTATUS status = NtQueryDirectoryObject(dir_handle, buf, sizeof buf, false, true, &context, NULL);
     while (NT_SUCCESS(status)) {
       bool found = false;
+
+      // Cast buffer to OBJECT_DIRECTORY_INFORMATION to access its fields
+      POBJECT_DIRECTORY_INFORMATION info = reinterpret_cast<POBJECT_DIRECTORY_INFORMATION>(buf.data());
       for (ULONG i = 0; info[i].Name.Buffer; i++) {
         std::wstring_view sv{ info[i].Name.Buffer, info[i].Name.Length / sizeof(wchar_t) };
         if (p(sv)) {
@@ -68,7 +69,9 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
       }
       if (found || status != STATUS_MORE_ENTRIES)
         break;
-      status = NtQueryDirectoryObject(dir_handle, buf, sizeof buf, false, false, &context, NULL);
+
+      // Continue querying the next entries
+      status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), false, false, &context, NULL);
     }
 
     CloseHandle(dir_handle);
