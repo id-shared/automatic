@@ -1,2 +1,0 @@
-﻿sc create d1 type= kernel binPath= "C:\Windows\System32\drivers\d1.sys"
-sc start d1

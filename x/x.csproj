@@ -8,7 +8,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <StartupObject>Program</StartupObject>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <ApplicationIcon>z.ico</ApplicationIcon>
+    <ApplicationIcon>x.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,7 +24,7 @@
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="z.ico" />
+    <Content Include="x.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Update="d1.dll">

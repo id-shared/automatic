@@ -77,7 +77,7 @@ void main() {
     Device::Byte n2 = o1[1];
     Device::Byte n1 = o1[0];
 
-    //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
+    printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
 
     int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
     int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
