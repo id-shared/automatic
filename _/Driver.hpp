@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cstdint>
 #include <mutex>
-#include <vector>  // Include vector for dynamic buffer management
+#include <vector>
 
 #pragma comment(lib, "ntdll.lib")
 
@@ -40,15 +40,15 @@ extern "C" {
 }
 
 inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
-  std::wstring result{};
-  HANDLE dir_handle;
-
   OBJECT_ATTRIBUTES obj_attr;
-  UNICODE_STRING obj_name;  //or RTL_CONSTANT_STRING
-  RtlInitUnicodeString(&obj_name, LR"(\GLOBAL??)");
+  UNICODE_STRING obj_name;
+  HANDLE dir_handle;
+  std::wstring result{};
+
+  RtlInitUnicodeString(&obj_name, L"\\GLOBAL??");
   InitializeObjectAttributes(&obj_attr, &obj_name, 0, NULL, NULL);
 
-  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {
+  if (NT_SUCCESS(NtOpenDirectoryObject(&dir_handle, DIRECTORY_QUERY, &obj_attr))) {   //TODO: or DIRECTORY_TRAVERSE?
     const size_t buffer_size = 2048; // Define buffer size
     std::vector<unsigned char> buf(buffer_size); // Dynamic buffer
     ULONG context = 0; // Initialize context
@@ -57,7 +57,6 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
     while (NT_SUCCESS(status)) {
       bool found = false;
 
-      // Cast buffer to OBJECT_DIRECTORY_INFORMATION to access its fields
       POBJECT_DIRECTORY_INFORMATION info = reinterpret_cast<POBJECT_DIRECTORY_INFORMATION>(buf.data());
       for (ULONG i = 0; info[i].Name.Buffer; i++) {
         std::wstring_view sv{ info[i].Name.Buffer, info[i].Name.Length / sizeof(wchar_t) };
@@ -70,7 +69,6 @@ inline std::wstring find_device(std::function<bool(std::wstring_view name)> p) {
       if (found || status != STATUS_MORE_ENTRIES)
         break;
 
-      // Continue querying the next entries
       status = NtQueryDirectoryObject(dir_handle, buf.data(), static_cast<ULONG>(buf.size()), false, false, &context, NULL);
     }
 
