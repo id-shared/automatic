@@ -19,36 +19,16 @@ void ListDeviceIoctlPaths() {
 
   while (SetupDiEnumDeviceInfo(deviceInfoSet, deviceIndex, &deviceInfoData)) {
     TCHAR deviceInstanceId[MAX_DEVICE_ID_LEN];
-    if (SetupDiGetDeviceInstanceId(deviceInfoSet, &deviceInfoData, deviceInstanceId, sizeof(deviceInstanceId) / sizeof(TCHAR), nullptr)) {
-      std::wcout << L"Device Instance ID: " << deviceInstanceId << std::endl;
+    SetupDiGetDeviceInstanceId(deviceInfoSet, &deviceInfoData, deviceInstanceId, sizeof(deviceInstanceId) / sizeof(TCHAR), nullptr);
+
+    if (deviceInstanceId == L"RZCONTROL\\VID_1532&PID_0306&MI_00\\3&2CD34B8&0") {
+      TCHAR abc[MAX_DEVICE_ID_LEN];
+      if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, SPDRP_ENUMERATOR_NAME, nullptr, (PBYTE)abc, sizeof(abc), nullptr)) {
+        std::wcout << L"Abc: " << deviceInstanceId << std::endl;
+      }
     }
 
-    // Get the device description
-    TCHAR deviceDescription[MAX_DEVICE_ID_LEN];
-    if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, SPDRP_DEVICEDESC, nullptr, (PBYTE)deviceDescription, sizeof(deviceDescription), nullptr)) {
-      std::wcout << L"Device Description: " << deviceDescription << std::endl;
-    }
-
-    // Get the hardware ID
-    TCHAR hardwareId[MAX_DEVICE_ID_LEN];
-    if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, SPDRP_HARDWAREID, nullptr, (PBYTE)hardwareId, sizeof(hardwareId), nullptr)) {
-      std::wcout << L"Hardware ID: " << hardwareId << std::endl;
-    }
-
-    // Get other properties as needed (e.g., driver version, manufacturer)
-    TCHAR manufacturer[MAX_DEVICE_ID_LEN];
-    if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, SPDRP_MFG, nullptr, (PBYTE)manufacturer, sizeof(manufacturer), nullptr)) {
-      std::wcout << L"Manufacturer: " << manufacturer << std::endl;
-    }
-
-    TCHAR abc[MAX_DEVICE_ID_LEN];
-    if (SetupDiGetDeviceRegistryProperty(deviceInfoSet, &deviceInfoData, SPDRP_ADDRESS, nullptr, (PBYTE)abc, sizeof(abc), nullptr)) {
-      std::wcout << L"Abc: " << abc << std::endl;
-    }
-
-    // Add more properties if needed
-
-    std::wcout << std::endl;  // Add a newline for better readability
+    std::wcout << std::endl;
     deviceIndex++;
   }
 
