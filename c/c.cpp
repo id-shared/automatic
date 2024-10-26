@@ -48,10 +48,15 @@ bool ee(HANDLE x1, bool e) {
     });
 }
 
+template<typename T>
+void show(const T& x) {
+  std::wcout << x << std::endl;
+}
+
 void main() {
-  LPCWSTR device_name = Hardware::find_device([](std::wstring_view sv) {
+  LPCWSTR device_name = Hardware::find_device([](std::wstring_view c) {
     using namespace std::literals;
-    return sv.starts_with(L"RZCONTROL#"sv) && sv.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
+    return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
   });
 
   HANDLE device = Driver::device(device_name);
