@@ -1,12 +1,97 @@
 #include "Driver.hpp"
 #include <iostream>
 #include <libusb-1.0/libusb.h>
+#include <ntddkbd.h>
+#include <ntddmou.h>
+#include <Windows.h>
 
 LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
+struct RzControl {
+  uint32_t unk1;
+  enum class Type : uint32_t {
+    Keyboard = 1,
+    Mouse = 2
+  } type;
+  union {
+    //struct {
+    //    uint32_t absolute_coord;
+    //    struct {
+    //        bool LButtonDown : 1;
+    //        bool LButtonUp : 1;
+    //        bool RButtonDown : 1;
+    //        bool RButtonUp : 1;
+    //        bool MButtonDown : 1;
+    //        bool MButtonUp : 1;
+    //        bool XButton1Down : 1;
+    //        bool XButton1Up : 1;
+    //        bool XButton2Down : 1;
+    //        bool XButton2Up : 1;
+    //        bool Wheel : 1;
+    //        bool HWheel : 1;
+    //        uint8_t unk : 4;
+    //    private:
+    //        void assert_size() {
+    //            static_assert(sizeof(*this) == 2);
+    //        }
+    //    } btn;
+    //    int16_t movement;
+    //    uint32_t unk1;
+    //    int32_t x;
+    //    int32_t y;
+    //    uint32_t unk2;
+    //} mi;
+
+    MOUSE_INPUT_DATA mi;
+
+    //struct {
+    //    uint16_t unk1;
+    //    int16_t key;
+    //    uint16_t action;
+    //    uint16_t unk2;
+    //    uint32_t unk3;
+    //    uint32_t unk4;
+    //    uint32_t unk5;
+    //    uint32_t unk6;
+    //} ki;
+
+    /// The high byte of MakeCode has no effect, extended keys are supported by Flags
+    KEYBOARD_INPUT_DATA ki;
+  };
+private:
+  void assert_size() {
+    static_assert(sizeof RzControl == 32);
+  }
+};
+
 void main() {
   ListDeviceIoctlPaths();
+
+  const wchar_t * x = L"\\??\\RZCONTROL#VID_1532&PID_0306&MI_00#3&2CD34B8&0#{e3be005d-d130-4910-88ff-09ae02f680e9}";
+
+  HANDLE device = CreateFileW(x, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+
+  if (device == INVALID_HANDLE_VALUE) {
+    // Handle the error
+    DWORD error = GetLastError();
+    std::wcerr << L"Failed to open device." << x << "Error code: " << error << std::endl;
+  }
+  else {
+    std::wcout << L"Device opened successfully." << std::endl;
+  }
+
+  RzControl control = RzControl{
+    .type = RzControl::Type::Mouse,
+    .mi = MOUSE_INPUT_DATA {
+      .Flags = MOUSEEVENTF_MOVE,
+      .LastX = 99,
+      .LastY = 99,
+    },
+  };
+
+  DWORD bytes_returned;
+  DeviceIoControl(device, 0x88883020, &control, sizeof control, nullptr, 0, &bytes_returned, nullptr);
 
   int configuration = 1;
   int interface = 0;
