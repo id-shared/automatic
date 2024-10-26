@@ -6,7 +6,7 @@ LPCWSTR SHM_NAME = L"my_shm";
 LPCWSTR SEM_NAME = L"my_sem";
 
 void main() {
-  //DD::Contact contact = DD::contact(L"d1.dll");
+  DD::Contact contact = DD::contact(L"d1.dll");
 
   int configuration = 1;
   int interface = 0;
@@ -43,8 +43,8 @@ void main() {
   libusb_set_configuration(handle, configuration);
   libusb_claim_interface(handle, interface);
 
-  using Byte = int;
-  unsigned char data[13];
+  using Byte = unsigned char;
+  Byte data[13];
   int actual_length;
   bool x1 = false;
 
@@ -65,28 +65,28 @@ void main() {
       Byte n2 = data[1];
       Byte n1 = data[0];
 
-      printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
+      //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
 
       int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
       int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
 
-      if (ax == 0 && ay == 0) {
+      if (ax == 0 || ay == 0) {
 
       }
       else {
-        printf("%d, %d\n", ax, ay);
-        //movR(ax, ay * -1);
+        //printf("%d, %d\n", ax, ay);
+        contact.movR(ax, ay * -1);
       }
 
-      //int x1_ = n1 == 1;
-      //if (x1_ == x1) {
+      int x1_ = n1 == 1;
+      if (x1_ == x1) {
 
-      //}
-      //else {
-      //  printf("%d\n", x1_);
-
-      //}
-      //x1 = x1_;
+      }
+      else {
+        printf("%d\n", x1_);
+        x1_ ? mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0) : mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+      }
+      x1 = x1_;
     }
     else {
       printf("Error reading data: %d (%s).\n", res, libusb_error_name(res));
