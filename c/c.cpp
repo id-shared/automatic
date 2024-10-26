@@ -1,4 +1,5 @@
 #include "Hardware.hpp"
+#include "Driver.hpp"
 #include <iostream>
 #include <libusb-1.0/libusb.h>
 #include <ntddkbd.h>
@@ -51,12 +52,9 @@ void main() {
   LPCWSTR device_name = Hardware::find_device([](std::wstring_view sv) {
     using namespace std::literals;
     return sv.starts_with(L"RZCONTROL#"sv) && sv.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
-    });
+  });
 
-  std::wcout << device_name << std::endl;
-
-  HANDLE device = CreateFileW(device_name, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
-  device != INVALID_HANDLE_VALUE ? device : throw device;
+  HANDLE device = Driver::device(device_name);
 
   int configuration = 1;
   int interface = 0;

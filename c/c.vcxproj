@@ -139,6 +139,7 @@
     <ClCompile Include="c.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\_\Driver.hpp" />
     <ClInclude Include="..\_\Hardware.hpp" />
     <ClInclude Include="..\_\Ram.hpp" />
     <ClInclude Include="..\_\Time.hpp" />
