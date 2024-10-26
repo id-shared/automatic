@@ -2,7 +2,7 @@
 
 class Xyloid2 {
   public bool YX(int y, int x) {
-    Xyloid control = d1control;
+    Xyloid control = xyloid;
     control.mi.LastY = y;
     control.mi.LastX = x;
 
@@ -10,7 +10,14 @@ class Xyloid2 {
   }
 
   public bool E1(bool a) {
-    return A.T;
+    return EE(a ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP);
+  }
+
+  public bool EE(uint e) {
+    Xyloid control = xyloid;
+    control.mi.Buttons = e;
+
+    return Act(control, A.T);
   }
 
   public bool Act<X>(X x, bool a) {
@@ -35,7 +42,13 @@ class Xyloid2 {
     context = new(c);
   }
 
-  private readonly Xyloid d1control = new Xyloid {
+  public const uint MOUSE_RIGHT_BUTTON_UP = 0x0008;
+  public const uint MOUSE_LEFT_BUTTON_UP = 0x0002;
+
+  public const uint MOUSE_RIGHT_BUTTON_DOWN = 0x0004;
+  public const uint MOUSE_LEFT_BUTTON_DOWN = 0x0001;
+
+  private readonly Xyloid xyloid = new Xyloid {
     type = XyloidType.Mouse,
     mi = new MOUSE_INPUT_DATA()
   };
