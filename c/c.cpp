@@ -11,7 +11,7 @@ void main() {
 
   HANDLE driver = Device::driver(device);
 
-  Driver::read([driver](std::array<Driver::Byte, 13> o1, std::array<bool, 2> a) {
+  Driver::read([driver](std::array<Driver::Byte, 13> o1, std::array<bool, 4> a) {
     Driver::Byte n13 = o1[12];
     Driver::Byte n12 = o1[11];
     Driver::Byte n11 = o1[10];
@@ -26,14 +26,18 @@ void main() {
     Driver::Byte n2 = o1[1];
     Driver::Byte n1 = o1[0];
 
-    //printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
+    printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
 
     int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
     int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+    int a4 = n1 == 16;
+    int a3 = n1 == 8;
     int a2 = n1 == 4;
     int a1 = n1 == 1;
 
     ax == 0 && ay == 0 ? true : Mouse::yx(driver, ay * -1, ax);
+    a4 == a[3] ? true : Mouse::e2(driver, a4);
+    a3 == a[2] ? true : Mouse::e1(driver, a3);
     a2 == a[1] ? true : Mouse::e2(driver, a2);
     a1 == a[0] ? true : Mouse::e1(driver, a1);
 
@@ -43,6 +47,8 @@ void main() {
 
     //printf("%d\n", n7);
 
+    a[3] = a4;
+    a[2] = a3;
     a[1] = a2;
     a[0] = a1;
     return a;

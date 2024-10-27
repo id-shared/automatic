@@ -5,7 +5,7 @@
 namespace Driver {
   using Byte = unsigned char;
 
-  LPCWSTR read(std::function<std::array<bool, 2>(std::array<Byte, 13>, std::array<bool, 2>)> z, uint16_t c_1, uint16_t c) {
+  LPCWSTR read(std::function<std::array<bool, 4>(std::array<Byte, 13>, std::array<bool, 4>)> z, uint16_t c_1, uint16_t c) {
     int configuration = 1;
     int interface = 0;
 
@@ -35,7 +35,7 @@ namespace Driver {
     libusb_set_configuration(handle, configuration);
     libusb_claim_interface(handle, interface);
 
-    std::array<bool, 2> button = {};
+    std::array<bool, 4> button = {};
     std::array<Byte, 13> data = {};
     int actual_length;
 
