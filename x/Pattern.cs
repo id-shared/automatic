@@ -2,7 +2,7 @@
   public int IS;
 
   public int YAxis(int n) {
-    return 2 * n switch {
+    return n switch {
       99 => 1,
       98 => 1,
       97 => 1,
