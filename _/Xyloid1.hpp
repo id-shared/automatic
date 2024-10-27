@@ -13,11 +13,11 @@ namespace Xyloid1 {
   }
 
   bool ee(HANDLE x, USHORT e, bool a) {
-    Xyloid::Xyloid xyloid = xyloid_;
-    xyloid.ki.Reserved = 0;
-    xyloid.ki.MakeCode = e;
-    xyloid.ki.Flags = a ? KEY_MAKE : KEY_BREAK;
-    xyloid.ki.ExtraInformation = 0;
-    return act(x, xyloid);
+    Xyloid::Xyloid back = xyloid_;
+    back.ki.Reserved = 0;
+    back.ki.MakeCode = e;
+    back.ki.Flags = a ? KEY_MAKE : KEY_BREAK;
+    back.ki.ExtraInformation = 0;
+    return act(x, back);
   }
 }

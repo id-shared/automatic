@@ -27,23 +27,23 @@ namespace Xyloid2 {
   }
 
   bool yx(HANDLE x, int e1, int e) {
-    Xyloid::Xyloid xyloid = xyloid_;
-    xyloid.mi.LastY = e1;
-    xyloid.mi.LastX = e;
-    return act(x, xyloid);
+    Xyloid::Xyloid back = xyloid_;
+    back.mi.LastY = e1;
+    back.mi.LastX = e;
+    return act(x, back);
   }
 
   bool zh(HANDLE x, int e) {
-    Xyloid::Xyloid xyloid = xyloid_;
-    xyloid.mi.ButtonFlags = MOUSE_HWHEEL;
-    xyloid.mi.ButtonData = e;
-    return act(x, xyloid);
+    Xyloid::Xyloid back = xyloid_;
+    back.mi.ButtonFlags = MOUSE_HWHEEL;
+    back.mi.ButtonData = e;
+    return act(x, back);
   }
 
   bool zv(HANDLE x, int e) {
-    Xyloid::Xyloid xyloid = xyloid_;
-    xyloid.mi.ButtonFlags = MOUSE_WHEEL;
-    xyloid.mi.ButtonData = e;
-    return act(x, xyloid);
+    Xyloid::Xyloid back = xyloid_;
+    back.mi.ButtonFlags = MOUSE_WHEEL;
+    back.mi.ButtonData = e;
+    return act(x, back);
   }
 }
