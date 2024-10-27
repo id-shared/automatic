@@ -4,8 +4,8 @@
 #include <windows.h>
 
 SIZE_T _SHM_SIZE = sizeof(Ram::Detail);
-LPCWSTR SHM_NAME = L"my_shm";
-LPCWSTR SEM_NAME = L"my_sem";
+LPCWSTR SHM_NAME = L"ram";
+LPCWSTR SEM_NAME = L"ram";
 int CURRENT_NAME = 1;
 
 Ram::Byte raw(Ram::Byte n1, Ram::Byte n2, Ram::Byte n3, Ram::Byte n4) {
