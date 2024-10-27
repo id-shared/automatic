@@ -10,8 +10,8 @@
 
   public bool Is(uint[] k) => k.All(key => (Native.GetKeyState((int)key) & 0x8000) != 0);
 
-  public Xyloid1(string c) {
-    xyloid = new(c);
+  public Xyloid1(Xyloid x) {
+    xyloid = x;
   }
 
   private readonly Xyloid_ xyloid_ = new Xyloid_ {

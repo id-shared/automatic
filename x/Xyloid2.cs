@@ -18,8 +18,8 @@
     return xyloid.Act(back, A.T);
   }
 
-  public Xyloid2(string c) {
-    xyloid = new(c);
+  public Xyloid2(Xyloid x) {
+    xyloid = x;
   }
 
   private readonly Xyloid_ xyloid_ = new Xyloid_ {
