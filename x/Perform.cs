@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 class Perform {
-  public static bool KeyEAU() {
+  public static bool KeyForwardSlashU() {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
       AY = Upon(ci => !L && (0 <= ci) && X2.YX(PY.YAxis(ci) * -CY, PX.XAxis(ci) / CY) && Time.XO(EY), AY) + 1;
@@ -13,7 +13,7 @@ class Perform {
     return A.F;
   }
 
-  public static bool KeyEAD() {
+  public static bool KeyForwardSlashD() {
     L = L || P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => L && (99 >= ci) && X2.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) / -CY) && Time.XO(EY), AY) - 1;
       return A.T;
@@ -22,8 +22,7 @@ class Perform {
   }
 
   public static bool KeyDU() {
-    Console.WriteLine(LA);
-    return P1.TryEnqueue(_ => IO(LA, UC));
+    return P1.TryEnqueue(_ => XO(LA, UC));
   }
 
   public static bool KeyDD() {
@@ -31,7 +30,7 @@ class Perform {
   }
 
   public static bool KeyAU() {
-    return P1.TryEnqueue(_ => IO(RA, UC));
+    return P1.TryEnqueue(_ => XO(RA, UC));
   }
 
   public static bool KeyAD() {
@@ -39,25 +38,20 @@ class Perform {
   }
 
   public static bool OnU(uint i) => i switch {
-    KeyE.A => KeyEAU(),
-    KeyX.D => KeyDU(),
-    KeyX.A => KeyAU(),
+    Key.ForwardSlash => KeyForwardSlashU(),
+    Key.D => KeyDU(),
+    Key.A => KeyAU(),
     _ => A.T,
   };
 
   public static bool OnD(uint i) => i switch {
-    KeyE.A => KeyEAD(),
-    KeyX.D => KeyDD(),
-    KeyX.A => KeyAD(),
+    Key.ForwardSlash => KeyForwardSlashD(),
+    Key.D => KeyDD(),
+    Key.A => KeyAD(),
     _ => A.T,
   };
 
-  public static bool IX<X>(string e, X _) {
-    Console.WriteLine($"{e}: {_}.");
-    return A.T;
-  }
-
-  public static bool IO(ushort e_1, double t) {
+  public static bool XO(ushort e_1, double t) {
     X1.EE(e_1, A.T);
     Time.XO(t);
     X1.EE(e_1, A.F);
