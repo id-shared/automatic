@@ -2,7 +2,7 @@
 #include "Xyloid.hpp"
 
 namespace Xyloid2 {
-  Xyloid::Xyloid xyloid = Xyloid::Xyloid{
+  Xyloid::Xyloid xyloid_ = Xyloid::Xyloid{
     .type = Xyloid::Xyloid::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {},
   };
@@ -13,9 +13,9 @@ namespace Xyloid2 {
   }
 
   bool ee(HANDLE x, ULONG e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.Buttons = e;
-    return act(x, control);
+    Xyloid::Xyloid xyloid = xyloid_;
+    xyloid.mi.Buttons = e;
+    return act(x, xyloid);
   }
 
   bool e1(HANDLE x, bool a) {
@@ -27,23 +27,23 @@ namespace Xyloid2 {
   }
 
   bool yx(HANDLE x, int e1, int e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.LastY = e1;
-    control.mi.LastX = e;
-    return act(x, control);
+    Xyloid::Xyloid xyloid = xyloid_;
+    xyloid.mi.LastY = e1;
+    xyloid.mi.LastX = e;
+    return act(x, xyloid);
   }
 
   bool zh(HANDLE x, int e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.ButtonFlags = MOUSE_HWHEEL;
-    control.mi.ButtonData = e;
-    return act(x, control);
+    Xyloid::Xyloid xyloid = xyloid_;
+    xyloid.mi.ButtonFlags = MOUSE_HWHEEL;
+    xyloid.mi.ButtonData = e;
+    return act(x, xyloid);
   }
 
   bool zv(HANDLE x, int e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.ButtonFlags = MOUSE_WHEEL;
-    control.mi.ButtonData = e;
-    return act(x, control);
+    Xyloid::Xyloid xyloid = xyloid_;
+    xyloid.mi.ButtonFlags = MOUSE_WHEEL;
+    xyloid.mi.ButtonData = e;
+    return act(x, xyloid);
   }
 }

@@ -14,10 +14,10 @@ class Xyloid2 {
   }
 
   public bool EE(uint e) {
-    Xyloid control = xyloid_;
-    control.mi.Buttons = e;
+    Xyloid xyloid = xyloid_;
+    xyloid.mi.Buttons = e;
 
-    return Act(control, A.T);
+    return Act(xyloid, A.T);
   }
 
   public bool Act<X>(X x, bool a) {
