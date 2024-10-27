@@ -10,7 +10,7 @@ class Perform {
       PX.Renew();
       return A.T;
     }));
-    return L;
+    return A.F;
   }
 
   public static bool KeyEAD() {
@@ -18,7 +18,7 @@ class Perform {
       AY = Till(ci => L && (99 >= ci) && X2.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) / -CY) && Time.XO(EY), AY) - 1;
       return A.T;
     }));
-    return L;
+    return A.F;
   }
 
   public static bool KeyDU() {
@@ -41,7 +41,7 @@ class Perform {
     KeyE.A => KeyEAU(),
     KeyX.D => KeyDU(),
     KeyX.A => KeyAU(),
-    _ => A.F,
+    _ => A.T,
   };
 
   public static bool OnD(uint i) => i switch {
@@ -71,7 +71,6 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
-        //if (key == KeyE.W) Exit();
         OnD(key);
         return next;
       case WM_SYSKEYUP or WM_KEYUP:
