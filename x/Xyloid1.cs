@@ -5,7 +5,6 @@
     back.ki.MakeCode = e;
     back.ki.Flags = a ? KEY_MAKE : KEY_BREAK;
     back.ki.ExtraInformation = 0;
-    Console.WriteLine(xyloid.Act(back, A.T));
     return xyloid.Act(back, A.T);
   }
 
@@ -16,7 +15,7 @@
   }
 
   private readonly Xyloid_ xyloid_ = new Xyloid_ {
-    type = XyloidType.Mouse,
+    type = XyloidType.Keyboard,
     ki = new KEYBOARD_INPUT_DATA()
   };
   private readonly Xyloid xyloid;

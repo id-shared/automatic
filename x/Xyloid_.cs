@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
 public class Xyloid {
-  public bool Act<X>(X x, bool a) {
+  public bool Act(Xyloid_ x, bool a) {
     IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(x));
 
     try {
