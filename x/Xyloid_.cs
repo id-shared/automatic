@@ -23,7 +23,7 @@ public class Xyloid {
     context = new(c);
   }
 
-  private readonly uint CODE = 0x2A2010;
+  private readonly uint CODE = 0x88883020;
   private readonly Context context;
 }
 

@@ -5,6 +5,7 @@
     back.ki.MakeCode = e;
     back.ki.Flags = a ? KEY_MAKE : KEY_BREAK;
     back.ki.ExtraInformation = 0;
+    Console.WriteLine(xyloid.Act(back, A.T));
     return xyloid.Act(back, A.T);
   }
 
