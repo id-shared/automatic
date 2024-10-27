@@ -38,7 +38,7 @@ void main() {
 
     //printf("%d, %d.\n", ay, ax);
 
-    n7 == 0 ? true : Xyloid2::zv(driver, n7 == 255 ? 16 : -16);
+    n7 == 0 ? true : Xyloid2::zv(driver, n7 == 255 ? 64 : -64);
 
     //printf("%d.\n", n7);
 
