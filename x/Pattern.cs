@@ -1,16 +1,16 @@
 ﻿class Pattern {
   public readonly Random ZN = new();
-  public volatile bool YS;
-  public volatile bool XS;
+  public volatile bool YX = A.T;
   public string IS;
 
-  public bool State() {
-    return ZN.Next(1, 3) == 1;
+  public bool Renew() {
+    YX = ZN.Next(1, 3) == 1;
+    return A.T;
   }
 
   public int YAxis(int n) {
-    int o = YS ? 0 : 1;
-    int i = YS ? 1 : 0;
+    int o = YX ? 0 : 1;
+    int i = YX ? 1 : 0;
 
     return n switch {
       99 => 1,
@@ -222,9 +222,8 @@
       _ => 0
     };
   }
+
   public Pattern(string c) {
-    YS = State();
-    XS = State();
     IS = c;
   }
 }
