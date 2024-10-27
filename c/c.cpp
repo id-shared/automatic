@@ -12,12 +12,6 @@ void main() {
   HANDLE driver = Device::driver(device);
 
   Driver::read([driver](std::array<Driver::Byte, 13> o1, std::array<bool, 4> a) {
-    Driver::Byte n13 = o1[12];
-    Driver::Byte n12 = o1[11];
-    Driver::Byte n11 = o1[10];
-    Driver::Byte n10 = o1[9];
-    Driver::Byte n9 = o1[8];
-    Driver::Byte n8 = o1[7];
     Driver::Byte n7 = o1[6];
     Driver::Byte n6 = o1[5];
     Driver::Byte n5 = o1[4];
@@ -26,7 +20,7 @@ void main() {
     Driver::Byte n2 = o1[1];
     Driver::Byte n1 = o1[0];
 
-    printf("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13);
+    //printf("%d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7);
 
     int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
     int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
