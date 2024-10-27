@@ -109,7 +109,7 @@ class Perform {
     X = new(c);
     X1 = new(X);
     X2 = new(X);
-    hookD2 = SetHook(OnHookD2, 13);
+    hookD2 = SetHook(new LowLevelProc(OnHookD2), 13);
     Subscribe(new Native.MSG());
   }
 
