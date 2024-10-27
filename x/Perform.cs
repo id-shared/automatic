@@ -66,11 +66,9 @@ class Perform {
 
     switch ((uint)wParam) {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
-        OnD(key);
-        return next;
+        return OnD(key) ? next : 1;
       case WM_SYSKEYUP or WM_KEYUP:
-        OnU(key);
-        return next;
+        return OnU(key) ? next : 1;
       default:
         return next;
     }
