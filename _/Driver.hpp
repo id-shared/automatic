@@ -5,7 +5,7 @@
 namespace Driver {
   using Byte = unsigned char;
 
-  LPCWSTR read(std::function<std::array<bool, 4>(Byte[13], std::array<bool, 4>)> z, uint16_t c_1, uint16_t c) {
+  bool read(std::function<std::array<bool, 4>(Byte[13], std::array<bool, 4>)> z, uint16_t c_1, uint16_t c) {
     int configuration = 1;
     int interface = 0;
 
@@ -35,19 +35,20 @@ namespace Driver {
     libusb_set_configuration(handle, configuration);
     libusb_claim_interface(handle, interface);
 
-    std::array<bool, 4> button = {};
+    std::array<bool, 4> back = {};
     Byte data[13];
     int size;
 
     while (true) {
       int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, 0);
-      button = re == 0 && size > 0 ? z(data, button) : button;
+      re == 0 && size > 0 ? back = z(data, back) : back;
     }
 
     libusb_release_interface(handle, interface);
     libusb_close(handle);
     libusb_free_device_list(devs, 1);
     libusb_exit(ctx);
-    return L"";
+
+    return true;
   }
 }
