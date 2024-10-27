@@ -2,7 +2,7 @@
 #include "Xyloid.hpp"
 
 namespace Xyloid1 {
-  Xyloid::Xyloid d1control = Xyloid::Xyloid{
+  Xyloid::Xyloid xyloid = Xyloid::Xyloid{
     .type = Xyloid::Xyloid::Type::Mouse,
     .mi = MOUSE_INPUT_DATA {},
   };
@@ -13,7 +13,7 @@ namespace Xyloid1 {
   }
 
   bool ee(HANDLE x, ULONG e) {
-    Xyloid::Xyloid control = d1control;
+    Xyloid::Xyloid control = xyloid;
     control.mi.Buttons = e;
     return act(x, control);
   }
@@ -27,21 +27,21 @@ namespace Xyloid1 {
   }
 
   bool yx(HANDLE x, int e1, int e) {
-    Xyloid::Xyloid control = d1control;
+    Xyloid::Xyloid control = xyloid;
     control.mi.LastY = e1;
     control.mi.LastX = e;
     return act(x, control);
   }
 
   bool zh(HANDLE x, int e) {
-    Xyloid::Xyloid control = d1control;
+    Xyloid::Xyloid control = xyloid;
     control.mi.ButtonFlags = MOUSE_HWHEEL;
     control.mi.ButtonData = e;
     return act(x, control);
   }
 
   bool zv(HANDLE x, int e) {
-    Xyloid::Xyloid control = d1control;
+    Xyloid::Xyloid control = xyloid;
     control.mi.ButtonFlags = MOUSE_WHEEL;
     control.mi.ButtonData = e;
     return act(x, control);
