@@ -123,7 +123,7 @@ class Perform {
 
   public readonly double T4 = 209.9999;
   public readonly double T3 = 99.99999;
-  public readonly double T2 = 11.99999;
+  public readonly double T2 = 11.24999;
   public readonly double T1 = 1.999999;
 
   public readonly ushort RA = 0x4D;
