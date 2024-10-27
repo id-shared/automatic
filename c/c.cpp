@@ -1,7 +1,7 @@
 #include "Contact.hpp"
 #include "Device.hpp"
 #include "Driver.hpp"
-#include "Mouse.hpp"
+#include "Xyloid2.hpp"
 
 void main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
@@ -29,17 +29,17 @@ void main() {
     int a2 = n1 == 4;
     int a1 = n1 == 1;
 
-    ax == 0 && ay == 0 ? true : Mouse::yx(driver, ay * -1, ax);
-    a4 == a[3] ? true : Mouse::e2(driver, a4);
-    a3 == a[2] ? true : Mouse::e1(driver, a3);
-    a2 == a[1] ? true : Mouse::e2(driver, a2);
-    a1 == a[0] ? true : Mouse::e1(driver, a1);
+    ax == 0 && ay == 0 ? true : Xyloid2::yx(driver, ay * -1, ax);
+    a4 == a[3] ? true : Xyloid2::e2(driver, a4);
+    a3 == a[2] ? true : Xyloid2::e1(driver, a3);
+    a2 == a[1] ? true : Xyloid2::e2(driver, a2);
+    a1 == a[0] ? true : Xyloid2::e1(driver, a1);
 
-    //printf("%d, %d, %d, %d\n", ay, ax, a2, a1);
+    //printf("%d, %d.\n", ay, ax);
 
-    n7 == 0 ? true : Mouse::zv(driver, n7 == 255 ? 16 : -16);
+    n7 == 0 ? true : Xyloid2::zv(driver, n7 == 255 ? 16 : -16);
 
-    //printf("%d\n", n7);
+    //printf("%d.\n", n7);
 
     a[3] = a4;
     a[2] = a3;
