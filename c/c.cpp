@@ -12,7 +12,7 @@ void main() {
 
   HANDLE driver = Device::driver(device);
 
-  Driver::read([driver](std::array<Driver::Byte, 13> o1, std::array<bool, 4> a) {
+  Driver::read([driver](Driver::Byte o1[13], std::array<bool, 4> a) {
     Driver::Byte n7 = o1[6];
     Driver::Byte n6 = o1[5];
     Driver::Byte n5 = o1[4];
@@ -23,8 +23,8 @@ void main() {
 
     //printf("%d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7);
 
-    int ax = (n4 == 255 ? (n3 - n4) - 1 : n3 - n4) * +1;
-    int ay = (n6 == 255 ? (n5 - n6) - 1 : n5 - n6) * -1;
+    int ay = n6 == 255 ? (n5 - n6) - 1 : n5 - n6;
+    int ax = n4 == 255 ? (n3 - n4) - 1 : n3 - n4;
     int a4 = n1 == 16;
     int a3 = n1 == 8;
     int a2 = n1 == 4;
@@ -47,5 +47,5 @@ void main() {
     a[1] = a2;
     a[0] = a1;
     return a;
-    }, 1, 1);
+    }, 0x046d, 0xc547);
 }

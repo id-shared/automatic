@@ -5,7 +5,7 @@
 namespace Driver {
   using Byte = unsigned char;
 
-  LPCWSTR read(std::function<std::array<bool, 4>(std::array<Byte, 13>, std::array<bool, 4>)> z, uint16_t c_1, uint16_t c) {
+  LPCWSTR read(std::function<std::array<bool, 4>(Byte[13], std::array<bool, 4>)> z, uint16_t c_1, uint16_t c) {
     int configuration = 1;
     int interface = 0;
 
@@ -20,7 +20,7 @@ namespace Driver {
     for (ssize_t i = 0; i < cnt; i++) {
       struct libusb_device_descriptor desc;
       libusb_get_device_descriptor(devs[i], &desc);
-      if (desc.idVendor == 0x046d && desc.idProduct == 0xc547) {
+      if (desc.idVendor == c_1 && desc.idProduct == c) {
         libusb_open(devs[i], &handle);
         break;
       }
@@ -36,12 +36,12 @@ namespace Driver {
     libusb_claim_interface(handle, interface);
 
     std::array<bool, 4> button = {};
-    std::array<Byte, 13> data = {};
-    int actual_length;
+    Byte data[13];
+    int size;
 
     while (true) {
-      int response = libusb_interrupt_transfer(handle, 0x81, data.data(), sizeof(data), &actual_length, 0);
-      button = z(data, button);
+      int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, 0);
+      button = re == 0 && size > 0 ? z(data, button) : button;
     }
 
     libusb_release_interface(handle, interface);
