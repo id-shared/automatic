@@ -3,7 +3,7 @@
 class Xyloid2 {
   public bool YX(int y, int x) {
     Xyloid control = xyloid;
-    control.mi.LastY = y;
+    control.mi.LastY = y * -1;
     control.mi.LastX = x;
 
     return Act(control, A.T);
