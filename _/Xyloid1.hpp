@@ -2,9 +2,9 @@
 #include "Xyloid.hpp"
 
 namespace Xyloid1 {
-  Xyloid::Xyloid xyloid = Xyloid::Xyloid{
-    .type = Xyloid::Xyloid::Type::Mouse,
-    .mi = MOUSE_INPUT_DATA {},
+  Xyloid::Xyloid xyloid_ = Xyloid::Xyloid{
+    .type = Xyloid::Xyloid::Type::Keyboard,
+    .ki = KEYBOARD_INPUT_DATA {},
   };
 
   bool act(HANDLE x, Xyloid::Xyloid v) {
@@ -12,38 +12,24 @@ namespace Xyloid1 {
     return DeviceIoControl(x, 0x88883020, &v, sizeof v, nullptr, 0, &bytes_returned, nullptr);
   }
 
-  bool ee(HANDLE x, ULONG e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.Buttons = e;
-    return act(x, control);
+  bool ee(HANDLE x, USHORT e, bool a) {
+    Xyloid::Xyloid xyloid = xyloid_;
+    xyloid.ki.Reserved = 0;
+    xyloid.ki.MakeCode = e;
+    xyloid.ki.Flags = a ? KEY_MAKE : KEY_BREAK;
+    xyloid.ki.ExtraInformation = 0;
+    return act(x, xyloid);
   }
 
-  bool e1(HANDLE x, bool a) {
-    return ee(x, a ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP);
+  bool ar(HANDLE x, bool a) {
+    return ee(x, 0x4D, a);
   }
 
-  bool e2(HANDLE x, bool a) {
-    return ee(x, a ? MOUSE_RIGHT_BUTTON_DOWN : MOUSE_RIGHT_BUTTON_UP);
+  bool al(HANDLE x, bool a) {
+    return ee(x, 0x4B, a);
   }
 
-  bool yx(HANDLE x, int e1, int e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.LastY = e1;
-    control.mi.LastX = e;
-    return act(x, control);
-  }
-
-  bool zh(HANDLE x, int e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.ButtonFlags = MOUSE_HWHEEL;
-    control.mi.ButtonData = e;
-    return act(x, control);
-  }
-
-  bool zv(HANDLE x, int e) {
-    Xyloid::Xyloid control = xyloid;
-    control.mi.ButtonFlags = MOUSE_WHEEL;
-    control.mi.ButtonData = e;
-    return act(x, control);
+  bool sf(HANDLE x, bool a) {
+    return ee(x, 0x35, a);
   }
 }

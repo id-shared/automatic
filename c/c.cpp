@@ -1,6 +1,7 @@
 #include "Contact.hpp"
 #include "Device.hpp"
 #include "Driver.hpp"
+#include "Xyloid1.hpp"
 #include "Xyloid2.hpp"
 
 void main() {
@@ -33,7 +34,7 @@ void main() {
     a4 == a[3] ? true : Xyloid2::e2(driver, a4);
     a3 == a[2] ? true : Xyloid2::e1(driver, a3);
     a2 == a[1] ? true : Xyloid2::e2(driver, a2);
-    a1 == a[0] ? true : Xyloid2::e1(driver, a1);
+    a1 == a[0] ? true : Xyloid1::sf(driver, a1);
 
     //printf("%d, %d.\n", ay, ax);
 
