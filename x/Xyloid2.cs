@@ -1,7 +1,7 @@
 ﻿class Xyloid2 {
   public bool YX(int y, int x) {
     Xyloid_ back = xyloid_;
-    back.mi.LastY = y * -1;
+    back.mi.LastY = y;
     back.mi.LastX = x;
 
     return xyloid.Act(back, A.T);

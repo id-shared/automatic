@@ -6,8 +6,6 @@ class Perform {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
       AY = Upon(ci => !L && (0 <= ci) && X2.YX(PY.YAxis(ci) * -CY, PX.XAxis(ci) / CY) && Time.XO(EY), AY) + 1;
-      PY.Renew();
-      PX.Renew();
       return A.T;
     }));
     return A.F;
@@ -117,8 +115,8 @@ class Perform {
   public Xyloid1 X1;
   public Xyloid X;
 
-  public volatile Pattern PY = new("vandal");
-  public volatile Pattern PX = new("vandal");
+  public volatile Pattern PY = new(999);
+  public volatile Pattern PX = new(999);
 
   public volatile Partner P2 = new(256);
   public volatile Partner P1 = new(256);
