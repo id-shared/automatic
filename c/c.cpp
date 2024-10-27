@@ -31,10 +31,10 @@ void main() {
     int a1 = n1 == 1;
 
     ax == 0 && ay == 0 ? true : Xyloid2::yx(driver, ay * -1, ax);
-    a4 == a[3] ? true : Xyloid2::e2(driver, a4);
-    a3 == a[2] ? true : Xyloid2::e1(driver, a3);
+    a1 == a[0] ? true : Xyloid1::ee(driver, 0x35, a1);
     a2 == a[1] ? true : Xyloid2::e2(driver, a2);
-    a1 == a[0] ? true : Xyloid1::sf(driver, a1);
+    a3 == a[2] ? true : Xyloid2::e1(driver, a3);
+    a4 == a[3] ? true : Xyloid2::e2(driver, a4);
 
     //printf("%d, %d.\n", ay, ax);
 

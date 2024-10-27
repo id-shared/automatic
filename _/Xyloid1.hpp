@@ -20,16 +20,4 @@ namespace Xyloid1 {
     xyloid.ki.ExtraInformation = 0;
     return act(x, xyloid);
   }
-
-  bool ar(HANDLE x, bool a) {
-    return ee(x, 0x4D, a);
-  }
-
-  bool al(HANDLE x, bool a) {
-    return ee(x, 0x4B, a);
-  }
-
-  bool sf(HANDLE x, bool a) {
-    return ee(x, 0x35, a);
-  }
 }

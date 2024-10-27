@@ -1,12 +1,10 @@
-﻿using System.Runtime.InteropServices;
-
-class Xyloid2 {
+﻿class Xyloid2 {
   public bool YX(int y, int x) {
-    Xyloid xyloid = xyloid_;
-    xyloid.mi.LastY = y * -1;
-    xyloid.mi.LastX = x;
+    Xyloid_ back = xyloid_;
+    back.mi.LastY = y * -1;
+    back.mi.LastX = x;
 
-    return Act(xyloid, A.T);
+    return xyloid.Act(back, A.T);
   }
 
   public bool E1(bool a) {
@@ -14,44 +12,24 @@ class Xyloid2 {
   }
 
   public bool EE(uint e) {
-    Xyloid xyloid = xyloid_;
-    xyloid.mi.Buttons = e;
+    Xyloid_ back = xyloid_;
+    back.mi.Buttons = e;
 
-    return Act(xyloid, A.T);
-  }
-
-  public bool Act<X>(X x, bool a) {
-    IntPtr buffer = Marshal.AllocHGlobal(Marshal.SizeOf(x));
-
-    try {
-      Marshal.StructureToPtr(x, buffer, false);
-      uint bytesReturned = 0;
-
-      return a switch {
-        A.T => Native.DeviceIoControl(context.contact, CODE, buffer, (uint)Marshal.SizeOf(x), IntPtr.Zero, 0, out bytesReturned, IntPtr.Zero),
-        _ => Native.DeviceIoControl(context.contact, CODE, IntPtr.Zero, 0, buffer, (uint)Marshal.SizeOf(x), out bytesReturned, IntPtr.Zero),
-      };
-    } catch {
-      return A.F;
-    } finally {
-      Marshal.FreeHGlobal(buffer);
-    }
+    return xyloid.Act(back, A.T);
   }
 
   public Xyloid2(string c) {
-    context = new(c);
+    xyloid = new(c);
   }
 
-  public const uint MOUSE_RIGHT_BUTTON_UP = 0x0008;
-  public const uint MOUSE_LEFT_BUTTON_UP = 0x0002;
-
-  public const uint MOUSE_RIGHT_BUTTON_DOWN = 0x0004;
-  public const uint MOUSE_LEFT_BUTTON_DOWN = 0x0001;
-
-  private readonly Xyloid xyloid_ = new Xyloid {
+  private readonly Xyloid_ xyloid_ = new Xyloid_ {
     type = XyloidType.Mouse,
     mi = new MOUSE_INPUT_DATA()
   };
-  private readonly uint CODE = 0x88883020;
-  private readonly Context context;
+  private readonly Xyloid xyloid;
+
+  public const uint MOUSE_RIGHT_BUTTON_DOWN = 0x0004;
+  public const uint MOUSE_LEFT_BUTTON_DOWN = 0x0001;
+  public const uint MOUSE_RIGHT_BUTTON_UP = 0x0008;
+  public const uint MOUSE_LEFT_BUTTON_UP = 0x0002;
 }

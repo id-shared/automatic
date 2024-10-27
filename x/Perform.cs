@@ -22,7 +22,8 @@ class Perform {
   }
 
   public static bool KeyDU() {
-    return P1.TryEnqueue(_ => IO(LC, LA));
+    Console.WriteLine(LA);
+    return P1.TryEnqueue(_ => IO(LA, UC));
   }
 
   public static bool KeyDD() {
@@ -30,7 +31,7 @@ class Perform {
   }
 
   public static bool KeyAU() {
-    return P1.TryEnqueue(_ => IO(LC, RA));
+    return P1.TryEnqueue(_ => IO(RA, UC));
   }
 
   public static bool KeyAD() {
@@ -56,10 +57,10 @@ class Perform {
     return A.T;
   }
 
-  public static bool IO(double t, uint[] k) {
-    X1.EE(k, A.T);
+  public static bool IO(ushort e_1, double t) {
+    X1.EE(e_1, A.T);
     Time.XO(t);
-    X1.EE(k, A.F);
+    X1.EE(e_1, A.F);
     return A.T;
   }
 
@@ -126,12 +127,13 @@ class Perform {
   public static volatile Partner P2 = new(256);
   public static volatile Partner P1 = new(256);
 
-  public static readonly uint[] RA = [KeyA.R];
+  public static readonly double US = 209.9999;
+  public static readonly double UC = 99.99999;
+
+  public static readonly ushort RA = 0x4D;
   public static volatile bool R = A.F;
 
-  public static readonly double LE = 209.9999;
-  public static readonly double LC = 99.99999;
-  public static readonly uint[] LA = [KeyA.L];
+  public static readonly ushort LA = 0x4B;
   public static volatile bool L = A.F;
 
   public static readonly int EY = 8;
