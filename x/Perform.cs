@@ -139,7 +139,7 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 64;
+  public readonly int EY = 4;
   public readonly int EX = 64;
   public readonly int CY = 5;
   public readonly int CX = 1;
