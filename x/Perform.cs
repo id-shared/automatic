@@ -5,7 +5,7 @@ class Perform {
   public bool KeyForwardSlashU() {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => PatternD(ci, A.F)) && Time.XO(+1), AY) + 1;
+      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(+1), AY) + 1;
       return A.T;
     }));
     return A.F;
@@ -14,13 +14,13 @@ class Perform {
   public bool KeyForwardSlashD() {
     L = A.T;
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => PatternD(ci, A.T)) && Time.XO(T1), AY) - 1;
+      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
       return A.T;
     }));
     return A.F;
   }
 
-  public bool PatternD(int e, bool a) {
+  public bool Pattern(int e, bool a) {
     int dy = (a ? +1 : -1) * PX.DY(e);
     int dx = (a ? -1 : +1) * PX.DX(e);
 
@@ -28,18 +28,23 @@ class Perform {
   }
 
   public bool KeyDU() {
-    return P1.TryEnqueue(_ => XO(LA, T3));
+    int abc = Environment.TickCount - T9;
+    Console.WriteLine(abc < 199 ? 79 : T3);
+    return P1.TryEnqueue(_ => XO(LA, abc < 199 ? 59 : T3) && X2.E1(A.T) && Time.XO(+1) && X2.E1(A.F));
   }
 
   public bool KeyDD() {
+    T9 = Environment.TickCount;
     return A.T;
   }
 
   public bool KeyAU() {
+    Console.WriteLine(Environment.TickCount - T9);
     return P1.TryEnqueue(_ => XO(RA, T3));
   }
 
   public bool KeyAD() {
+    T9 = Environment.TickCount;
     return A.T;
   }
 
@@ -64,8 +69,8 @@ class Perform {
     return A.T;
   }
 
-  public IntPtr OnHookD2(int nCode, IntPtr wParam, IntPtr lParam) {
-    IntPtr next = Native.CallNextHookEx(hookD2, nCode, wParam, lParam);
+  public IntPtr OnHook(int nCode, IntPtr wParam, IntPtr lParam) {
+    IntPtr next = Native.CallNextHookEx(hook, nCode, wParam, lParam);
     if (nCode < 0) return next;
 
     uint key = (uint)Marshal.ReadInt32(lParam);
@@ -119,13 +124,17 @@ class Perform {
     X = new(c);
     X1 = new(X);
     X2 = new(X);
-    hookD2 = SetHook(new LowLevelProc(OnHookD2), 13);
+    hook = SetHook(new LowLevelProc(OnHook), 13);
     Subscribe(new Native.MSG());
   }
 
   public Xyloid2 X2;
   public Xyloid1 X1;
   public Xyloid X;
+
+  public volatile int T9 = Environment.TickCount;
+  public readonly double T3 = +99.99999;
+  public readonly double T1 = +15.99999;
 
   public readonly Pattern PZ = new(999);
   public readonly Pattern PY = new(999);
@@ -134,10 +143,6 @@ class Perform {
   public readonly Partner P3 = new(256);
   public readonly Partner P2 = new(256);
   public readonly Partner P1 = new(256);
-
-  public readonly double T9 = 209.9999;
-  public readonly double T3 = 99.99999;
-  public readonly double T1 = 15.99999;
 
   public readonly ushort RA = 0x4D;
   public volatile bool R = A.F;
@@ -153,10 +158,11 @@ class Perform {
   public volatile int AX = 1;
 
   public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
-  public volatile IntPtr hookD2 = IntPtr.Zero;
+  public volatile IntPtr hook = IntPtr.Zero;
 
   public const uint WM_SYSKEYDOWN = 0x0104;
   public const uint WM_SYSKEYUP = 0x0105;
   public const uint WM_KEYDOWN = 0x0100;
   public const uint WM_KEYUP = 0x0101;
+
 }
