@@ -123,7 +123,7 @@ class Perform {
 
   public readonly double T4 = 209.9999;
   public readonly double T3 = 99.99999;
-  public readonly double T2 = 11.24999;
+  public readonly double T2 = 12.99999;
   public readonly double T1 = 1.999999;
 
   public readonly ushort RA = 0x4D;
@@ -132,8 +132,8 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 71;
-  public readonly int EX = 71;
+  public readonly int EY = 63;
+  public readonly int EX = 63;
   public readonly int CY = 5;
   public readonly int CX = 1;
   public volatile int AY = 0;
