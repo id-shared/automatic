@@ -14,6 +14,7 @@ class Perform {
   public bool KeyForwardSlashD() {
     L = L || P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => L && (EY >= ci) && X2.YX(PX.YAxis(ci) * CY, PX.XAxis(ci) * -CX) && Time.XO(T2), AY) - 1;
+      X2.E1(A.F);
       return A.T;
     }));
     return A.F;
@@ -123,7 +124,7 @@ class Perform {
 
   public readonly double T4 = 209.9999;
   public readonly double T3 = 99.99999;
-  public readonly double T2 = 12.99999;
+  public readonly double T2 = 15.99999;
   public readonly double T1 = 1.999999;
 
   public readonly ushort RA = 0x4D;
@@ -132,7 +133,7 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 63;
+  public readonly int EY = 4;
   public readonly int EX = 63;
   public readonly int CY = 5;
   public readonly int CX = 1;
