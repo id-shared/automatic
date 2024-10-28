@@ -5,7 +5,7 @@ class Perform {
   public bool KeyForwardSlashU() {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (1 <= ci) && X2.YX(PY.DY(ci) * -CY, PX.DX(ci) * CX) && Time.XO(T1), AY) + 1;
+      AY = Upon(ci => !L && (1 <= ci) && P2.TryEnqueue(_ => X2.YX(PY.DY(ci) * -CY, PX.DX(ci) * CX)) && Time.XO(T1), AY) + 1;
       return A.T;
     }));
     return A.F;
@@ -13,7 +13,7 @@ class Perform {
 
   public bool KeyForwardSlashD() {
     L = L || P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-      AY = Till(ci => L && (EY >= ci) && X2.YX(PX.DY(ci) * CY, PX.DX(ci) * -CX) && Time.XO(T2), AY) - 1;
+      AY = Till(ci => L && (EY >= ci) && P2.TryEnqueue(_ => X2.YX(PX.DY(ci) * CY, PX.DX(ci) * -CX)) && Time.XO(T2), AY) - 1;
       X2.E1(A.F);
       return A.T;
     }));
@@ -120,11 +120,13 @@ class Perform {
   public Xyloid1 X1;
   public Xyloid X;
 
-  public volatile Pattern PY = new(999);
-  public volatile Pattern PX = new(999);
+  public readonly Pattern PZ = new(999);
+  public readonly Pattern PY = new(999);
+  public readonly Pattern PX = new(999);
 
-  public volatile Partner P2 = new(256);
-  public volatile Partner P1 = new(256);
+  public readonly Partner P3 = new(256);
+  public readonly Partner P2 = new(256);
+  public readonly Partner P1 = new(256);
 
   public readonly double T4 = 209.9999;
   public readonly double T3 = 99.99999;
@@ -137,7 +139,7 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 37;
+  public readonly int EY = 20;
   public readonly int EX = 64;
   public readonly int CY = 5;
   public readonly int CX = 1;
