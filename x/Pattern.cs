@@ -1,7 +1,7 @@
 ﻿class Pattern {
   public int IS;
 
-  public int YAxis(int n) {
+  public int DY(int n) {
     return n switch {
       //63 => 1,
       //61 => 1,
@@ -50,10 +50,11 @@
       //13 => 1,
       //11 => 1,
       //9 => 1,
-      //7 => 1,
-      //5 => 1,
-      //3 => 1,
-      //1 => 1,
+
+      7 => 1,
+      5 => 1,
+      3 => 1,
+      1 => 1,
 
       _ => 0,
     };
