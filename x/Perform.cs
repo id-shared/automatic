@@ -5,7 +5,7 @@ class Perform {
   public bool KeyForwardSlashU() {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (1 <= ci) && X2.YX(PY.DY(ci) * -CY, PX.XAxis(ci) * CX) && Time.XO(T1), AY);
+      AY = Upon(ci => !L && (1 <= ci) && X2.YX(PY.DY(ci) * -CY, PX.DX(ci) * CX) && Time.XO(T1), AY) + 1;
       return A.T;
     }));
     return A.F;
@@ -13,7 +13,7 @@ class Perform {
 
   public bool KeyForwardSlashD() {
     L = L || P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-      AY = Till(ci => L && (EY >= ci) && X2.YX(PX.DY(ci) * CY, PX.XAxis(ci) * -CX) && Time.XO(T2), AY);
+      AY = Till(ci => L && (EY >= ci) && X2.YX(PX.DY(ci) * CY, PX.DX(ci) * -CX) && Time.XO(T2), AY) - 1;
       X2.E1(A.F);
       return A.T;
     }));
@@ -75,11 +75,11 @@ class Perform {
   }
 
   public int Upon(Func<int, bool> z, int i) {
-    return z(i) ? Upon(z, i - 1) : i - 1;
+    return z(i) ? Upon(z, i - 1) : i;
   }
 
   public int Till(Func<int, bool> z, int i) {
-    return z(i) ? Till(z, i + 1) : i + 1;
+    return z(i) ? Till(z, i + 1) : i;
   }
 
   public bool Exit() {
@@ -137,7 +137,7 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 5;
+  public readonly int EY = 37;
   public readonly int EX = 64;
   public readonly int CY = 5;
   public readonly int CX = 1;
