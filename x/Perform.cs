@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Forms;
 
 class Perform {
   public bool KeyForwardSlashU() {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => X2.YX(PY.DY(ci) * -CY, PX.DX(ci) * CX)) && Time.XO(T1), AY) + 1;
+      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => PatternD(ci, A.F)) && Time.XO(T1), AY) + 1;
       return A.T;
     }));
     return A.F;
@@ -14,11 +16,18 @@ class Perform {
   public bool KeyForwardSlashD() {
     L = A.T;
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => X2.YX(PX.DY(ci) * CY, PX.DX(ci) * -CX)) && Time.XO(T2), AY) - 1;
+      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => PatternD(ci, A.T)) && Time.XO(T2), AY) - 1;
       X2.E1(A.F);
       return A.T;
     }));
     return A.F;
+  }
+
+  public bool PatternD(int e, bool a) {
+    int dy = (a ? +1 : -1) * PX.DY(e);
+    int dx = (a ? -1 : +1) * PX.DX(e);
+
+    return dy == 0 && dx == 0 || X2.YX(dy, dx);
   }
 
   public bool KeyDU() {
@@ -142,8 +151,6 @@ class Perform {
 
   public readonly int EY = 10;
   public readonly int EX = 64;
-  public readonly int CY = 5;
-  public readonly int CX = 1;
   public volatile int AY = 1;
   public volatile int AX = 1;
 
