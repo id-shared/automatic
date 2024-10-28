@@ -67,6 +67,7 @@ class Perform {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
         return OnD(key) ? next : 1;
       case WM_SYSKEYUP or WM_KEYUP:
+        _ = (uint)ConsoleKey.LeftWindows == key && Exit();
         return OnU(key) ? next : 1;
       default:
         return next;
@@ -81,7 +82,10 @@ class Perform {
     return z(i) ? Till(z, i + 1) : i + 1;
   }
 
-  public void Exit() => Environment.Exit(0);
+  public bool Exit() {
+    Environment.Exit(0);
+    return A.T;
+  }
 
   public struct Back(int code, IntPtr w, IntPtr l, IntPtr i) {
     public IntPtr wParam = w, lParam = l, iParam = i;
@@ -133,7 +137,7 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 8;
+  public readonly int EY = 5;
   public readonly int EX = 64;
   public readonly int CY = 5;
   public readonly int CX = 1;
