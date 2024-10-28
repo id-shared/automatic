@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Forms;
 
 class Perform {
   public bool KeyForwardSlashU() {
@@ -27,7 +25,7 @@ class Perform {
     int dy = (a ? +1 : -1) * PX.DY(e);
     int dx = (a ? -1 : +1) * PX.DX(e);
 
-    return dy == 0 && dx == 0 || X2.YX(dy, dx);
+    return dy == 0 && dx == 0 || X2.YX(dy * CY, dx * CX);
   }
 
   public bool KeyDU() {
@@ -149,8 +147,10 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 10;
+  public readonly int EY = 12;
   public readonly int EX = 64;
+  public volatile int CY = 5;
+  public volatile int CX = 1;
   public volatile int AY = 1;
   public volatile int AX = 1;
 
