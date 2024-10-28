@@ -5,7 +5,7 @@ class Perform {
   public bool KeyForwardSlashU() {
     L = A.F;
     P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => PatternD(ci, A.F)) && Time.XO(T1 / 2), AY) + 1;
+      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => PatternD(ci, A.F)) && Time.XO(+1), AY) + 1;
       return A.T;
     }));
     return A.F;
@@ -14,7 +14,7 @@ class Perform {
   public bool KeyForwardSlashD() {
     L = A.T;
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => PatternD(ci, A.T)) && Time.XO(T1 / 1), AY) - 1;
+      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => PatternD(ci, A.T)) && Time.XO(T1), AY) - 1;
       return A.T;
     }));
     return A.F;
