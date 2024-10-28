@@ -15,7 +15,6 @@ class Perform {
     L = A.T;
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => X2.YX(PX.DY(ci) * CY, PX.DX(ci) * -CX)) && Time.XO(T2), AY) - 1;
-      X2.E1(A.F);
       return A.T;
     }));
     return A.F;
@@ -140,7 +139,7 @@ class Perform {
   public readonly ushort LA = 0x4B;
   public volatile bool L = A.F;
 
-  public readonly int EY = 39;
+  public readonly int EY = 64;
   public readonly int EX = 64;
   public readonly int CY = 5;
   public readonly int CX = 1;
