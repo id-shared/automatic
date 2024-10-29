@@ -6,27 +6,22 @@
 #include <vector>
 #include <windows.h>
 
-std::vector<COLORREF> capture(int e_1, int e) {
-  HDC hScreenDC = GetDC(NULL);
-  HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
+// Persistent resources
+HDC hScreenDC = GetDC(NULL);
+HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
+HBITMAP hBitmap = nullptr;
 
-  HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
+BITMAPINFO bi;
+std::vector<COLORREF> pixelData;
+
+void initCapture(int e_1, int e) {
+  hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
   SelectObject(hMemoryDC, hBitmap);
 
-  int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-  int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  int x = (screenWidth - e_1) / 2;
-  int y = (screenHeight - e) / 2;
-
-  BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, x, y, SRCCOPY);
-
-  BITMAP bmp;
-  GetObject(hBitmap, sizeof(BITMAP), &bmp);
-
-  BITMAPINFO bi;
+  // Set up BITMAPINFO only once
   bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-  bi.bmiHeader.biWidth = bmp.bmWidth;
-  bi.bmiHeader.biHeight = bmp.bmHeight;
+  bi.bmiHeader.biWidth = e_1;
+  bi.bmiHeader.biHeight = e;
   bi.bmiHeader.biPlanes = 1;
   bi.bmiHeader.biBitCount = 32;
   bi.bmiHeader.biCompression = BI_RGB;
@@ -36,12 +31,24 @@ std::vector<COLORREF> capture(int e_1, int e) {
   bi.bmiHeader.biClrUsed = 0;
   bi.bmiHeader.biClrImportant = 0;
 
-  std::vector<COLORREF> pixelData(e_1 * e);
-  GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
+  // Initialize pixel data storage
+  pixelData.resize(e_1 * e);
+}
 
+void releaseCapture() {
   DeleteObject(hBitmap);
   DeleteDC(hMemoryDC);
   ReleaseDC(NULL, hScreenDC);
+}
+
+std::vector<COLORREF>& capture(int e_1, int e) {
+  int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+  int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+  int x = (screenWidth - e_1) / 2;
+  int y = (screenHeight - e) / 2;
+
+  BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, x, y, SRCCOPY);
+  GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
 
   return pixelData;
 }
@@ -68,18 +75,20 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
+  const int width = 64;
+  const int height = 4;
+  const int delta = (width / 2);
+
+  // Initialize capture resources
+  initCapture(width, height);
 
   while (true) {
-    const int width = 64;
-    const int height = 4;
-    const int delta = (width / 2);
-
-    std::vector<COLORREF> pixelData = capture(width, height);
-    bool breaker = true;
+    auto& pixelData = capture(width, height);
     bool r[delta] = {};
     bool l[delta] = {};
     bool active = true;
 
+#pragma omp parallel for
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
@@ -90,7 +99,7 @@ int main() {
 
     for (int i = 0; i < delta && active; ++i) {
       if (r[i]) {
-        Xyloid2::yx(driver, 0, (i + 1) * +1);
+        Xyloid2::yx(driver, 0, (i + 1));
         active = false;
       }
     }
@@ -99,14 +108,14 @@ int main() {
 
     for (int i = 0; i < delta && active; ++i) {
       if (l[i]) {
-        Xyloid2::yx(driver, 0, (i + 1) * -1);
+        Xyloid2::yx(driver, 0, -(i + 1));
         active = false;
       }
     }
-
-    //printf("%d, %d, %d, %d\n", r[0], r[1], r[2], r[3]);
-    //Time::XO(100);
   }
+
+  // Release resources after loop ends
+  releaseCapture();
 
   return 0;
 }
