@@ -2,16 +2,13 @@
 #include <iostream>
 #include <vector>
 
-void CaptureScreen(int width, int height, std::vector<COLORREF>& pixelData) {
-  // Get the device context of the entire screen
+std::vector<COLORREF> CaptureScreen(int width, int height) {
   HDC hScreenDC = GetDC(NULL);
   HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
 
-  // Create a bitmap to hold the captured pixels
   HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
   SelectObject(hMemoryDC, hBitmap);
 
-  // BitBlt from the screen to our bitmap
   int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   int screenHeight = GetSystemMetrics(SM_CYSCREEN);
   int x = (screenWidth - width) / 2; // Center x
@@ -19,11 +16,9 @@ void CaptureScreen(int width, int height, std::vector<COLORREF>& pixelData) {
 
   BitBlt(hMemoryDC, 0, 0, width, height, hScreenDC, x, y, SRCCOPY);
 
-  // Prepare to retrieve pixel data
   BITMAP bmp;
   GetObject(hBitmap, sizeof(BITMAP), &bmp);
 
-  // Create a buffer to hold the bitmap data
   BITMAPINFO bi;
   bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
   bi.bmiHeader.biWidth = bmp.bmWidth;
@@ -37,13 +32,14 @@ void CaptureScreen(int width, int height, std::vector<COLORREF>& pixelData) {
   bi.bmiHeader.biClrUsed = 0;
   bi.bmiHeader.biClrImportant = 0;
 
-  // Allocate memory for pixel data
-  pixelData.resize(width * height);
+  std::vector<COLORREF> pixelData(width * height);
   GetDIBits(hMemoryDC, hBitmap, 0, height, pixelData.data(), &bi, DIB_RGB_COLORS);
 
   DeleteObject(hBitmap);
   DeleteDC(hMemoryDC);
   ReleaseDC(NULL, hScreenDC);
+
+  return pixelData;
 }
 
 bool IsPurpleDominated(COLORREF x, double e) {
@@ -62,12 +58,11 @@ bool IsPurpleDominated(COLORREF x, double e) {
 }
 
 int main() {
-  while(true){
-    const int width = 32;
-    const int height = 1;
-    std::vector<COLORREF> pixelData;
+  while (true) {
+    const int width = 16;
+    const int height = 4;
 
-    CaptureScreen(width, height, pixelData);
+    std::vector<COLORREF> pixelData = CaptureScreen(width, height);
 
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
