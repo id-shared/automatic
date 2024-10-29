@@ -1,7 +1,8 @@
 #include <windows.h>
 #include <iostream>
+#include <vector>
 
-void CaptureScreen(int width, int height) {
+void CaptureScreen(int width, int height, std::vector<COLORREF>& pixelData) {
   // Get the device context of the entire screen
   HDC hScreenDC = GetDC(NULL);
   HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
@@ -10,7 +11,7 @@ void CaptureScreen(int width, int height) {
   HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
   SelectObject(hMemoryDC, hBitmap);
 
-  // BitBlt (bit block transfer) from the screen to our bitmap
+  // BitBlt from the screen to our bitmap
   int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   int screenHeight = GetSystemMetrics(SM_CYSCREEN);
   int x = (screenWidth - width) / 2; // Center x
@@ -18,51 +19,29 @@ void CaptureScreen(int width, int height) {
 
   BitBlt(hMemoryDC, 0, 0, width, height, hScreenDC, x, y, SRCCOPY);
 
-  // Save the bitmap to a file
-  BITMAPFILEHEADER bmfHeader;
-  BITMAPINFOHEADER bi;
+  // Prepare to retrieve pixel data
+  BITMAP bmp;
+  GetObject(hBitmap, sizeof(BITMAP), &bmp);
 
-  bi.biSize = sizeof(BITMAPINFOHEADER);
-  bi.biWidth = width;
-  bi.biHeight = -height; // Negative height for a top-down DIB
-  bi.biPlanes = 1;
-  bi.biBitCount = 32; // 32 bits for ARGB
-  bi.biCompression = BI_RGB;
-  bi.biSizeImage = 0;
-  bi.biXPelsPerMeter = 0;
-  bi.biYPelsPerMeter = 0;
-  bi.biClrUsed = 0;
-  bi.biClrImportant = 0;
+  // Create a buffer to hold the bitmap data
+  BITMAPINFO bi;
+  bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+  bi.bmiHeader.biWidth = bmp.bmWidth;
+  bi.bmiHeader.biHeight = bmp.bmHeight;
+  bi.bmiHeader.biPlanes = 1;
+  bi.bmiHeader.biBitCount = 32; // 32 bits for ARGB
+  bi.bmiHeader.biCompression = BI_RGB;
+  bi.bmiHeader.biSizeImage = 0;
+  bi.bmiHeader.biXPelsPerMeter = 0;
+  bi.bmiHeader.biYPelsPerMeter = 0;
+  bi.bmiHeader.biClrUsed = 0;
+  bi.bmiHeader.biClrImportant = 0;
 
-  // Calculate the size of the bitmap file
-  DWORD dwBmpSize = ((width * bi.biBitCount + 31) / 32) * 4 * height;
-  DWORD dwSizeofDIB = dwBmpSize + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-
-  // Create a file to save the bitmap
-  HANDLE hFile = CreateFile(L"captured.bmp", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-  if (hFile == INVALID_HANDLE_VALUE) {
-    std::cerr << "Could not create file." << std::endl;
-    return;
-  }
-
-  // Fill the bitmap file header
-  bmfHeader.bfType = 0x4D42; // 'BM'
-  bmfHeader.bfSize = dwSizeofDIB;
-  bmfHeader.bfReserved1 = 0;
-  bmfHeader.bfReserved2 = 0;
-  bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-
-  // Write the bitmap file header and info header to the file
-  DWORD dwWritten;
-  WriteFile(hFile, &bmfHeader, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
-  WriteFile(hFile, &bi, sizeof(BITMAPINFOHEADER), &dwWritten, NULL);
-
-  // Write the bitmap data
-  GetDIBits(hMemoryDC, hBitmap, 0, height, (LPVOID)((char*)&bmfHeader + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER)), (BITMAPINFO*)&bi, DIB_RGB_COLORS);
-  WriteFile(hFile, (LPVOID)((char*)&bmfHeader + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER)), dwBmpSize, &dwWritten, NULL);
+  // Allocate memory for pixel data
+  pixelData.resize(width * height);
+  GetDIBits(hMemoryDC, hBitmap, 0, height, pixelData.data(), &bi, DIB_RGB_COLORS);
 
   // Cleanup
-  CloseHandle(hFile);
   DeleteObject(hBitmap);
   DeleteDC(hMemoryDC);
   ReleaseDC(NULL, hScreenDC);
@@ -71,8 +50,23 @@ void CaptureScreen(int width, int height) {
 int main() {
   const int width = 10;
   const int height = 10;
-  CaptureScreen(width, height);
-  std::cout << "Captured " << width << "x" << height << " pixels at the center of the screen." << std::endl;
-  while(true){}
+  std::vector<COLORREF> pixelData;
+
+  // Capture the screen
+  CaptureScreen(width, height, pixelData);
+
+  // Process the pixel data
+  for (int i = 0; i < height; ++i) {
+    for (int j = 0; j < width; ++j) {
+      COLORREF color = pixelData[i * width + j];
+      BYTE red = GetRValue(color);
+      BYTE green = GetGValue(color);
+      BYTE blue = GetBValue(color);
+      // Print or process the color values (R, G, B)
+      std::cout << "Pixel (" << j << ", " << i << "): R=" << static_cast<int>(red)
+        << " G=" << static_cast<int>(green) << " B=" << static_cast<int>(blue) << std::endl;
+    }
+  }
+  while(true) {}
   return 0;
 }
