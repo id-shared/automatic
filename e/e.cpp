@@ -2,11 +2,11 @@
 #include "Device.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <windows.h>
 
-// Persistent resources
 HDC hScreenDC = GetDC(NULL);
 HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
 HBITMAP hBitmap = nullptr;
@@ -18,7 +18,6 @@ void initCapture(int e_1, int e) {
   hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
   SelectObject(hMemoryDC, hBitmap);
 
-  // Set up BITMAPINFO only once
   bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
   bi.bmiHeader.biWidth = e_1;
   bi.bmiHeader.biHeight = e;
@@ -31,7 +30,6 @@ void initCapture(int e_1, int e) {
   bi.bmiHeader.biClrUsed = 0;
   bi.bmiHeader.biClrImportant = 0;
 
-  // Initialize pixel data storage
   pixelData.resize(e_1 * e);
 }
 
@@ -79,7 +77,6 @@ int main() {
   const int height = 4;
   const int delta = (width / 2);
 
-  // Initialize capture resources
   initCapture(width, height);
 
   while (true) {
@@ -92,8 +89,8 @@ int main() {
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        bool result = IsPurpleDominated(color, 1.1);
-        j < delta ? l[j] = result : r[j - delta] = result;
+        bool result = IsPurpleDominated(color, 1.2);
+        j < delta ? l[(delta - 1) - j] = result : r[j - delta] = result;
       }
     }
 
@@ -104,8 +101,6 @@ int main() {
       }
     }
 
-    std::reverse(l, l + delta);
-
     for (int i = 0; i < delta && active; ++i) {
       if (l[i]) {
         Xyloid2::yx(driver, 0, -(i + 1));
@@ -114,7 +109,6 @@ int main() {
     }
   }
 
-  // Release resources after loop ends
   releaseCapture();
 
   return 0;
