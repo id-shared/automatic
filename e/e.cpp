@@ -41,32 +41,42 @@ void CaptureScreen(int width, int height, std::vector<COLORREF>& pixelData) {
   pixelData.resize(width * height);
   GetDIBits(hMemoryDC, hBitmap, 0, height, pixelData.data(), &bi, DIB_RGB_COLORS);
 
-  // Cleanup
   DeleteObject(hBitmap);
   DeleteDC(hMemoryDC);
   ReleaseDC(NULL, hScreenDC);
 }
 
+bool IsPurpleDominated(COLORREF x, double e) {
+  BYTE green = GetGValue(x);
+  BYTE blue = GetBValue(x);
+  BYTE red = GetRValue(x);
+
+  if (green == 0) {
+    return (red > 0 && blue > 0);
+  }
+
+  double ratio_red_green = static_cast<double>(red) / green;
+  double ratio_blue_green = static_cast<double>(blue) / green;
+
+  return (ratio_red_green > e && ratio_blue_green > e);
+}
+
 int main() {
-  const int width = 10;
-  const int height = 1;
-  std::vector<COLORREF> pixelData;
+  while(true){
+    const int width = 32;
+    const int height = 1;
+    std::vector<COLORREF> pixelData;
 
-  // Capture the screen
-  CaptureScreen(width, height, pixelData);
+    CaptureScreen(width, height, pixelData);
 
-  // Process the pixel data
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
-      COLORREF color = pixelData[i * width + j];
-      BYTE red = GetRValue(color);
-      BYTE green = GetGValue(color);
-      BYTE blue = GetBValue(color);
-      // Print or process the color values (R, G, B)
-      std::cout << "Pixel (" << j << ", " << i << "): R=" << static_cast<int>(red)
-        << " G=" << static_cast<int>(green) << " B=" << static_cast<int>(blue) << std::endl;
+    for (int i = 0; i < height; ++i) {
+      for (int j = 0; j < width; ++j) {
+        COLORREF color = pixelData[i * width + j];
+        if (IsPurpleDominated(color, 1.5)) {
+          std::cout << j << "," << i << std::endl;
+        }
+      }
     }
   }
-  while(true) {}
   return 0;
 }
