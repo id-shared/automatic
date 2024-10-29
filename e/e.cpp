@@ -1,6 +1,11 @@
+#include "Contact.hpp"
+#include "Device.hpp"
+#include "Xyloid2.hpp"
 #include <windows.h>
 #include <iostream>
 #include <vector>
+#include <functional>
+#include <string>
 
 std::vector<COLORREF> capture(int e_1, int e) {
   HDC hScreenDC = GetDC(NULL);
@@ -58,6 +63,13 @@ bool IsPurpleDominated(COLORREF x, double e) {
 }
 
 int main() {
+  LPCWSTR device = Contact::device([](std::wstring_view c) {
+    using namespace std::literals;
+    return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
+    });
+
+  HANDLE driver = Device::driver(device);
+
   while (true) {
     const int width = 16;
     const int height = 4;
