@@ -94,17 +94,22 @@ int main() {
       }
     }
 
-    for (int i = 0; i < delta && active; ++i) {
-      if (r[i]) {
-        Xyloid2::yx(driver, 0, (i + 1));
-        active = false;
-      }
+    if (std::any_of(l, l + (delta / 4), [](bool value) { return value; }) && std::any_of(r, r + (delta / 4), [](bool value) { return value; })) {
+      std::cout << "At least one of the first three elements is true.\n";
     }
+    else {
+      for (int i = 0; i < delta && active; ++i) {
+        if (r[i]) {
+          Xyloid2::yx(driver, 0, (i + 1));
+          active = false;
+        }
+      }
 
-    for (int i = 0; i < delta && active; ++i) {
-      if (l[i]) {
-        Xyloid2::yx(driver, 0, -(i + 1));
-        active = false;
+      for (int i = 0; i < delta && active; ++i) {
+        if (l[i]) {
+          Xyloid2::yx(driver, 0, -(i + 1));
+          active = false;
+        }
       }
     }
   }
