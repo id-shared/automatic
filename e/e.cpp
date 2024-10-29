@@ -2,19 +2,19 @@
 #include <iostream>
 #include <vector>
 
-std::vector<COLORREF> CaptureScreen(int width, int height) {
+std::vector<COLORREF> capture(int e_1, int e) {
   HDC hScreenDC = GetDC(NULL);
   HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
 
-  HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
+  HBITMAP hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
   SelectObject(hMemoryDC, hBitmap);
 
   int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  int x = (screenWidth - width) / 2; // Center x
-  int y = (screenHeight - height) / 2; // Center y
+  int x = (screenWidth - e_1) / 2; // Center x
+  int y = (screenHeight - e) / 2; // Center y
 
-  BitBlt(hMemoryDC, 0, 0, width, height, hScreenDC, x, y, SRCCOPY);
+  BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, x, y, SRCCOPY);
 
   BITMAP bmp;
   GetObject(hBitmap, sizeof(BITMAP), &bmp);
@@ -32,8 +32,8 @@ std::vector<COLORREF> CaptureScreen(int width, int height) {
   bi.bmiHeader.biClrUsed = 0;
   bi.bmiHeader.biClrImportant = 0;
 
-  std::vector<COLORREF> pixelData(width * height);
-  GetDIBits(hMemoryDC, hBitmap, 0, height, pixelData.data(), &bi, DIB_RGB_COLORS);
+  std::vector<COLORREF> pixelData(e_1 * e);
+  GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
 
   DeleteObject(hBitmap);
   DeleteDC(hMemoryDC);
@@ -62,7 +62,7 @@ int main() {
     const int width = 16;
     const int height = 4;
 
-    std::vector<COLORREF> pixelData = CaptureScreen(width, height);
+    std::vector<COLORREF> pixelData = capture(width, height);
 
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
@@ -73,5 +73,6 @@ int main() {
       }
     }
   }
+
   return 0;
 }
