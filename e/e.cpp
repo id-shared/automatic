@@ -75,11 +75,10 @@ int main() {
     const int delta = (width / 2);
 
     std::vector<COLORREF> pixelData = capture(width, height);
-    bool shouldBreak = false;
     bool x[8];
     bool y[8];
-    for (int i = 0; i < height && !shouldBreak; ++i) {
-      for (int j = 0; j < width && !shouldBreak; ++j) {
+    for (int i = 0; i < height; ++i) {
+      for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[i * width + j];
         if (IsPurpleDominated(color, 1.5)) {
           if (j <= delta) {
@@ -94,13 +93,13 @@ int main() {
             }*/
           }
 
-          std::cout << j << "," << i << std::endl;
-          shouldBreak = true;
+          //std::cout << j << "," << i << std::endl;
         }
       }
     }
 
-    printf("%d, %d, %d, %d, %d, %d, %d, %d", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]);
+    printf("%d, %d, %d, %d, %d, %d, %d, %d\n", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]);
+    Time::XO(100);
   }
 
   return 0;
