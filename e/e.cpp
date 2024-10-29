@@ -70,8 +70,8 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   while (true) {
-    const int width = 32;
-    const int height = 2;
+    const int width = 64;
+    const int height = 1;
     const int delta = (width / 2);
 
     std::vector<COLORREF> pixelData = capture(width, height);
@@ -83,8 +83,7 @@ int main() {
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        bool result = IsPurpleDominated(color, 1.25);
-        printf("%d %d\n", j < delta, result);
+        bool result = IsPurpleDominated(color, 1.1);
         j < delta ? l[j] = result : r[j - delta] = result;
       }
     }
