@@ -1,11 +1,10 @@
 #include "Contact.hpp"
 #include "Device.hpp"
+#include "Time.hpp"
 #include "Xyloid2.hpp"
 #include <windows.h>
 #include <iostream>
 #include <vector>
-#include <functional>
-#include <string>
 
 std::vector<COLORREF> capture(int e_1, int e) {
   HDC hScreenDC = GetDC(NULL);
@@ -16,8 +15,8 @@ std::vector<COLORREF> capture(int e_1, int e) {
 
   int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  int x = (screenWidth - e_1) / 2; // Center x
-  int y = (screenHeight - e) / 2; // Center y
+  int x = (screenWidth - e_1) / 2;
+  int y = (screenHeight - e) / 2;
 
   BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, x, y, SRCCOPY);
 
@@ -29,7 +28,7 @@ std::vector<COLORREF> capture(int e_1, int e) {
   bi.bmiHeader.biWidth = bmp.bmWidth;
   bi.bmiHeader.biHeight = bmp.bmHeight;
   bi.bmiHeader.biPlanes = 1;
-  bi.bmiHeader.biBitCount = 32; // 32 bits for ARGB
+  bi.bmiHeader.biBitCount = 32;
   bi.bmiHeader.biCompression = BI_RGB;
   bi.bmiHeader.biSizeImage = 0;
   bi.bmiHeader.biXPelsPerMeter = 0;
@@ -80,10 +79,13 @@ int main() {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[i * width + j];
         if (IsPurpleDominated(color, 1.5)) {
+          Xyloid2::yx(driver, 0, -1);
           std::cout << j << "," << i << std::endl;
+          break;
         }
       }
     }
+    Time::XO(100);
   }
 
   return 0;
