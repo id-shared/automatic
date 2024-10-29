@@ -70,7 +70,7 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   while (true) {
-    const int width = 8;
+    const int width = 32;
     const int height = 2;
     const int delta = (width / 2);
 
@@ -78,16 +78,35 @@ int main() {
     bool breaker = true;
     bool r[delta] = {};
     bool l[delta] = {};
+    bool active = true;
+
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
         bool result = IsPurpleDominated(color, 1.25);
-        j <= delta ? l[j] = result : r[j] = result;
+        printf("%d %d\n", j < delta, result);
+        j < delta ? l[j] = result : r[j - delta] = result;
       }
     }
 
-    printf("%d, %d, %d, %d, %d, %d, %d, %d\n", l[0], l[1], l[2], l[3], r[0], r[1], r[2], r[3]);
-    Time::XO(100);
+    for (int i = 0; i < delta && active; ++i) {
+      if (r[i]) {
+        Xyloid2::yx(driver, 0, (i + 1) * +1);
+        active = false;
+      }
+    }
+
+    std::reverse(l, l + delta);
+
+    for (int i = 0; i < delta && active; ++i) {
+      if (l[i]) {
+        Xyloid2::yx(driver, 0, (i + 1) * -1);
+        active = false;
+      }
+    }
+
+    //printf("%d, %d, %d, %d\n", r[0], r[1], r[2], r[3]);
+    //Time::XO(100);
   }
 
   return 0;
