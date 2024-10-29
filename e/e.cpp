@@ -71,21 +71,36 @@ int main() {
 
   while (true) {
     const int width = 16;
-    const int height = 4;
+    const int height = 1;
+    const int delta = (width / 2);
 
     std::vector<COLORREF> pixelData = capture(width, height);
-
-    for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < width; ++j) {
+    bool shouldBreak = false;
+    bool x[8];
+    bool y[8];
+    for (int i = 0; i < height && !shouldBreak; ++i) {
+      for (int j = 0; j < width && !shouldBreak; ++j) {
         COLORREF color = pixelData[i * width + j];
         if (IsPurpleDominated(color, 1.5)) {
-          Xyloid2::yx(driver, 0, -1);
+          if (j <= delta) {
+            x[j] = true;
+            /*if (j <= 31) {
+              Xyloid2::yx(driver, 0, j * -1);
+            }*/
+          }
+          else {
+            /*if (j >= 33) {
+              Xyloid2::yx(driver, 0, j);
+            }*/
+          }
+
           std::cout << j << "," << i << std::endl;
-          break;
+          shouldBreak = true;
         }
       }
     }
-    Time::XO(100);
+
+    printf("%d, %d, %d, %d, %d, %d, %d, %d", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]);
   }
 
   return 0;
