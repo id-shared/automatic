@@ -12,18 +12,18 @@ namespace Xyloid2 {
     return DeviceIoControl(x, 0x88883020, &v, sizeof v, nullptr, 0, &bytes_returned, nullptr);
   }
 
-  bool ee(HANDLE x, ULONG e) {
+  bool ea(HANDLE x, ULONG e) {
     Xyloid::Xyloid xyloid = xyloid_;
     xyloid.mi.Buttons = e;
     return act(x, xyloid);
   }
 
   bool e1(HANDLE x, bool a) {
-    return ee(x, a ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP);
+    return ea(x, a ? MOUSE_LEFT_BUTTON_DOWN : MOUSE_LEFT_BUTTON_UP);
   }
 
   bool e2(HANDLE x, bool a) {
-    return ee(x, a ? MOUSE_RIGHT_BUTTON_DOWN : MOUSE_RIGHT_BUTTON_UP);
+    return ea(x, a ? MOUSE_RIGHT_BUTTON_DOWN : MOUSE_RIGHT_BUTTON_UP);
   }
 
   bool yx(HANDLE x, int e1, int e) {

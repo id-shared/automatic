@@ -12,7 +12,7 @@ namespace Xyloid1 {
     return DeviceIoControl(x, 0x88883020, &v, sizeof v, nullptr, 0, &bytes_returned, nullptr);
   }
 
-  bool ee(HANDLE x, USHORT e, bool a) {
+  bool ea(HANDLE x, USHORT e, bool a) {
     Xyloid::Xyloid back = xyloid_;
     back.ki.Reserved = 0;
     back.ki.MakeCode = e;

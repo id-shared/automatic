@@ -3,21 +3,32 @@ using System.Runtime.InteropServices;
 
 class Perform {
   public bool KeyForwardSlashU() {
-    L = A.F;
-    P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-      AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(+1), AY) + 1;
-      return A.T;
-    }));
+    //L = A.F;
+    //P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
+    //  AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(+1), AY) + 1;
+    //  return A.T;
+    //}));
+    //return A.F;
+
     return A.F;
   }
 
   public bool KeyForwardSlashD() {
-    L = A.T;
-    P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-      AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
-      return A.T;
-    }));
+    XO([Key.RArrow], 199);
+    XO([Key.LArrow], 69);
+
+    X2.E1(A.T);
+    Time.XO(+1);
+    X2.E1(A.F);
+
     return A.F;
+
+    //L = A.T;
+    //P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
+    //  AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
+    //  return A.T;
+    //}));
+    //return A.F;
   }
 
   public bool Pattern(int e, bool a) {
@@ -28,9 +39,7 @@ class Perform {
   }
 
   public bool KeyDU() {
-    int abc = Environment.TickCount - T9;
-    Console.WriteLine(abc < 199 ? 79 : T3);
-    return P1.TryEnqueue(_ => XO(LA, abc < 199 ? 59 : T3) && X2.E1(A.T) && Time.XO(+1) && X2.E1(A.F));
+    return P1.TryEnqueue(_ => XO([Key.LArrow], T3));
   }
 
   public bool KeyDD() {
@@ -39,8 +48,7 @@ class Perform {
   }
 
   public bool KeyAU() {
-    Console.WriteLine(Environment.TickCount - T9);
-    return P1.TryEnqueue(_ => XO(RA, T3));
+    return P1.TryEnqueue(_ => XO([Key.RArrow], T3));
   }
 
   public bool KeyAD() {
@@ -49,23 +57,23 @@ class Perform {
   }
 
   public bool OnU(uint i) => i switch {
-    Key.ForwardSlash => KeyForwardSlashU(),
+    Key.FSlash => KeyForwardSlashU(),
     Key.D => KeyDU(),
     Key.A => KeyAU(),
     _ => A.T,
   };
 
   public bool OnD(uint i) => i switch {
-    Key.ForwardSlash => KeyForwardSlashD(),
+    Key.FSlash => KeyForwardSlashD(),
     Key.D => KeyDD(),
     Key.A => KeyAD(),
     _ => A.T,
   };
 
-  public bool XO(ushort e_1, double t) {
-    X1.EE(e_1, A.T);
+  public bool XO(uint[] e_1, double t) {
+    X1.EN(e_1, A.T);
     Time.XO(t);
-    X1.EE(e_1, A.F);
+    X1.EN(e_1, A.F);
     return A.T;
   }
 
@@ -144,11 +152,8 @@ class Perform {
   public readonly Partner P2 = new(256);
   public readonly Partner P1 = new(256);
 
-  public readonly ushort RA = 0x4D;
-  public volatile bool R = A.F;
-
-  public readonly ushort LA = 0x4B;
-  public volatile bool L = A.F;
+  public volatile bool K2 = A.F;
+  public volatile bool K1 = A.F;
 
   public readonly int EY = 64;
   public readonly int EX = 64;
