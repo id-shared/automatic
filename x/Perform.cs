@@ -3,43 +3,25 @@ using System.Runtime.InteropServices;
 
 class Perform {
   public bool KeyForwardSlashU() {
-    //L = A.F;
-    //P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
-    //  AY = Upon(ci => !L && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(+1), AY) + 1;
-    //  return A.T;
-    //}));
-    //return A.F;
-
+    K1 = A.F;
+    P1.TryEnqueue(_ => X2.E1(A.F) && P2.TryEnqueue(_ => {
+      AY = Upon(ci => !K1 && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(+1), AY) + 1;
+      return A.T;
+    }));
     return A.F;
   }
 
   public bool KeyForwardSlashD() {
-    XO([Key.RArrow], 199);
-    XO([Key.LArrow], 69);
-
-    X2.E1(A.T);
-    Time.XO(+1);
-    X2.E1(A.F);
-
+    K1 = A.T;
+    P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
+      AY = Till(ci => K1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
+      return A.T;
+    }));
     return A.F;
-
-    //L = A.T;
-    //P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
-    //  AY = Till(ci => L && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
-    //  return A.T;
-    //}));
-    //return A.F;
-  }
-
-  public bool Pattern(int e, bool a) {
-    int dy = (a ? +1 : -1) * PX.DY(e);
-    int dx = (a ? -1 : +1) * PX.DX(e);
-
-    return dy == 0 && dx == 0 || X2.YX(dy * CY, dx * CX);
   }
 
   public bool KeyDU() {
-    return P1.TryEnqueue(_ => XO([Key.LArrow], T3));
+    return P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
   }
 
   public bool KeyDD() {
@@ -48,7 +30,7 @@ class Perform {
   }
 
   public bool KeyAU() {
-    return P1.TryEnqueue(_ => XO([Key.RArrow], T3));
+    return P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
   }
 
   public bool KeyAD() {
@@ -69,6 +51,17 @@ class Perform {
     Key.A => KeyAD(),
     _ => A.T,
   };
+
+  public bool Pattern(int e, bool a) {
+    int dy = (a ? +1 : -1) * PX.DY(e);
+    int dx = (a ? -1 : +1) * PX.DX(e);
+
+    return dy == 0 && dx == 0 || X2.YX(dy * CY, dx * CX);
+  }
+
+  public int Breakup(int e) {
+    return PZ.DN((Environment.TickCount - e) / 10);
+  }
 
   public bool XO(uint[] e_1, double t) {
     X1.EN(e_1, A.T);
@@ -141,8 +134,8 @@ class Perform {
   public Xyloid X;
 
   public volatile int T9 = Environment.TickCount;
-  public readonly double T3 = +99.99999;
-  public readonly double T1 = +15.99999;
+  public readonly int T3 = 99;
+  public readonly int T1 = 16;
 
   public readonly Pattern PZ = new(999);
   public readonly Pattern PY = new(999);
@@ -171,3 +164,15 @@ class Perform {
   public const uint WM_KEYUP = 0x0101;
 
 }
+
+/*
+Console.WriteLine(17 / 16);
+XO([Key.RArrow], 79);
+XO([Key.LArrow], 20);
+
+X2.E1(A.T);
+Time.XO(+1);
+X2.E1(A.F);
+
+return A.F;
+*/
