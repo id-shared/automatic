@@ -48,8 +48,8 @@ void CaptureScreen(int width, int height, std::vector<COLORREF>& pixelData) {
 }
 
 int main() {
-  const int width = 10;
-  const int height = 10;
+  const int width = 1000;
+  const int height = 1;
   std::vector<COLORREF> pixelData;
 
   // Capture the screen
