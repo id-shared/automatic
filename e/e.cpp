@@ -2,9 +2,9 @@
 #include "Device.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
-#include <windows.h>
 #include <iostream>
 #include <vector>
+#include <windows.h>
 
 std::vector<COLORREF> capture(int e_1, int e) {
   HDC hScreenDC = GetDC(NULL);
@@ -70,37 +70,32 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   while (true) {
-    const int width = 16;
-    const int height = 1;
+    const int width = 8;
+    const int height = 2;
     const int delta = (width / 2);
 
     std::vector<COLORREF> pixelData = capture(width, height);
-    bool x[8];
-    bool y[8];
+    bool breaker = true;
+    bool r[delta] = {};
+    bool l[delta] = {};
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
-        COLORREF color = pixelData[i * width + j];
-        if (IsPurpleDominated(color, 1.5)) {
-          if (j <= delta) {
-            x[j] = true;
-            /*if (j <= 31) {
-              Xyloid2::yx(driver, 0, j * -1);
-            }*/
-          }
-          else {
-            /*if (j >= 33) {
-              Xyloid2::yx(driver, 0, j);
-            }*/
-          }
-
-          //std::cout << j << "," << i << std::endl;
-        }
+        COLORREF color = pixelData[(i * width) + j];
+        bool result = IsPurpleDominated(color, 1.25);
+        j <= delta ? l[j] = result : r[j] = result;
       }
     }
 
-    printf("%d, %d, %d, %d, %d, %d, %d, %d\n", x[0], x[1], x[2], x[3], x[4], x[5], x[6], x[7]);
+    printf("%d, %d, %d, %d, %d, %d, %d, %d\n", l[0], l[1], l[2], l[3], r[0], r[1], r[2], r[3]);
     Time::XO(100);
   }
 
   return 0;
 }
+
+//if (j >= delta) {
+  //Xyloid2::yx(driver, 0, (j - delta) * +1);
+//}
+//else {
+  //Xyloid2::yx(driver, 0, ((delta + 2) - j) * -1);
+//}
