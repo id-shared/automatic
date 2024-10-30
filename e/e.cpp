@@ -169,24 +169,25 @@ int main() {
 
     int xr = findLastTrueIndex(r, n);
     int xl = findLastTrueIndex(l, n);
+    int xf = +5;
 
-    //std::cout << xr << ", " << xl << std::endl;
+    //std::cout << xr << " | " << xl << std::endl;
 
     if (xl >= 1 && xr >= 1) {
       if (xl > xr) {
-        Xyloid2::yx(driver, 0, ((xl - xr) / 2) * -1);
+        Xyloid2::yx(driver, 0, ((xl - xr) / 2) * xf * -1);
       }
       else {
-        Xyloid2::yx(driver, 0, ((xr - xl) / 2) * -1);
+        Xyloid2::yx(driver, 0, ((xr - xl) / 2) * xf * +1);
       }
     }
     else {
       if (xl >= 1 || xr >= 1) {
         if (xl >= 1) {
-          Xyloid2::yx(driver, 0, (xl / 2) * -1);
+          Xyloid2::yx(driver, 0, (xl / 2) * xf * -1);
         }
         else {
-          Xyloid2::yx(driver, 0, (xr / 2) * +1);
+          Xyloid2::yx(driver, 0, (xr / 2) * xf * +1);
         }
       }
     }
