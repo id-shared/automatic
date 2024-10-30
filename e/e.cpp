@@ -147,22 +147,28 @@ int main() {
 
     printf("%d %d\n", xl, xr);
 
-    for (int i = 0; i < delta && active; ++i) {
-      if (r[i]) {
-        Xyloid2::yx(driver, 0, +i);
-        active = false;
+    if (xl == -1) {
+      for (int i = 0; i < delta && active; ++i) {
+        if (r[i]) {
+          Xyloid2::yx(driver, 0, +i);
+          active = false;
+        }
       }
     }
-
-    for (int i = 0; i < delta && active; ++i) {
-      if (l[i]) {
-        Xyloid2::yx(driver, 0, -i);
-        active = false;
+    else if (xr == -1) {
+      for (int i = 0; i < delta && active; ++i) {
+        if (l[i]) {
+          Xyloid2::yx(driver, 0, -i);
+          active = false;
+        }
       }
+    }
+    else {
+
     }
 
     //saveBitmap(hBitmap, width, height, "e.bmp");
-    //Time::XO(100);
+    Time::XO(100);
   }
 
   releaseCapture();
