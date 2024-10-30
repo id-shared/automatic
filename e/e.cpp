@@ -139,10 +139,12 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int height = 64, width = 64;
-  const int y = (1080 - height) / 2;
-  const int x = (1920 - width) / 2;
-  const int n = width / 2;
+  const int zy = 64;
+  const int zx = 64;
+  const int sy = (1080 - zy) / 2;
+  const int sx = (1920 - zx) / 2;
+  const int ay = zy / 2;
+  const int ax = zx / 2;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -151,14 +153,14 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [driver, height, width, n](uint8_t* data, int rowPitch) {
-    bool y2_[n] = {};
-    bool y1_[n] = {};
-    bool x2_[n] = {};
-    bool x1_[n] = {};
+  std::function<bool(uint8_t*, int)> processPixelData = [driver, zy, zx, ax](uint8_t* data, int rowPitch) {
+    bool y2_[ax] = {};
+    bool y1_[ax] = {};
+    bool x2_[ax] = {};
+    bool x1_[ax] = {};
 
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width; ++x) {
+    for (int y = 0; y < zy; ++y) {
+      for (int x = 0; x < zx; ++x) {
         int offset = y * rowPitch + x * 4;
 
         uint8_t blue = data[offset];
@@ -169,58 +171,58 @@ int main() {
 
         if (isDominated) {
           //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
-          if (y < (height / 2)) {
-            y1_[n - y - 1] = true;
+          if (y < (zy / 2)) {
+            y1_[ay - y - 1] = true;
           }
           else {
-            y2_[y - n] = true;
+            y2_[y - ay] = true;
           }
 
-          if (x < (width / 2)) {
-            x1_[n - x - 1] = true;
+          if (x < (zx / 2)) {
+            x1_[ax - x - 1] = true;
           }
           else {
-            x2_[x - n] = true;
+            x2_[x - ax] = true;
           }
         }
       }
     }
 
-    int y2 = aIndex(y2_, n);
-    int y1 = zIndex(y1_, n);
-    int x2 = zIndex(x2_, n);
-    int x1 = zIndex(x1_, n);
+    int y2 = aIndex(y2_, ay);
+    int y1 = zIndex(y1_, ay);
+    int x2 = zIndex(x2_, ax);
+    int x1 = zIndex(x1_, ax);
     int f3 = +3;
     int f1 = +1;
-    int en = +1;
-    int ea = +1;
+    int e2 = +1;
+    int e1 = +1;
 
     //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
-    if (y1 >= ea || y2 >= ea) {
-      if (y1 > en || y2 > en) {
+    if (y1 >= e1 || y2 >= e1) {
+      if (y1 > e2 || y2 > e2) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > en ? Xyloid2::yx(driver, (y1 - en - en) * f3 * -1, 0) : Xyloid2::yx(driver, (y2 - en + en) * f3 * +1, 0);
+          y1 > e2 ? Xyloid2::yx(driver, (y1 - e2 - e2) * f3 * -1, 0) : Xyloid2::yx(driver, (y2 - e2 + e2) * f3 * +1, 0);
         }
       }
     }
-    if (x1 >= ea || x2 >= ea) {
-      if (x1 > en || x2 > en) {
-        if (x1 > en && x2 > en) {
-          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - en + en) / 2) * f1 * +1);
-          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - en - en) / 2) * f1 * -1);
+    if (x1 >= e1 || x2 >= e1) {
+      if (x1 > e2 || x2 > e2) {
+        if (x1 > e2 && x2 > e2) {
+          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - e2 + e2) / 2) * f1 * +1);
+          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - e2 - e2) / 2) * f1 * -1);
         }
         else {
-          x2 > en&& Xyloid2::yx(driver, 0, (x2 - en + en) * f3 * +1);
-          x1 > en&& Xyloid2::yx(driver, 0, (x1 - en - en) * f3 * -1);
+          x2 > e2&& Xyloid2::yx(driver, 0, (x2 - e2 + e2) * f3 * +1);
+          x1 > e2&& Xyloid2::yx(driver, 0, (x1 - e2 - e2) * f3 * -1);
         }
       }
     }
     return true;
     };
 
-  CaptureScreenArea(processPixelData, 4, x, y, width, height);
+  CaptureScreenArea(processPixelData, 4, sx, sy, zx, zy);
 
   return 0;
 }
