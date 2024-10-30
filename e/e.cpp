@@ -10,22 +10,44 @@ void CaptureScreenArea(int x, int y, int width, int height) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
-  D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
+  HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
     D3D11_SDK_VERSION, &device, &featureLevel, &context);
+  if (FAILED(hr)) {
+    std::cerr << "Failed to create D3D11 device.\n";
+    return;
+  }
 
   // Get DXGI device and adapter
   ComPtr<IDXGIDevice> dxgiDevice;
   device.As(&dxgiDevice);
   ComPtr<IDXGIAdapter> adapter;
-  dxgiDevice->GetParent(__uuidof(IDXGIAdapter), &adapter);
+  hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), &adapter);
+  if (FAILED(hr)) {
+    std::cerr << "Failed to get IDXGIAdapter.\n";
+    return;
+  }
+
   ComPtr<IDXGIOutput> output;
-  adapter->EnumOutputs(0, &output);
+  hr = adapter->EnumOutputs(0, &output);
+  if (FAILED(hr)) {
+    std::cerr << "Failed to enumerate outputs.\n";
+    return;
+  }
+
   ComPtr<IDXGIOutput1> output1;
-  output.As(&output1);
+  hr = output.As(&output1);
+  if (FAILED(hr)) {
+    std::cerr << "Failed to get IDXGIOutput1.\n";
+    return;
+  }
 
   // Duplicate the output (desktop)
   ComPtr<IDXGIOutputDuplication> duplication;
-  output1->DuplicateOutput(device.Get(), &duplication);
+  hr = output1->DuplicateOutput(device.Get(), &duplication);
+  if (FAILED(hr)) {
+    std::cerr << "Failed to duplicate output.\n";
+    return;
+  }
 
   // Prepare the staging texture for reading back data
   D3D11_TEXTURE2D_DESC desc = {};
@@ -40,13 +62,18 @@ void CaptureScreenArea(int x, int y, int width, int height) {
   desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 
   ComPtr<ID3D11Texture2D> stagingTexture;
-  device->CreateTexture2D(&desc, nullptr, &stagingTexture);
+  hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
+  if (FAILED(hr)) {
+    std::cerr << "Failed to create staging texture.\n";
+    return;
+  }
 
   while (true) {
     // Capture next frame
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
-    HRESULT hr = duplication->AcquireNextFrame(16, &frameInfo, &desktopResource);
+    hr = duplication->AcquireNextFrame(16, &frameInfo, &desktopResource);
+    if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue; // No new frame yet, try again
     if (FAILED(hr)) {
       std::cerr << "Failed to acquire frame.\n";
       break;
@@ -54,16 +81,15 @@ void CaptureScreenArea(int x, int y, int width, int height) {
 
     // Convert the acquired resource to texture
     ComPtr<ID3D11Texture2D> desktopTexture;
-    desktopResource.As(&desktopTexture);
+    hr = desktopResource.As(&desktopTexture);
+    if (FAILED(hr)) {
+      std::cerr << "Failed to access desktop texture.\n";
+      duplication->ReleaseFrame();
+      break;
+    }
 
     // Copy the specific area from the full desktop texture to the staging texture
-    D3D11_BOX sourceRegion;
-    sourceRegion.left = x;
-    sourceRegion.top = y;
-    sourceRegion.right = x + width;
-    sourceRegion.bottom = y + height;
-    sourceRegion.front = 0;
-    sourceRegion.back = 1;
+    D3D11_BOX sourceRegion = { x, y, 0, x + width, y + height, 1 };
     context->CopySubresourceRegion(stagingTexture.Get(), 0, 0, 0, 0, desktopTexture.Get(), 0, &sourceRegion);
 
     // Map the staging texture to CPU-accessible memory
@@ -72,31 +98,24 @@ void CaptureScreenArea(int x, int y, int width, int height) {
     if (SUCCEEDED(hr)) {
       // Access pixel data here
       auto* data = static_cast<uint8_t*>(mappedResource.pData);
-
-      // Process the pixel data as needed (data format is B8G8R8A8)
-      // Example: Access the first pixel's blue, green, red, and alpha channels
       uint8_t blue = data[0];
       uint8_t green = data[1];
       uint8_t red = data[2];
       uint8_t alpha = data[3];
       std::cout << "First pixel - B: " << (int)blue << ", G: " << (int)green
         << ", R: " << (int)red << ", A: " << (int)alpha << "\n";
-
-      // Unmap the resource
       context->Unmap(stagingTexture.Get(), 0);
     }
+    else {
+      std::cerr << "Failed to map staging texture.\n";
+    }
 
-    // Release the frame for the next capture
     duplication->ReleaseFrame();
   }
 }
 
 int main() {
-  int x = 1;      // starting X coordinate of area
-  int y = 1;      // starting Y coordinate of area
-  int width = 800;  // width of capture area
-  int height = 600; // height of capture area
-
+  int x = 1, y = 1, width = 10, height = 10;
   CaptureScreenArea(x, y, width, height);
   while(true) {}
   return 0;
