@@ -149,10 +149,12 @@ int main() {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
         IsPurpleDominated(color, 1.2) ? (
-          j < (width / 2) ? l[(width / 2 - 1) - j] = true : r[j - (width / 2)] = true
+          j < (width / 2) ? l[(width / 2) - j - 1] = true : r[j - (width / 2)] = true
           ) : false;
       }
     }
+
+    Result xl = findFirstAndLastTrue(l);
 
     for (int i = 0; i < (width / 2) && active; ++i) {
       if (r[i]) {
@@ -173,7 +175,6 @@ int main() {
   }
 
   releaseCapture();
-
   return 0;
 }
 
