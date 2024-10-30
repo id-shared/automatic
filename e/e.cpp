@@ -15,31 +15,6 @@ HBITMAP hBitmap = nullptr;
 BITMAPINFO bi;
 std::vector<COLORREF> pixelData;
 
-void initCapture(int e_1, int e) {
-  hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
-  SelectObject(hMemoryDC, hBitmap);
-
-  bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-  bi.bmiHeader.biWidth = e_1;
-  bi.bmiHeader.biHeight = -e;
-  bi.bmiHeader.biPlanes = 1;
-  bi.bmiHeader.biBitCount = 32;
-  bi.bmiHeader.biCompression = BI_RGB;
-  bi.bmiHeader.biSizeImage = 0;
-  bi.bmiHeader.biXPelsPerMeter = 0;
-  bi.bmiHeader.biYPelsPerMeter = 0;
-  bi.bmiHeader.biClrUsed = 0;
-  bi.bmiHeader.biClrImportant = 0;
-
-  pixelData.resize(e_1 * e);
-}
-
-void releaseCapture() {
-  DeleteObject(hBitmap);
-  DeleteDC(hMemoryDC);
-  ReleaseDC(NULL, hScreenDC);
-}
-
 void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
   BITMAPFILEHEADER bmfHeader;
   BITMAPINFOHEADER biHeader;
@@ -73,6 +48,33 @@ void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
   file.write(reinterpret_cast<const char*>(&biHeader), sizeof(biHeader));
   file.write(reinterpret_cast<const char*>(bmpData.data()), dwBmpSize);
   file.close();
+}
+
+void initCapture(int e_1, int e) {
+  hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
+  SelectObject(hMemoryDC, hBitmap);
+
+  memset(&bi, 0, sizeof(bi));
+
+  bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+  bi.bmiHeader.biWidth = e_1;
+  bi.bmiHeader.biHeight = -e;
+  bi.bmiHeader.biPlanes = 1;
+  bi.bmiHeader.biBitCount = 32;
+  bi.bmiHeader.biCompression = BI_RGB;
+  bi.bmiHeader.biSizeImage = 0;
+  bi.bmiHeader.biXPelsPerMeter = 0;
+  bi.bmiHeader.biYPelsPerMeter = 0;
+  bi.bmiHeader.biClrUsed = 0;
+  bi.bmiHeader.biClrImportant = 0;
+
+  pixelData.resize(e_1 * e);
+}
+
+void releaseCapture() {
+  DeleteObject(hBitmap);
+  DeleteDC(hMemoryDC);
+  ReleaseDC(NULL, hScreenDC);
 }
 
 std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
