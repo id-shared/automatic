@@ -113,6 +113,15 @@ void CaptureScreenArea(int x, int y, int width, int height, std::function<bool(u
   }
 }
 
+int findLastTrueIndex(const bool* arr, int size) {
+  for (int i = size - 1; i >= 0; --i) {
+    if (arr[i]) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 int main() {
   int width = 64, height = 64;  // Change to 64x64 for full frame capture
   int x = 1920 / 2 - width / 2; // Centering the capture area on the screen
@@ -128,10 +137,8 @@ int main() {
         uint8_t red = data[offset + 2];
         uint8_t alpha = data[offset + 3];
 
-        //std::cout << "Pixel (" << x << ", " << y << ") - B: " << (int)blue << ", G: " << (int)green << ", R: " << (int)red << ", A: " << (int)alpha << "\n";
-
         if (isPurpleDominated(red, green, blue, 1.75)) {
-          std::cout << "Pixel (" << x << ", " << y << ") is purple-dominated.\n";
+          std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
         }
       }
     }
