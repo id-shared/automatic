@@ -10,8 +10,8 @@
 
 using Microsoft::WRL::ComPtr;
 
-bool isPurpleDominated(uint8_t r, uint8_t g, uint8_t b, double threshold) {
-  return (r > threshold * g) && (b > threshold * g);
+bool isPurpleDominated(uint8_t a, uint8_t b, uint8_t g, uint8_t r) {
+  return a == 255 && b >= 191 && g >= 95 && g <= 159 && r >= 191;
 }
 
 void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
@@ -162,7 +162,7 @@ int main() {
         uint8_t green = data[offset + 1];
         uint8_t red = data[offset + 2];
         uint8_t alpha = data[offset + 3];
-        bool isDominated = isPurpleDominated(red, green, blue, 1.75);
+        bool isDominated = isPurpleDominated(alpha, blue, green, red);
 
         if (isDominated) {
           //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
@@ -180,13 +180,13 @@ int main() {
 
     int y2 = aIndex(y2_, n);
     int y1 = zIndex(y1_, n);
-    int ys = +5;
-    int yf = +1;
+    int ys = +4;
+    int yf = +4;
 
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
-    int xs = +5;
-    int xf = +5;
+    int xs = +4;
+    int xf = +4;
 
     //std::cout << x1 << " | " << x2 << std::endl;
 
@@ -220,7 +220,7 @@ int main() {
     return true;
     };
 
-  CaptureScreenArea(processPixelData, 16, x, y, width, height);
+  CaptureScreenArea(processPixelData, 4, x, y, width, height);
 
   return 0;
 }
