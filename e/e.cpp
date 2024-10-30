@@ -47,7 +47,7 @@ void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
 
   biHeader.biSize = sizeof(BITMAPINFOHEADER);
   biHeader.biWidth = width;
-  biHeader.biHeight = -height; // Negative to ensure top-down bitmap
+  biHeader.biHeight = height;
   biHeader.biPlanes = 1;
   biHeader.biBitCount = 32;
   biHeader.biCompression = BI_RGB;
@@ -106,18 +106,18 @@ int main() {
 
   const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  const int width = 200;
-  const int height = 200;
+  const int width = 64;
+  const int height = 64;
+
   const int startWidth = (screenWidth - width) / 2;
-  const int startHeight = (screenHeight - height) / 2;
-  const int delta = width / 2;
+  const int startHeight = (screenHeight / 2) + height;
 
   initCapture(width, height);
 
   while (true) {
     auto& pixelData = capture(startWidth, startHeight, width, height);
-    bool r[delta] = {};
-    bool l[delta] = {};
+    bool r[width / 2] = {};
+    bool l[width / 2] = {};
     bool active = true;
 
 #pragma omp parallel for
@@ -125,30 +125,25 @@ int main() {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
         bool result = IsPurpleDominated(color, 1.2);
-        j < delta ? l[(delta - 1) - j] = result : r[j - delta] = result;
+        j < (width / 2) ? l[(width / 2 - 1) - j] = result : r[j - (width / 2)] = result;
       }
     }
 
-    /*if (std::any_of(l, l + 16, [](bool value) { return value; }) && std::any_of(r, r + 16, [](bool value) { return value; })) {
-      std::cout << "At least one of the first three elements is true.\n";
-    }
-    else {*/
-    for (int i = 0; i < delta && active; ++i) {
+    for (int i = 0; i < (width / 2) && active; ++i) {
       if (r[i]) {
         Xyloid2::yx(driver, 0, +i);
         active = false;
       }
     }
 
-    for (int i = 0; i < delta && active; ++i) {
+    for (int i = 0; i < (width / 2) && active; ++i) {
       if (l[i]) {
         Xyloid2::yx(driver, 0, -i);
         active = false;
       }
     }
-    /*}*/
 
-    //saveBitmap(hBitmap, width, height, "capture_log.bmp");
+    //saveBitmap(hBitmap, width, height, "e.bmp");
   }
 
   releaseCapture();
