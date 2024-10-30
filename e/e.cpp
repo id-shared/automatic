@@ -21,7 +21,7 @@ void initCapture(int e_1, int e) {
 
   bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
   bi.bmiHeader.biWidth = e_1;
-  bi.bmiHeader.biHeight = e;
+  bi.bmiHeader.biHeight = -e;
   bi.bmiHeader.biPlanes = 1;
   bi.bmiHeader.biBitCount = 32;
   bi.bmiHeader.biCompression = BI_RGB;
@@ -80,6 +80,7 @@ std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
   GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
   return pixelData;
 }
+
 struct Result {
   int firstIndex; // Index of the first true value
   int lastIndex;  // Index of the last true value
