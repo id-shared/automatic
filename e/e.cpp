@@ -15,25 +15,19 @@ HBITMAP hBitmap = nullptr;
 BITMAPINFO bi;
 std::vector<COLORREF> pixelData;
 
-void initCapture(int e_1, int e) {
-  hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
+void initCapture(int width, int height) {
+  hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
   SelectObject(hMemoryDC, hBitmap);
 
   memset(&bi, 0, sizeof(bi));
-
   bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-  bi.bmiHeader.biWidth = e_1;
-  bi.bmiHeader.biHeight = -e;
+  bi.bmiHeader.biWidth = width;
+  bi.bmiHeader.biHeight = -height; // Negative for top-down DIB
   bi.bmiHeader.biPlanes = 1;
-  bi.bmiHeader.biBitCount = 32;
+  bi.bmiHeader.biBitCount = 32; // 32 bits for better color depth
   bi.bmiHeader.biCompression = BI_RGB;
-  bi.bmiHeader.biSizeImage = 0;
-  bi.bmiHeader.biXPelsPerMeter = 0;
-  bi.bmiHeader.biYPelsPerMeter = 0;
-  bi.bmiHeader.biClrUsed = 0;
-  bi.bmiHeader.biClrImportant = 0;
 
-  pixelData.resize(e_1 * e);
+  pixelData.resize(width * height);
 }
 
 void releaseCapture() {
@@ -42,25 +36,21 @@ void releaseCapture() {
   ReleaseDC(NULL, hScreenDC);
 }
 
-std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
-  BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, e_3, e_2, SRCCOPY);
-  GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
+std::vector<COLORREF>& capture(int startX, int startY, int width, int height) {
+  // Perform BitBlt to capture the screen
+  BitBlt(hMemoryDC, 0, 0, width, height, hScreenDC, startX, startY, SRCCOPY);
+  // Retrieve the pixel data
+  GetDIBits(hMemoryDC, hBitmap, 0, height, pixelData.data(), &bi, DIB_RGB_COLORS);
   return pixelData;
 }
 
-bool IsPurpleDominated(COLORREF x, double e) {
-  BYTE green = GetGValue(x);
-  BYTE blue = GetBValue(x);
-  BYTE red = GetRValue(x);
+bool isPurpleDominated(COLORREF color, double threshold) {
+  BYTE red = GetRValue(color);
+  BYTE green = GetGValue(color);
+  BYTE blue = GetBValue(color);
 
-  if (green == 0) {
-    return (red > 0 && blue > 0);
-  }
-
-  double ratio_red_green = static_cast<double>(red) / green;
-  double ratio_blue_green = static_cast<double>(blue) / green;
-
-  return (ratio_red_green > e && ratio_blue_green > e);
+  // Improved logic for purple dominance check
+  return (red > threshold * green) && (red > threshold * blue);
 }
 
 int findLastTrueIndex(const bool* arr, int size) {
@@ -99,13 +89,18 @@ int main() {
 
 #pragma omp parallel for
     for (int i = 0; i < height; ++i) {
-      //printf("%d, %d %d %d %d\n", i, IsPurpleDominated(pixelData[(i * width)], 1.2), IsPurpleDominated(pixelData[(i * width) + 1], 1.2), IsPurpleDominated(pixelData[(i * width) + 2], 1.2), IsPurpleDominated(pixelData[(i * width) + 3], 1.2));
-
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        IsPurpleDominated(color, 1.2) ? (
-          j < (width / 2) ? l[delta - j - 1] = true : r[j - delta] = true
-          ) : false;
+        bool isDominated = isPurpleDominated(color, 1.2);
+
+        if (isDominated) {
+          if (j < (width / 2)) {
+            l[delta - j - 1] = true;
+          }
+          else {
+            r[j - delta] = true;
+          }
+        }
       }
     }
 
@@ -113,37 +108,22 @@ int main() {
     int xl = findLastTrueIndex(l, delta);
 
     if (xl == -1 && xr == -1) {
+      // No action needed
     }
     else if (xl == -1) {
       Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
-      /*for (int i = 0; i < delta && active; ++i) {
-        if (r[i]) {
-          Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
-          active = false;
-        }
-      }*/
     }
     else if (xr == -1) {
       Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
-      /*for (int i = 0; i < delta && active; ++i) {
-        if (l[i]) {
-          Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
-          active = false;
-        }
-      }*/
     }
     else {
       printf("%d %d\n", xl, xr);
     }
 
-    //saveBitmap(hBitmap, width, height, "e.bmp");
-    //Time::XO(100);
+    // saveBitmap(hBitmap, width, height, "e.bmp");
+    // Time::XO(100); // Control the capture frequency
   }
 
   releaseCapture();
   return 0;
 }
-
-//if (std::any_of(l, l + 16, [](bool value) { return value; }) && std::any_of(r, r + 16, [](bool value) { return value; })) {
-//  std::cout << "At least one of the first three elements is true.\n";
-//}
