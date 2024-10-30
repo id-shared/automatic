@@ -148,20 +148,22 @@ int main() {
     if (xl == -1 && xr == -1) {
     }
     else if (xl == -1) {
-      for (int i = 0; i < delta && active; ++i) {
+      Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
+      /*for (int i = 0; i < delta && active; ++i) {
         if (r[i]) {
           Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
           active = false;
         }
-      }
+      }*/
     }
     else if (xr == -1) {
-      for (int i = 0; i < delta && active; ++i) {
+      Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
+      /*for (int i = 0; i < delta && active; ++i) {
         if (l[i]) {
           Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
           active = false;
         }
-      }
+      }*/
     }
     else {
       printf("%d %d\n", xl, xr);
