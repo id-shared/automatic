@@ -185,6 +185,9 @@ int main() {
 
     int y2 = aIndex(y2_, n);
     int y1 = zIndex(y1_, n);
+    int ye = +3;
+    int yc = +2;
+    int ya = +1;
 
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
@@ -194,21 +197,28 @@ int main() {
     //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
-    if (y1 >= 1 || y2 >= 1) {
-      if (y1 >= 1 && y2 >= 1) {
-        if (y2 > y1) {
-          Xyloid2::yx(driver, ((y2 - y1) / 2) * +1, 0);
+    /*if (y1 > ya || y2 > ya) {
+      y2 > yc&& Xyloid2::yx(driver, (y2 - yc) * ye * +1, 0);
+      y1 > yc&& Xyloid2::yx(driver, (y1 - yc) * ye * -1, 0);
+    }*/
+
+    if (y1 > ya || y2 > ya) {
+      if (y1 > yc && y2 > yc) {
+        //Xyloid2::yx(driver, y1 * yc * -1, 0);
+        /*if (y2 > y1) {
+          Xyloid2::yx(driver, ((y2 - y1) / 2) * yc * +1, 0);
         }
         else {
-          Xyloid2::yx(driver, ((y1 - y2) / 2) * -1, 0);
-        }
-      }
-      else if (y2 >= 1) {
-        Xyloid2::yx(driver, y2 * +1, 0);
+          Xyloid2::yx(driver, ((y1 - y2) / 2) * yc * -1, 0);
+        }*/
       }
       else {
-        Xyloid2::yx(driver, y1 * -1, 0);
+        /*y2 > yc && Xyloid2::yx(driver, (y2 - yc) * ye * +1, 0);
+        y1 > yc && Xyloid2::yx(driver, (y1 - yc) * ye * -1, 0);*/
       }
+
+      y2 > yc&& Xyloid2::yx(driver, (y2 - yc) * ye * +1, 0);
+      y1 > yc&& Xyloid2::yx(driver, (y1 - yc) * ye * -1, 0);
     }
 
     /*if (x1 >= 1 && x2 >= 1) {
