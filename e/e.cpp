@@ -136,7 +136,7 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int height = 64, width = 64;
+  const int height = 32, width = 32;
   const int y = (1080 - height) / 2;
   const int x = (1920 - width) / 2;
   const int n = width / 2;
@@ -185,56 +185,30 @@ int main() {
 
     int y2 = aIndex(y2_, n);
     int y1 = zIndex(y1_, n);
-    int ye = +3;
-    int yc = +2;
-    int ya = +1;
-
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
-    int xs = +4;
-    int xf = +4;
-    int xe = +3;
-    int xc = +2;
-    int xa = +1;
+    int n3 = +3;
+    int n2 = +2;
+    int n1 = +1;
 
     //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
-    if (y1 > ya || y2 > ya) {
-      y2 > yc&& Xyloid2::yx(driver, (y2 - yc) * ye * +1, 0);
-      y1 > yc&& Xyloid2::yx(driver, (y1 - yc) * ye * -1, 0);
+    if (y1 >= n1 || y2 >= n1) {
+      if (y1 > n2 || y2 > n2) {
+        y1 > n2 ? Xyloid2::yx(driver, (y1 - n2 - n2) * n3 * -1, 0) : Xyloid2::yx(driver, (y2 - n2 + n2) * n3 * +1, 0);
+      }
     }
-
-    if (x1 >= xa || x2 >= ya) {
-      if (x1 >= xc && x2 >= xc) {
+    /*if (x1 > n1 || x2 > n1) {
+      if (x1 > n2 && x2 > n2) {
         x2 > x1&& Xyloid2::yx(driver, ((x2 - x1) / 2) * +1, 0);
         x1 > x2&& Xyloid2::yx(driver, ((x1 - x2) / 2) * -1, 0);
       }
       else {
-        x2 > xc&& Xyloid2::yx(driver, 0, (x2 - xc) * xe * +1);
-        x1 > xc&& Xyloid2::yx(driver, 0, (x1 - xc) * xe * -1);
-      }
-    }
-
-    /*if (x1 >= 1 && x2 >= 1) {
-      if (x1 > x2) {
-        Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * xf * -1);
-      }
-      else {
-        Xyloid2::yx(driver, 0, ((x2 - x1) / 2) * xf * +1);
-      }
-    }
-    else {
-      if (x1 >= 1 || x2 >= 1) {
-        if (x1 >= 1) {
-          Xyloid2::yx(driver, 0, ((x1 * xf) + xs) * -1);
-        }
-        else {
-          Xyloid2::yx(driver, 0, ((x2 * xf) + xs) * +1);
-        }
+        x2 > n2&& Xyloid2::yx(driver, 0, (x2 - n2) * n3 * +1);
+        x1 > n2&& Xyloid2::yx(driver, 0, (x1 - n2) * n3 * -1);
       }
     }*/
-
     return true;
     };
 
