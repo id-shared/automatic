@@ -140,10 +140,10 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   std::function<bool(uint8_t*, int)> processPixelData = [driver, height, width, n](uint8_t* data, int rowPitch) {
-    bool u[n] = {};
-    bool r[n] = {};
-    bool l[n] = {};
-    bool d[n] = {};
+    bool y2_[n] = {};
+    bool y1_[n] = {};
+    bool x2_[n] = {};
+    bool x1_[n] = {};
 
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
@@ -158,36 +158,40 @@ int main() {
         if (isDominated) {
           //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
           if (x < (width / 2)) {
-            l[n - x - 1] = true;
+            y1_[n - y - 1] = true;
+            x1_[n - x - 1] = true;
           }
           else {
-            r[x - n] = true;
+            y2_[y - n] = true;
+            x2_[x - n] = true;
           }
         }
       }
     }
 
-    int xr = findLastTrueIndex(r, n);
-    int xl = findLastTrueIndex(l, n);
+    int y2 = findLastTrueIndex(y2_, n);
+    int y1 = findLastTrueIndex(y1_, n);
+    int x2 = findLastTrueIndex(x2_, n);
+    int x1 = findLastTrueIndex(x1_, n);
     int xf = +5;
 
     //std::cout << xr << " | " << xl << std::endl;
 
-    if (xl >= 1 && xr >= 1) {
-      if (xl > xr) {
-        Xyloid2::yx(driver, 0, ((xl - xr) / 2) * xf * -1);
+    if (x1 >= 1 && x2 >= 1) {
+      if (x1 > x2) {
+        Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * xf * -1);
       }
       else {
-        Xyloid2::yx(driver, 0, ((xr - xl) / 2) * xf * +1);
+        Xyloid2::yx(driver, 0, ((x2 - x1) / 2) * xf * +1);
       }
     }
     else {
-      if (xl >= 1 || xr >= 1) {
-        if (xl >= 1) {
-          Xyloid2::yx(driver, 0, (xl / 2) * xf * -1);
+      if (x1 >= 1 || x2 >= 1) {
+        if (x1 >= 1) {
+          Xyloid2::yx(driver, 0, (x1 / 2) * xf * -1);
         }
         else {
-          Xyloid2::yx(driver, 0, (xr / 2) * xf * +1);
+          Xyloid2::yx(driver, 0, (x2 / 2) * xf * +1);
         }
       }
     }
