@@ -136,7 +136,7 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int height = 2, width = 64;
+  const int height = 64, width = 64;
   const int y = (1080 - height) / 2;
   const int x = (1920 - width) / 2;
   const int n = width / 2;
@@ -181,21 +181,22 @@ int main() {
     int y2 = aIndex(y2_, n);
     int y1 = zIndex(y1_, n);
     int ys = +5;
-    int yf = +5;
+    int yf = +1;
 
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
     int xs = +5;
     int xf = +5;
 
-    //std::cout << xr << " | " << xl << std::endl;
+    //std::cout << x1 << " | " << x2 << std::endl;
 
-    /*if (y1 >= 1) {
-      Xyloid2::yx(driver, y1 * yf * -1, 0);
+    if (y1 >= 1) {
+      //std::cout << y1 << " | " << y2 << std::endl;
+      //Xyloid2::yx(driver, 1, 0);
     }
     else {
-      Xyloid2::yx(driver, y2 * yf * +1, 0);
-    }*/
+      //Xyloid2::yx(driver, y2 * yf * +1, 0);
+    }
 
     if (x1 >= 1 && x2 >= 1) {
       if (x1 > x2) {
@@ -219,7 +220,7 @@ int main() {
     return true;
     };
 
-  CaptureScreenArea(processPixelData, 1, x, y, width, height);
+  CaptureScreenArea(processPixelData, 16, x, y, width, height);
 
   return 0;
 }
