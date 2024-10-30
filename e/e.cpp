@@ -127,9 +127,9 @@ int findLastTrueIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int width = 64, height = 64;  // Change to 64x64 for full frame capture
-  const int x = 1920 / 2 - width / 2; // Centering the capture area on the screen
-  const int y = 1080 / 2 - height / 2; // Centering the capture area on the screen
+  const int width = 64, height = 64;
+  const int x = (1920 - width) / 2;
+  const int y = 1080 / 2;
   const int sigma = width / 2;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
