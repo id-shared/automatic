@@ -136,7 +136,7 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int height = 32, width = 32;
+  const int height = 64, width = 64;
   const int y = (1080 - height) / 2;
   const int x = (1920 - width) / 2;
   const int n = width / 2;
@@ -199,16 +199,18 @@ int main() {
         y1 > n2 ? Xyloid2::yx(driver, (y1 - n2 - n2) * n3 * -1, 0) : Xyloid2::yx(driver, (y2 - n2 + n2) * n3 * +1, 0);
       }
     }
-    /*if (x1 > n1 || x2 > n1) {
-      if (x1 > n2 && x2 > n2) {
-        x2 > x1&& Xyloid2::yx(driver, ((x2 - x1) / 2) * +1, 0);
-        x1 > x2&& Xyloid2::yx(driver, ((x1 - x2) / 2) * -1, 0);
+    if (x1 >= n1 || x2 >= n1) {
+      if (x1 > n2 || x2 > n2) {
+        if (x1 > n2 && x2 > n2) {
+          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - n2 + n2) / 2) * n3 * +1);
+          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - n2 - n2) / 2) * n3 * -1);
+        }
+        else {
+          x2 > n2&& Xyloid2::yx(driver, 0, (x2 - n2 + n2) * n3 * +1);
+          x1 > n2&& Xyloid2::yx(driver, 0, (x1 - n2 - n2) * n3 * -1);
+        }
       }
-      else {
-        x2 > n2&& Xyloid2::yx(driver, 0, (x2 - n2) * n3 * +1);
-        x1 > n2&& Xyloid2::yx(driver, 0, (x1 - n2) * n3 * -1);
-      }
-    }*/
+    }
     return true;
     };
 
