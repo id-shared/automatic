@@ -117,8 +117,17 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
   }
 }
 
-int findLastTrueIndex(const bool* arr, int size) {
+int zIndex(const bool* arr, int size) {
   for (int i = size - 1; i >= 0; --i) {
+    if (arr[i]) {
+      return i + 1;
+    }
+  }
+  return 0;
+}
+
+int aIndex(const bool* arr, int size) {
+  for (int i = 0; i < size; ++i) {
     if (arr[i]) {
       return i + 1;
     }
@@ -169,10 +178,10 @@ int main() {
       }
     }
 
-    int y2 = findLastTrueIndex(y2_, n);
-    int y1 = findLastTrueIndex(y1_, n);
-    int x2 = findLastTrueIndex(x2_, n);
-    int x1 = findLastTrueIndex(x1_, n);
+    int y2 = zIndex(y2_, n);
+    int y1 = zIndex(y1_, n);
+    int x2 = zIndex(x2_, n);
+    int x1 = zIndex(x1_, n);
     int xf = +5;
 
     //std::cout << xr << " | " << xl << std::endl;
