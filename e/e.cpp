@@ -190,36 +190,36 @@ int main() {
     int y1 = zIndex(y1_, n);
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
-    int n3 = +3;
-    int n2 = +2;
-    int n1 = +1;
+    int f1 = +1;
+    int e2 = +2;
+    int e1 = +1;
 
     //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
-    if (y1 >= n1 || y2 >= n1) {
-      if (y1 > n2 || y2 > n2) {
+    if (y1 >= e1 || y2 >= e1) {
+      if (y1 > e2 || y2 > e2) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > n2 ? Xyloid2::yx(driver, (y1 - n2 - n2) * n3 * -1, 0) : Xyloid2::yx(driver, (y2 - n2 + n2) * n3 * +1, 0);
+          y1 > e2 ? Xyloid2::yx(driver, (y1 - e2 - e2) * f1 * -1, 0) : Xyloid2::yx(driver, (y2 - e2 + e2) * f1 * +1, 0);
         }
       }
     }
-    if (x1 >= n1 || x2 >= n1) {
-      if (x1 > n2 || x2 > n2) {
-        if (x1 > n2 && x2 > n2) {
-          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - n2 + n2) / 2) * n3 * +1);
-          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - n2 - n2) / 2) * n3 * -1);
+    if (x1 >= e1 || x2 >= e1) {
+      if (x1 > e2 || x2 > e2) {
+        if (x1 > e2 && x2 > e2) {
+          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - e2 + e2) / 2) * f1 * +1);
+          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - e2 - e2) / 2) * f1 * -1);
         }
         else {
-          x2 > n2&& Xyloid2::yx(driver, 0, (x2 - n2 + n2) * n3 * +1);
-          x1 > n2&& Xyloid2::yx(driver, 0, (x1 - n2 - n2) * n3 * -1);
+          x2 > e2&& Xyloid2::yx(driver, 0, (x2 - e2 + e2) * f1 * +1);
+          x1 > e2&& Xyloid2::yx(driver, 0, (x1 - e2 - e2) * f1 * -1);
         }
       }
     }
     return true;
     };
 
-  CaptureScreenArea(processPixelData, 4, x, y, width, height);
+  CaptureScreenArea(processPixelData, 1, x, y, width, height);
 
   return 0;
 }
