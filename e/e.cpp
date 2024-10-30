@@ -73,8 +73,8 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  const int width = 64;
-  const int height = 4;
+  const int width = 128;
+  const int height = 16;
   const int delta = (width / 2);
 
   initCapture(width, height);
@@ -89,25 +89,25 @@ int main() {
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        bool result = IsPurpleDominated(color, 1.2);
+        bool result = IsPurpleDominated(color, 1.5);
         j < delta ? l[(delta - 1) - j] = result : r[j - delta] = result;
       }
     }
 
-    if (std::any_of(l, l + (delta / 4), [](bool value) { return value; }) && std::any_of(r, r + (delta / 4), [](bool value) { return value; })) {
+    if (std::any_of(l, l + 16, [](bool value) { return value; }) && std::any_of(r, r + 16, [](bool value) { return value; })) {
       std::cout << "At least one of the first three elements is true.\n";
     }
     else {
       for (int i = 0; i < delta && active; ++i) {
         if (r[i]) {
-          Xyloid2::yx(driver, 0, (i + 1));
+          Xyloid2::yx(driver, 0, +i);
           active = false;
         }
       }
 
       for (int i = 0; i < delta && active; ++i) {
         if (l[i]) {
-          Xyloid2::yx(driver, 0, -(i + 1));
+          Xyloid2::yx(driver, 0, -i);
           active = false;
         }
       }
