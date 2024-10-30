@@ -166,19 +166,24 @@ int main() {
 
         if (isDominated) {
           //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
-          if (x < (width / 2)) {
+          if (y < (height / 2)) {
             y1_[n - y - 1] = true;
-            x1_[n - x - 1] = true;
           }
           else {
             y2_[y - n] = true;
+          }
+
+          if (x < (width / 2)) {
+            x1_[n - x - 1] = true;
+          }
+          else {
             x2_[x - n] = true;
           }
         }
       }
     }
 
-    int y2 = aIndex(y2_, n);
+    int y2 = zIndex(y2_, n);
     int y1 = zIndex(y1_, n);
     int ys = +4;
     int yf = +4;
@@ -188,17 +193,18 @@ int main() {
     int xs = +4;
     int xf = +4;
 
+    //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
     if (y1 >= 1) {
       //std::cout << y1 << " | " << y2 << std::endl;
-      //Xyloid2::yx(driver, 1, 0);
+      Xyloid2::yx(driver, y1 * -1, 0);
     }
     else {
       //Xyloid2::yx(driver, y2 * yf * +1, 0);
     }
 
-    if (x1 >= 1 && x2 >= 1) {
+    /*if (x1 >= 1 && x2 >= 1) {
       if (x1 > x2) {
         Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * xf * -1);
       }
@@ -215,7 +221,7 @@ int main() {
           Xyloid2::yx(driver, 0, ((x2 * xf) + xs) * +1);
         }
       }
-    }
+    }*/
 
     return true;
     };
