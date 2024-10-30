@@ -139,7 +139,7 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int height = 96, width = 96;
+  const int height = 64, width = 64;
   const int y = (1080 - height) / 2;
   const int x = (1920 - width) / 2;
   const int n = width / 2;
@@ -190,30 +190,30 @@ int main() {
     int y1 = zIndex(y1_, n);
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
-    int fy = +3;
-    int fx = +3;
     int f2 = +2;
     int f1 = +1;
+    int e2 = +2;
+    int e1 = +1;
 
     //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
-    if (y1 >= f1 || y2 >= f1) {
-      if (y1 > f2 || y2 > f2) {
+    if (y1 >= e1 || y2 >= e1) {
+      if (y1 > e2 || y2 > e2) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > f2 ? Xyloid2::yx(driver, (y1 - f2 - f2) * fy * -1, 0) : Xyloid2::yx(driver, (y2 - f2 + f2) * fy * +1, 0);
+          y1 > e2 ? Xyloid2::yx(driver, (y1 - e2 - e2) * f2 * -1, 0) : Xyloid2::yx(driver, (y2 - e2 + e2) * f2 * +1, 0);
         }
       }
     }
-    if (x1 >= f1 || x2 >= f1) {
-      if (x1 > f2 || x2 > f2) {
-        if (x1 > f2 && x2 > f2) {
-          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - f2 + f2) / 2) * fx * +1);
-          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - f2 - f2) / 2) * fx * -1);
+    if (x1 >= e1 || x2 >= e1) {
+      if (x1 > e2 || x2 > e2) {
+        if (x1 > e2 && x2 > e2) {
+          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - e2 + e2) / 2) * f1 * +1);
+          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - e2 - e2) / 2) * f1 * -1);
         }
         else {
-          x2 > f2&& Xyloid2::yx(driver, 0, (x2 - f2 + f2) * fx * +1);
-          x1 > f2&& Xyloid2::yx(driver, 0, (x1 - f2 - f2) * fx * -1);
+          x2 > e2&& Xyloid2::yx(driver, 0, (x2 - e2 + e2) * f2 * +1);
+          x1 > e2&& Xyloid2::yx(driver, 0, (x1 - e2 - e2) * f2 * -1);
         }
       }
     }
