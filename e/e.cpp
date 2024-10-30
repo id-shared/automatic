@@ -81,8 +81,8 @@ void CaptureScreenArea(int x, int y, int width, int height, std::function<bool(u
     // Capture next frame
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
-    hr = duplication->AcquireNextFrame(16, &frameInfo, &desktopResource);
-    if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue; // No new frame yet, try again
+    hr = duplication->AcquireNextFrame(4, &frameInfo, &desktopResource);
+    if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue;
     if (FAILED(hr)) {
       std::cerr << "Failed to acquire frame.\n";
       break;
@@ -127,10 +127,10 @@ int findLastTrueIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int width = 64, height = 64;
+  const int height = 32, width = 32;
+  const int y = (1080 - height) / 2;
   const int x = (1920 - width) / 2;
-  const int y = 1080 / 2;
-  const int sigma = width / 2;
+  const int n = width / 2;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -139,9 +139,11 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [height, width, sigma, driver](uint8_t* data, int rowPitch) {
-    bool r[sigma] = {};
-    bool l[sigma] = {};
+  std::function<bool(uint8_t*, int)> processPixelData = [driver, height, width, n](uint8_t* data, int rowPitch) {
+    bool u[n] = {};
+    bool r[n] = {};
+    bool l[n] = {};
+    bool d[n] = {};
 
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
@@ -156,17 +158,17 @@ int main() {
         if (isDominated) {
           //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
           if (x < (width / 2)) {
-            l[sigma - x - 1] = true;
+            l[n - x - 1] = true;
           }
           else {
-            r[x - sigma] = true;
+            r[x - n] = true;
           }
         }
       }
     }
 
-    int xr = findLastTrueIndex(r, sigma);
-    int xl = findLastTrueIndex(l, sigma);
+    int xr = findLastTrueIndex(r, n);
+    int xl = findLastTrueIndex(l, n);
 
     //std::cout << xr << ", " << xl << std::endl;
 
