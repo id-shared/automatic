@@ -81,28 +81,6 @@ std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
   return pixelData;
 }
 
-struct Result {
-  int firstIndex;
-  int lastIndex;
-
-  Result() : firstIndex(-1), lastIndex(-1) {}
-};
-
-Result findFirstAndLastTrue(const std::vector<bool>& arr) {
-  Result result; // Create a Result object
-
-  for (size_t i = 0; i < arr.size(); ++i) {
-    if (arr[i]) {
-      if (result.firstIndex == -1) {
-        result.firstIndex = i; // First true found
-      }
-      result.lastIndex = i; // Update last true found
-    }
-  }
-
-  return result; // Return the Result object
-}
-
 bool IsPurpleDominated(COLORREF x, double e) {
   BYTE green = GetGValue(x);
   BYTE blue = GetBValue(x);
@@ -118,6 +96,15 @@ bool IsPurpleDominated(COLORREF x, double e) {
   return (ratio_red_green > e && ratio_blue_green > e);
 }
 
+int findLastTrueIndex(const bool* arr, int size) {
+  for (int i = size - 1; i >= 0; --i) {
+    if (arr[i]) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 int main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -130,6 +117,7 @@ int main() {
   const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
   const int width = 64;
   const int height = 64;
+  const int delta = width / 2;
 
   const int startWidth = (screenWidth - width) / 2;
   const int startHeight = (screenHeight / 2) + height;
@@ -138,8 +126,8 @@ int main() {
 
   while (true) {
     auto& pixelData = capture(startWidth, startHeight, width, height);
-    bool r[width / 2] = {};
-    bool l[width / 2] = {};
+    bool r[delta] = {};
+    bool l[delta] = {};
     bool active = true;
 
 #pragma omp parallel for
@@ -148,22 +136,25 @@ int main() {
 
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        IsPurpleDominated(color, 1.2) ? (
-          j < (width / 2) ? l[(width / 2) - j - 1] = true : r[j - (width / 2)] = true
+        IsPurpleDominated(color, 1.5) ? (
+          j < (width / 2) ? l[delta - j - 1] = true : r[j - delta] = true
           ) : false;
       }
     }
 
-    Result xl = findFirstAndLastTrue(l);
+    int xr = findLastTrueIndex(r, delta);
+    int xl = findLastTrueIndex(l, delta);
 
-    for (int i = 0; i < (width / 2) && active; ++i) {
+    printf("%d %d\n", xl, xr);
+
+    for (int i = 0; i < delta && active; ++i) {
       if (r[i]) {
         Xyloid2::yx(driver, 0, +i);
         active = false;
       }
     }
 
-    for (int i = 0; i < (width / 2) && active; ++i) {
+    for (int i = 0; i < delta && active; ++i) {
       if (l[i]) {
         Xyloid2::yx(driver, 0, -i);
         active = false;
