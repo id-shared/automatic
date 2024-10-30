@@ -200,23 +200,19 @@ int main() {
     //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
     //std::cout << x1 << " | " << x2 << std::endl;
 
-    /*if (y1 > ya || y2 > ya) {
+    if (y1 > ya || y2 > ya) {
       y2 > yc&& Xyloid2::yx(driver, (y2 - yc) * ye * +1, 0);
       y1 > yc&& Xyloid2::yx(driver, (y1 - yc) * ye * -1, 0);
-    }*/
+    }
 
     if (x1 >= xa || x2 >= ya) {
       if (x1 >= xc && x2 >= xc) {
-        /*if (x2 > x1) {
-          Xyloid2::yx(driver, ((y2 - y1) / 2) * yc * +1, 0);
-        }
-        else {
-          Xyloid2::yx(driver, ((y1 - y2) / 2) * yc * -1, 0);
-        }*/
+        x2 > x1&& Xyloid2::yx(driver, ((x2 - x1) / 2) * +1, 0);
+        x1 > x2&& Xyloid2::yx(driver, ((x1 - x2) / 2) * -1, 0);
       }
       else {
-        x2 > xc && Xyloid2::yx(driver, 0, (x2 - xc) * xe * +1);
-        x1 > xc && Xyloid2::yx(driver, 0, (x1 - xc) * xe * -1);
+        x2 > xc&& Xyloid2::yx(driver, 0, (x2 - xc) * xe * +1);
+        x1 > xc&& Xyloid2::yx(driver, 0, (x1 - xc) * xe * -1);
       }
     }
 
