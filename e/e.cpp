@@ -102,20 +102,6 @@ Result findFirstAndLastTrue(const std::vector<bool>& arr) {
   return result; // Return the Result object
 }
 
-template <typename T>
-std::vector<std::vector<T>> splitArray(const std::vector<T>& array, int n) {
-  std::vector<std::vector<T>> parts;
-  int partSize = array.size() / n;
-
-  for (int i = 0; i < n; ++i) {
-    auto startIt = array.begin() + i * partSize;
-    auto endIt = (i == n - 1) ? array.end() : startIt + partSize;
-    parts.emplace_back(startIt, endIt);
-  }
-
-  return parts;
-}
-
 bool IsPurpleDominated(COLORREF x, double e) {
   BYTE green = GetGValue(x);
   BYTE blue = GetBValue(x);
@@ -142,7 +128,7 @@ int main() {
   const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
   const int width = 4;
-  const int height = 2;
+  const int height = 4;
 
   const int startWidth = (screenWidth - width) / 2;
   const int startHeight = (screenHeight / 2) + height;
@@ -155,13 +141,14 @@ int main() {
     bool l[width / 2] = {};
     bool active = true;
 
-    std::vector<std::vector<COLORREF>> detail = splitArray(pixelData, width);
-
 #pragma omp parallel for
     for (int i = 0; i < height; ++i) {
+      printf("%d, %d %d %d %d\n", i, IsPurpleDominated(pixelData[(i * width)], 1.5), IsPurpleDominated(pixelData[(i * width) + 1], 1.5), IsPurpleDominated(pixelData[(i * width) + 2], 1.5), IsPurpleDominated(pixelData[(i * width) + 3], 1.5));
+
       for (int j = 0; j < width; ++j) {
-        COLORREF color = detail[i][j];
-        printf("%d %d %d %d\n", IsPurpleDominated(detail[i][0], 1.5), IsPurpleDominated(detail[i][1], 1.5), IsPurpleDominated(detail[i][2], 1.5), IsPurpleDominated(detail[i][3], 1.5));
+        COLORREF color = pixelData[(i * width) + j];
+        //COLORREF color = detail[i][j];
+        //printf("%d\n", color2 == color);
         bool result = IsPurpleDominated(color, 1.5);
         j < (width / 2) ? l[(width / 2 - 1) - j] = result : r[j - (width / 2)] = result;
       }
