@@ -82,10 +82,10 @@ std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
 }
 
 struct Result {
-  int firstIndex; // Index of the first true value
-  int lastIndex;  // Index of the last true value
+  int firstIndex;
+  int lastIndex;
 
-  Result() : firstIndex(-1), lastIndex(-1) {} // Initialize to -1
+  Result() : firstIndex(-1), lastIndex(-1) {}
 };
 
 Result findFirstAndLastTrue(const std::vector<bool>& arr) {
