@@ -80,6 +80,27 @@ std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
   GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
   return pixelData;
 }
+struct Result {
+  int firstIndex; // Index of the first true value
+  int lastIndex;  // Index of the last true value
+
+  Result() : firstIndex(-1), lastIndex(-1) {} // Initialize to -1
+};
+
+Result findFirstAndLastTrue(const std::vector<bool>& arr) {
+  Result result; // Create a Result object
+
+  for (size_t i = 0; i < arr.size(); ++i) {
+    if (arr[i]) {
+      if (result.firstIndex == -1) {
+        result.firstIndex = i; // First true found
+      }
+      result.lastIndex = i; // Update last true found
+    }
+  }
+
+  return result; // Return the Result object
+}
 
 bool IsPurpleDominated(COLORREF x, double e) {
   BYTE green = GetGValue(x);
@@ -150,3 +171,7 @@ int main() {
 
   return 0;
 }
+
+//if (std::any_of(l, l + 16, [](bool value) { return value; }) && std::any_of(r, r + 16, [](bool value) { return value; })) {
+//  std::cout << "At least one of the first three elements is true.\n";
+//}
