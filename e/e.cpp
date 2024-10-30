@@ -180,10 +180,12 @@ int main() {
 
     int y2 = aIndex(y2_, n);
     int y1 = zIndex(y1_, n);
+    int ys = +5;
     int yf = +5;
 
     int x2 = zIndex(x2_, n);
     int x1 = zIndex(x1_, n);
+    int xs = +5;
     int xf = +5;
 
     //std::cout << xr << " | " << xl << std::endl;
@@ -206,10 +208,10 @@ int main() {
     else {
       if (x1 >= 1 || x2 >= 1) {
         if (x1 >= 1) {
-          Xyloid2::yx(driver, 0, x1 * xf * -1);
+          Xyloid2::yx(driver, 0, ((x1 * xf) + xs) * -1);
         }
         else {
-          Xyloid2::yx(driver, 0, x2 * xf * +1);
+          Xyloid2::yx(driver, 0, ((x2 * xf) + xs) * +1);
         }
       }
     }
