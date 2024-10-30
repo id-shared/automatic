@@ -39,15 +39,9 @@ void releaseCapture() {
   ReleaseDC(NULL, hScreenDC);
 }
 
-std::vector<COLORREF>& capture(int e_1, int e) {
-  int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-  int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  int x = (screenWidth - e_1) / 2;
-  int y = (screenHeight - e) / 2;
-
-  BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, x, y, SRCCOPY);
+std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
+  BitBlt(hMemoryDC, 0, 0, e_1, e, hScreenDC, e_3, e_2, SRCCOPY);
   GetDIBits(hMemoryDC, hBitmap, 0, e, pixelData.data(), &bi, DIB_RGB_COLORS);
-
   return pixelData;
 }
 
@@ -73,14 +67,19 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  const int width = 128;
-  const int height = 16;
-  const int delta = (width / 2);
+
+  const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+  const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+  const int width = 200;
+  const int height = 200;
+  const int startWidth = (screenWidth - width) / 2;
+  const int startHeight = (screenHeight - height) / 2;
+  const int delta = width / 2;
 
   initCapture(width, height);
 
   while (true) {
-    auto& pixelData = capture(width, height);
+    auto& pixelData = capture(startWidth, startHeight, width, height);
     bool r[delta] = {};
     bool l[delta] = {};
     bool active = true;
