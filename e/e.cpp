@@ -130,7 +130,7 @@ int main() {
 
         //std::cout << "Pixel (" << x << ", " << y << ") - B: " << (int)blue << ", G: " << (int)green << ", R: " << (int)red << ", A: " << (int)alpha << "\n";
 
-        if (isPurpleDominated(red, green, blue, 1.2)) {
+        if (isPurpleDominated(red, green, blue, 1.75)) {
           std::cout << "Pixel (" << x << ", " << y << ") is purple-dominated.\n";
         }
       }
