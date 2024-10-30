@@ -11,7 +11,10 @@
 using Microsoft::WRL::ComPtr;
 
 bool isPurpleDominated(uint8_t a, uint8_t b, uint8_t g, uint8_t r) {
-  return a == 255 && b >= 191 && g >= 95 && g <= 159 && r >= 191;
+  return a == 255 && b >= 223 && g >= 95 && g <= 159 && r >= 223;
+}
+bool isKeyHeld(int e) {
+  return (GetAsyncKeyState(e) & 0x8000) != 0;
 }
 
 void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
@@ -196,7 +199,9 @@ int main() {
 
     if (y1 >= n1 || y2 >= n1) {
       if (y1 > n2 || y2 > n2) {
-        y1 > n2 ? Xyloid2::yx(driver, (y1 - n2 - n2) * n3 * -1, 0) : Xyloid2::yx(driver, (y2 - n2 + n2) * n3 * +1, 0);
+        if (!isKeyHeld(VK_LBUTTON)) {
+          y1 > n2 ? Xyloid2::yx(driver, (y1 - n2 - n2) * n3 * -1, 0) : Xyloid2::yx(driver, (y2 - n2 + n2) * n3 * +1, 0);
+        }
       }
     }
     if (x1 >= n1 || x2 >= n1) {
