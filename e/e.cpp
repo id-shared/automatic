@@ -128,8 +128,8 @@ int main() {
 
   const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
   const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  const int width = 4;
-  const int height = 4;
+  const int width = 64;
+  const int height = 64;
 
   const int startWidth = (screenWidth - width) / 2;
   const int startHeight = (screenHeight / 2) + height;
@@ -144,14 +144,13 @@ int main() {
 
 #pragma omp parallel for
     for (int i = 0; i < height; ++i) {
-      printf("%d, %d %d %d %d\n", i, IsPurpleDominated(pixelData[(i * width)], 1.5), IsPurpleDominated(pixelData[(i * width) + 1], 1.5), IsPurpleDominated(pixelData[(i * width) + 2], 1.5), IsPurpleDominated(pixelData[(i * width) + 3], 1.5));
+      //printf("%d, %d %d %d %d\n", i, IsPurpleDominated(pixelData[(i * width)], 1.2), IsPurpleDominated(pixelData[(i * width) + 1], 1.2), IsPurpleDominated(pixelData[(i * width) + 2], 1.2), IsPurpleDominated(pixelData[(i * width) + 3], 1.2));
 
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        //COLORREF color = detail[i][j];
-        //printf("%d\n", color2 == color);
-        bool result = IsPurpleDominated(color, 1.5);
-        j < (width / 2) ? l[(width / 2 - 1) - j] = result : r[j - (width / 2)] = result;
+        IsPurpleDominated(color, 1.2) ? (
+          j < (width / 2) ? l[(width / 2 - 1) - j] = true : r[j - (width / 2)] = true
+          ) : false;
       }
     }
 
@@ -170,7 +169,7 @@ int main() {
     }
 
     //saveBitmap(hBitmap, width, height, "e.bmp");
-    Time::XO(100);
+    //Time::XO(100);
   }
 
   releaseCapture();
