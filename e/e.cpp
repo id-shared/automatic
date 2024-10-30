@@ -14,7 +14,7 @@ bool isPurpleDominated(uint8_t r, uint8_t g, uint8_t b, double threshold) {
   return (r > threshold * g) && (b > threshold * g);
 }
 
-void CaptureScreenArea(int x, int y, int width, int height, std::function<bool(uint8_t*, int)> processPixelData) {
+void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
   // Initialize D3D11 device and context
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
@@ -81,7 +81,7 @@ void CaptureScreenArea(int x, int y, int width, int height, std::function<bool(u
     // Capture next frame
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
-    hr = duplication->AcquireNextFrame(4, &frameInfo, &desktopResource);
+    hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
     if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue;
     if (FAILED(hr)) {
       std::cerr << "Failed to acquire frame.\n";
@@ -120,14 +120,14 @@ void CaptureScreenArea(int x, int y, int width, int height, std::function<bool(u
 int findLastTrueIndex(const bool* arr, int size) {
   for (int i = size - 1; i >= 0; --i) {
     if (arr[i]) {
-      return i;
+      return i + 1;
     }
   }
-  return -1;
+  return 0;
 }
 
 int main() {
-  const int height = 32, width = 32;
+  const int height = 2, width = 64;
   const int y = (1080 - height) / 2;
   const int x = (1920 - width) / 2;
   const int n = width / 2;
@@ -172,25 +172,29 @@ int main() {
 
     //std::cout << xr << ", " << xl << std::endl;
 
-    if (xl == -1 && xr == -1) {
-      // No action needed
-    }
-    else if (xl == -1) {
-      //printf("%d\n", true);
-      Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
-    }
-    else if (xr == -1) {
-      //printf("%d\n", true);
-      Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
+    if (xl >= 1 && xr >= 1) {
+      if (xl > xr) {
+        Xyloid2::yx(driver, 0, ((xl - xr) / 2) * -1);
+      }
+      else {
+        Xyloid2::yx(driver, 0, ((xr - xl) / 2) * -1);
+      }
     }
     else {
-      //printf("%d %d\n", xl, xr);
+      if (xl >= 1 || xr >= 1) {
+        if (xl >= 1) {
+          Xyloid2::yx(driver, 0, (xl / 2) * -1);
+        }
+        else {
+          Xyloid2::yx(driver, 0, (xr / 2) * +1);
+        }
+      }
     }
 
     return true;
     };
 
-  CaptureScreenArea(x, y, width, height, processPixelData);
+  CaptureScreenArea(processPixelData, 1, x, y, width, height);
 
   return 0;
 }
