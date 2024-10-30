@@ -1,7 +1,8 @@
 #include <d3d11.h>
 #include <dxgi1_2.h>
-#include <wrl.h>
+#include <functional>
 #include <iostream>
+#include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
 
@@ -9,7 +10,7 @@ bool isPurpleDominated(uint8_t r, uint8_t g, uint8_t b, double threshold) {
   return (r > threshold * g) && (b > threshold * g);
 }
 
-void CaptureScreenArea(int x, int y, int width, int height) {
+void CaptureScreenArea(int x, int y, int width, int height, std::function<bool(uint8_t*)> processPixelData) {
   // Initialize D3D11 device and context
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
@@ -100,15 +101,9 @@ void CaptureScreenArea(int x, int y, int width, int height) {
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      // Access pixel data here
+      // Access pixel data and process it using the provided lambda function
       auto* data = static_cast<uint8_t*>(mappedResource.pData);
-      uint8_t blue = data[0];
-      uint8_t green = data[1];
-      uint8_t red = data[2];
-      uint8_t alpha = data[3];
-      std::cout << "First pixel - B: " << (int)blue << ", G: " << (int)green
-        << ", R: " << (int)red << ", A: " << (int)alpha << "\n";
-      std::cout << isPurpleDominated(red, green, blue, 1.2) << std::endl;
+      processPixelData(data);  // Call the lambda function with the pixel data
       context->Unmap(stagingTexture.Get(), 0);
     }
     else {
@@ -120,8 +115,20 @@ void CaptureScreenArea(int x, int y, int width, int height) {
 }
 
 int main() {
-  int width = 1, height = 1, x = 1920/ 2, y = 1080 / 2;
-  CaptureScreenArea(x, y, width, height);
-  while(true) {}
+  int width = 1, height = 1, x = 1920 / 2, y = 1080 / 2;
+
+  std::function<bool(uint8_t*)> processPixelData = [](uint8_t* data) {
+    uint8_t blue = data[0];
+    uint8_t green = data[1];
+    uint8_t red = data[2];
+    uint8_t alpha = data[3];
+    std::cout << "First pixel - B: " << (int)blue << ", G: " << (int)green
+      << ", R: " << (int)red << ", A: " << (int)alpha << "\n";
+    std::cout << isPurpleDominated(red, green, blue, 1.2) << std::endl;
+    return true;
+    };
+
+  CaptureScreenArea(x, y, width, height, processPixelData);
+  while (true) {}
   return 0;
 }
