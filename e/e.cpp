@@ -145,12 +145,12 @@ int main() {
     int xr = findLastTrueIndex(r, delta);
     int xl = findLastTrueIndex(l, delta);
 
-    printf("%d %d\n", xl, xr);
-
-    if (xl == -1) {
+    if (xl == -1 && xr == -1) {
+    }
+    else if (xl == -1) {
       for (int i = 0; i < delta && active; ++i) {
         if (r[i]) {
-          Xyloid2::yx(driver, 0, +i);
+          Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
           active = false;
         }
       }
@@ -158,17 +158,17 @@ int main() {
     else if (xr == -1) {
       for (int i = 0; i < delta && active; ++i) {
         if (l[i]) {
-          Xyloid2::yx(driver, 0, -i);
+          Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
           active = false;
         }
       }
     }
     else {
-
+      printf("%d %d\n", xl, xr);
     }
 
     //saveBitmap(hBitmap, width, height, "e.bmp");
-    Time::XO(100);
+    //Time::XO(100);
   }
 
   releaseCapture();
