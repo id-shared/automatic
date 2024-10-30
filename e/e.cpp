@@ -11,7 +11,7 @@
 using Microsoft::WRL::ComPtr;
 
 bool isPurpleDominated(uint8_t a, uint8_t b, uint8_t g, uint8_t r) {
-  return a == 255 && b >= 223 && g >= 95 && g <= 159 && r >= 223;
+  return a == 255 && b >= 239 && g <= 127 && r >= 239;
 }
 bool isKeyHeld(int e) {
   return (GetAsyncKeyState(e) & 0x8000) != 0;
