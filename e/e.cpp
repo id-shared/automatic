@@ -1,3 +1,7 @@
+#include "Contact.hpp"
+#include "Device.hpp"
+#include "Time.hpp"
+#include "Xyloid2.hpp"
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <functional>
@@ -123,11 +127,22 @@ int findLastTrueIndex(const bool* arr, int size) {
 }
 
 int main() {
-  int width = 64, height = 64;  // Change to 64x64 for full frame capture
-  int x = 1920 / 2 - width / 2; // Centering the capture area on the screen
-  int y = 1080 / 2 - height / 2; // Centering the capture area on the screen
+  const int width = 64, height = 64;  // Change to 64x64 for full frame capture
+  const int x = 1920 / 2 - width / 2; // Centering the capture area on the screen
+  const int y = 1080 / 2 - height / 2; // Centering the capture area on the screen
+  const int sigma = width / 2;
 
-  std::function<bool(uint8_t*, int)> processPixelData = [height, width](uint8_t* data, int rowPitch) {
+  LPCWSTR device = Contact::device([](std::wstring_view c) {
+    using namespace std::literals;
+    return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
+    });
+
+  HANDLE driver = Device::driver(device);
+
+  std::function<bool(uint8_t*, int)> processPixelData = [height, width, sigma, driver](uint8_t* data, int rowPitch) {
+    bool r[sigma] = {};
+    bool l[sigma] = {};
+
     for (int y = 0; y < height; ++y) {
       for (int x = 0; x < width; ++x) {
         int offset = y * rowPitch + x * 4;
@@ -136,11 +151,38 @@ int main() {
         uint8_t green = data[offset + 1];
         uint8_t red = data[offset + 2];
         uint8_t alpha = data[offset + 3];
+        bool isDominated = isPurpleDominated(red, green, blue, 1.75);
 
-        if (isPurpleDominated(red, green, blue, 1.75)) {
-          std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
+        if (isDominated) {
+          //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
+          if (x < (width / 2)) {
+            l[sigma - x - 1] = true;
+          }
+          else {
+            r[x - sigma] = true;
+          }
         }
       }
+    }
+
+    int xr = findLastTrueIndex(r, sigma);
+    int xl = findLastTrueIndex(l, sigma);
+
+    //std::cout << xr << ", " << xl << std::endl;
+
+    if (xl == -1 && xr == -1) {
+      // No action needed
+    }
+    else if (xl == -1) {
+      //printf("%d\n", true);
+      Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
+    }
+    else if (xr == -1) {
+      //printf("%d\n", true);
+      Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
+    }
+    else {
+      //printf("%d %d\n", xl, xr);
     }
 
     return true;
