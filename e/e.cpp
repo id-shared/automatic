@@ -3,6 +3,7 @@
 #include "Time.hpp"
 #include "Xyloid2.hpp"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include <windows.h>
@@ -37,6 +38,41 @@ void releaseCapture() {
   DeleteObject(hBitmap);
   DeleteDC(hMemoryDC);
   ReleaseDC(NULL, hScreenDC);
+}
+
+void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
+  BITMAPFILEHEADER bmfHeader;
+  BITMAPINFOHEADER biHeader;
+  DWORD dwBmpSize;
+
+  biHeader.biSize = sizeof(BITMAPINFOHEADER);
+  biHeader.biWidth = width;
+  biHeader.biHeight = -height; // Negative to ensure top-down bitmap
+  biHeader.biPlanes = 1;
+  biHeader.biBitCount = 32;
+  biHeader.biCompression = BI_RGB;
+  biHeader.biSizeImage = 0;
+  biHeader.biXPelsPerMeter = 0;
+  biHeader.biYPelsPerMeter = 0;
+  biHeader.biClrUsed = 0;
+  biHeader.biClrImportant = 0;
+
+  dwBmpSize = ((width * biHeader.biBitCount + 31) / 32) * 4 * height;
+  std::vector<BYTE> bmpData(dwBmpSize);
+
+  GetDIBits(hMemoryDC, hBitmap, 0, height, bmpData.data(), reinterpret_cast<BITMAPINFO*>(&biHeader), DIB_RGB_COLORS);
+
+  bmfHeader.bfType = 0x4D42; // BM
+  bmfHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmpSize;
+  bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+  bmfHeader.bfReserved1 = 0;
+  bmfHeader.bfReserved2 = 0;
+
+  std::ofstream file(filePath, std::ios::out | std::ios::binary);
+  file.write(reinterpret_cast<const char*>(&bmfHeader), sizeof(bmfHeader));
+  file.write(reinterpret_cast<const char*>(&biHeader), sizeof(biHeader));
+  file.write(reinterpret_cast<const char*>(bmpData.data()), dwBmpSize);
+  file.close();
 }
 
 std::vector<COLORREF>& capture(int e_3, int e_2, int e_1, int e) {
@@ -88,29 +124,31 @@ int main() {
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        bool result = IsPurpleDominated(color, 1.5);
+        bool result = IsPurpleDominated(color, 1.2);
         j < delta ? l[(delta - 1) - j] = result : r[j - delta] = result;
       }
     }
 
-    if (std::any_of(l, l + 16, [](bool value) { return value; }) && std::any_of(r, r + 16, [](bool value) { return value; })) {
+    /*if (std::any_of(l, l + 16, [](bool value) { return value; }) && std::any_of(r, r + 16, [](bool value) { return value; })) {
       std::cout << "At least one of the first three elements is true.\n";
     }
-    else {
-      for (int i = 0; i < delta && active; ++i) {
-        if (r[i]) {
-          Xyloid2::yx(driver, 0, +i);
-          active = false;
-        }
-      }
-
-      for (int i = 0; i < delta && active; ++i) {
-        if (l[i]) {
-          Xyloid2::yx(driver, 0, -i);
-          active = false;
-        }
+    else {*/
+    for (int i = 0; i < delta && active; ++i) {
+      if (r[i]) {
+        Xyloid2::yx(driver, 0, +i);
+        active = false;
       }
     }
+
+    for (int i = 0; i < delta && active; ++i) {
+      if (l[i]) {
+        Xyloid2::yx(driver, 0, -i);
+        active = false;
+      }
+    }
+    /*}*/
+
+    //saveBitmap(hBitmap, width, height, "capture_log.bmp");
   }
 
   releaseCapture();
