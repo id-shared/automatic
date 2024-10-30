@@ -15,41 +15,6 @@ HBITMAP hBitmap = nullptr;
 BITMAPINFO bi;
 std::vector<COLORREF> pixelData;
 
-void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
-  BITMAPFILEHEADER bmfHeader;
-  BITMAPINFOHEADER biHeader;
-  DWORD dwBmpSize;
-
-  biHeader.biSize = sizeof(BITMAPINFOHEADER);
-  biHeader.biWidth = width;
-  biHeader.biHeight = height;
-  biHeader.biPlanes = 1;
-  biHeader.biBitCount = 32;
-  biHeader.biCompression = BI_RGB;
-  biHeader.biSizeImage = 0;
-  biHeader.biXPelsPerMeter = 0;
-  biHeader.biYPelsPerMeter = 0;
-  biHeader.biClrUsed = 0;
-  biHeader.biClrImportant = 0;
-
-  dwBmpSize = ((width * biHeader.biBitCount + 31) / 32) * 4 * height;
-  std::vector<BYTE> bmpData(dwBmpSize);
-
-  GetDIBits(hMemoryDC, hBitmap, 0, height, bmpData.data(), reinterpret_cast<BITMAPINFO*>(&biHeader), DIB_RGB_COLORS);
-
-  bmfHeader.bfType = 0x4D42; // BM
-  bmfHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmpSize;
-  bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-  bmfHeader.bfReserved1 = 0;
-  bmfHeader.bfReserved2 = 0;
-
-  std::ofstream file(filePath, std::ios::out | std::ios::binary);
-  file.write(reinterpret_cast<const char*>(&bmfHeader), sizeof(bmfHeader));
-  file.write(reinterpret_cast<const char*>(&biHeader), sizeof(biHeader));
-  file.write(reinterpret_cast<const char*>(bmpData.data()), dwBmpSize);
-  file.close();
-}
-
 void initCapture(int e_1, int e) {
   hBitmap = CreateCompatibleBitmap(hScreenDC, e_1, e);
   SelectObject(hMemoryDC, hBitmap);
