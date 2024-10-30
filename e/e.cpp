@@ -5,6 +5,10 @@
 
 using Microsoft::WRL::ComPtr;
 
+bool isPurpleDominated(uint8_t r, uint8_t g, uint8_t b, double threshold) {
+  return (r > threshold * g) && (b > threshold * g);
+}
+
 void CaptureScreenArea(int x, int y, int width, int height) {
   // Initialize D3D11 device and context
   ComPtr<ID3D11Device> device;
@@ -104,6 +108,7 @@ void CaptureScreenArea(int x, int y, int width, int height) {
       uint8_t alpha = data[3];
       std::cout << "First pixel - B: " << (int)blue << ", G: " << (int)green
         << ", R: " << (int)red << ", A: " << (int)alpha << "\n";
+      std::cout << isPurpleDominated(red, green, blue, 1.2) << std::endl;
       context->Unmap(stagingTexture.Get(), 0);
     }
     else {
@@ -115,7 +120,7 @@ void CaptureScreenArea(int x, int y, int width, int height) {
 }
 
 int main() {
-  int x = 1, y = 1, width = 10, height = 10;
+  int width = 1, height = 1, x = 1920/ 2, y = 1080 / 2;
   CaptureScreenArea(x, y, width, height);
   while(true) {}
   return 0;
