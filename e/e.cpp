@@ -138,7 +138,7 @@ int main() {
 
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        IsPurpleDominated(color, 1.5) ? (
+        IsPurpleDominated(color, 1.2) ? (
           j < (width / 2) ? l[delta - j - 1] = true : r[j - delta] = true
           ) : false;
       }
