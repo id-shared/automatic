@@ -15,6 +15,50 @@ HBITMAP hBitmap = nullptr;
 BITMAPINFO bi;
 std::vector<COLORREF> pixelData;
 
+void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
+  BITMAPFILEHEADER bmfHeader;
+  BITMAPINFOHEADER biHeader;
+  DWORD dwBmpSize;
+
+  biHeader.biSize = sizeof(BITMAPINFOHEADER);
+  biHeader.biWidth = width;
+  biHeader.biHeight = -height;
+  biHeader.biPlanes = 1;
+  biHeader.biBitCount = 32;
+  biHeader.biCompression = BI_RGB;
+  biHeader.biSizeImage = 0;
+  biHeader.biXPelsPerMeter = 0;
+  biHeader.biYPelsPerMeter = 0;
+  biHeader.biClrUsed = 0;
+  biHeader.biClrImportant = 0;
+
+  dwBmpSize = ((width * biHeader.biBitCount + 31) / 32) * 4 * height;
+  std::vector<BYTE> bmpData(dwBmpSize);
+
+  GetDIBits(hMemoryDC, hBitmap, 0, height, bmpData.data(), reinterpret_cast<BITMAPINFO*>(&biHeader), DIB_RGB_COLORS);
+
+  bmfHeader.bfType = 0x4D42; // BM
+  bmfHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmpSize;
+  bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+  bmfHeader.bfReserved1 = 0;
+  bmfHeader.bfReserved2 = 0;
+
+  std::ofstream file(filePath, std::ios::out | std::ios::binary);
+  file.write(reinterpret_cast<const char*>(&bmfHeader), sizeof(bmfHeader));
+  file.write(reinterpret_cast<const char*>(&biHeader), sizeof(biHeader));
+  file.write(reinterpret_cast<const char*>(bmpData.data()), dwBmpSize);
+  file.close();
+}
+
+bool isPurpleDominated(COLORREF color, double threshold) {
+  BYTE red = GetRValue(color);
+  BYTE green = GetGValue(color);
+  BYTE blue = GetBValue(color);
+
+  // Improved logic for purple dominance check
+  return (red > threshold * green) && (red > threshold * blue);
+}
+
 void initCapture(int width, int height) {
   hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
   SelectObject(hMemoryDC, hBitmap);
@@ -44,15 +88,6 @@ std::vector<COLORREF>& capture(int startX, int startY, int width, int height) {
   return pixelData;
 }
 
-bool isPurpleDominated(COLORREF color, double threshold) {
-  BYTE red = GetRValue(color);
-  BYTE green = GetGValue(color);
-  BYTE blue = GetBValue(color);
-
-  // Improved logic for purple dominance check
-  return (red > threshold * green) && (red > threshold * blue);
-}
-
 int findLastTrueIndex(const bool* arr, int size) {
   for (int i = size - 1; i >= 0; --i) {
     if (arr[i]) {
@@ -77,7 +112,7 @@ int main() {
   const int delta = width / 2;
 
   const int startWidth = (screenWidth - width) / 2;
-  const int startHeight = (screenHeight / 2) + height;
+  const int startHeight = screenHeight / 2;
 
   initCapture(width, height);
 
@@ -91,7 +126,7 @@ int main() {
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         COLORREF color = pixelData[(i * width) + j];
-        bool isDominated = isPurpleDominated(color, 1.2);
+        bool isDominated = isPurpleDominated(color, 1.1);
 
         if (isDominated) {
           if (j < (width / 2)) {
@@ -111,16 +146,18 @@ int main() {
       // No action needed
     }
     else if (xl == -1) {
+      printf("%d\n", true);
       Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
     }
     else if (xr == -1) {
+      printf("%d\n", true);
       Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
     }
     else {
       printf("%d %d\n", xl, xr);
     }
 
-    // saveBitmap(hBitmap, width, height, "e.bmp");
+    saveBitmap(hBitmap, width, height, "e.bmp");
     // Time::XO(100); // Control the capture frequency
   }
 

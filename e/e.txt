@@ -5,7 +5,7 @@ void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
 
   biHeader.biSize = sizeof(BITMAPINFOHEADER);
   biHeader.biWidth = width;
-  biHeader.biHeight = height;
+  biHeader.biHeight = -height;
   biHeader.biPlanes = 1;
   biHeader.biBitCount = 32;
   biHeader.biCompression = BI_RGB;
