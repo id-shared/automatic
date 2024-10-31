@@ -103,14 +103,14 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zx = 96, zy = 96, zz = +1;
+  const int zx = 64, zy = 64, zz = +1;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
   const int oy = zy / 2;
   const int ox = zx / 2;
   const int fy = +1;
-  const int fx = +1;
-  const int ec = +3;
+  const int fx = +2;
+  const int ec = +2;
   const int ea = +1;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
