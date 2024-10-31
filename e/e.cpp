@@ -121,13 +121,17 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
-  const int zz = +3;
+  const int zz = +2;
   const int zy = 64;
   const int zx = 64;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
-  const int ay = zy / 2;
-  const int ax = zx / 2;
+  const int oy = zy / 2;
+  const int ox = zx / 2;
+  const int f3 = zz;
+  const int f1 = zz;
+  const int e3 = +1;
+  const int e1 = +1;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -136,11 +140,11 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [driver, zy, zx, ax](uint8_t* data, int rowPitch) {
-    bool y2_[ax] = {};
-    bool y1_[ax] = {};
-    bool x2_[ax] = {};
-    bool x1_[ax] = {};
+  std::function<bool(uint8_t*, int)> processPixelData = [driver](uint8_t* data, int rowPitch) {
+    bool y2_[ox] = {};
+    bool y1_[ox] = {};
+    bool x2_[ox] = {};
+    bool x1_[ox] = {};
 
     for (int y = 0; y < zy; ++y) {
       for (int x = 0; x < zx; ++x) {
@@ -154,30 +158,26 @@ int main() {
 
         if (isDominated) {
           if (y < (zy / 2)) {
-            y1_[ay - y - 1] = true;
+            y1_[oy - y - 1] = true;
           }
           else {
-            y2_[y - ay] = true;
+            y2_[y - oy] = true;
           }
 
           if (x < (zx / 2)) {
-            x1_[ax - x - 1] = true;
+            x1_[ox - x - 1] = true;
           }
           else {
-            x2_[x - ax] = true;
+            x2_[x - ox] = true;
           }
         }
       }
     }
 
-    int y2 = aIndex(y2_, ay);
-    int y1 = zIndex(y1_, ay);
-    int x2 = zIndex(x2_, ax);
-    int x1 = zIndex(x1_, ax);
-    int f3 = zz;
-    int f1 = zz;
-    int e3 = +1;
-    int e1 = +1;
+    int y2 = aIndex(y2_, oy);
+    int y1 = zIndex(y1_, oy);
+    int x2 = zIndex(x2_, ox);
+    int x1 = zIndex(x1_, ox);
 
     if (y1 >= e1 || y2 >= e1) {
       if (y1 > e3 || y2 > e3) {
