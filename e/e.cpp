@@ -153,7 +153,6 @@ int main() {
         bool isDominated = isPurpleDominated(alpha, blue, green, red);
 
         if (isDominated) {
-          //std::cout << x << ", " << y << " | " << (int)blue << ", " << (int)green << ", " << (int)red << ", " << (int)alpha << std::endl;
           if (y < (zy / 2)) {
             y1_[ay - y - 1] = true;
           }
