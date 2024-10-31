@@ -103,16 +103,16 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zz = +1;
+  const int zz = +2;
   const int zy = 64;
   const int zx = 64;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
   const int oy = zy / 2;
   const int ox = zx / 2;
-  const int f3 = zz;
-  const int f1 = zz;
-  const int e3 = +1;
+  const int fy = +3;
+  const int fx = +1;
+  const int e3 = +3;
   const int e1 = +1;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
@@ -152,20 +152,20 @@ int main() {
     if (y1 >= e1 || y2 >= e1) {
       if (y1 > e3 || y2 > e3) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > e3 ? Xyloid2::yx(driver, (y1 - e3 - e3) * f3 * -1, 0)
-            : Xyloid2::yx(driver, (y2 - e3 + e3) * f3 * +1, 0);
+          y1 > e3 ? Xyloid2::yx(driver, (y1 - e3 - e3) * fy * -1, 0)
+            : Xyloid2::yx(driver, (y2 - e3 + e3) * fy * +1, 0);
         }
       }
     }
     if (x1 >= e1 || x2 >= e1) {
       if (x1 > e3 || x2 > e3) {
         if (x1 > e3 && x2 > e3) {
-          x2 > x1 ? Xyloid2::yx(driver, 0, ((x2 - x1 - e3 + e3) / 2) * f1 * +1)
-            : Xyloid2::yx(driver, 0, ((x1 - x2 - e3 - e3) / 2) * f1 * -1);
+          x2 > x1 ? Xyloid2::yx(driver, 0, ((x2 - x1 - e3 + e3) / 2) * fx * +1)
+            : Xyloid2::yx(driver, 0, ((x1 - x2 - e3 - e3) / 2) * fx * -1);
         }
         else {
-          x2 > e3 ? Xyloid2::yx(driver, 0, (x2 - e3 + e3) * f3 * +1)
-            : Xyloid2::yx(driver, 0, (x1 - e3 - e3) * f3 * -1);
+          x2 > e3 ? Xyloid2::yx(driver, 0, (x2 - e3 + e3) * fx * +1)
+            : Xyloid2::yx(driver, 0, (x1 - e3 - e3) * fx * -1);
         }
       }
     }
