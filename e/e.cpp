@@ -18,50 +18,41 @@ bool isKeyHeld(int e) {
 }
 
 void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
-  // Initialize D3D11 device and context
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
   HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
     D3D11_SDK_VERSION, &device, &featureLevel, &context);
   if (FAILED(hr)) {
-    std::cerr << "Failed to create D3D11 device.\n";
-    return;
+    throw hr;
   }
 
-  // Get DXGI device and adapter
   ComPtr<IDXGIDevice> dxgiDevice;
   device.As(&dxgiDevice);
   ComPtr<IDXGIAdapter> adapter;
   hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), &adapter);
   if (FAILED(hr)) {
-    std::cerr << "Failed to get IDXGIAdapter.\n";
-    return;
+    throw hr;
   }
 
   ComPtr<IDXGIOutput> output;
   hr = adapter->EnumOutputs(0, &output);
   if (FAILED(hr)) {
-    std::cerr << "Failed to enumerate outputs.\n";
-    return;
+    throw hr;
   }
 
   ComPtr<IDXGIOutput1> output1;
   hr = output.As(&output1);
   if (FAILED(hr)) {
-    std::cerr << "Failed to get IDXGIOutput1.\n";
-    return;
+    throw hr;
   }
 
-  // Duplicate the output (desktop)
   ComPtr<IDXGIOutputDuplication> duplication;
   hr = output1->DuplicateOutput(device.Get(), &duplication);
   if (FAILED(hr)) {
-    std::cerr << "Failed to duplicate output.\n";
-    return;
+    throw hr;
   }
 
-  // Prepare the staging texture for reading back data
   D3D11_TEXTURE2D_DESC desc = {};
   desc.Width = width;
   desc.Height = height;
@@ -76,44 +67,35 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
   ComPtr<ID3D11Texture2D> stagingTexture;
   hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
   if (FAILED(hr)) {
-    std::cerr << "Failed to create staging texture.\n";
-    return;
+    throw hr;
   }
 
   while (true) {
-    // Capture next frame
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
     hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
     if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue;
     if (FAILED(hr)) {
-      std::cerr << "Failed to acquire frame.\n";
-      break;
+      throw hr;
     }
 
-    // Convert the acquired resource to texture
     ComPtr<ID3D11Texture2D> desktopTexture;
     hr = desktopResource.As(&desktopTexture);
     if (FAILED(hr)) {
-      std::cerr << "Failed to access desktop texture.\n";
-      duplication->ReleaseFrame();
-      break;
+      throw hr;
     }
 
-    // Copy the specific area from the full desktop texture to the staging texture
     D3D11_BOX sourceRegion = { x, y, 0, x + width, y + height, 1 };
     context->CopySubresourceRegion(stagingTexture.Get(), 0, 0, 0, 0, desktopTexture.Get(), 0, &sourceRegion);
 
-    // Map the staging texture to CPU-accessible memory
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      // Pass the row pitch (stride) along with the data pointer
       processPixelData(static_cast<uint8_t*>(mappedResource.pData), mappedResource.RowPitch);
       context->Unmap(stagingTexture.Get(), 0);
     }
     else {
-      std::cerr << "Failed to map staging texture.\n";
+      throw hr;
     }
 
     duplication->ReleaseFrame();
@@ -139,6 +121,7 @@ int aIndex(const bool* arr, int size) {
 }
 
 int main() {
+  const int zz = +3;
   const int zy = 96;
   const int zx = 96;
   const int sy = (1080 - zy) / 2;
@@ -192,13 +175,10 @@ int main() {
     int y1 = zIndex(y1_, ay);
     int x2 = zIndex(x2_, ax);
     int x1 = zIndex(x1_, ax);
-    int f3 = +1;
-    int f1 = +1;
+    int f3 = zz;
+    int f1 = zz;
     int e3 = +1;
     int e1 = +1;
-
-    //std::cout << y1_[0] << " | " << y1_[1] << " | " << y1_[2] << " | " << y1_[3] << std::endl;
-    //std::cout << x1 << " | " << x2 << std::endl;
 
     if (y1 >= e1 || y2 >= e1) {
       if (y1 > e3 || y2 > e3) {
@@ -222,7 +202,7 @@ int main() {
     return true;
     };
 
-  CaptureScreenArea(processPixelData, 4, sx, sy, zx, zy);
+  CaptureScreenArea(processPixelData, zz, sx, sy, zx, zy);
 
   return 0;
 }
