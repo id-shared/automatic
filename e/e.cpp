@@ -122,8 +122,8 @@ int aIndex(const bool* arr, int size) {
 
 int main() {
   const int zz = +3;
-  const int zy = 96;
-  const int zx = 96;
+  const int zy = 64;
+  const int zx = 64;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
   const int ay = zy / 2;
