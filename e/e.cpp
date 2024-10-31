@@ -10,13 +10,6 @@
 
 using Microsoft::WRL::ComPtr;
 
-bool isColourPurple(uint8_t a, uint8_t b, uint8_t g, uint8_t r) {
-  return a == 255 && b >= 239 && g <= 127 && r >= 239;
-}
-bool isKeyHeld(int e) {
-  return (GetAsyncKeyState(e) & 0x8000) != 0;
-}
-
 void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
@@ -105,6 +98,10 @@ int aIndex(const bool* arr, int size) {
   return 0;
 }
 
+bool isKeyHeld(int e) {
+  return (GetAsyncKeyState(e) & 0x8000) != 0;
+}
+
 int main() {
   const int zz = +2;
   const int zy = 64;
@@ -126,35 +123,24 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   std::function<bool(uint8_t*, int)> processPixelData = [driver](uint8_t* _o, int row_pitch) {
-    bool y2_[ox] = {};
-    bool y1_[ox] = {};
-    bool x2_[ox] = {};
-    bool x1_[ox] = {};
+    bool y2_[ox] = {}, y1_[ox] = {}, x2_[ox] = {}, x1_[ox] = {};
 
 #pragma omp parallel for
     for (int y = 0; y < zy; ++y) {
+      uint8_t* row_ptr = _o + y * row_pitch;
+
       for (int x = 0; x < zx; ++x) {
-        int offset = y * row_pitch + x * 4;
-        uint8_t ca = _o[offset + 3];
-        uint8_t cr = _o[offset + 2];
-        uint8_t cg = _o[offset + 1];
-        uint8_t cb = _o[offset];
-        bool is = isColourPurple(ca, cb, cg, cr);
+        uint8_t* pixel = row_ptr + x * 4;
 
-        if (is) {
-          if (y < (zy / 2)) {
-            y1_[oy - y - 1] = true;
-          }
-          else {
-            y2_[y - oy] = true;
-          }
+        if (pixel[3] == 255 && pixel[0] >= 239 && pixel[1] <= 127 && pixel[2] >= 239) {
+          int y_idx = y < oy ? oy - y - 1 : y - oy;
+          int x_idx = x < ox ? ox - x - 1 : x - ox;
 
-          if (x < (zx / 2)) {
-            x1_[ox - x - 1] = true;
-          }
-          else {
-            x2_[x - ox] = true;
-          }
+          if (y < oy) y1_[y_idx] = true;
+          else        y2_[y_idx] = true;
+
+          if (x < ox) x1_[x_idx] = true;
+          else        x2_[x_idx] = true;
         }
       }
     }
@@ -167,19 +153,20 @@ int main() {
     if (y1 >= e1 || y2 >= e1) {
       if (y1 > e3 || y2 > e3) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > e3 ? Xyloid2::yx(driver, (y1 - e3 - e3) * f3 * -1, 0) : Xyloid2::yx(driver, (y2 - e3 + e3) * f3 * +1, 0);
+          y1 > e3 ? Xyloid2::yx(driver, (y1 - e3 - e3) * f3 * -1, 0)
+            : Xyloid2::yx(driver, (y2 - e3 + e3) * f3 * +1, 0);
         }
       }
     }
     if (x1 >= e1 || x2 >= e1) {
       if (x1 > e3 || x2 > e3) {
         if (x1 > e3 && x2 > e3) {
-          x2 > x1&& Xyloid2::yx(driver, 0, ((x2 - x1 - e3 + e3) / 2) * f1 * +1);
-          x1 > x2&& Xyloid2::yx(driver, 0, ((x1 - x2 - e3 - e3) / 2) * f1 * -1);
+          x2 > x1 ? Xyloid2::yx(driver, 0, ((x2 - x1 - e3 + e3) / 2) * f1 * +1)
+            : Xyloid2::yx(driver, 0, ((x1 - x2 - e3 - e3) / 2) * f1 * -1);
         }
         else {
-          x2 > e3&& Xyloid2::yx(driver, 0, (x2 - e3 + e3) * f3 * +1);
-          x1 > e3&& Xyloid2::yx(driver, 0, (x1 - e3 - e3) * f3 * -1);
+          x2 > e3 ? Xyloid2::yx(driver, 0, (x2 - e3 + e3) * f3 * +1)
+            : Xyloid2::yx(driver, 0, (x1 - e3 - e3) * f3 * -1);
         }
       }
     }
