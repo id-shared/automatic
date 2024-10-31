@@ -148,10 +148,10 @@ int main() {
       if (ax == 0 && ay == 0) {
       }
       else {
-        if (ax == -2 && ay == -2) {
+        if (ax == -1 && ay == -1) {
         }
         else {
-          Xyloid2::yx(driver, ay + 2, ax + 2);
+          Xyloid2::yx(driver, ay + 1, ax + 1);
         }
       }
     }
