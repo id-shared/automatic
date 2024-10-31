@@ -103,14 +103,14 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zz = +2;
+  const int zz = +1;
   const int zy = 64;
   const int zx = 64;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
   const int oy = zy / 2;
   const int ox = zx / 2;
-  const int fy = +3;
+  const int fy = +1;
   const int fx = +1;
   const int e3 = +3;
   const int e1 = +1;
@@ -127,7 +127,7 @@ int main() {
 
 #pragma omp parallel for
     for (int y = 0; y < zy; ++y) {
-      if (ok) continue;
+      if (ok) continue;  // Skip loop if condition met
 #pragma omp flush(ok)
 
       uint8_t* row_ptr = _o + y * row_pitch;
@@ -171,7 +171,7 @@ int main() {
             : Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * fx * -1);
         }
         else {
-          x2 > e3 ? Xyloid2::yx(driver, 0, (y1 - e3 - e3) * fx * +1)
+          x2 > e3 ? Xyloid2::yx(driver, 0, x2 * fx * +1)
             : Xyloid2::yx(driver, 0, x1 * fx * -1);
         }
       }
