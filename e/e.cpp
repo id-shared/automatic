@@ -145,21 +145,22 @@ int main() {
     }
 
     if (ok) {
-      const int my = ay * 1;
-      const int mx = ax * 1;
-      const int iy = -3;
-      const int ix = -3;
+      const int qy = ay * 1;
+      const int qx = ax * 1;
+      const int ny = -3;
+      const int nx = -3;
 
-      if (ax == ix && ay == iy) {
+      if (ax == nx && ay == ny) {
+        return true;
       }
-      else if (ay == iy) {
-        Xyloid2::yx(driver, 0, mx);
+      else if (ay == ny) {
+        Xyloid2::yx(driver, 0, qx - nx);
       }
-      else if (ax == ix) {
-        Xyloid2::yx(driver, my, 0);
+      else if (ax == nx) {
+        Xyloid2::yx(driver, qy - ny, 0);
       }
       else {
-        Xyloid2::yx(driver, my, mx);
+        Xyloid2::yx(driver, qy - ny, qx - nx);
       }
     }
 
