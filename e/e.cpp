@@ -112,8 +112,8 @@ int main() {
   const int fx = +1;
   const int ec = +2;
   const int ea = +1;
-  int ay = -1;
-  int ax = -1;
+  int ay = +1;
+  int ax = +1;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -144,9 +144,17 @@ int main() {
       if (ok) break;
     }
 
-    std::cout << ax << " | " << ay << std::endl;
-
-    Time::XO(100);
+    if (ok) {
+      if (ax == 0 && ay == 0) {
+      }
+      else {
+        if (ax == -2 && ay == -2) {
+        }
+        else {
+          Xyloid2::yx(driver, ay + 2, ax + 2);
+        }
+      }
+    }
 
     return true;
     };
@@ -169,4 +177,8 @@ if (x1 >= ea || x2 >= ea) {
     x2 > ec ? Xyloid2::yx(driver, 0, x2 * fx * +1)
       : Xyloid2::yx(driver, 0, x1 * fx * -1);
   }
-}*/
+}
+
+std::cout << ax << " | " << ay << std::endl;
+Time::XO(100);
+*/
