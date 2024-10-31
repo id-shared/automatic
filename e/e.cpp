@@ -160,12 +160,12 @@ int main() {
     if (x1 >= e1 || x2 >= e1) {
       if (x1 > e3 || x2 > e3) {
         if (x1 > e3 && x2 > e3) {
-          x2 > x1 ? Xyloid2::yx(driver, 0, ((x2 - x1 - e3 + e3) / 2) * fx * +1)
-            : Xyloid2::yx(driver, 0, ((x1 - x2 - e3 - e3) / 2) * fx * -1);
+          x2 > x1 ? Xyloid2::yx(driver, 0, ((x2 - x1) / 2) * fx * +1)
+            : Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * fx * -1);
         }
         else {
-          x2 > e3 ? Xyloid2::yx(driver, 0, (x2 - e3 + e3) * fx * +1)
-            : Xyloid2::yx(driver, 0, (x1 - e3 - e3) * fx * -1);
+          x2 > e3 ? Xyloid2::yx(driver, 0, x2 * fx * +1)
+            : Xyloid2::yx(driver, 0, x1 * fx * -1);
         }
       }
     }
