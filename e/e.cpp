@@ -145,7 +145,9 @@ int main() {
     }
 
     std::cout << ax << " | " << ay << std::endl;
+
     Time::XO(100);
+
     return true;
     };
 
