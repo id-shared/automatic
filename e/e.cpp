@@ -150,6 +150,12 @@ int main() {
       else {
         if (ax == -1 && ay == -1) {
         }
+        else if (ay == -1) {
+          Xyloid2::yx(driver, 0, ax + 1);
+        }
+        else if (ax == -1) {
+          Xyloid2::yx(driver, ay + 1, 0);
+        }
         else {
           Xyloid2::yx(driver, ay + 1, ax + 1);
         }
