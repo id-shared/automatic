@@ -109,7 +109,7 @@ int main() {
   const int oy = zy / 2;
   const int ox = zx / 2;
   const int fy = +1;
-  const int fx = +2;
+  const int fx = +1;
   const int ec = +2;
   const int ea = +1;
 
@@ -157,8 +157,8 @@ int main() {
     if (y1 >= ea || y2 >= ea) {
       if (y1 > ec || y2 > ec) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > ec ? Xyloid2::yx(driver, (y1 - ec - ec) * fy * -1, 0)
-            : Xyloid2::yx(driver, (y2 - ec + ec) * fy * +1, 0);
+          y2 > ec ? Xyloid2::yx(driver, (y2 - ec + ec) * fy * +1, 0)
+            : Xyloid2::yx(driver, (y1 - ec - ec) * fy * -1, 0);
         }
       }
     }
