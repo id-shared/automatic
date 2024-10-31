@@ -10,7 +10,7 @@
 
 using Microsoft::WRL::ComPtr;
 
-bool isPurpleDominated(uint8_t a, uint8_t b, uint8_t g, uint8_t r) {
+bool isColourPurple(uint8_t a, uint8_t b, uint8_t g, uint8_t r) {
   return a == 255 && b >= 239 && g <= 127 && r >= 239;
 }
 bool isKeyHeld(int e) {
@@ -140,23 +140,23 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [driver](uint8_t* data, int rowPitch) {
+  std::function<bool(uint8_t*, int)> processPixelData = [driver](uint8_t* _o, int row_pitch) {
     bool y2_[ox] = {};
     bool y1_[ox] = {};
     bool x2_[ox] = {};
     bool x1_[ox] = {};
 
+#pragma omp parallel for
     for (int y = 0; y < zy; ++y) {
       for (int x = 0; x < zx; ++x) {
-        int offset = y * rowPitch + x * 4;
+        int offset = y * row_pitch + x * 4;
+        uint8_t ca = _o[offset + 3];
+        uint8_t cr = _o[offset + 2];
+        uint8_t cg = _o[offset + 1];
+        uint8_t cb = _o[offset];
+        bool is = isColourPurple(ca, cb, cg, cr);
 
-        uint8_t blue = data[offset];
-        uint8_t green = data[offset + 1];
-        uint8_t red = data[offset + 2];
-        uint8_t alpha = data[offset + 3];
-        bool isDominated = isPurpleDominated(alpha, blue, green, red);
-
-        if (isDominated) {
+        if (is) {
           if (y < (zy / 2)) {
             y1_[oy - y - 1] = true;
           }
