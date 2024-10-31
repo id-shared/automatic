@@ -104,7 +104,7 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zx = +128, zy = +8, zz = +1;
+  const int zx = +128, zy = +16, zz = +1;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
   const int ey = zy / 2;
