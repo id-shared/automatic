@@ -112,6 +112,8 @@ int main() {
   const int fx = +1;
   const int ec = +2;
   const int ea = +1;
+  int ay = -1;
+  int ax = -1;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -120,54 +122,30 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [driver](uint8_t* _o, int row_pitch) {
-    bool y2_[ox] = {}, y1_[ox] = {}, x2_[ox] = {}, x1_[ox] = {}, ok = false;
+  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, driver](uint8_t* _o, int row_pitch) {
+    bool ok = false;
 
-#pragma omp parallel for
     for (int y = 0; y < zy; ++y) {
-      if (ok) continue;
-#pragma omp flush(ok)
-
       uint8_t* row_ptr = _o + y * row_pitch;
 
       for (int x = 0; x < zx; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
-          int y_idx = abs(oy - y - 1);
-          int x_idx = abs(ox - x - 1);
+          ay = y - oy;
 
-          if (y < oy) y1_[y_idx] = true;
-          else        y2_[y_idx] = true;
-
-          if (x < ox) x1_[x_idx] = true;
-          else        x2_[x_idx] = true;
+          ax = x - ox;
 
           ok = true;
-#pragma omp flush(ok)
-#pragma omp cancel for
+
+          break;
         }
       }
+
+      if (ok) break;
     }
 
-    int y2 = aIndex(y2_, oy);
-    int y1 = zIndex(y1_, oy);
-    int x2 = zIndex(x2_, ox);
-    int x1 = zIndex(x1_, ox);
-
-    if (y1 >= ea || y2 >= ea) {
-      if (y1 > ec || y2 > ec) {
-        if (!isKeyHeld(VK_LBUTTON)) {
-          y2 > ec ? Xyloid2::yx(driver, (y2 - ec + ec) * fy * +1, 0)
-            : Xyloid2::yx(driver, (y1 - ec - ec) * fy * -1, 0);
-        }
-      }
-    }
-    if (x1 >= ea || x2 >= ea) {
-      if (x1 > ec || x2 > ec) {
-        x2 > ec ? Xyloid2::yx(driver, 0, x2 * fx * +1)
-          : Xyloid2::yx(driver, 0, x1 * fx * -1);
-      }
-    }
+    std::cout << ax << " | " << ay << std::endl;
+    Time::XO(100);
     return true;
     };
 
@@ -175,3 +153,18 @@ int main() {
 
   return 0;
 }
+
+/*if (y1 >= ea || y2 >= ea) {
+  if (y1 > ec || y2 > ec) {
+    if (!isKeyHeld(VK_LBUTTON)) {
+      y2 > ec ? Xyloid2::yx(driver, (y2 - ec + ec) * fy * +1, 0)
+        : Xyloid2::yx(driver, (y1 - ec - ec) * fy * -1, 0);
+    }
+  }
+}
+if (x1 >= ea || x2 >= ea) {
+  if (x1 > ec || x2 > ec) {
+    x2 > ec ? Xyloid2::yx(driver, 0, x2 * fx * +1)
+      : Xyloid2::yx(driver, 0, x1 * fx * -1);
+  }
+}*/
