@@ -103,7 +103,7 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zz = +2;
+  const int zz = +1;
   const int zy = 64;
   const int zx = 64;
   const int sy = (1080 - zy) / 2;
@@ -131,7 +131,6 @@ int main() {
 
       for (int x = 0; x < zx; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
-        //std::cout << static_cast<int>(pixel[0]) << " | " << static_cast<int>(pixel[0]) << " | " << static_cast<int>(pixel[0]) << std::endl;
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
           int y_idx = y < oy ? oy - y - 1 : y - oy;
           int x_idx = x < ox ? ox - x - 1 : x - ox;
