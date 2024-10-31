@@ -131,8 +131,8 @@ int main() {
 
       for (int x = 0; x < zx; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
-
-        if (pixel[3] == 255 && pixel[0] >= 239 && pixel[1] <= 127 && pixel[2] >= 239) {
+        //std::cout << static_cast<int>(pixel[0]) << " | " << static_cast<int>(pixel[0]) << " | " << static_cast<int>(pixel[0]) << std::endl;
+        if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
           int y_idx = y < oy ? oy - y - 1 : y - oy;
           int x_idx = x < ox ? ox - x - 1 : x - ox;
 
