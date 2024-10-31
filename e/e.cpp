@@ -6,6 +6,7 @@
 #include <dxgi1_2.h>
 #include <functional>
 #include <iostream>
+#include <thread>
 #include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
@@ -103,15 +104,13 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zx = 64, zy = 64, zz = +1;
+  const int zx = +128, zy = +8, zz = +1;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
-  const int oy = zy / 2;
-  const int ox = zx / 2;
-  const int fy = +1;
-  const int fx = +1;
-  const int ec = +2;
-  const int ea = +1;
+  const int ey = zy / 2;
+  const int ex = zx / 2;
+  bool cr = false;
+  bool cl = false;
   int ay = +1;
   int ax = +1;
 
@@ -121,8 +120,16 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
+  auto lambda = [&cl]() {
+    while (true) {
+      cl = isKeyHeld(VK_LBUTTON);
+      Time::XO(+9);
+    }
+    };
 
-  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, driver](uint8_t* _o, int row_pitch) {
+  std::thread t(lambda);
+
+  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, &cl, driver](uint8_t* _o, int row_pitch) {
     bool ok = false;
 
     for (int y = 0; y < zy; ++y) {
@@ -131,9 +138,9 @@ int main() {
       for (int x = 0; x < zx; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
-          ay = y - oy;
+          ay = y - ey;
 
-          ax = x - ox;
+          ax = x - ex;
 
           ok = true;
 
@@ -145,48 +152,19 @@ int main() {
     }
 
     if (ok) {
-      const int qy = ay * 1;
-      const int qx = ax * 1;
-      const int ny = -3;
-      const int nx = -3;
-
-      if (ax == nx && ay == ny) {
+      if (ax == -2 && ay == -2) {
         return true;
       }
-      else if (ay == ny) {
-        Xyloid2::yx(driver, 0, qx - nx);
-      }
-      else if (ax == nx) {
-        Xyloid2::yx(driver, qy - ny, 0);
-      }
       else {
-        Xyloid2::yx(driver, qy - ny, qx - nx);
+        return Xyloid2::yx(driver, cl ? +0 : ay + 2, ax + 2);
       }
     }
-
-    return true;
+    else {
+      return false;
+    }
     };
 
   CaptureScreenArea(processPixelData, zz, sx, sy, zx, zy);
 
   return 0;
 }
-
-/*if (y1 >= ea || y2 >= ea) {
-  if (y1 > ec || y2 > ec) {
-    if (!isKeyHeld(VK_LBUTTON)) {
-      y2 > ec ? Xyloid2::yx(driver, (y2 - ec + ec) * fy * +1, 0)
-        : Xyloid2::yx(driver, (y1 - ec - ec) * fy * -1, 0);
-    }
-  }
-}
-if (x1 >= ea || x2 >= ea) {
-  if (x1 > ec || x2 > ec) {
-    x2 > ec ? Xyloid2::yx(driver, 0, x2 * fx * +1)
-      : Xyloid2::yx(driver, 0, x1 * fx * -1);
-  }
-}
-
-std::cout << ax << " | " << ay << std::endl;
-Time::XO(100);
-*/
