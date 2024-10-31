@@ -103,17 +103,15 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zz = +1;
-  const int zy = 64;
-  const int zx = 64;
+  const int zx = 96, zy = 96, zz = +1;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
   const int oy = zy / 2;
   const int ox = zx / 2;
   const int fy = +1;
   const int fx = +1;
-  const int e3 = +3;
-  const int e1 = +1;
+  const int ec = +3;
+  const int ea = +1;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -127,7 +125,7 @@ int main() {
 
 #pragma omp parallel for
     for (int y = 0; y < zy; ++y) {
-      if (ok) continue;  // Skip loop if condition met
+      if (ok) continue;
 #pragma omp flush(ok)
 
       uint8_t* row_ptr = _o + y * row_pitch;
@@ -156,24 +154,18 @@ int main() {
     int x2 = zIndex(x2_, ox);
     int x1 = zIndex(x1_, ox);
 
-    if (y1 >= e1 || y2 >= e1) {
-      if (y1 > e3 || y2 > e3) {
+    if (y1 >= ea || y2 >= ea) {
+      if (y1 > ec || y2 > ec) {
         if (!isKeyHeld(VK_LBUTTON)) {
-          y1 > e3 ? Xyloid2::yx(driver, (y1 - e3 - e3) * fy * -1, 0)
-            : Xyloid2::yx(driver, (y2 - e3 + e3) * fy * +1, 0);
+          y1 > ec ? Xyloid2::yx(driver, (y1 - ec - ec) * fy * -1, 0)
+            : Xyloid2::yx(driver, (y2 - ec + ec) * fy * +1, 0);
         }
       }
     }
-    if (x1 >= e1 || x2 >= e1) {
-      if (x1 > e3 || x2 > e3) {
-        if (x1 > e3 && x2 > e3) {
-          x2 > x1 ? Xyloid2::yx(driver, 0, ((x2 - x1) / 2) * fx * +1)
-            : Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * fx * -1);
-        }
-        else {
-          x2 > e3 ? Xyloid2::yx(driver, 0, x2 * fx * +1)
-            : Xyloid2::yx(driver, 0, x1 * fx * -1);
-        }
+    if (x1 >= ea || x2 >= ea) {
+      if (x1 > ec || x2 > ec) {
+        x2 > ec ? Xyloid2::yx(driver, 0, x2 * fx * +1)
+          : Xyloid2::yx(driver, 0, x1 * fx * -1);
       }
     }
     return true;
