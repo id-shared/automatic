@@ -123,23 +123,30 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   std::function<bool(uint8_t*, int)> processPixelData = [driver](uint8_t* _o, int row_pitch) {
-    bool y2_[ox] = {}, y1_[ox] = {}, x2_[ox] = {}, x1_[ox] = {};
+    bool y2_[ox] = {}, y1_[ox] = {}, x2_[ox] = {}, x1_[ox] = {}, ok = false;
 
 #pragma omp parallel for
     for (int y = 0; y < zy; ++y) {
+      if (ok) continue;
+#pragma omp flush(ok)
+
       uint8_t* row_ptr = _o + y * row_pitch;
 
       for (int x = 0; x < zx; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
-          int y_idx = y < oy ? oy - y - 1 : y - oy;
-          int x_idx = x < ox ? ox - x - 1 : x - ox;
+          int y_idx = abs(oy - y - 1);
+          int x_idx = abs(ox - x - 1);
 
           if (y < oy) y1_[y_idx] = true;
           else        y2_[y_idx] = true;
 
           if (x < ox) x1_[x_idx] = true;
           else        x2_[x_idx] = true;
+
+          ok = true;
+#pragma omp flush(ok)
+#pragma omp cancel for
         }
       }
     }
@@ -164,7 +171,7 @@ int main() {
             : Xyloid2::yx(driver, 0, ((x1 - x2) / 2) * fx * -1);
         }
         else {
-          x2 > e3 ? Xyloid2::yx(driver, 0, x2 * fx * +1)
+          x2 > e3 ? Xyloid2::yx(driver, 0, (y1 - e3 - e3) * fx * +1)
             : Xyloid2::yx(driver, 0, x1 * fx * -1);
         }
       }
