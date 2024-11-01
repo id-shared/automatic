@@ -157,16 +157,18 @@ int main() {
 
     if (ok) {
       if (ay < -3 || ay > -1) {
-        Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
-        Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
-        Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
+        for (int i = 0; i < 3; ++i) {
+          Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
+        }
+
         return true;
       }
 
       if (ax < -3 || ax > -1) {
-        Xyloid2::yx(driver, +0, ax + 2);
-        Xyloid2::yx(driver, +0, ax + 2);
-        Xyloid2::yx(driver, +0, ax + 2);
+        for (int i = 0; i < 3; ++i) {
+          Xyloid2::yx(driver, +0, ax + 2);
+        }
+
         return true;
       }
     }
