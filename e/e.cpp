@@ -138,6 +138,7 @@ int main() {
 
       for (int x = 0; x < zx; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
+
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
           ay = y - ey;
 
