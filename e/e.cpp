@@ -107,11 +107,13 @@ int main() {
   const int zx = +128, zy = +16, zz = +1;
   const int sy = (1080 - zy) / 2;
   const int sx = (1920 - zx) / 2;
+
   const int ey = zy / 2;
   const int ex = zx / 2;
-  bool cz = false;
+
   bool cr = false;
   bool cl = false;
+
   int ay = +1;
   int ax = +1;
 
@@ -130,7 +132,7 @@ int main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, &cl, &cz, driver](uint8_t* _o, int row_pitch) {
+  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, &cl, driver](uint8_t* _o, int row_pitch) {
     bool ok = false;
 
     for (int y = 0; y < zy; ++y) {
@@ -154,13 +156,18 @@ int main() {
     }
 
     if (ok) {
-      cz = !cz;
-
-      if (ax == -2 && ay == -2) {
+      if (ay < -3 || ay > -1) {
+        Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
+        Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
+        Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
         return true;
       }
-      else {
-        return Xyloid2::yx(driver, cl ? +0 : (ay + 2) * (cz ? 1 : 4), (ax + 2) * (cz ? 1 : 2));
+
+      if (ax < -3 || ax > -1) {
+        Xyloid2::yx(driver, +0, ax + 2);
+        Xyloid2::yx(driver, +0, ax + 2);
+        Xyloid2::yx(driver, +0, ax + 2);
+        return true;
       }
     }
     else {
