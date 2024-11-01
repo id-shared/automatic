@@ -104,18 +104,22 @@ bool isKeyHeld(int e) {
 }
 
 int main() {
-  const int zx = +128, zy = +16, zz = +1;
-  const int sy = (1080 - zy) / 2;
-  const int sx = (1920 - zx) / 2;
+  const int zx = +64 * +2, zy = +16 * 2, zz = +1;
+
+  const int xy = (1080 - zy) / 2;
+  const int xx = (1920 - zx) / 2;
 
   const int ey = zy / 2;
   const int ex = zx / 2;
 
-  bool cr = false;
-  bool cl = false;
+  const int cy = +2;
+  const int cx = +2;
 
   int ay = +1;
   int ax = +1;
+
+  bool _r = false;
+  bool _l = false;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -123,16 +127,16 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  auto lambda = [&cl]() {
+  auto lambda = [&_l]() {
     while (true) {
-      cl = isKeyHeld(VK_LBUTTON);
+      _l = isKeyHeld(VK_LBUTTON);
       Time::XO(+9);
     }
     };
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, &cl, driver](uint8_t* _o, int row_pitch) {
+  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, &_l, driver](uint8_t* _o, int row_pitch) {
     bool ok = false;
 
     for (int y = 0; y < zy; ++y) {
@@ -142,9 +146,9 @@ int main() {
         uint8_t* pixel = row_ptr + x * 4;
 
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
-          ay = y - ey;
+          ay = (y - ey) + cy;
 
-          ax = x - ex;
+          ax = (x - ex) + cx;
 
           ok = true;
 
@@ -156,20 +160,17 @@ int main() {
     }
 
     if (ok) {
-      if (ay < -3 || ay > -1) {
-        for (int i = 0; i < 3; ++i) {
-          Xyloid2::yx(driver, cl ? +0 : ay + 2, +0);
-        }
-
-        return true;
+      if (ax == 0 && ay == 0) {
+        return ok;
       }
-
-      if (ax < -3 || ax > -1) {
-        for (int i = 0; i < 3; ++i) {
-          Xyloid2::yx(driver, +0, ax + 2);
-        }
-
-        return true;
+      else if (ay == 0) {
+        return Xyloid2::yx(driver, +0, ax * (ax >= -cx && ax <= +cx ? 1 : 2));
+      }
+      else if (ax == 0) {
+        return Xyloid2::yx(driver, _l ? +0 : ay * (ay >= -cy && ay <= +cy ? 1 : 2), +0);
+      }
+      else {
+        return Xyloid2::yx(driver, _l ? +0 : ay * (ay >= -cy && ay <= +cy ? 1 : 2), ax * (ax >= -cx && ax <= +cx ? 1 : 2));
       }
     }
     else {
@@ -177,7 +178,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(processPixelData, zz, sx, sy, zx, zy);
+  CaptureScreenArea(processPixelData, zz, xx, xy, zx, zy);
 
   return 0;
 }
