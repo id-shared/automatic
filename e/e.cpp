@@ -110,7 +110,22 @@ int speed(int e) {
     return +1;
   case +2:
   case -2:
+    return +1;
+  case +3:
+  case -3:
+    return +1;
+  case +4:
+  case -4:
+    return +1;
+  case +5:
+  case -5:
     return +2;
+  case +6:
+  case -6:
+    return +2;
+  case +7:
+  case -7:
+    return +3;
   default:
     return +3;
   }
@@ -125,7 +140,7 @@ int main() {
   const int ey = zy / +2;
   const int ex = zx / +2;
 
-  const int cy = +2;
+  const int cy = +4;
   const int cx = +2;
 
   int ay = +1;
