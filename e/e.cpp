@@ -103,14 +103,27 @@ bool isKeyHeld(int e) {
   return (GetAsyncKeyState(e) & 0x8000) != 0;
 }
 
+int speed(int e) {
+  switch (e) {
+  case +1:
+  case -1:
+    return +1;
+  case +2:
+  case -2:
+    return +2;
+  default:
+    return +3;
+  }
+}
+
 int main() {
   const int zx = +64 * +2, zy = +16 * 2, zz = +1;
 
-  const int xy = (1080 - zy) / 2;
-  const int xx = (1920 - zx) / 2;
+  const int xy = (1080 - zy) / +2;
+  const int xx = (1920 - zx) / +2;
 
-  const int ey = zy / 2;
-  const int ex = zx / 2;
+  const int ey = zy / +2;
+  const int ex = zx / +2;
 
   const int cy = +2;
   const int cx = +2;
@@ -163,14 +176,16 @@ int main() {
       if (ax == 0 && ay == 0) {
         return ok;
       }
-      else if (ay == 0) {
-        return Xyloid2::yx(driver, +0, ax * (ax >= -cx && ax <= +cx ? 1 : 2));
-      }
-      else if (ax == 0) {
-        return Xyloid2::yx(driver, _l ? +0 : ay * (ay >= -cy && ay <= +cy ? 1 : 2), +0);
-      }
       else {
-        return Xyloid2::yx(driver, _l ? +0 : ay * (ay >= -cy && ay <= +cy ? 1 : 2), ax * (ax >= -cx && ax <= +cx ? 1 : 2));
+        if (ay == 0) {
+          return Xyloid2::yx(driver, +0, ax * speed(ax));
+        }
+        else if (ax == 0) {
+          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), +0);
+        }
+        else {
+          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
+        }
       }
     }
     else {
