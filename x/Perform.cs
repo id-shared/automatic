@@ -12,9 +12,9 @@ class Perform {
   }
 
   public bool KeyForwardSlashD() {
+    K1 = A.T;
     _ = KD && X1.EN([Key.D], A.F);
     _ = KA && X1.EN([Key.A], A.F);
-    K1 = A.T;
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => K1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
       return A.T;
@@ -23,8 +23,8 @@ class Perform {
   }
 
   public bool KeyDU() {
-    P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
     KD = A.F;
+    P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
     return A.T;
   }
 
@@ -35,8 +35,8 @@ class Perform {
   }
 
   public bool KeyAU() {
-    P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
     KA = A.F;
+    P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
     return A.T;
   }
 
