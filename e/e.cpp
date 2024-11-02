@@ -17,7 +17,7 @@ using Microsoft::WRL::ComPtr;
 
 struct FrameData {
   std::vector<uint8_t> data;
-  int row_pitch;
+  UINT row_pitch;
 };
 
 std::queue<FrameData> frameQueue;
@@ -105,7 +105,7 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
 
       {
         std::lock_guard<std::mutex> lock(queueMutex);
-        frameQueue.emplace(FrameData{ std::move(frameData), static_cast<int>(mappedResource.RowPitch) });
+        frameQueue.emplace(FrameData{ std::move(frameData), mappedResource.RowPitch });
       }
       queueCV.notify_one();
       context->Unmap(stagingTexture.Get(), 0);
@@ -157,7 +157,7 @@ int main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, int row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = 0; y < zy; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
