@@ -100,7 +100,7 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
   hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
   if (FAILED(hr)) throw hr;
 
-  while (true) {
+  while (!stopProcessing) {
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
     hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
