@@ -12,9 +12,9 @@ class Perform {
   }
 
   public bool KeyForwardSlashD() {
+    _ = KD && X1.EN([Key.D], A.F);
+    _ = KA && X1.EN([Key.A], A.F);
     K1 = A.T;
-    if (KD) X1.EN([Key.D], A.F);
-    if (KA) X1.EN([Key.A], A.F);
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => K1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
       return A.T;
@@ -23,25 +23,27 @@ class Perform {
   }
 
   public bool KeyDU() {
+    P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
     KD = A.F;
-    return P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
+    return A.T;
   }
 
   public bool KeyDD() {
-    KD = A.T;
     T9 = Environment.TickCount;
-    return !K1;
+    KD = A.T;
+    return A.T;
   }
 
   public bool KeyAU() {
+    P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
     KA = A.F;
-    return P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
+    return A.T;
   }
 
   public bool KeyAD() {
-    KA = A.T;
     T9 = Environment.TickCount;
-    return !K1;
+    KA = A.T;
+    return A.T;
   }
 
   public bool OnU(uint i) => i switch {
