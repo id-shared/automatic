@@ -1,8 +1,8 @@
 #include "Contact.hpp"
 #include "Device.hpp"
 #include "Ram.hpp"
-#include "Time.hpp"
 #include "Xyloid2.hpp"
+#include <chrono>
 #include <condition_variable>
 #include <d3d11.h>
 #include <dxgi1_2.h>
@@ -151,7 +151,7 @@ int main() {
   auto lambda = [&_l]() {
     while (true) {
       _l = isKeyHeld(VK_LBUTTON);
-      Time::XO(+63);
+      std::this_thread::sleep_for(std::chrono::milliseconds(9));
     }
     };
 
