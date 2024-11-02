@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="..\_\Contact.hpp" />
     <ClInclude Include="..\_\Device.hpp" />
+    <ClInclude Include="..\_\Ram.hpp" />
     <ClInclude Include="..\_\Time.hpp" />
     <ClInclude Include="..\_\Xyloid2.hpp" />
   </ItemGroup>

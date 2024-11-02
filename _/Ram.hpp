@@ -14,18 +14,28 @@ namespace Ram {
   };
 
   static bool XO(double ms) {
-    LARGE_INTEGER frequency;
-    LARGE_INTEGER start;
+    HANDLE shm_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, L"ram");
+    shm_handle != NULL ? shm_handle : throw shm_handle;
 
-    QueryPerformanceFrequency(&frequency);
-    QueryPerformanceCounter(&start);
+    HANDLE sem_handle = OpenSemaphore(SEMAPHORE_ALL_ACCESS, FALSE, L"ram");
+    sem_handle != NULL ? sem_handle : throw sem_handle;
 
-    double ticksToWait = (ms / 1000.0) * frequency.QuadPart;
-    LARGE_INTEGER current;
+    Ram::Detail* ptr = static_cast<Ram::Detail*>(MapViewOfFile(shm_handle, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Ram::Detail)));
+    ptr != NULL ? ptr : throw ptr;
 
-    do {
-      QueryPerformanceCounter(&current);
-    } while (current.QuadPart - start.QuadPart < ticksToWait);
+    WaitForSingleObject(sem_handle, INFINITE);
+    ptr->n4 = 1;
+    ptr->n3 = 1;
+    ptr->n2 = 1;
+    ptr->n1 = 1;
+    ReleaseSemaphore(sem_handle, 1, NULL);
+
+    WaitForSingleObject(sem_handle, INFINITE);
+    ptr->n4 = 1;
+    ptr->n3 = 1;
+    ptr->n2 = 1;
+    ptr->n1 = 2;
+    ReleaseSemaphore(sem_handle, 1, NULL);
 
     return true;
   }

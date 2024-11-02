@@ -1,5 +1,6 @@
 #include "Contact.hpp"
 #include "Device.hpp"
+#include "Ram.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
 #include <d3d11.h>
@@ -75,24 +76,6 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
 
     duplication->ReleaseFrame();
   }
-}
-
-int zIndex(const bool* arr, int size) {
-  for (int i = size - 1; i >= 0; --i) {
-    if (arr[i]) {
-      return i + 1;
-    }
-  }
-  return 0;
-}
-
-int aIndex(const bool* arr, int size) {
-  for (int i = 0; i < size; ++i) {
-    if (arr[i]) {
-      return i + 1;
-    }
-  }
-  return 0;
 }
 
 bool isKeyHeld(int e) {
