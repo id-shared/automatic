@@ -32,7 +32,6 @@ void ProcessFrame(FrameData frame, std::function<bool(uint8_t*, int)> processPix
 void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData, int numThreads) {
   std::vector<std::thread> workers;
 
-  // Start worker threads
   for (int i = 0; i < numThreads; ++i) {
     workers.emplace_back([&]() {
       while (!stopProcessing) {
@@ -47,13 +46,11 @@ void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData, int numT
           frameQueue.pop();
         }
 
-        // Process the frame
         ProcessFrame(frame, processPixelData);
       }
       });
   }
 
-  // Join worker threads
   for (auto& worker : workers) {
     worker.join();
   }
@@ -142,14 +139,16 @@ int speed(int e) {
 }
 
 int main() {
-  const int numThreads = std::thread::hardware_concurrency();
-  const int zx = +32 * +2, zy = +8 * +2, zz = +2;
+  const int count = std::thread::hardware_concurrency();
+  const int wide = +64;
+  const int high = +16;
+  const int each = +4;
 
-  const int xy = (1080 - zy) / +2;
-  const int xx = (1920 - zx) / +2;
+  const int xy = (1080 - high) / +2;
+  const int xx = (1920 - wide) / +2;
 
-  const int ey = zy / +2;
-  const int ex = zx / +2;
+  const int ey = high / +2;
+  const int ex = wide / +2;
 
   const int cy = +2;
   const int cx = +2;
@@ -166,20 +165,21 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  auto lambda = [&_l]() {
+  std::function<bool()> lambda = [&_l, each]() {
     while (true) {
       _l = isKeyHeld(VK_LBUTTON);
-      std::this_thread::sleep_for(std::chrono::milliseconds(zz));
+      std::this_thread::sleep_for(std::chrono::milliseconds(each));
     }
+    return true;
     };
 
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, UINT row_pitch) {
-    for (int y = 0; y < zy; ++y) {
+    for (int y = 0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
-      for (int x = 0; x < zx; ++x) {
+      for (int x = 0; x < wide; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
 
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
@@ -195,8 +195,8 @@ int main() {
     return true;
     };
 
-  std::thread captureThread(CaptureScreenArea, process, zz, xx, xy, zx, zy);
-  std::thread processThread(ProcessFrames, process, numThreads);
+  std::thread captureThread(CaptureScreenArea, process, each, xx, xy, wide, high);
+  std::thread processThread(ProcessFrames, process, count);
 
   captureThread.join();
   stopProcessing = true;

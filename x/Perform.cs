@@ -13,7 +13,8 @@ class Perform {
 
   public bool KeyForwardSlashD() {
     K1 = A.T;
-    X1.EN([Key.A, Key.D], A.F);
+    if (KD) X1.EN([Key.D], A.F);
+    if (KA) X1.EN([Key.A], A.F);
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => K1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
       return A.T;
@@ -22,19 +23,23 @@ class Perform {
   }
 
   public bool KeyDU() {
+    KD = A.F;
     return P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
   }
 
   public bool KeyDD() {
+    KD = A.T;
     T9 = Environment.TickCount;
     return !K1;
   }
 
   public bool KeyAU() {
+    KA = A.F;
     return P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
   }
 
   public bool KeyAD() {
+    KA = A.T;
     T9 = Environment.TickCount;
     return !K1;
   }
@@ -146,6 +151,8 @@ class Perform {
   public readonly Partner P2 = new(256);
   public readonly Partner P1 = new(256);
 
+  public volatile bool KD = A.F;
+  public volatile bool KA = A.F;
   public volatile bool K2 = A.F;
   public volatile bool K1 = A.F;
 
