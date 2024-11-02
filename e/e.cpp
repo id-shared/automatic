@@ -25,20 +25,37 @@ std::mutex queueMutex;
 std::condition_variable queueCV;
 bool stopProcessing = false;
 
-void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData) {
-  while (!stopProcessing) {
-    std::unique_lock<std::mutex> lock(queueMutex);
-    queueCV.wait(lock, [] { return !frameQueue.empty() || stopProcessing; });
+void ProcessFrame(FrameData frame, std::function<bool(uint8_t*, int)> processPixelData) {
+  processPixelData(frame.data.data(), frame.row_pitch);
+}
 
-    while (!frameQueue.empty()) {
-      FrameData frame = std::move(frameQueue.front());
-      frameQueue.pop();
-      lock.unlock();
+void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData, int numThreads) {
+  std::vector<std::thread> workers;
 
-      processPixelData(frame.data.data(), frame.row_pitch);
+  // Start worker threads
+  for (int i = 0; i < numThreads; ++i) {
+    workers.emplace_back([&]() {
+      while (!stopProcessing) {
+        FrameData frame;
+        {
+          std::unique_lock<std::mutex> lock(queueMutex);
+          queueCV.wait(lock, [] { return !frameQueue.empty() || stopProcessing; });
 
-      lock.lock();
-    }
+          if (stopProcessing) break;
+
+          frame = std::move(frameQueue.front());
+          frameQueue.pop();
+        }
+
+        // Process the frame
+        ProcessFrame(frame, processPixelData);
+      }
+      });
+  }
+
+  // Join worker threads
+  for (auto& worker : workers) {
+    worker.join();
   }
 }
 
@@ -125,6 +142,7 @@ int speed(int e) {
 }
 
 int main() {
+  const int numThreads = std::thread::hardware_concurrency();
   const int zx = +32 * +2, zy = +8 * +2, zz = +2;
 
   const int xy = (1080 - zy) / +2;
@@ -178,7 +196,7 @@ int main() {
     };
 
   std::thread captureThread(CaptureScreenArea, process, zz, xx, xy, zx, zy);
-  std::thread processThread(ProcessFrames, process);
+  std::thread processThread(ProcessFrames, process, numThreads);
 
   captureThread.join();
   stopProcessing = true;
