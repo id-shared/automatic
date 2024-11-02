@@ -169,7 +169,7 @@ int main() {
   auto lambda = [&_l]() {
     while (true) {
       _l = isKeyHeld(VK_LBUTTON);
-      std::this_thread::sleep_for(std::chrono::milliseconds(9));
+      std::this_thread::sleep_for(std::chrono::milliseconds(zz));
     }
     };
 

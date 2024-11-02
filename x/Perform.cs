@@ -13,6 +13,7 @@ class Perform {
 
   public bool KeyForwardSlashD() {
     K1 = A.T;
+    X1.EN([Key.A, Key.D], A.F);
     P1.TryEnqueue(_ => X2.E1(A.T) && P2.TryEnqueue(_ => {
       AY = Till(ci => K1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1), AY) - 1;
       return A.T;
@@ -26,7 +27,7 @@ class Perform {
 
   public bool KeyDD() {
     T9 = Environment.TickCount;
-    return A.T;
+    return !K1;
   }
 
   public bool KeyAU() {
@@ -35,7 +36,7 @@ class Perform {
 
   public bool KeyAD() {
     T9 = Environment.TickCount;
-    return A.T;
+    return !K1;
   }
 
   public bool OnU(uint i) => i switch {
@@ -164,15 +165,3 @@ class Perform {
   public const uint WM_KEYUP = 0x0101;
 
 }
-
-/*
-Console.WriteLine(17 / 16);
-XO([Key.RArrow], 79);
-XO([Key.LArrow], 20);
-
-X2.E1(A.T);
-Time.XO(+1);
-X2.E1(A.F);
-
-return A.F;
-*/
