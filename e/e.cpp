@@ -135,14 +135,14 @@ bool isKeyHeld(int e) {
 
 int speed(int e) {
   int ae = std::abs(e);
-  return (ae >= +7) ? (ae % +2 == +1 ? +1 : +2) : (ae >= +1) ? +1 : +1;
+  return (ae > +4) ? (ae % +2 == +1 ? +2 : +1) : +1;
 }
 
 int main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +64;
-  const int high = +16;
-  const int each = +4;
+  const int wide = +16 * +5;
+  const int high = +16 * +1;
+  const int each = +1;
 
   const int xy = (1080 - high) / +2;
   const int xx = (1920 - wide) / +2;
@@ -150,7 +150,7 @@ int main() {
   const int ey = high / +2;
   const int ex = wide / +2;
 
-  const int cy = +2;
+  const int cy = +4;
   const int cx = +2;
 
   int ay = +1;

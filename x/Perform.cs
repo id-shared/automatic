@@ -88,7 +88,6 @@ class Perform {
       case WM_SYSKEYDOWN or WM_KEYDOWN:
         return OnD(key) ? next : 1;
       case WM_SYSKEYUP or WM_KEYUP:
-        _ = (uint)ConsoleKey.LeftWindows == key && Exit();
         return OnU(key) ? next : 1;
       default:
         return next;
@@ -172,5 +171,4 @@ class Perform {
   public const uint WM_SYSKEYUP = 0x0105;
   public const uint WM_KEYDOWN = 0x0100;
   public const uint WM_KEYUP = 0x0101;
-
 }
