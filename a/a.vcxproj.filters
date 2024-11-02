@@ -26,5 +26,8 @@
     <ClInclude Include="..\_\Ram.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\_\Time.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

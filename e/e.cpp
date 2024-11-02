@@ -105,11 +105,11 @@ bool isKeyHeld(int e) {
 
 int speed(int e) {
   int ae = std::abs(e);
-  return (ae >= +3) ? (ae % +2 == +1 ? +1 : +2) : (ae >= +1) ? +1 : +1;
+  return (ae >= +7) ? (ae % +2 == +1 ? +1 : +2) : (ae >= +1) ? +1 : +1;
 }
 
 int main() {
-  const int zx = +64 * +2, zy = +16 * +2, zz = +1;
+  const int zx = +32 * +2, zy = +8 * +2, zz = +2;
 
   const int xy = (1080 - zy) / +2;
   const int xx = (1920 - zx) / +2;
@@ -117,7 +117,7 @@ int main() {
   const int ey = zy / +2;
   const int ex = zx / +2;
 
-  const int cy = +4;
+  const int cy = +2;
   const int cx = +2;
 
   int ay = +1;
@@ -135,7 +135,7 @@ int main() {
   auto lambda = [&_l]() {
     while (true) {
       _l = isKeyHeld(VK_LBUTTON);
-      Time::XO(+9);
+      Time::XO(+63);
     }
     };
 
