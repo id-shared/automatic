@@ -100,35 +100,12 @@ int aIndex(const bool* arr, int size) {
 }
 
 bool isKeyHeld(int e) {
-  return (GetAsyncKeyState(e) & 0x8000) != 0;
+  return (GetAsyncKeyState(e) & 0x8000) != +0;
 }
 
 int speed(int e) {
-  switch (e) {
-  case +1:
-  case -1:
-    return +1;
-  case +2:
-  case -2:
-    return +2;
-  case +3:
-  case -3:
-    return +1;
-  case +4:
-  case -4:
-    return +2;
-  case +5:
-  case -5:
-    return +3;
-  case +6:
-  case -6:
-    return +3;
-  case +7:
-  case -7:
-    return +3;
-  default:
-    return +1;
-  }
+  int ae = std::abs(e);
+  return (ae >= +3) ? (ae % +2 == +1 ? +1 : +2) : (ae >= +1) ? +1 : +1;
 }
 
 int main() {
@@ -140,7 +117,7 @@ int main() {
   const int ey = zy / +2;
   const int ex = zx / +2;
 
-  const int cy = +4;
+  const int cy = +3;
   const int cx = +2;
 
   int ay = +1;
@@ -164,7 +141,7 @@ int main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> processPixelData = [&ax, &ay, &_l, driver](uint8_t* _o, int row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, int row_pitch) {
     bool ok = false;
 
     for (int y = 0; y < zy; ++y) {
@@ -187,28 +164,10 @@ int main() {
       if (ok) break;
     }
 
-    if (ok) {
-      if (ax == 0 && ay == 0) {
-        return ok;
-      }
-      else {
-        if (ay == 0) {
-          return Xyloid2::yx(driver, +0, ax * speed(ax));
-        }
-        else if (ax == 0) {
-          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), +0);
-        }
-        else {
-          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
-        }
-      }
-    }
-    else {
-      return false;
-    }
+    return ok ? Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax)) : false;
     };
 
-  CaptureScreenArea(processPixelData, zz, xx, xy, zx, zy);
+  CaptureScreenArea(process, zz, xx, xy, zx, zy);
 
   return 0;
 }
