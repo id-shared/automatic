@@ -117,7 +117,7 @@ int main() {
   const int ey = zy / +2;
   const int ex = zx / +2;
 
-  const int cy = +3;
+  const int cy = +4;
   const int cx = +2;
 
   int ay = +1;
