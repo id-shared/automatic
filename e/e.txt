@@ -1,103 +1,138 @@
 #include "Contact.hpp"
 #include "Device.hpp"
+#include "Ram.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
-#include <algorithm>
-#include <fstream>
+#include <condition_variable>
+#include <d3d11.h>
+#include <dxgi1_2.h>
+#include <functional>
 #include <iostream>
-#include <vector>
-#include <windows.h>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <wrl.h>
 
-HDC hScreenDC = GetDC(NULL);
-HDC hMemoryDC = CreateCompatibleDC(hScreenDC);
-HBITMAP hBitmap = nullptr;
+using Microsoft::WRL::ComPtr;
 
-BITMAPINFO bi;
-std::vector<COLORREF> pixelData;
+struct FrameData {
+  std::vector<uint8_t> data;
+  int row_pitch;
+};
 
-void saveBitmap(HBITMAP hBitmap, int width, int height, const char* filePath) {
-  BITMAPFILEHEADER bmfHeader;
-  BITMAPINFOHEADER biHeader;
-  DWORD dwBmpSize;
+std::queue<FrameData> frameQueue;
+std::mutex queueMutex;
+std::condition_variable queueCV;
+bool stopProcessing = false;
 
-  biHeader.biSize = sizeof(BITMAPINFOHEADER);
-  biHeader.biWidth = width;
-  biHeader.biHeight = -height;
-  biHeader.biPlanes = 1;
-  biHeader.biBitCount = 32;
-  biHeader.biCompression = BI_RGB;
-  biHeader.biSizeImage = 0;
-  biHeader.biXPelsPerMeter = 0;
-  biHeader.biYPelsPerMeter = 0;
-  biHeader.biClrUsed = 0;
-  biHeader.biClrImportant = 0;
+void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
+  ComPtr<ID3D11Device> device;
+  ComPtr<ID3D11DeviceContext> context;
+  D3D_FEATURE_LEVEL featureLevel;
 
-  dwBmpSize = ((width * biHeader.biBitCount + 31) / 32) * 4 * height;
-  std::vector<BYTE> bmpData(dwBmpSize);
+  HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0, D3D11_SDK_VERSION, &device, &featureLevel, &context);
+  if (FAILED(hr)) throw hr;
 
-  GetDIBits(hMemoryDC, hBitmap, 0, height, bmpData.data(), reinterpret_cast<BITMAPINFO*>(&biHeader), DIB_RGB_COLORS);
+  ComPtr<IDXGIDevice> dxgiDevice;
+  device.As(&dxgiDevice);
+  ComPtr<IDXGIAdapter> adapter;
+  hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), &adapter);
+  if (FAILED(hr)) throw hr;
 
-  bmfHeader.bfType = 0x4D42; // BM
-  bmfHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + dwBmpSize;
-  bmfHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-  bmfHeader.bfReserved1 = 0;
-  bmfHeader.bfReserved2 = 0;
+  ComPtr<IDXGIOutput> output;
+  hr = adapter->EnumOutputs(0, &output);
+  if (FAILED(hr)) throw hr;
 
-  std::ofstream file(filePath, std::ios::out | std::ios::binary);
-  file.write(reinterpret_cast<const char*>(&bmfHeader), sizeof(bmfHeader));
-  file.write(reinterpret_cast<const char*>(&biHeader), sizeof(biHeader));
-  file.write(reinterpret_cast<const char*>(bmpData.data()), dwBmpSize);
-  file.close();
+  ComPtr<IDXGIOutput1> output1;
+  hr = output.As(&output1);
+  if (FAILED(hr)) throw hr;
+
+  ComPtr<IDXGIOutputDuplication> duplication;
+  hr = output1->DuplicateOutput(device.Get(), &duplication);
+  if (FAILED(hr)) throw hr;
+
+  D3D11_TEXTURE2D_DESC desc = {};
+  desc.Width = width;
+  desc.Height = height;
+  desc.MipLevels = 1;
+  desc.ArraySize = 1;
+  desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+  desc.SampleDesc.Count = 1;
+  desc.Usage = D3D11_USAGE_STAGING;
+  desc.BindFlags = 0;
+  desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+
+  ComPtr<ID3D11Texture2D> stagingTexture;
+  hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
+  if (FAILED(hr)) throw hr;
+
+  while (!stopProcessing) {
+    ComPtr<IDXGIResource> desktopResource;
+    DXGI_OUTDUPL_FRAME_INFO frameInfo;
+    hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
+
+    if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue;
+    if (FAILED(hr)) throw hr;
+
+    ComPtr<ID3D11Texture2D> desktopTexture;
+    hr = desktopResource.As(&desktopTexture);
+    if (FAILED(hr)) throw hr;
+
+    D3D11_BOX sourceRegion = { x, y, 0, x + width, y + height, 1 };
+    context->CopySubresourceRegion(stagingTexture.Get(), 0, 0, 0, 0, desktopTexture.Get(), 0, &sourceRegion);
+
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
+    if (SUCCEEDED(hr)) {
+      std::vector<uint8_t> frameData((uint8_t*)mappedResource.pData, (uint8_t*)mappedResource.pData + mappedResource.RowPitch * height);
+
+      {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        frameQueue.emplace(FrameData{ std::move(frameData), static_cast<int>(mappedResource.RowPitch) });
+      }
+      queueCV.notify_one();
+      context->Unmap(stagingTexture.Get(), 0);
+    }
+
+    duplication->ReleaseFrame();
+  }
 }
 
-bool isPurpleDominated(COLORREF color, double threshold) {
-  BYTE red = GetRValue(color);
-  BYTE green = GetGValue(color);
-  BYTE blue = GetBValue(color);
+void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData) {
+  while (!stopProcessing) {
+    std::unique_lock<std::mutex> lock(queueMutex);
+    queueCV.wait(lock, [] { return !frameQueue.empty() || stopProcessing; });
 
-  // Improved logic for purple dominance check
-  return (red > threshold * green) && (red > threshold * blue);
-}
+    while (!frameQueue.empty()) {
+      FrameData frame = std::move(frameQueue.front());
+      frameQueue.pop();
+      lock.unlock();
 
-void initCapture(int width, int height) {
-  hBitmap = CreateCompatibleBitmap(hScreenDC, width, height);
-  SelectObject(hMemoryDC, hBitmap);
+      processPixelData(frame.data.data(), frame.row_pitch);
 
-  memset(&bi, 0, sizeof(bi));
-  bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-  bi.bmiHeader.biWidth = width;
-  bi.bmiHeader.biHeight = -height; // Negative for top-down DIB
-  bi.bmiHeader.biPlanes = 1;
-  bi.bmiHeader.biBitCount = 32; // 32 bits for better color depth
-  bi.bmiHeader.biCompression = BI_RGB;
-
-  pixelData.resize(width * height);
-}
-
-void releaseCapture() {
-  DeleteObject(hBitmap);
-  DeleteDC(hMemoryDC);
-  ReleaseDC(NULL, hScreenDC);
-}
-
-std::vector<COLORREF>& capture(int startX, int startY, int width, int height) {
-  // Perform BitBlt to capture the screen
-  BitBlt(hMemoryDC, 0, 0, width, height, hScreenDC, startX, startY, SRCCOPY);
-  // Retrieve the pixel data
-  GetDIBits(hMemoryDC, hBitmap, 0, height, pixelData.data(), &bi, DIB_RGB_COLORS);
-  return pixelData;
-}
-
-int findLastTrueIndex(const bool* arr, int size) {
-  for (int i = size - 1; i >= 0; --i) {
-    if (arr[i]) {
-      return i;
+      lock.lock();
     }
   }
-  return -1;
+}
+
+int speed(int e) {
+  int ae = std::abs(e);
+  return (ae >= +7) ? (ae % +2 == +1 ? +1 : +2) : (ae >= +1) ? +1 : +1;
 }
 
 int main() {
+  const int zx = +32 * +2, zy = +8 * +2, zz = +2;
+  const int xy = (1080 - zy) / +2;
+  const int xx = (1920 - zx) / +2;
+  const int ey = zy / +2;
+  const int ex = zx / +2;
+  const int cy = +2;
+  const int cx = +2;
+  int ay = +1;
+  int ax = +1;
+  bool _r = false;
+  bool _l = false;
+
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
     return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
@@ -105,62 +140,28 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-  const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-  const int width = 64;
-  const int height = 64;
-  const int delta = width / 2;
-
-  const int startWidth = (screenWidth - width) / 2;
-  const int startHeight = screenHeight / 2;
-
-  initCapture(width, height);
-
-  while (true) {
-    auto& pixelData = capture(startWidth, startHeight, width, height);
-    bool r[delta] = {};
-    bool l[delta] = {};
-    bool active = true;
-
-#pragma omp parallel for
-    for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < width; ++j) {
-        COLORREF color = pixelData[(i * width) + j];
-        bool isDominated = isPurpleDominated(color, 1.1);
-
-        if (isDominated) {
-          if (j < (width / 2)) {
-            l[delta - j - 1] = true;
-          }
-          else {
-            r[j - delta] = true;
-          }
+  std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, int row_pitch) {
+    for (int y = 0; y < zy; ++y) {
+      uint8_t* row_ptr = _o + y * row_pitch;
+      for (int x = 0; x < zx; ++x) {
+        uint8_t* pixel = row_ptr + x * 4;
+        if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
+          ay = (y - ey) + cy;
+          ax = (x - ex) + cx;
+          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
         }
       }
     }
+    return true;
+    };
 
-    int xr = findLastTrueIndex(r, delta);
-    int xl = findLastTrueIndex(l, delta);
+  std::thread captureThread(CaptureScreenArea, process, zz, xx, xy, zx, zy);
+  std::thread processThread(ProcessFrames, process);
 
-    if (xl == -1 && xr == -1) {
-      // No action needed
-    }
-    else if (xl == -1) {
-      printf("%d\n", true);
-      Xyloid2::yx(driver, 0, ((xr + 1) / 2) * +1);
-    }
-    else if (xr == -1) {
-      printf("%d\n", true);
-      Xyloid2::yx(driver, 0, ((xl + 1) / 2) * -1);
-    }
-    else {
-      printf("%d %d\n", xl, xr);
-    }
+  captureThread.join();
+  stopProcessing = true;
+  queueCV.notify_all();
+  processThread.join();
 
-    saveBitmap(hBitmap, width, height, "e.bmp");
-    // Time::XO(100); // Control the capture frequency
-  }
-
-  releaseCapture();
   return 0;
 }

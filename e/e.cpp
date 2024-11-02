@@ -3,14 +3,45 @@
 #include "Ram.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
+#include <condition_variable>
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <functional>
 #include <iostream>
+#include <mutex>
+#include <queue>
 #include <thread>
 #include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
+
+struct FrameData {
+  std::vector<uint8_t> data;
+  int row_pitch;
+};
+
+std::queue<FrameData> frameQueue;
+std::mutex queueMutex;
+std::condition_variable queueCV;
+bool stopProcessing = false;
+
+void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData) {
+  while (!stopProcessing) {
+    std::unique_lock<std::mutex> lock(queueMutex);
+    queueCV.wait(lock, [] { return !frameQueue.empty() || stopProcessing; });
+
+    while (!frameQueue.empty()) {
+      FrameData frame = std::move(frameQueue.front());
+      frameQueue.pop();
+      lock.unlock();
+
+      processPixelData(frame.data.data(), frame.row_pitch);
+
+      lock.lock();
+    }
+  }
+}
+
 void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
@@ -70,7 +101,13 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      processPixelData(static_cast<uint8_t*>(mappedResource.pData), mappedResource.RowPitch);
+      std::vector<uint8_t> frameData((uint8_t*)mappedResource.pData, (uint8_t*)mappedResource.pData + mappedResource.RowPitch * height);
+
+      {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        frameQueue.emplace(FrameData{ std::move(frameData), static_cast<int>(mappedResource.RowPitch) });
+      }
+      queueCV.notify_one();
       context->Unmap(stagingTexture.Get(), 0);
     }
 
@@ -140,7 +177,13 @@ int main() {
     return true;
     };
 
-  CaptureScreenArea(process, zz, xx, xy, zx, zy);
+  std::thread captureThread(CaptureScreenArea, process, zz, xx, xy, zx, zy);
+  std::thread processThread(ProcessFrames, process);
+
+  captureThread.join();
+  stopProcessing = true;
+  queueCV.notify_all();
+  processThread.join();
 
   return 0;
 }
