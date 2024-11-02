@@ -10,33 +10,31 @@
 #include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
-
 void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
-  UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_PREVENT_INTERNAL_THREADING_OPTIMIZATIONS;
 
-  HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, nullptr, 0, D3D11_SDK_VERSION, &device, &featureLevel, &context);
-  FAILED(hr) ? throw hr : hr;
+  HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0, D3D11_SDK_VERSION, &device, &featureLevel, &context);
+  if (FAILED(hr)) throw hr;
 
   ComPtr<IDXGIDevice> dxgiDevice;
   device.As(&dxgiDevice);
   ComPtr<IDXGIAdapter> adapter;
   hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), &adapter);
-  FAILED(hr) ? throw hr : hr;
+  if (FAILED(hr)) throw hr;
 
   ComPtr<IDXGIOutput> output;
   hr = adapter->EnumOutputs(0, &output);
-  FAILED(hr) ? throw hr : hr;
+  if (FAILED(hr)) throw hr;
 
   ComPtr<IDXGIOutput1> output1;
   hr = output.As(&output1);
-  FAILED(hr) ? throw hr : hr;
+  if (FAILED(hr)) throw hr;
 
   ComPtr<IDXGIOutputDuplication> duplication;
   hr = output1->DuplicateOutput(device.Get(), &duplication);
-  FAILED(hr) ? throw hr : hr;
+  if (FAILED(hr)) throw hr;
 
   D3D11_TEXTURE2D_DESC desc = {};
   desc.Width = width;
@@ -51,18 +49,19 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
 
   ComPtr<ID3D11Texture2D> stagingTexture;
   hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
-  FAILED(hr) ? throw hr : hr;
+  if (FAILED(hr)) throw hr;
 
   while (true) {
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
     hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
+
     if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue;
-    FAILED(hr) ? throw hr : hr;
+    if (FAILED(hr)) throw hr;
 
     ComPtr<ID3D11Texture2D> desktopTexture;
     hr = desktopResource.As(&desktopTexture);
-    FAILED(hr) ? throw hr : hr;
+    if (FAILED(hr)) throw hr;
 
     D3D11_BOX sourceRegion = { x, y, 0, x + width, y + height, 1 };
     context->CopySubresourceRegion(stagingTexture.Get(), 0, 0, 0, 0, desktopTexture.Get(), 0, &sourceRegion);
@@ -72,9 +71,6 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
     if (SUCCEEDED(hr)) {
       processPixelData(static_cast<uint8_t*>(mappedResource.pData), mappedResource.RowPitch);
       context->Unmap(stagingTexture.Get(), 0);
-    }
-    else {
-      FAILED(hr) ? throw hr : hr;
     }
 
     duplication->ReleaseFrame();
@@ -142,8 +138,6 @@ int main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, int row_pitch) {
-    bool ok = false;
-
     for (int y = 0; y < zy; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
@@ -155,16 +149,12 @@ int main() {
 
           ax = (x - ex) + cx;
 
-          ok = true;
-
-          break;
+          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
         }
       }
-
-      if (ok) break;
     }
 
-    return ok ? Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax)) : false;
+    return true;
     };
 
   CaptureScreenArea(process, zz, xx, xy, zx, zy);
