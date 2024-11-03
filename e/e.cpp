@@ -1,5 +1,6 @@
 #include "Contact.hpp"
 #include "Device.hpp"
+#include "Parallel.hpp"
 #include "Ram.hpp"
 #include "Xyloid2.hpp"
 #include <chrono>
@@ -52,6 +53,8 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
   hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
   if (FAILED(hr)) throw hr;
 
+  Parallel::ThreadPool pool(std::thread::hardware_concurrency());
+
   while (true) {
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
@@ -70,7 +73,9 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      processPixelData((uint8_t*)mappedResource.pData, mappedResource.RowPitch);
+      pool.enqueue_task([&processPixelData , &mappedResource]() mutable {
+        processPixelData((uint8_t*)mappedResource.pData, mappedResource.RowPitch);
+        });
       context->Unmap(stagingTexture.Get(), 0);
     }
 

@@ -45,7 +45,7 @@ namespace Driver {
     while (true) {
       int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, +0);
       if (re == +0 && size > +0) {
-        pool.enqueue_task([z, data, &back]() mutable {
+        pool.enqueue_task([&back, &data, &z]() mutable {
           back = z(data, back);
           });
       }

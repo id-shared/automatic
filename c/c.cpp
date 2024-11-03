@@ -21,8 +21,6 @@ void main() {
     Driver::Byte n2 = o1[1];
     Driver::Byte n1 = o1[0];
 
-    //printf("%d, %d, %d, %d, %d, %d, %d.\n", n1, n2, n3, n4, n5, n6, n7);
-
     int ay = n6 == 255 ? (n5 - n6) - 1 : n5 - n6;
     int ax = n4 == 255 ? (n3 - n4) - 1 : n3 - n4;
     int a4 = n1 == 16;
@@ -36,16 +34,13 @@ void main() {
     a3 == a[2] ? true : Xyloid2::e1(driver, a3);
     a4 == a[3] ? true : Xyloid2::e2(driver, a4);
 
-    //printf("%d, %d.\n", ay, ax);
-
     n7 == 0 ? true : Xyloid2::zv(driver, n7 == 255 ? 64 : -64);
-
-    //printf("%d.\n", n7);
 
     a[3] = a4;
     a[2] = a3;
     a[1] = a2;
     a[0] = a1;
+
     return a;
     }, 0x046d, 0xc547);
 }
