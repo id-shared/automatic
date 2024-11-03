@@ -135,7 +135,7 @@ bool isKeyHeld(int e) {
 
 int speed(int e) {
   int ae = std::abs(e);
-  return (ae > +4) ? (ae % +2 == +1 ? +2 : +1) : +1;
+  return (ae > +4) ? (ae % +3 == +1 ? +2 : +1) : +1;
 }
 
 int main() {
@@ -150,8 +150,8 @@ int main() {
   const int ey = high / +2;
   const int ex = wide / +2;
 
-  const int cy = +4;
-  const int cx = +2;
+  const int cy = +3;
+  const int cx = +3;
 
   int ay = +1;
   int ax = +1;
