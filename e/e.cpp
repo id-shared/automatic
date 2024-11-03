@@ -170,12 +170,12 @@ int main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [_l, _r, driver](uint8_t* _o, UINT row_pitch) {
-    int ey = +2;
-    int ex = +2;
-    int cy = +1;
-    int cx = +1;
-    int ay = +0;
-    int ax = +0;
+    int ey = +3;
+    int ex = +3;
+    int cy = +2;
+    int cx = +2;
+    int ay = +1;
+    int ax = +1;
 
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
@@ -185,9 +185,9 @@ int main() {
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
           cy = cy - +1;
-          if (cy < +1) {
+          if (cy <= +1) {
             cx = cx - +1;
-            if (cx < +1) {
+            if (cx <= +1) {
               ay = y - _y + ey;
 
               ax = x - _x + ex;
