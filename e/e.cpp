@@ -144,11 +144,11 @@ int main() {
   const int high = +16 * +1;
   const int each = +1;
 
-  const int xy = (1080 - high) / +2;
-  const int xx = (1920 - wide) / +2;
+  const int __y = (1080 - high) / +2;
+  const int __x = (1920 - wide) / +2;
 
-  const int ey = high / +2;
-  const int ex = wide / +2;
+  const int _y = high / +2;
+  const int _x = wide / +2;
 
   bool _r = false;
   bool _l = false;
@@ -170,34 +170,33 @@ int main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [_l, _r, driver](uint8_t* _o, UINT row_pitch) {
-    int eey = +2;
-    int eex = +2;
+    int ey = +2;
+    int ex = +2;
     int cy = +1;
     int cx = +1;
-    int ay = +1;
-    int ax = +1;
+    int ay = +0;
+    int ax = +0;
 
-    for (int y = 0; y < high; ++y) {
+    for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
-      bool next = false;
 
-      for (int x = 0; x < wide && !next; ++x) {
-        uint8_t* pixel = row_ptr + x * 4;
+      for (int x = +0; x < wide; ++x) {
+        uint8_t* px = row_ptr + x * +4;
 
-        if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
+        if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
           cy = cy - +1;
           if (cy < +1) {
             cx = cx - +1;
             if (cx < +1) {
-              ay = y - ey + eey;
+              ay = y - _y + ey;
 
-              ax = x - ex + eex;
+              ax = x - _x + ex;
 
               return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
             }
           }
           else {
-            next = true;
+            break;
           }
         }
       }
@@ -206,7 +205,7 @@ int main() {
     return true;
     };
 
-  std::thread captureThread(CaptureScreenArea, process, each, xx, xy, wide, high);
+  std::thread captureThread(CaptureScreenArea, process, each, __x, __y, wide, high);
   std::thread processThread(ProcessFrames, process, count);
 
   captureThread.join();
