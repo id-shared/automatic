@@ -1,4 +1,5 @@
 #pragma once
+#include "Parallel.hpp"
 #include <array>
 #include <libusb-1.0/libusb.h>
 
@@ -35,13 +36,19 @@ namespace Driver {
     libusb_set_configuration(handle, configuration);
     libusb_claim_interface(handle, interface);
 
-    std::array<bool, 4> back = {};
-    Byte data[13];
+    std::array<bool, +4> back = {};
+    Byte data[+13];
     int size;
 
+    Parallel::ThreadPool pool(std::thread::hardware_concurrency());
+
     while (true) {
-      int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, 0);
-      re == 0 && size > 0 ? back = z(data, back) : back;
+      int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, +0);
+      if (re == +0 && size > +0) {
+        pool.enqueue_task([z, data, &back]() mutable {
+          back = z(data, back);
+          });
+      }
     }
 
     libusb_release_interface(handle, interface);

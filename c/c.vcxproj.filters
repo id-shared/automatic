@@ -44,6 +44,9 @@
     <ClInclude Include="..\_\Xyloid.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\_\Parallel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="c.txt" />

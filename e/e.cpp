@@ -7,56 +7,11 @@
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <functional>
-#include <iostream>
-#include <mutex>
-#include <queue>
-#include <thread>
 #include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
 
-struct FrameData {
-  std::vector<uint8_t> data;
-  UINT row_pitch;
-};
-
-std::queue<FrameData> frameQueue;
-std::mutex queueMutex;
-std::condition_variable queueCV;
-bool stopProcessing = false;
-
-void ProcessFrame(FrameData frame, std::function<bool(uint8_t*, int)> processPixelData) {
-  processPixelData(frame.data.data(), frame.row_pitch);
-}
-
-void ProcessFrames(std::function<bool(uint8_t*, int)> processPixelData, int numThreads) {
-  std::vector<std::thread> workers;
-
-  for (int i = 0; i < numThreads; ++i) {
-    workers.emplace_back([&]() {
-      while (!stopProcessing) {
-        FrameData frame;
-        {
-          std::unique_lock<std::mutex> lock(queueMutex);
-          queueCV.wait(lock, [] { return !frameQueue.empty() || stopProcessing; });
-
-          if (stopProcessing) break;
-
-          frame = std::move(frameQueue.front());
-          frameQueue.pop();
-        }
-
-        ProcessFrame(frame, processPixelData);
-      }
-      });
-  }
-
-  for (auto& worker : workers) {
-    worker.join();
-  }
-}
-
-void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
+bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
@@ -97,7 +52,7 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
   hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
   if (FAILED(hr)) throw hr;
 
-  while (!stopProcessing) {
+  while (true) {
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
     hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
@@ -115,18 +70,14 @@ void CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      std::vector<uint8_t> frameData((uint8_t*)mappedResource.pData, (uint8_t*)mappedResource.pData + mappedResource.RowPitch * height);
-
-      {
-        std::lock_guard<std::mutex> lock(queueMutex);
-        frameQueue.emplace(FrameData{ std::move(frameData), mappedResource.RowPitch });
-      }
-      queueCV.notify_one();
+      processPixelData((uint8_t*)mappedResource.pData, mappedResource.RowPitch);
       context->Unmap(stagingTexture.Get(), 0);
     }
 
     duplication->ReleaseFrame();
   }
+
+  return true;
 }
 
 bool isKeyHeld(int e) {
@@ -138,11 +89,11 @@ int speed(int e) {
   return (ae > +4) ? (ae % +3 == +1 ? +2 : +1) : +1;
 }
 
-int main() {
+bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +16 * +4 * +2;
-  const int high = +16 * +1;
-  const int each = +1;
+  const int wide = +64 * +2;
+  const int high = +16 * +2;
+  const int each = +4 * +2;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -205,13 +156,5 @@ int main() {
     return true;
     };
 
-  std::thread captureThread(CaptureScreenArea, process, each, __x, __y, wide, high);
-  std::thread processThread(ProcessFrames, process, count);
-
-  captureThread.join();
-  stopProcessing = true;
-  queueCV.notify_all();
-  processThread.join();
-
-  return 0;
+  return CaptureScreenArea(process, each, __x, __y, wide, high);
 }

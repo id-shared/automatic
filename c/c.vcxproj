@@ -143,6 +143,7 @@
     <ClCompile Include="c.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\_\Parallel.hpp" />
     <ClInclude Include="..\_\Xyloid.hpp" />
     <ClInclude Include="..\_\Device.hpp" />
     <ClInclude Include="..\_\Contact.hpp" />
