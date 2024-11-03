@@ -140,7 +140,7 @@ int speed(int e) {
 
 int main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +16 * +5;
+  const int wide = +16 * +4 * +2;
   const int high = +16 * +1;
   const int each = +1;
 
@@ -149,12 +149,6 @@ int main() {
 
   const int ey = high / +2;
   const int ex = wide / +2;
-
-  const int cy = +3;
-  const int cx = +3;
-
-  int ay = +1;
-  int ax = +1;
 
   bool _r = false;
   bool _l = false;
@@ -175,19 +169,36 @@ int main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&ax, &ay, &_l, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [_l, _r, driver](uint8_t* _o, UINT row_pitch) {
+    int eey = +2;
+    int eex = +2;
+    int cy = +1;
+    int cx = +1;
+    int ay = +1;
+    int ax = +1;
+
     for (int y = 0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
+      bool next = false;
 
-      for (int x = 0; x < wide; ++x) {
+      for (int x = 0; x < wide && !next; ++x) {
         uint8_t* pixel = row_ptr + x * 4;
 
         if (pixel[0] >= 251 && pixel[1] <= 191 && pixel[2] >= 251 && pixel[3] == 255) {
-          ay = (y - ey) + cy;
+          cy = cy - +1;
+          if (cy < +1) {
+            cx = cx - +1;
+            if (cx < +1) {
+              ay = y - ey + eey;
 
-          ax = (x - ex) + cx;
+              ax = x - ex + eex;
 
-          return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
+              return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
+            }
+          }
+          else {
+            next = true;
+          }
         }
       }
     }
