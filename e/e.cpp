@@ -4,13 +4,14 @@
 #include "Ram.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
+#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <d3d11.h>
 #include <dxgi1_2.h>
 #include <functional>
-#include <wrl.h>
 #include <random>
+#include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
 
@@ -75,7 +76,7 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      pool.enqueue_task([&processPixelData , &mappedResource]() mutable {
+      pool.enqueue_task([&processPixelData, &mappedResource]() mutable {
         processPixelData((uint8_t*)mappedResource.pData, mappedResource.RowPitch);
         });
       context->Unmap(stagingTexture.Get(), 0);
@@ -99,15 +100,14 @@ int random(int e_1, int e) {
 }
 
 int speed(int e) {
-  int ae = std::abs(e);
-  return (ae > +4) ? (ae % +3 == +1 ? +2 : +1) : +1;
+  return (std::abs(e) <= +4 && std::abs(e) >= +3) ? +2 -std::abs(e) % +2 : +1;
 }
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +64 * +2;
-  const int high = +16 * +2;
-  const int each = +4 * +2;
+  const int wide = +64 * 2;
+  const int high = +16 * 1;
+  const int each = +16;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -141,10 +141,12 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
-    int ey = +3;
-    int ex = +3;
-    int cy = +2;
-    int cx = +2;
+    int xy = +3;
+    int xx = +3;
+    int ey = +2;
+    int ex = +2;
+    int cy = +1;
+    int cx = +1;
     int ay = +1;
     int ax = +1;
 
@@ -155,21 +157,23 @@ bool main() {
         uint8_t* px = row_ptr + x * +4;
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          cy = cy - +1;
-          if (cy <= +1) {
-            cx = cx - +1;
-            if (cx <= +1) {
-              ay = y - _y + ey;
+          ey = ey - +1;
+          if (ey <= +1) {
+            ex = ex - +1;
+            if (ex <= +1) {
+              cy = y - _y + xy;
 
-              ax = x - _x + ex;
+              cx = x - _x + xx;
 
-              if (_r == true && std::abs(ax) <= +1 && std::abs(ay) <= +1) {
+              Xyloid2::yx(driver, _l ? +0 : cy, cx * speed(cx));
+
+              if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
                 Xyloid2::e1(driver, true);
-                Time::XO(random(1, 9));
+                Time::XO(random(+1, +19));
                 Xyloid2::e1(driver, false);
               }
 
-              return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
+              return true;
             }
           }
           else {
