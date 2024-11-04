@@ -104,9 +104,9 @@ int speed(int e) {
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +81;
-  const int high = +3;
-  const int each = +1;
+  const int wide = +64 * +2;
+  const int high = +16 * +2;
+  const int each = +4 * +2;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -140,54 +140,68 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
-    int ey = +3;
-    int ex = +3;
-    int cy = +1;
-    int cx = +1;
-    int ay = +1;
-    int ax = +1;
+    int xy = +0;
+    int xx = +0;
+    bool ay = false;
+    bool ax = false;
 
-    for (int y = +0; y < high; ++y) {
+    for (int y = +0; y < high && !ay; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
-      for (int x = +0; x < wide; ++x) {
+      for (int x = +0; x < wide && !ay; ++x) {
         uint8_t* px = row_ptr + x * +4;
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          if (ey >= +1) {
-            ey = ey - 1;
-            break;
-          }
-          else {
-            if (ex >= +1) {
-              ex = ex - 1;
-            }
-            else {
-              cy = y - _y;
-              cx = x - _x;
+          if (xy == +0) {
+            xy = y - _y;
+            xx = x - _x;
+            ay = true;
+            ax = true;
 
-              printf("%d, %d\n", cx, cy);
-
-              cy = cy >= -3 && cy <= -1 ? +0 : cy;
-              cx = cx >= -3 && cx <= -1 ? +0 : cx;
-
-              Xyloid2::yx(driver, _l ? +0 : cy, cx);
-
-              if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
-                Xyloid2::e1(driver, true);
-                Time::XO(random(+1, +19));
-                Xyloid2::e1(driver, false);
-              }
-
-              return true;
-            }
+            printf("%d, %d\n", xx, xy);
           }
         }
       }
     }
 
-    return true;
+    return Xyloid2::yx(driver, _l ? +0 : xy, +0);
     };
 
   return CaptureScreenArea(process, each, __x, __y, wide, high);
 }
+
+/*int ey = +3;
+int ex = +3;
+int cy = +1;
+int cx = +1;
+int ay = +1;
+int ax = +1;*/
+
+/*if (ey >= +1) {
+  ey = ey - 1;
+  break;
+}
+else {
+  if (ex >= +1) {
+    ex = ex - 1;
+  }
+  else {
+    cy = y - _y;
+    cx = x - _x;
+
+    printf("%d, %d\n", cx, cy);
+
+    cy = cy >= -3 && cy <= -1 ? +0 : cy;
+    cx = cx >= -3 && cx <= -1 ? +0 : cx;
+
+    Xyloid2::yx(driver, _l ? +0 : cy, cx);
+
+    if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
+      Xyloid2::e1(driver, true);
+      Time::XO(random(+1, +19));
+      Xyloid2::e1(driver, false);
+    }
+
+    return true;
+  }
+}*/
