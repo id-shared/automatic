@@ -153,14 +153,15 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * +(x % +3));
+          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * +((x % +3) +1));
 
-          if (_ && std::abs(x) <= +1) {
+          if (_ && std::abs(x) <= +2) {
             _ = false;
+            int integer = random(19, 39);
             Xyloid2::e1(driver, true);
-            Time::XO(random(+19, +39));
+            Time::XO(integer);
             Xyloid2::e1(driver, false);
-            Time::XO(random(+39, +99));
+            Time::XO(+159 - integer);
             _ = true;
           }
 
@@ -168,14 +169,15 @@ bool main() {
         }
 
         if (isPurple(pxl)) {
-          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * -(x % +3));
+          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * -((x % +3) +1));
 
-          if (_ && std::abs(x) <= +1) {
+          if (_ && std::abs(x) <= +2) {
             _ = false;
+            int integer = random(19, 39);
             Xyloid2::e1(driver, true);
-            Time::XO(random(+19, +39));
+            Time::XO(integer);
             Xyloid2::e1(driver, false);
-            Time::XO(random(+39, +99));
+            Time::XO(+159 - integer);
             _ = true;
           }
 
