@@ -2,6 +2,7 @@
 #include "Device.hpp"
 #include "Parallel.hpp"
 #include "Ram.hpp"
+#include "Time.hpp"
 #include "Xyloid2.hpp"
 #include <chrono>
 #include <condition_variable>
@@ -9,6 +10,7 @@
 #include <dxgi1_2.h>
 #include <functional>
 #include <wrl.h>
+#include <random>
 
 using Microsoft::WRL::ComPtr;
 
@@ -89,6 +91,13 @@ bool isKeyHeld(int e) {
   return (GetAsyncKeyState(e) & 0x8000) != +0;
 }
 
+int random(int e_1, int e) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(e_1, e);
+  return dist(gen);
+}
+
 int speed(int e) {
   int ae = std::abs(e);
   return (ae > +4) ? (ae % +3 == +1 ? +2 : +1) : +1;
@@ -106,7 +115,10 @@ bool main() {
   const int _y = high / +2;
   const int _x = wide / +2;
 
+  bool _rc = false;
   bool _r = false;
+
+  bool _lc = false;
   bool _l = false;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
@@ -115,8 +127,11 @@ bool main() {
     });
 
   HANDLE driver = Device::driver(device);
-  std::function<bool()> lambda = [&_l, each]() {
+  std::function<bool()> lambda = [&_l, &_lc, &_r, &_rc, each]() {
     while (true) {
+      _rc = isKeyHeld(VK_RCONTROL);
+      _r = isKeyHeld(VK_RBUTTON);
+      _lc = isKeyHeld(VK_LCONTROL);
       _l = isKeyHeld(VK_LBUTTON);
       std::this_thread::sleep_for(std::chrono::milliseconds(each));
     }
@@ -125,7 +140,7 @@ bool main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [_l, _r, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [_l, _lc, _r, _rc, driver](uint8_t* _o, UINT row_pitch) {
     int ey = +3;
     int ex = +3;
     int cy = +2;
@@ -147,6 +162,12 @@ bool main() {
               ay = y - _y + ey;
 
               ax = x - _x + ex;
+
+              if (std::abs(ax) <= +1 && std::abs(ay) <= +1) {
+                Xyloid2::e1(driver, true);
+                Time::XO(random(9, 19));
+                Xyloid2::e1(driver, false);
+              }
 
               return Xyloid2::yx(driver, _l ? +0 : ay * speed(ay), ax * speed(ax));
             }
