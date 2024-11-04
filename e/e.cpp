@@ -155,7 +155,7 @@ bool main() {
         if (isPurple(pxr)) {
           Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * +((x % +3) +1));
 
-          if (_ && std::abs(x) <= +2) {
+          if (_ && x >= -3 && x <= +1) {
             _ = false;
             int integer = random(19, 39);
             Xyloid2::e1(driver, true);
@@ -171,7 +171,7 @@ bool main() {
         if (isPurple(pxl)) {
           Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * -((x % +3) +1));
 
-          if (_ && std::abs(x) <= +2) {
+          if (_ && x >= -3 && x <= +1) {
             _ = false;
             int integer = random(19, 39);
             Xyloid2::e1(driver, true);
