@@ -57,12 +57,17 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
+  auto nextFrameTime = std::chrono::steady_clock::now();
+
   while (true) {
     ComPtr<IDXGIResource> desktopResource;
     DXGI_OUTDUPL_FRAME_INFO frameInfo;
     hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
 
-    if (hr == DXGI_ERROR_WAIT_TIMEOUT) continue;
+    if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
+      nextFrameTime += std::chrono::milliseconds(frame_time);
+      continue;
+    }
     if (FAILED(hr)) throw hr;
 
     ComPtr<ID3D11Texture2D> desktopTexture;
@@ -82,6 +87,9 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int 
     }
 
     duplication->ReleaseFrame();
+
+    nextFrameTime += std::chrono::milliseconds(frame_time);
+    std::this_thread::sleep_until(nextFrameTime);
   }
 
   return true;
@@ -98,16 +106,11 @@ int random(int e_1, int e) {
   return dist(gen);
 }
 
-int speed(int e) {
-  int ae = std::abs(e);
-  return (ae <= +12 && ae >= +10) ? +3 : (ae <= +9 && ae >= +7) ? +3 - (ae % +2) : (ae <= +6 && ae >= +4) ? +2 : (ae <= +3 && ae >= +1) ? +2 - (ae % +2) : +1;
-}
-
 bool main() {
   const int count = std::thread::hardware_concurrency();
   const int wide = +128;
   const int high = +16;
-  const int each = +2;
+  const int each = +16;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -138,30 +141,36 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_, &_l, &_r, driver](uint8_t* _o, UINT row_pitch) {
-    for (int y = +0; y < high; ++y) {
+    bool xy[__x] = {};
+    bool ok = false;
+
+    for (int y = +0; y < high && !ok; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
       for (int x = +0; x < wide; ++x) {
         uint8_t* px = row_ptr + x * +4;
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          int xy = y - _y +3;
-          int xx = x - _x +2;
+          int ay = y - _y +2;
+          int ax = x - _x +2;
 
-          Xyloid2::yx(driver, _l ? +0 : xy, xx * speed(xx));
+          Xyloid2::yx(driver, _l ? +0 : ay * +3, ax * +3);
 
-          if (!_ && std::abs(xx) <= +1) {
+          /*if (!_ && std::abs(ax) <= +1) {
             _ = true;
-            int integer = random(+19, +39);
             Xyloid2::e1(driver, true);
-            Time::XO(integer);
+            Time::XO(random(+19, +39));
             Xyloid2::e1(driver, false);
-            Time::XO(+99 - integer);
+            Time::XO(random(+39, +99));
             _ = false;
-          }
+          }*/
 
           return true;
         }
+      }
+
+      if (ok) {
+
       }
     }
 
