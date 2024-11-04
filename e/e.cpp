@@ -105,8 +105,8 @@ int speed(int e) {
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +64 * +2;
-  const int high = +16 * +2;
+  const int wide = +128;
+  const int high = +16;
   const int each = +2;
 
   const int __y = (1080 - high) / +2;
@@ -115,11 +115,10 @@ bool main() {
   const int _y = high / +2;
   const int _x = wide / +2;
 
-  bool _rc = false;
   bool _r = false;
-
-  bool _lc = false;
   bool _l = false;
+
+  bool _ = false;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -127,11 +126,9 @@ bool main() {
     });
 
   HANDLE driver = Device::driver(device);
-  std::function<bool()> lambda = [&_l, &_lc, &_r, &_rc, each]() {
+  std::function<bool()> lambda = [&_l, &_r, each]() {
     while (true) {
-      _rc = isKeyHeld(VK_RCONTROL);
       _r = isKeyHeld(VK_RBUTTON);
-      _lc = isKeyHeld(VK_LCONTROL);
       _l = isKeyHeld(VK_LBUTTON);
       std::this_thread::sleep_for(std::chrono::milliseconds(each));
     }
@@ -140,7 +137,7 @@ bool main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&_, &_l, &_r, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
@@ -153,10 +150,14 @@ bool main() {
 
           Xyloid2::yx(driver, _l ? +0 : xy, xx * speed(xx));
 
-          if (std::abs(xx) <= +1) {
+          if (!_ && std::abs(xx) <= +1) {
+            _ = true;
+            int integer = random(+19, +39);
             Xyloid2::e1(driver, true);
-            Time::XO(random(+19, +39));
+            Time::XO(integer);
             Xyloid2::e1(driver, false);
+            Time::XO(+99 - integer);
+            _ = false;
           }
 
           return true;
