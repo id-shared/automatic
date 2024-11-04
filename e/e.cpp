@@ -104,9 +104,9 @@ int speed(int e) {
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +64 * 2;
-  const int high = +16 * 1;
-  const int each = +16;
+  const int wide = +81;
+  const int high = +3;
+  const int each = +1;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -140,8 +140,8 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
-    int ey = +1;
-    int ex = +1;
+    int ey = +3;
+    int ex = +3;
     int cy = +1;
     int cx = +1;
     int ay = +1;
@@ -171,17 +171,13 @@ bool main() {
               cy = cy >= -3 && cy <= -1 ? +0 : cy;
               cx = cx >= -3 && cx <= -1 ? +0 : cx;
 
-              if (true) {
-                Xyloid2::yx(driver, _l ? +0 : cy, cx);
-              }
-              else {
-              }
+              Xyloid2::yx(driver, _l ? +0 : cy, cx);
 
-              /*if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
+              if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
                 Xyloid2::e1(driver, true);
                 Time::XO(random(+1, +19));
                 Xyloid2::e1(driver, false);
-              }*/
+              }
 
               return true;
             }
