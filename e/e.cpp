@@ -153,8 +153,8 @@ bool main() {
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
           if (xy == +0) {
-            xy = y - _y;
-            xx = x - _x;
+            xy = y - _y +5;
+            xx = x - _x +5;
             ay = true;
             ax = true;
 
