@@ -106,11 +106,15 @@ int random(int e_1, int e) {
   return dist(gen);
 }
 
+bool isPurple(uint8_t* x) {
+  return x[+0] >= +251 && x[+1] <= +191 && x[+2] >= +251 && x[+3] == +255;
+}
+
 bool main() {
   const int count = std::thread::hardware_concurrency();
   const int wide = +128;
   const int high = +16;
-  const int each = +16;
+  const int each = +4;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -141,36 +145,20 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_, &_l, &_r, driver](uint8_t* _o, UINT row_pitch) {
-    bool xy[__x] = {};
-    bool ok = false;
-
-    for (int y = +0; y < high && !ok; ++y) {
+    for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
-      for (int x = +0; x < wide; ++x) {
-        uint8_t* px = row_ptr + x * +4;
+      for (int x = +0; x < _x; ++x) {
+        uint8_t* pxl = row_ptr + (_x - 1 - x) * +4;
+        uint8_t* pxr = row_ptr + (x + _x) * +4;
 
-        if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          int ay = y - _y +2;
-          int ax = x - _x +2;
-
-          Xyloid2::yx(driver, _l ? +0 : ay * +3, ax * +3);
-
-          /*if (!_ && std::abs(ax) <= +1) {
-            _ = true;
-            Xyloid2::e1(driver, true);
-            Time::XO(random(+19, +39));
-            Xyloid2::e1(driver, false);
-            Time::XO(random(+39, +99));
-            _ = false;
-          }*/
-
-          return true;
+        if (isPurple(pxr)) {
+          return Xyloid2::yx(driver, _l ? +0 : (y - _y) * +3, x * +3);
         }
-      }
 
-      if (ok) {
-
+        if (isPurple(pxl)) {
+          return Xyloid2::yx(driver, _l ? +0 : (y - _y) * +3, x * -3);
+        }
       }
     }
 
@@ -179,3 +167,12 @@ bool main() {
 
   return CaptureScreenArea(process, each, __x, __y, wide, high);
 }
+
+/*if (!_ && std::abs(ax) <= +1) {
+  _ = true;
+  Xyloid2::e1(driver, true);
+  Time::XO(random(+19, +39));
+  Xyloid2::e1(driver, false);
+  Time::XO(random(+39, +99));
+  _ = false;
+}*/
