@@ -4,7 +4,6 @@
 #include "Ram.hpp"
 #include "Time.hpp"
 #include "Xyloid2.hpp"
-#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <d3d11.h>
@@ -141,10 +140,8 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
-    int xy = +3;
-    int xx = +3;
-    int ey = +2;
-    int ex = +2;
+    int ey = +1;
+    int ex = +1;
     int cy = +1;
     int cx = +1;
     int ay = +1;
@@ -157,27 +154,37 @@ bool main() {
         uint8_t* px = row_ptr + x * +4;
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          ey = ey - +1;
-          if (ey <= +1) {
-            ex = ex - +1;
-            if (ex <= +1) {
-              cy = y - _y + xy;
+          if (ey >= +1) {
+            ey = ey - 1;
+            break;
+          }
+          else {
+            if (ex >= +1) {
+              ex = ex - 1;
+            }
+            else {
+              cy = y - _y;
+              cx = x - _x;
 
-              cx = x - _x + xx;
+              printf("%d, %d\n", cx, cy);
 
-              Xyloid2::yx(driver, _l ? +0 : cy, cx * speed(cx));
+              cy = cy >= -3 && cy <= -1 ? +0 : cy;
+              cx = cx >= -3 && cx <= -1 ? +0 : cx;
 
-              if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
+              if (true) {
+                Xyloid2::yx(driver, _l ? +0 : cy, cx);
+              }
+              else {
+              }
+
+              /*if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
                 Xyloid2::e1(driver, true);
                 Time::XO(random(+1, +19));
                 Xyloid2::e1(driver, false);
-              }
+              }*/
 
               return true;
             }
-          }
-          else {
-            break;
           }
         }
       }
