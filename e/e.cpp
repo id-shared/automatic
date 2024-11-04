@@ -107,7 +107,7 @@ bool main() {
   const int count = std::thread::hardware_concurrency();
   const int wide = +64 * +2;
   const int high = +16 * +2;
-  const int each = +4 * +2;
+  const int each = +2;
 
   const int __y = (1080 - high) / +2;
   const int __x = (1920 - wide) / +2;
@@ -148,14 +148,14 @@ bool main() {
         uint8_t* px = row_ptr + x * +4;
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          int xy = y - _y + +4;
-          int xx = x - _x + +2;
+          int xy = y - _y +3;
+          int xx = x - _x +2;
 
           Xyloid2::yx(driver, _l ? +0 : xy, xx * speed(xx));
 
-          if (std::abs(xx) < +1) {
+          if (std::abs(xx) <= +1) {
             Xyloid2::e1(driver, true);
-            Time::XO(random(+1, +19));
+            Time::XO(random(+19, +39));
             Xyloid2::e1(driver, false);
           }
 
