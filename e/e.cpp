@@ -99,7 +99,8 @@ int random(int e_1, int e) {
 }
 
 int speed(int e) {
-  return (std::abs(e) <= +4 && std::abs(e) >= +3) ? +2 -std::abs(e) % +2 : +1;
+  int ae = std::abs(e);
+  return (ae <= +12 && ae >= +10) ? +3 : (ae <= +9 && ae >= +7) ? +3 - (ae % +2) : (ae <= +6 && ae >= +4) ? +2 : (ae <= +3 && ae >= +1) ? +2 - (ae % +2) : +1;
 }
 
 bool main() {
@@ -140,68 +141,31 @@ bool main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
-    int xy = +0;
-    int xx = +0;
-    bool ay = false;
-    bool ax = false;
-
-    for (int y = +0; y < high && !ay; ++y) {
+    for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
-      for (int x = +0; x < wide && !ay; ++x) {
+      for (int x = +0; x < wide; ++x) {
         uint8_t* px = row_ptr + x * +4;
 
         if (px[+0] >= +251 && px[+1] <= +191 && px[+2] >= +251 && px[+3] == +255) {
-          if (xy == +0) {
-            xy = y - _y +5;
-            xx = x - _x +5;
-            ay = true;
-            ax = true;
+          int xy = y - _y + +4;
+          int xx = x - _x + +2;
 
-            printf("%d, %d\n", xx, xy);
+          Xyloid2::yx(driver, _l ? +0 : xy, xx * speed(xx));
+
+          if (std::abs(xx) < +1) {
+            Xyloid2::e1(driver, true);
+            Time::XO(random(+1, +19));
+            Xyloid2::e1(driver, false);
           }
+
+          return true;
         }
       }
     }
 
-    return Xyloid2::yx(driver, _l ? +0 : xy, +0);
+    return false;
     };
 
   return CaptureScreenArea(process, each, __x, __y, wide, high);
 }
-
-/*int ey = +3;
-int ex = +3;
-int cy = +1;
-int cx = +1;
-int ay = +1;
-int ax = +1;*/
-
-/*if (ey >= +1) {
-  ey = ey - 1;
-  break;
-}
-else {
-  if (ex >= +1) {
-    ex = ex - 1;
-  }
-  else {
-    cy = y - _y;
-    cx = x - _x;
-
-    printf("%d, %d\n", cx, cy);
-
-    cy = cy >= -3 && cy <= -1 ? +0 : cy;
-    cx = cx >= -3 && cx <= -1 ? +0 : cx;
-
-    Xyloid2::yx(driver, _l ? +0 : cy, cx);
-
-    if (std::abs(cx) <= ax && std::abs(cy) <= ay) {
-      Xyloid2::e1(driver, true);
-      Time::XO(random(+1, +19));
-      Xyloid2::e1(driver, false);
-    }
-
-    return true;
-  }
-}*/
