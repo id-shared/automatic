@@ -140,7 +140,7 @@ bool main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [_l, _lc, _r, _rc, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&_l, &_lc, &_r, &_rc, driver](uint8_t* _o, UINT row_pitch) {
     int ey = +3;
     int ex = +3;
     int cy = +2;
@@ -163,9 +163,9 @@ bool main() {
 
               ax = x - _x + ex;
 
-              if (std::abs(ax) <= +1 && std::abs(ay) <= +1) {
+              if (_r == true && std::abs(ax) <= +1 && std::abs(ay) <= +1) {
                 Xyloid2::e1(driver, true);
-                Time::XO(random(9, 19));
+                Time::XO(random(1, 9));
                 Xyloid2::e1(driver, false);
               }
 
