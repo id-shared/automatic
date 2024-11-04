@@ -1,7 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Forms;
-
-class Pattern {
+﻿class Pattern {
   public int IS;
 
   public int DY(int n) {

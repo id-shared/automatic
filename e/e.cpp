@@ -112,7 +112,7 @@ bool isPurple(uint8_t* x) {
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +4 * +4 * +4;
+  const int wide = +4 * +4 * +4 * +2;
   const int high = +4 * +4;
   const int each = +4;
 
@@ -153,35 +153,35 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * +((x % +3) +1));
+          Xyloid2::yx(driver, _l ? +0 : (y - _y +2) * +1, x * +2);
 
-          if (_ && x >= -3 && x <= +1) {
+          if (_r && x >= -1 && x <= +1) {
             _ = false;
             int integer = random(19, 39);
             Xyloid2::e1(driver, true);
             Time::XO(integer);
             Xyloid2::e1(driver, false);
-            Time::XO(+159 - integer);
+            Time::XO(+139 - integer);
             _ = true;
           }
 
-          return _;
+          return true;
         }
 
         if (isPurple(pxl)) {
-          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * -((x % +3) +1));
+          Xyloid2::yx(driver, _l ? +0 : (y - _y +2) * +1, x * -2);
 
-          if (_ && x >= -3 && x <= +1) {
+          if (_r && x >= -1 && x <= +1) {
             _ = false;
             int integer = random(19, 39);
             Xyloid2::e1(driver, true);
             Time::XO(integer);
             Xyloid2::e1(driver, false);
-            Time::XO(+159 - integer);
+            Time::XO(+139 - integer);
             _ = true;
           }
 
-          return _;
+          return true;
         }
       }
     }
