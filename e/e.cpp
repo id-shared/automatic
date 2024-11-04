@@ -112,8 +112,8 @@ bool isPurple(uint8_t* x) {
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +128;
-  const int high = +16;
+  const int wide = +4 * +4 * +4;
+  const int high = +4 * +4;
   const int each = +4;
 
   const int __y = (1080 - high) / +2;
@@ -125,7 +125,7 @@ bool main() {
   bool _r = false;
   bool _l = false;
 
-  bool _ = false;
+  bool _ = true;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -153,11 +153,33 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          return Xyloid2::yx(driver, _l ? +0 : (y - _y) * +3, x * +3);
+          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * +(x % +3));
+
+          if (_ && std::abs(x) <= +1) {
+            _ = false;
+            Xyloid2::e1(driver, true);
+            Time::XO(random(+19, +39));
+            Xyloid2::e1(driver, false);
+            Time::XO(random(+39, +99));
+            _ = true;
+          }
+
+          return _;
         }
 
         if (isPurple(pxl)) {
-          return Xyloid2::yx(driver, _l ? +0 : (y - _y) * +3, x * -3);
+          Xyloid2::yx(driver, _l ? +0 : (y - _y +3) * +3, x * -(x % +3));
+
+          if (_ && std::abs(x) <= +1) {
+            _ = false;
+            Xyloid2::e1(driver, true);
+            Time::XO(random(+19, +39));
+            Xyloid2::e1(driver, false);
+            Time::XO(random(+39, +99));
+            _ = true;
+          }
+
+          return _;
         }
       }
     }
@@ -167,12 +189,3 @@ bool main() {
 
   return CaptureScreenArea(process, each, __x, __y, wide, high);
 }
-
-/*if (!_ && std::abs(ax) <= +1) {
-  _ = true;
-  Xyloid2::e1(driver, true);
-  Time::XO(random(+19, +39));
-  Xyloid2::e1(driver, false);
-  Time::XO(random(+39, +99));
-  _ = false;
-}*/
