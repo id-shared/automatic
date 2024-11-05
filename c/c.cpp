@@ -29,7 +29,8 @@ void main() {
     int a1 = n1 == 1;
 
     ax == 0 && ay == 0 ? true : Xyloid2::yx(driver, ay, ax);
-    a1 == a[0] ? true : Xyloid1::ea(driver, 0x35, a1);
+    //a1 == a[0] ? true : Xyloid1::ea(driver, 0x35, a1);
+    a1 == a[0] ? true : Xyloid2::e1(driver, a1);
     a2 == a[1] ? true : Xyloid2::e2(driver, a2);
     a3 == a[2] ? true : Xyloid2::e1(driver, a3);
     a4 == a[3] ? true : Xyloid2::e2(driver, a4);

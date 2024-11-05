@@ -152,16 +152,16 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = _l ? +0 : (y - _y + 3);
+          const int xy = _l ? +0 : (y - _y + 5);
           const int xx = +x;
 
           Xyloid2::yx(driver, xy, xx);
 
-          if (!__ && !_l && (xx >= -3 && xx <= +3) && (xy >= -3 && xy <= +3)) {
+          if (!__ && !_l && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
             Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
-            Time::XO(+39.999999999999);
+            Time::XO(+19.999999999999);
             Xyloid2::e1(driver, false);
             Time::XO(+119.99999999999);
             __ = false;
@@ -171,16 +171,16 @@ bool main() {
         }
 
         if (isPurple(pxl)) {
-          const int xy = _l ? +0 : (y - _y + 3);
+          const int xy = _l ? +0 : (y - _y + 5);
           const int xx = -x;
 
           Xyloid2::yx(driver, xy, xx);
 
-          if (!__ && !_l && (xx >= -3 && xx <= +3) && (xy >= -3 && xy <= +3)) {
+          if (!__ && !_l && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
             Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
-            Time::XO(+39.999999999999);
+            Time::XO(+19.999999999999);
             Xyloid2::e1(driver, false);
             Time::XO(+119.99999999999);
             __ = false;
