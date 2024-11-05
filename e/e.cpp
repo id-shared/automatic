@@ -115,7 +115,7 @@ bool main() {
   const int count = std::thread::hardware_concurrency();
   const int wide = +16 * 16;
   const int high = +16 * 1;
-  const int each = +4;
+  const int each = +1;
 
   const int __y = (1440 - high) / +2;
   const int __x = (2560 - wide) / +2;
@@ -152,16 +152,18 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = _l ? +0 : (y - _y + 2);
+          const int xy = _l ? +0 : (y - _y + 3);
           const int xx = +x;
 
           Xyloid2::yx(driver, xy, xx);
 
-          if (!__ && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
+          if (!__ && !_l && (xx >= -3 && xx <= +3) && (xy >= -3 && xy <= +3)) {
             __ = true;
+            Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
+            Time::XO(+39.999999999999);
             Xyloid2::e1(driver, false);
-            Time::XO(+159.99999999999);
+            Time::XO(+119.99999999999);
             __ = false;
           }
 
@@ -169,16 +171,18 @@ bool main() {
         }
 
         if (isPurple(pxl)) {
-          const int xy = _l ? +0 : (y - _y + 2);
+          const int xy = _l ? +0 : (y - _y + 3);
           const int xx = -x;
 
           Xyloid2::yx(driver, xy, xx);
 
-          if (!__ && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
+          if (!__ && !_l && (xx >= -3 && xx <= +3) && (xy >= -3 && xy <= +3)) {
             __ = true;
+            Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
+            Time::XO(+39.999999999999);
             Xyloid2::e1(driver, false);
-            Time::XO(+159.99999999999);
+            Time::XO(+119.99999999999);
             __ = false;
           }
 
