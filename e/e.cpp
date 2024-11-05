@@ -112,20 +112,19 @@ bool isPurple(uint8_t* x) {
 
 bool main() {
   const int count = std::thread::hardware_concurrency();
-  const int wide = +4 * +4 * +4 * +2;
-  const int high = +4 * +4;
+  const int wide = +16 * 16;
+  const int high = +16 * 1;
   const int each = +4;
 
-  const int __y = (1080 - high) / +2;
-  const int __x = (1920 - wide) / +2;
+  const int __y = (1440 - high) / +2;
+  const int __x = (2560 - wide) / +2;
 
   const int _y = high / +2;
   const int _x = wide / +2;
 
   bool _r = false;
   bool _l = false;
-
-  bool _ = true;
+  bool __ = false;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -133,18 +132,17 @@ bool main() {
     });
 
   HANDLE driver = Device::driver(device);
-  std::function<bool()> lambda = [&_l, &_r, each]() {
+  std::function<bool()> lambda = [&_l, &_r]() {
     while (true) {
       _r = isKeyHeld(VK_RBUTTON);
       _l = isKeyHeld(VK_LBUTTON);
-      std::this_thread::sleep_for(std::chrono::milliseconds(each));
     }
     return true;
     };
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&_, &_l, &_r, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&__, &_l, &_r, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
@@ -153,32 +151,34 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          Xyloid2::yx(driver, _l ? +0 : (y - _y +2) * +1, x * +2);
+          const int xy = _l ? +0 : (y - _y + 4) * +2;
+          const int xx = +x * +2;
 
-          if (_r && x >= -1 && x <= +1) {
-            _ = false;
-            int integer = random(19, 39);
+          Xyloid2::yx(driver, xy, xx);
+
+          if (!__ && x >= -3 && x <= +1) {
+            __ = true;
             Xyloid2::e1(driver, true);
-            Time::XO(integer);
             Xyloid2::e1(driver, false);
-            Time::XO(+139 - integer);
-            _ = true;
+            Time::XO(+159.99999999999);
+            __ = false;
           }
 
           return true;
         }
 
         if (isPurple(pxl)) {
-          Xyloid2::yx(driver, _l ? +0 : (y - _y +2) * +1, x * -2);
+          const int xy = _l ? +0 : (y - _y + 4) * +2;
+          const int xx = -x * +2;
 
-          if (_r && x >= -1 && x <= +1) {
-            _ = false;
-            int integer = random(19, 39);
+          Xyloid2::yx(driver, xy, xx);
+
+          if (!__ && x >= -3 && x <= +1) {
+            __ = true;
             Xyloid2::e1(driver, true);
-            Time::XO(integer);
             Xyloid2::e1(driver, false);
-            Time::XO(+139 - integer);
-            _ = true;
+            Time::XO(+159.99999999999);
+            __ = false;
           }
 
           return true;
