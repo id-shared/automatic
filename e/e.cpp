@@ -3,6 +3,7 @@
 #include "Parallel.hpp"
 #include "Ram.hpp"
 #include "Time.hpp"
+#include "Xyloid1.hpp"
 #include "Xyloid2.hpp"
 #include <chrono>
 #include <condition_variable>
@@ -151,17 +152,16 @@ bool main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = _l ? +0 : (y - _y + 4);
-          const int xx = +x * +2;
+          const int xy = _l ? +0 : (y - _y + 2);
+          const int xx = +x;
 
           Xyloid2::yx(driver, xy, xx);
 
-          if (!__ && x >= -3 && x <= +1) {
+          if (!__ && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
-            Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
-            Time::XO(+253.99999999999);
+            Time::XO(+159.99999999999);
             __ = false;
           }
 
@@ -169,17 +169,16 @@ bool main() {
         }
 
         if (isPurple(pxl)) {
-          const int xy = _l ? +0 : (y - _y + 4);
-          const int xx = -x * +2;
+          const int xy = _l ? +0 : (y - _y + 2);
+          const int xx = -x;
 
           Xyloid2::yx(driver, xy, xx);
 
-          if (!__ && x >= -3 && x <= +1) {
+          if (!__ && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
-            Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
-            Time::XO(+253.99999999999);
+            Time::XO(+159.99999999999);
             __ = false;
           }
 
