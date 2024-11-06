@@ -142,19 +142,19 @@ int main() {
   const int high = screen_high / +32;
   const int wide = screen_wide / +4;
 
-  const int __x = (screen_wide - wide) / +2;
-  const int __y = (screen_high - high) / +2;
+  const int every = +199;
+  const int frame = +1;
 
-  const int _x = wide / +2;
-  const int _y = high / +2;
+  const int ex = (screen_wide - wide) / +2;
+  const int ey = (screen_high - high) / +2;
 
-  const int frame = +2;
-  const int each = +199;
+  const int cx = wide / +2;
+  const int cy = high / +2;
 
-  bool nx = false;
-  bool nr = false;
-  bool nl = false;
-  bool n_ = false;
+  bool ax = false;
+  bool ar = false;
+  bool al = false;
+  bool a_ = false;
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
@@ -164,62 +164,56 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  std::function<bool()> lambda = [&nl, &nr]() {
+  std::function<bool()> lambda = [&al, &ar]() {
     while (true) {
-      nr = isKeyHeld(VK_RBUTTON);
-      nl = isKeyHeld(VK_LBUTTON);
+      ar = isKeyHeld(VK_RBUTTON);
+      al = isKeyHeld(VK_LBUTTON);
     }
     return true;
     };
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, UINT)> process = [&n_, &nl, &nr, &nx, &pool, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
-      for (int x = +0; x < _x; ++x) {
-        uint8_t* pxl = row_ptr + (_x - 1 - x) * +4;
-        uint8_t* pxr = row_ptr + (x + _x) * +4;
+      for (int x = +0; x < cx; ++x) {
+        uint8_t* pxl = row_ptr + (cx - 1 - x) * +4;
+        uint8_t* pxr = row_ptr + (x + cx) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = +y - _y + 4;
-          const int xx = +x;
+          const int move_y = +y - cy + 4;
+          const int move_x = +x;
 
-          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +4)) {
-            move(driver, high, xy, xx, +3, nl);
-            pool.enqueue_task([&n_, &nl, driver]() mutable {
-              taps(driver, each, nl, n_);
+          if (!a_ && ar && move_x < +4 && (move_y > -1 && move_y < +4)) {
+            move(driver, high, move_y, move_x, +3, al);
+            pool.enqueue_task([&a_, &al, driver]() mutable {
+              taps(driver, every, al, a_);
               });
+            return true;
           }
           else {
-            move(driver, high, xy, xx, +3, nl);
-            pool.enqueue_task([&n_, &nl, driver]() mutable {
-              taps(driver, each, nl, n_);
-              });
+            move(driver, high, move_y, move_x, +3, al);
+            return true;
           }
-
-          return true;
         }
 
         if (isPurple(pxl)) {
-          const int xy = +y - _y + 4;
-          const int xx = -x;
+          const int move_y = +y - cy + 4;
+          const int move_x = -x;
 
-          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +4)) {
-            move(driver, high, xy, xx, +3, nl);
-            pool.enqueue_task([&n_, &nl, driver]() mutable {
-              taps(driver, each, nl, n_);
+          if (!a_ && ar && move_x > -4 && (move_y > -1 && move_y < +4)) {
+            move(driver, high, move_y, move_x, +3, al);
+            pool.enqueue_task([&a_, &al, driver]() mutable {
+              taps(driver, every, al, a_);
               });
+            return true;
           }
           else {
-            move(driver, high, xy, xx, +3, nl);
-            pool.enqueue_task([&n_, &nl, driver]() mutable {
-              taps(driver, each, nl, n_);
-              });
+            move(driver, high, move_y, move_x, +3, al);
+            return true;
           }
-
-          return true;
         }
       }
     }
@@ -227,7 +221,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, frame, __x, __y, wide, high);
+  CaptureScreenArea(process, frame, ex, ey, wide, high);
 
   return +1;
 }
