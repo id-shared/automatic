@@ -116,13 +116,13 @@ int maximum(int e_1, int e) {
 }
 
 int main() {
-  const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
+  const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
   const int count = std::thread::hardware_concurrency();
-  const int high = screen_wide / (+64 * +2);
-  const int wide = screen_wide / (+16 / +2);
-  const int each = +1;
+  const int high = screen_high / +64;
+  const int wide = screen_wide / +8;
+  const int each = +2;
 
   const int __x = (screen_wide - wide) / +2;
   const int __y = (screen_high - high) / +2;
@@ -130,9 +130,10 @@ int main() {
   const int _x = wide / +2;
   const int _y = high / +2;
 
-  bool __ = false;
-  bool _l = false;
-  bool _r = false;
+  bool nx = false;
+  bool nr = false;
+  bool nl = false;
+  bool n_ = false;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -140,17 +141,17 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  std::function<bool()> lambda = [&_l, &_r]() {
+  std::function<bool()> lambda = [&nl, &nr]() {
     while (true) {
-      _r = isKeyHeld(VK_RBUTTON);
-      _l = isKeyHeld(VK_LBUTTON);
+      nr = isKeyHeld(VK_RBUTTON);
+      nl = isKeyHeld(VK_LBUTTON);
     }
     return true;
     };
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&__, &_l, &_r, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&n_, &nl, &nr, &nx, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
@@ -159,38 +160,36 @@ int main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = +y - _y + 4;
+          const int xy = +y - _y + 5;
           const int xx = +x;
+          nx = !nx;
 
-          Xyloid2::yx(driver, _l ? +0 : maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
+          Xyloid2::yx(driver, nl ? +0 : maximum(xy >= +1 ? +high : -high, xy) * (nx ? +2 : +3), maximum(xx >= +1 ? +high : -high, xx) * (nx ? +2 : +3));
 
-          if (!__ && _r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
-            __ = true;
-            Time::XO(+1.9999999999999);
+          if (!n_ && nr && (xx > -5 && xx < +1) && (xy > -5 && xy < +1)) {
+            n_ = true;
             Xyloid2::e1(driver, true);
-            Time::XO(+19.999999999999);
             Xyloid2::e1(driver, false);
-            Time::XO(+139.99999999999);
-            __ = false;
+            Time::XO(+249.99999999999);
+            n_ = false;
           }
 
           return true;
         }
 
         if (isPurple(pxl)) {
-          const int xy = +y - _y + 4;
+          const int xy = +y - _y + 5;
           const int xx = -x;
+          nx = !nx;
 
-          Xyloid2::yx(driver, _l ? +0 : maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
+          Xyloid2::yx(driver, nl ? +0 : maximum(xy >= +1 ? +high : -high, xy) * (nx ? +2 : +3), maximum(xx >= +1 ? +high : -high, xx) * (nx ? +2 : +3));
 
-          if (!__ && _r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
-            __ = true;
-            Time::XO(+1.9999999999999);
+          if (!n_ && nr && (xx > -5 && xx < +1) && (xy > -5 && xy < +1)) {
+            n_ = true;
             Xyloid2::e1(driver, true);
-            Time::XO(+19.999999999999);
             Xyloid2::e1(driver, false);
-            Time::XO(+139.99999999999);
-            __ = false;
+            Time::XO(+249.99999999999);
+            n_ = false;
           }
 
           return true;
