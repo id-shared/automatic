@@ -15,7 +15,7 @@
 
 using Microsoft::WRL::ComPtr;
 
-bool CaptureScreenArea(std::function<bool(uint8_t*, int)> processPixelData, int frame_time, int x, int y, int width, int height) {
+bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UINT frame_time, UINT x, UINT y, UINT width, UINT height) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
@@ -151,7 +151,7 @@ int main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&n_, &nl, &nr, &nx, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&n_, &nl, &nr, &nx, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
