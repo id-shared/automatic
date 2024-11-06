@@ -119,13 +119,18 @@ bool move(HANDLE x, int e_3, int e_2, int e_1, int e, bool a) {
   return Xyloid2::yx(x, a ? +0 : maximum(e_2 >= +1 ? +e_3 : -e_3, e_2) * e, maximum(e_1 >= +1 ? +e_3 : -e_3, e_1) * e);
 };
 
-bool taps(HANDLE x, int e, bool &a) {
-  a = true;
-  Xyloid2::e1(x, true);
-  Xyloid2::e1(x, false);
-  Time::XO(e);
-  a = false;
-  return true;
+bool taps(HANDLE x, double e, bool &a_1, bool& a) {
+  if (a_1) {
+    return false;
+  }
+  else {
+    a = true;
+    Xyloid2::e1(x, true);
+    Xyloid2::e1(x, false);
+    Time::XO(e);
+    a = false;
+    return true;
+  }
 };
 
 int main() {
@@ -134,8 +139,8 @@ int main() {
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
-  const int high = screen_high / +64;
-  const int wide = screen_wide / +8;
+  const int high = screen_high / +32;
+  const int wide = screen_wide / +4;
 
   const int __x = (screen_wide - wide) / +2;
   const int __y = (screen_high - high) / +2;
@@ -143,13 +148,15 @@ int main() {
   const int _x = wide / +2;
   const int _y = high / +2;
 
-  const int fact = +2;
-  const int each = +2;
+  const int frame = +2;
+  const int each = +199;
 
   bool nx = false;
   bool nr = false;
   bool nl = false;
   bool n_ = false;
+
+  Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -167,7 +174,7 @@ int main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, UINT)> process = [&n_, &nl, &nr, &nx, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&n_, &nl, &nr, &nx, &pool, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
@@ -176,30 +183,40 @@ int main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = +y - _y + 2;
+          const int xy = +y - _y + 4;
           const int xx = +x;
 
-          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +2)) {
+          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +4)) {
             move(driver, high, xy, xx, +3, nl);
-            taps(driver, +249.99999999999, n_);
+            pool.enqueue_task([&n_, &nl, driver]() mutable {
+              taps(driver, each, nl, n_);
+              });
           }
           else {
             move(driver, high, xy, xx, +3, nl);
+            pool.enqueue_task([&n_, &nl, driver]() mutable {
+              taps(driver, each, nl, n_);
+              });
           }
 
           return true;
         }
 
         if (isPurple(pxl)) {
-          const int xy = +y - _y + 2;
+          const int xy = +y - _y + 4;
           const int xx = -x;
 
-          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +2)) {
+          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +4)) {
             move(driver, high, xy, xx, +3, nl);
-            taps(driver, +249.99999999999, n_);
+            pool.enqueue_task([&n_, &nl, driver]() mutable {
+              taps(driver, each, nl, n_);
+              });
           }
           else {
             move(driver, high, xy, xx, +3, nl);
+            pool.enqueue_task([&n_, &nl, driver]() mutable {
+              taps(driver, each, nl, n_);
+              });
           }
 
           return true;
@@ -210,7 +227,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, each, __x, __y, wide, high);
+  CaptureScreenArea(process, frame, __x, __y, wide, high);
 
   return +1;
 }
