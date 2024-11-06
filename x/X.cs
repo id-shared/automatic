@@ -4,46 +4,46 @@ using System.Runtime.InteropServices;
 namespace X {
   class X {
     public bool KeyForwardSlashU() {
-      K1 = A.F;
+      key_1 = A.F;
       P1.TryEnqueue(_ => xyloid2.E1(A.F) && P2.TryEnqueue(_ => {
-        AY = Upon(ci => !K1 && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(T1 / +2), AY) + 1;
+        AY = Upon(ci => !key_1 && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(T1 / +2), AY) + 1;
         return A.T;
       }));
       return A.F;
     }
 
     public bool KeyForwardSlashD() {
-      K1 = A.T;
-      _ = KD && xyloid1.EN([Key.D], A.F);
-      _ = KA && xyloid1.EN([Key.A], A.F);
+      key_1 = A.T;
+      _ = key_d && xyloid1.EN([Key.D], A.F);
+      _ = key_a && xyloid1.EN([Key.A], A.F);
       P1.TryEnqueue(_ => xyloid2.E1(A.T) && P2.TryEnqueue(_ => {
-        AY = Till(ci => K1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1 / +1), AY) - 1;
+        AY = Till(ci => key_1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1 / +1), AY) - 1;
         return A.T;
       }));
       return A.F;
     }
 
     public bool KeyDU() {
-      KD = A.F;
+      key_d = A.F;
       P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
       return A.T;
     }
 
     public bool KeyDD() {
       T9 = Environment.TickCount;
-      KD = A.T;
+      key_d = A.T;
       return A.T;
     }
 
     public bool KeyAU() {
-      KA = A.F;
+      key_a = A.F;
       P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
       return A.T;
     }
 
     public bool KeyAD() {
       T9 = Environment.TickCount;
-      KA = A.T;
+      key_a = A.T;
       return A.T;
     }
 
@@ -163,10 +163,10 @@ namespace X {
     public readonly Partner P2 = new(256);
     public readonly Partner P1 = new(256);
 
-    public volatile bool KD = A.F;
-    public volatile bool KA = A.F;
-    public volatile bool K2 = A.F;
-    public volatile bool K1 = A.F;
+    public volatile bool key_d = A.F;
+    public volatile bool key_a = A.F;
+    public volatile bool key_2 = A.F;
+    public volatile bool key_1 = A.F;
 
     public readonly int EY = 64;
     public readonly int EX = 64;
