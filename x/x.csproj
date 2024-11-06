@@ -6,7 +6,6 @@
     <Nullable>disable</Nullable>
     <UseWindowsForms>True</UseWindowsForms>
     <PlatformTarget>x64</PlatformTarget>
-    <StartupObject>Program</StartupObject>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <ApplicationIcon>x.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>

@@ -115,20 +115,36 @@ int maximum(int e_1, int e) {
   return e >= +1 ? (e_1 <= e ? e_1 : e) : (e_1 >= e ? e_1 : e);
 }
 
+bool move(HANDLE x, int e_3, int e_2, int e_1, int e, bool a) {
+  return Xyloid2::yx(x, a ? +0 : maximum(e_2 >= +1 ? +e_3 : -e_3, e_2) * e, maximum(e_1 >= +1 ? +e_3 : -e_3, e_1) * e);
+};
+
+bool taps(HANDLE x, int e, bool &a) {
+  a = true;
+  Xyloid2::e1(x, true);
+  Xyloid2::e1(x, false);
+  Time::XO(e);
+  a = false;
+  return true;
+};
+
 int main() {
+  const int system_count = std::thread::hardware_concurrency();
+
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
-  const int count = std::thread::hardware_concurrency();
   const int high = screen_high / +64;
   const int wide = screen_wide / +8;
-  const int each = +2;
 
   const int __x = (screen_wide - wide) / +2;
   const int __y = (screen_high - high) / +2;
 
   const int _x = wide / +2;
   const int _y = high / +2;
+
+  const int fact = +2;
+  const int each = +2;
 
   bool nx = false;
   bool nr = false;
@@ -160,36 +176,30 @@ int main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = +y - _y + 5;
+          const int xy = +y - _y + 2;
           const int xx = +x;
-          nx = !nx;
 
-          Xyloid2::yx(driver, nl ? +0 : maximum(xy >= +1 ? +high : -high, xy) * (nx ? +2 : +3), maximum(xx >= +1 ? +high : -high, xx) * (nx ? +2 : +3));
-
-          if (!n_ && nr && (xx > -5 && xx < +1) && (xy > -5 && xy < +1)) {
-            n_ = true;
-            Xyloid2::e1(driver, true);
-            Xyloid2::e1(driver, false);
-            Time::XO(+249.99999999999);
-            n_ = false;
+          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +2)) {
+            move(driver, high, xy, xx, +3, nl);
+            taps(driver, +249.99999999999, n_);
+          }
+          else {
+            move(driver, high, xy, xx, +2, nl);
           }
 
           return true;
         }
 
         if (isPurple(pxl)) {
-          const int xy = +y - _y + 5;
+          const int xy = +y - _y + 2;
           const int xx = -x;
-          nx = !nx;
 
-          Xyloid2::yx(driver, nl ? +0 : maximum(xy >= +1 ? +high : -high, xy) * (nx ? +2 : +3), maximum(xx >= +1 ? +high : -high, xx) * (nx ? +2 : +3));
-
-          if (!n_ && nr && (xx > -5 && xx < +1) && (xy > -5 && xy < +1)) {
-            n_ = true;
-            Xyloid2::e1(driver, true);
-            Xyloid2::e1(driver, false);
-            Time::XO(+249.99999999999);
-            n_ = false;
+          if (!n_ && nr && (xx > -1 && xx < +1) && (xy > -1 && xy < +2)) {
+            move(driver, high, xy, xx, +3, nl);
+            taps(driver, +249.99999999999, n_);
+          }
+          else {
+            move(driver, high, xy, xx, +2, nl);
           }
 
           return true;
