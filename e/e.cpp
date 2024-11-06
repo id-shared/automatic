@@ -111,21 +111,28 @@ bool isPurple(uint8_t* x) {
   return x[+0] >= +251 && x[+1] <= +191 && x[+2] >= +251 && x[+3] == +255;
 }
 
-bool main() {
+int maximum(int e_1, int e) {
+  return e >= +1 ? (e_1 <= e ? e_1 : e) : (e_1 >= e ? e_1 : e);
+}
+
+int main() {
+  const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
+  const int screen_high = GetSystemMetrics(SM_CYSCREEN);
+
   const int count = std::thread::hardware_concurrency();
-  const int wide = +16 * +16;
-  const int high = +16 * +1;
+  const int high = screen_wide / (+64 * +2);
+  const int wide = screen_wide / (+16 / +2);
   const int each = +1;
 
-  const int __y = (1440 - high) / +2;
-  const int __x = (2560 - wide) / +2;
+  const int __x = (screen_wide - wide) / +2;
+  const int __y = (screen_high - high) / +2;
 
-  const int _y = high / +2;
   const int _x = wide / +2;
+  const int _y = high / +2;
 
-  bool _r = false;
-  bool _l = false;
   bool __ = false;
+  bool _l = false;
+  bool _r = false;
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -143,7 +150,7 @@ bool main() {
 
   std::thread t(lambda);
 
-  std::function<bool(uint8_t*, int)> process = [&__, &_l, &_r, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, int)> process = [&__, &_l, &_r, _x, _y, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < high; ++y) {
       uint8_t* row_ptr = _o + y * row_pitch;
 
@@ -155,9 +162,9 @@ bool main() {
           const int xy = _l ? +0 : (y - _y + 4);
           const int xx = +x;
 
-          Xyloid2::yx(driver, xy, xx);
+          Xyloid2::yx(driver, maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
 
-          if (_r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
+          if (!__ && _r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
             Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
@@ -174,9 +181,9 @@ bool main() {
           const int xy = _l ? +0 : (y - _y + 4);
           const int xx = -x;
 
-          Xyloid2::yx(driver, xy, xx);
+          Xyloid2::yx(driver, maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
 
-          if (_r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
+          if (!__ && _r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
             Time::XO(+1.9999999999999);
             Xyloid2::e1(driver, true);
@@ -194,5 +201,7 @@ bool main() {
     return false;
     };
 
-  return CaptureScreenArea(process, each, __x, __y, wide, high);
+  CaptureScreenArea(process, each, __x, __y, wide, high);
+
+  return +1;
 }
