@@ -159,10 +159,10 @@ int main() {
         uint8_t* pxr = row_ptr + (x + _x) * +4;
 
         if (isPurple(pxr)) {
-          const int xy = _l ? +0 : (y - _y + 4);
+          const int xy = +y - _y + 4;
           const int xx = +x;
 
-          Xyloid2::yx(driver, maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
+          Xyloid2::yx(driver, _l ? +0 : maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
 
           if (!__ && _r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
@@ -178,10 +178,10 @@ int main() {
         }
 
         if (isPurple(pxl)) {
-          const int xy = _l ? +0 : (y - _y + 4);
+          const int xy = +y - _y + 4;
           const int xx = -x;
 
-          Xyloid2::yx(driver, maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
+          Xyloid2::yx(driver, _l ? +0 : maximum(xy >= +1 ? +high : -high, xy) * +2, maximum(xx >= +1 ? +high : -high, xx) * +2);
 
           if (!__ && _r && (xx > -4 && xx < +4) && (xy > -4 && xy < +4)) {
             __ = true;
