@@ -217,11 +217,9 @@ int main() {
         }
       }
     }
-
     return false;
     };
 
   CaptureScreenArea(process, frame, ex, ey, wide, high);
-
   return +1;
 }
