@@ -5,8 +5,8 @@ namespace X {
   class X {
     public bool KeyForwardSlashU() {
       key_1 = A.F;
-      P1.TryEnqueue(_ => xyloid2.E1(A.F) && P2.TryEnqueue(_ => {
-        AY = Upon(ci => !key_1 && (1 <= ci) && P3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(T1 / +2), AY) + 1;
+      partner_1.TryEnqueue(_ => xyloid2.E1(A.F) && partner_2.TryEnqueue(_ => {
+        a_y = Upon(ci => !key_1 && (+1 <= ci) && partner_3.TryEnqueue(_ => Pattern(ci, A.F)) && Time.XO(waiting_1 / +2), a_y) + 1;
         return A.T;
       }));
       return A.F;
@@ -16,8 +16,8 @@ namespace X {
       key_1 = A.T;
       _ = key_d && xyloid1.EN([Key.D], A.F);
       _ = key_a && xyloid1.EN([Key.A], A.F);
-      P1.TryEnqueue(_ => xyloid2.E1(A.T) && P2.TryEnqueue(_ => {
-        AY = Till(ci => key_1 && (EY >= ci) && P3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(T1 / +1), AY) - 1;
+      partner_1.TryEnqueue(_ => xyloid2.E1(A.T) && partner_2.TryEnqueue(_ => {
+        a_y = Till(ci => key_1 && (e_y >= ci) && partner_3.TryEnqueue(_ => Pattern(ci, A.T)) && Time.XO(waiting_1 / +1), a_y) - 1;
         return A.T;
       }));
       return A.F;
@@ -25,24 +25,24 @@ namespace X {
 
     public bool KeyDU() {
       key_d = A.F;
-      P1.TryEnqueue(_ => XO([Key.LArrow], Breakup(T9)));
+      partner_1.TryEnqueue(_ => XO([Key.LArrow], Breakup(waiting_3)));
       return A.T;
     }
 
     public bool KeyDD() {
-      T9 = Environment.TickCount;
+      waiting_3 = Environment.TickCount;
       key_d = A.T;
       return A.T;
     }
 
     public bool KeyAU() {
       key_a = A.F;
-      P1.TryEnqueue(_ => XO([Key.RArrow], Breakup(T9)));
+      partner_1.TryEnqueue(_ => XO([Key.RArrow], Breakup(waiting_3)));
       return A.T;
     }
 
     public bool KeyAD() {
-      T9 = Environment.TickCount;
+      waiting_3 = Environment.TickCount;
       key_a = A.T;
       return A.T;
     }
@@ -62,14 +62,14 @@ namespace X {
     };
 
     public bool Pattern(int e, bool a) {
-      int dy = (a ? +1 : -1) * PX.DY(e);
-      int dx = (a ? -1 : +1) * PX.DX(e);
+      int dy = (a ? +1 : -1) * pattern_1.DY(e);
+      int dx = (a ? -1 : +1) * pattern_1.DX(e);
 
-      return dy == 0 && dx == 0 || xyloid2.YX(dy * CY, dx * CX);
+      return dy == 0 && dx == 0 || xyloid2.YX(dy * c_y, dx * c_x);
     }
 
     public int Breakup(int e) {
-      return PZ.DN((Environment.TickCount - e) / 10);
+      return pattern_3.DN((Environment.TickCount - e) / 10);
     }
 
     public bool XO(uint[] e_1, double t) {
@@ -151,29 +151,29 @@ namespace X {
     public Xyloid1 xyloid1;
     public Xyloid xyloid;
 
-    public volatile int T9 = Environment.TickCount;
-    public readonly int T3 = 99;
-    public readonly int T1 = 16;
+    public volatile int waiting_3 = Environment.TickCount;
+    public readonly int waiting_2 = +99;
+    public readonly int waiting_1 = +16;
 
-    public readonly Pattern PZ = new(999);
-    public readonly Pattern PY = new(999);
-    public readonly Pattern PX = new(999);
+    public readonly Pattern pattern_3 = new(+999);
+    public readonly Pattern pattern_2 = new(+999);
+    public readonly Pattern pattern_1 = new(+999);
 
-    public readonly Partner P3 = new(256);
-    public readonly Partner P2 = new(256);
-    public readonly Partner P1 = new(256);
+    public readonly Partner partner_3 = new(+256);
+    public readonly Partner partner_2 = new(+256);
+    public readonly Partner partner_1 = new(+256);
 
     public volatile bool key_d = A.F;
     public volatile bool key_a = A.F;
     public volatile bool key_2 = A.F;
     public volatile bool key_1 = A.F;
 
-    public readonly int EY = 64;
-    public readonly int EX = 64;
-    public readonly int CY = 5;
-    public readonly int CX = 1;
-    public volatile int AY = 1;
-    public volatile int AX = 1;
+    public readonly int e_y = +64;
+    public readonly int e_x = +64;
+    public readonly int c_y = +5;
+    public readonly int c_x = +1;
+    public volatile int a_y = +1;
+    public volatile int a_x = +1;
 
     public delegate IntPtr LowLevelProc(int nCode, IntPtr wParam, IntPtr lParam);
     public volatile IntPtr hook = IntPtr.Zero;
