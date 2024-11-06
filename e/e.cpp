@@ -184,7 +184,7 @@ int main() {
             taps(driver, +249.99999999999, n_);
           }
           else {
-            move(driver, high, xy, xx, +2, nl);
+            move(driver, high, xy, xx, +3, nl);
           }
 
           return true;
@@ -199,7 +199,7 @@ int main() {
             taps(driver, +249.99999999999, n_);
           }
           else {
-            move(driver, high, xy, xx, +2, nl);
+            move(driver, high, xy, xx, +3, nl);
           }
 
           return true;
