@@ -139,7 +139,7 @@ int main() {
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
-  const int high = screen_high / +32;
+  const int high = screen_high / +64;
   const int wide = screen_wide / +4;
 
   const int every = +199;
@@ -187,14 +187,14 @@ int main() {
           const int move_x = +x;
 
           if (!a_ && ar && move_x < +5 && move_y > -5 && move_y < +1) {
-            move(driver, high, move_y, move_x, +3, al);
+            move(driver, high, move_y, move_x, +2, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +3, al);
+            move(driver, high, move_y, move_x, +2, al);
             return true;
           }
         }
@@ -204,14 +204,14 @@ int main() {
           const int move_x = -x;
 
           if (!a_ && ar && move_x > -5 && move_y > -5 && move_y < +1) {
-            move(driver, high, move_y, move_x, +3, al);
+            move(driver, high, move_y, move_x, +2, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +3, al);
+            move(driver, high, move_y, move_x, +2, al);
             return true;
           }
         }
