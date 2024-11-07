@@ -26,16 +26,16 @@
       panel1.Location = new Point(0, 0);
       panel1.Margin = new Padding(0);
       panel1.Name = "panel1";
-      panel1.Size = new Size(Screen.PrimaryScreen.Bounds.Width / 2, 16);
-      panel1.TabIndex = 6;
+      panel1.Size = new Size(Screen.PrimaryScreen.Bounds.Width / +4, Screen.PrimaryScreen.Bounds.Height);
+      panel1.TabIndex = 1;
 
       panel2.Anchor = AnchorStyles.Top;
       panel2.BackColor = Color.Transparent;
-      panel2.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2, 0);
+      panel2.Location = new Point((Screen.PrimaryScreen.Bounds.Width / +4) * +3, 0);
       panel2.Margin = new Padding(0);
       panel2.Name = "panel2";
-      panel2.Size = new Size(Screen.PrimaryScreen.Bounds.Width / 2, 16);
-      panel2.TabIndex = 7;
+      panel2.Size = new Size(Screen.PrimaryScreen.Bounds.Width / +4, Screen.PrimaryScreen.Bounds.Height);
+      panel2.TabIndex = 2;
 
       AutoScaleMode = AutoScaleMode.Inherit;
       BackColor = Color.Black;

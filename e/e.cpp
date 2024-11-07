@@ -195,7 +195,7 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +2, al);
+            move(driver, high, move_y, move_x, +1, al);
             return true;
           }
         }
@@ -212,7 +212,7 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +2, al);
+            move(driver, high, move_y, move_x, +1, al);
             return true;
           }
         }
