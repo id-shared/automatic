@@ -1,5 +1,6 @@
 #include "Contact.hpp"
 #include "Device.hpp"
+#include "Event.hpp"
 #include "Parallel.hpp"
 #include "Ram.hpp"
 #include "Time.hpp"
@@ -157,6 +158,8 @@ int main() {
   bool a_ = false;
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
+
+  Event::xyloid1();
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;

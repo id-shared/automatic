@@ -35,6 +35,9 @@
     <ClInclude Include="..\_\Ram.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\_\Event.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="e.txt" />
