@@ -16,7 +16,7 @@ namespace Event {
     void setHook() {
       hHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
       if (hHook == NULL) {
-        std::cerr << "Failed to install hook!" << std::endl;
+        throw hHook;
       }
     }
 
