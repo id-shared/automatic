@@ -22,13 +22,13 @@ namespace SoundView {
         Console.WriteLine(val);
 
         // Adjust thresholds for more sensitivity
-        if (val < 25) {
+        if (val < 50) {
           panel2.BackColor = Color.Red;
         } else {
           panel2.BackColor = SystemColors.Control;
         }
 
-        if (val > 75) {
+        if (val > 50) {
           panel1.BackColor = Color.Red;
         } else {
           panel1.BackColor = SystemColors.Control;
