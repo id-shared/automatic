@@ -1,8 +1,5 @@
 namespace SoundView {
-  static class Program {
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
+  static class z {
     [STAThread]
     static void Main() {
       Application.EnableVisualStyles();
