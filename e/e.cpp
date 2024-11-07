@@ -134,7 +134,7 @@ bool taps(HANDLE x, double e, bool &a_1, bool& a) {
 };
 
 int main() {
-  const int system_count = std::thread::hardware_concurrency();
+  const int system_size = std::thread::hardware_concurrency();
 
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
@@ -175,18 +175,18 @@ int main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
-    for (int y = +0; y < high; ++y) {
-      uint8_t* row_ptr = _o + y * row_pitch;
+    for (int y = +0; y < cy; ++y) {
+      uint8_t* pyu = _o + y * row_pitch;
 
       for (int x = +0; x < cx; ++x) {
-        uint8_t* pxl = row_ptr + (cx - 1 - x) * +4;
-        uint8_t* pxr = row_ptr + (x + cx) * +4;
+        uint8_t* pxl = pyu + (cx - 1 - x) * +4;
+        uint8_t* pxr = pyu + (cx + x) * +4;
 
         if (isPurple(pxr)) {
-          const int move_y = +y - cy + 4;
+          const int move_y = +y - cy + 2;
           const int move_x = +x;
 
-          if (!a_ && ar && move_x < +4 && (move_y > -1 && move_y < +4)) {
+          if (!a_ && ar && move_x < +4 && move_y > -4 && move_y < +1) {
             move(driver, high, move_y, move_x, +3, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
@@ -194,17 +194,17 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +3, al);
+            move(driver, high, move_y, move_x, +1, al);
             return true;
           }
         }
 
         if (isPurple(pxl)) {
-          const int move_y = +y - cy + 4;
+          const int move_y = +y - cy + 2;
           const int move_x = -x;
 
-          if (!a_ && ar && move_x > -4 && (move_y > -1 && move_y < +4)) {
-            move(driver, high, move_y, move_x, +3, al);
+          if (!a_ && ar && move_x > -4 && move_y > -4 && move_y < +1) {
+            move(driver, high, move_y, move_x, +1, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
               });
@@ -221,5 +221,6 @@ int main() {
     };
 
   CaptureScreenArea(process, frame, ex, ey, wide, high);
+
   return +1;
-}
+}   
