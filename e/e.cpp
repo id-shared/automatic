@@ -119,7 +119,7 @@ bool move(HANDLE x, int e_3, int e_2, int e_1, int e, bool a) {
   return Xyloid2::yx(x, a ? +0 : maximum(e_2 >= +1 ? +e_3 : -e_3, e_2) * e, maximum(e_1 >= +1 ? +e_3 : -e_3, e_1) * e);
 };
 
-bool taps(HANDLE x, double e, bool &a_1, bool& a) {
+bool taps(HANDLE x, double e, bool& a_1, bool& a) {
   if (a_1) {
     return false;
   }
@@ -168,6 +168,7 @@ int main() {
     while (true) {
       ar = isKeyHeld(VK_RBUTTON);
       al = isKeyHeld(VK_LBUTTON);
+      Time::XO(frame);
     }
     return true;
     };
@@ -183,10 +184,10 @@ int main() {
         uint8_t* pxr = pyu + (cx + x) * +4;
 
         if (isPurple(pxr)) {
-          const int move_y = +y - cy + 5;
+          const int move_y = +y - cy;
           const int move_x = +x;
 
-          if (!a_ && ar && move_x < +5 && move_y > -5 && move_y < +1) {
+          if (!a_ && ar && move_x <= +4 && move_y >= -4) {
             move(driver, high, move_y, move_x, +2, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
@@ -194,16 +195,16 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +2, al);
+            move(driver, high, move_y + 5, move_x, +2, al);
             return true;
           }
         }
 
         if (isPurple(pxl)) {
-          const int move_y = +y - cy + 5;
+          const int move_y = +y - cy;
           const int move_x = -x;
 
-          if (!a_ && ar && move_x > -5 && move_y > -5 && move_y < +1) {
+          if (!a_ && ar && move_x >= -4 && move_y >= -4) {
             move(driver, high, move_y, move_x, +2, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
@@ -211,7 +212,7 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +2, al);
+            move(driver, high, move_y + 5, move_x, +2, al);
             return true;
           }
         }
@@ -223,4 +224,4 @@ int main() {
   CaptureScreenArea(process, frame, ex, ey, wide, high);
 
   return +1;
-}   
+}
