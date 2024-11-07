@@ -159,8 +159,17 @@ int main() {
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-  Event::KeyboardHook hook([](int vkCode) {
-    std::cout << "Callback called for key: " << vkCode << std::endl;
+  Event::KeyboardHook hook([](UINT e, bool a) {
+    if (e == VK_OEM_2) {
+      if (a) {
+        std::cout << "Forward slash (/) key pressed." << e << std::endl;
+      }
+      else {
+        std::cout << "Forward slash (/) key released." << e << std::endl;
+      }
+    }
+
+    return true;
     });
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
