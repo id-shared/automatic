@@ -13,7 +13,7 @@ namespace SoundView {
 
     private void timer1_Tick(object sender, EventArgs e) {
       double difference = device.AudioMeterInformation.PeakValues[0] - device.AudioMeterInformation.PeakValues[1];
-      double es = +0.03125;
+      double es = +0.06249999;
 
       if (difference <= -es) {
         panel2.BackColor = Color.Red;
