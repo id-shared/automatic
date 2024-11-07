@@ -142,7 +142,7 @@ int main() {
   const int high = screen_high / +64;
   const int wide = screen_wide / +4;
 
-  const int every = +199;
+  const int every = +249;
   const int frame = +1;
 
   const int ex = (screen_wide - wide) / +2;
@@ -176,7 +176,7 @@ int main() {
   std::thread t(lambda);
 
   std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
-    for (int y = +0; y < cy; ++y) {
+    for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
       for (int x = +0; x < cx; ++x) {
@@ -184,10 +184,10 @@ int main() {
         uint8_t* pxr = pyu + (cx + x) * +4;
 
         if (isPurple(pxr)) {
-          const int move_y = +y - cy;
+          const int move_y = +y - cy + 5;
           const int move_x = +x;
 
-          if (!a_ && ar && move_x <= +4 && move_y >= -4) {
+          if (!a_ && ar && move_x <= +4) {
             move(driver, high, move_y, move_x, +2, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
@@ -195,16 +195,16 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y + 5, move_x, +2, al);
+            move(driver, high, move_y, move_x, +2, al);
             return true;
           }
         }
 
         if (isPurple(pxl)) {
-          const int move_y = +y - cy;
+          const int move_y = +y - cy + 5;
           const int move_x = -x;
 
-          if (!a_ && ar && move_x >= -4 && move_y >= -4) {
+          if (!a_ && ar && move_x >= -4) {
             move(driver, high, move_y, move_x, +2, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
@@ -212,7 +212,7 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y + 5, move_x, +2, al);
+            move(driver, high, move_y, move_x, +2, al);
             return true;
           }
         }
