@@ -34,7 +34,7 @@
       // timer
       // 
       timer.Enabled = true;
-      timer.Interval = 10;
+      timer.Interval = +10;
       timer.Tick += timer1_Tick;
       // 
       // label1

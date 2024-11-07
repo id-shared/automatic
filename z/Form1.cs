@@ -6,33 +6,25 @@ namespace SoundView {
 
     public Form1() {
       InitializeComponent();
-      MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+      MMDeviceEnumerator enumerator = new();
       var devices = enumerator.EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active);
       device = devices.ToArray()[0];
     }
 
     private void timer1_Tick(object sender, EventArgs e) {
-      if (device != null) {
-        // Calculate the difference between left and right channels, emphasizing the difference
-        var leftRightDifference = device.AudioMeterInformation.PeakValues[0] - device.AudioMeterInformation.PeakValues[1];
-        
-        // Increase sensitivity by amplifying the difference
-        var val = (int)(((leftRightDifference * 50) + 50)); // Higher multiplier for more sensitivity
+      double difference = device.AudioMeterInformation.PeakValues[0] - device.AudioMeterInformation.PeakValues[1];
+      double es = +0.03125;
 
-        Console.WriteLine(val);
+      if (difference <= -es) {
+        panel2.BackColor = Color.Red;
+      } else {
+        panel2.BackColor = SystemColors.Control;
+      }
 
-        // Adjust thresholds for more sensitivity
-        if (val < 50) {
-          panel2.BackColor = Color.Red;
-        } else {
-          panel2.BackColor = SystemColors.Control;
-        }
-
-        if (val > 50) {
-          panel1.BackColor = Color.Red;
-        } else {
-          panel1.BackColor = SystemColors.Control;
-        }
+      if (difference >= +es) {
+        panel1.BackColor = Color.Red;
+      } else {
+        panel1.BackColor = SystemColors.Control;
       }
     }
   }
