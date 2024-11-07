@@ -183,10 +183,10 @@ int main() {
         uint8_t* pxr = pyu + (cx + x) * +4;
 
         if (isPurple(pxr)) {
-          const int move_y = +y - cy + 2;
+          const int move_y = +y - cy + 5;
           const int move_x = +x;
 
-          if (!a_ && ar && move_x < +4 && move_y > -4 && move_y < +1) {
+          if (!a_ && ar && move_x < +5 && move_y > -5 && move_y < +1) {
             move(driver, high, move_y, move_x, +3, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
@@ -194,17 +194,17 @@ int main() {
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +1, al);
+            move(driver, high, move_y, move_x, +3, al);
             return true;
           }
         }
 
         if (isPurple(pxl)) {
-          const int move_y = +y - cy + 2;
+          const int move_y = +y - cy + 5;
           const int move_x = -x;
 
-          if (!a_ && ar && move_x > -4 && move_y > -4 && move_y < +1) {
-            move(driver, high, move_y, move_x, +1, al);
+          if (!a_ && ar && move_x > -5 && move_y > -5 && move_y < +1) {
+            move(driver, high, move_y, move_x, +3, al);
             pool.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
               });
