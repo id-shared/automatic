@@ -18,13 +18,13 @@ namespace SoundView {
       if (difference <= -es) {
         panel2.BackColor = Color.Red;
       } else {
-        panel2.BackColor = SystemColors.Control;
+        panel2.BackColor = Color.Transparent;
       }
 
       if (difference >= +es) {
         panel1.BackColor = Color.Red;
       } else {
-        panel1.BackColor = SystemColors.Control;
+        panel1.BackColor = Color.Transparent;
       }
     }
   }

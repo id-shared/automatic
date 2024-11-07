@@ -45,6 +45,7 @@
       DoubleBuffered = true;
       FormBorderStyle = FormBorderStyle.None;
       Name = "Form1";
+      Opacity = 0.25;
       ShowIcon = false;
       Text = "Form1";
       TopMost = true;
