@@ -159,21 +159,9 @@ int main() {
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-  // Define the action to take on a key event
-  auto keyAction = [](WPARAM wParam, KBDLLHOOKSTRUCT* pKeyboard) -> bool {
-    if (pKeyboard->vkCode == VK_OEM_2) {  // Forward slash key
-      if (wParam == WM_KEYDOWN) {
-        std::cout << "Forward slash (/) key pressed and event canceled." << std::endl;
-        return false; // Cancel this key event
-      }
-      else if (wParam == WM_KEYUP) {
-        std::cout << "Forward slash (/) key released." << std::endl;
-      }
-    }
-    return true; // Allow all other key events
-    };
-
-  Event::KeyboardHook keyboardHandler;
+  Event::KeyboardHook hook([](int vkCode) {
+    std::cout << "Callback called for key: " << vkCode << std::endl;
+    });
 
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;

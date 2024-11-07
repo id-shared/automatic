@@ -1,3 +1,4 @@
+#pragma once
 #include <functional>
 #include <iostream>
 #include <unordered_map>
@@ -6,12 +7,12 @@
 namespace Event {
   class KeyboardHook {
   public:
-    KeyboardHook() : hHook(NULL) {
+    KeyboardHook(std::function<void(int)> callback) : hHook(NULL), keyCallback(callback) {
+      instance = this;
       setHook();
       run();
     }
 
-    // Set up the keyboard hook
     void setHook() {
       hHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
       if (hHook == NULL) {
@@ -19,7 +20,6 @@ namespace Event {
       }
     }
 
-    // Unhook the keyboard hook
     void unhook() {
       if (hHook) {
         UnhookWindowsHookEx(hHook);
@@ -27,13 +27,11 @@ namespace Event {
       }
     }
 
-    // Message loop to keep the hook active
     void run() {
       MSG msg;
-      std::cout << "Press '/' to detect the key press and release. Press ESC to exit." << std::endl;
       while (GetMessage(&msg, NULL, 0, 0)) {
         if (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE) {
-          break;  // Exit if ESC key is pressed
+          break;
         }
         TranslateMessage(&msg);
         DispatchMessage(&msg);
@@ -46,13 +44,13 @@ namespace Event {
 
   private:
     HHOOK hHook;
+    std::function<void(int)> keyCallback;
+    static KeyboardHook* instance;
 
-    // Static callback function for keyboard hook
     static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
       if (nCode == HC_ACTION) {
         KBDLLHOOKSTRUCT* pKeyboard = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
 
-        // Detect forward slash (/) key press and release
         if (pKeyboard->vkCode == VK_OEM_2) {
           if (wParam == WM_KEYDOWN) {
             std::cout << "Forward slash (/) key pressed." << std::endl;
@@ -60,11 +58,16 @@ namespace Event {
           else if (wParam == WM_KEYUP) {
             std::cout << "Forward slash (/) key released." << std::endl;
           }
+
+          if (instance && instance->keyCallback) {
+            instance->keyCallback(pKeyboard->vkCode);
+          }
         }
       }
 
-      // Call the next hook in the chain
       return CallNextHookEx(NULL, nCode, wParam, lParam);
     }
   };
+
+  KeyboardHook* KeyboardHook::instance = nullptr;
 }
