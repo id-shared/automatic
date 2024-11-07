@@ -16,13 +16,13 @@ namespace SoundView {
       double es = +0.06249999;
 
       if (difference <= -es) {
-        panel2.BackColor = Color.White;
+        panel2.BackColor = Color.Black;
       } else {
         panel2.BackColor = Color.Transparent;
       }
 
       if (difference >= +es) {
-        panel1.BackColor = Color.White;
+        panel1.BackColor = Color.Black;
       } else {
         panel1.BackColor = Color.Transparent;
       }

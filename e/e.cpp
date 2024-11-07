@@ -139,8 +139,8 @@ int main() {
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
-  const int high = screen_high / +64;
-  const int wide = screen_wide / +4;
+  const int high = screen_high / +32;
+  const int wide = screen_wide / +8;
 
   const int every = +249;
   const int frame = +1;
