@@ -162,10 +162,10 @@ int main() {
   Event::KeyboardHook hook([](UINT e, bool a) {
     if (e == VK_OEM_2) {
       if (a) {
-        std::cout << "Forward slash (/) key pressed." << e << std::endl;
+        std::cout << e << std::endl;
       }
       else {
-        std::cout << "Forward slash (/) key released." << e << std::endl;
+        std::cout << e << std::endl;
       }
     }
 
