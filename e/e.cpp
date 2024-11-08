@@ -115,12 +115,8 @@ bool isPurple(uint8_t* x) {
   return x[+0] >= +251 && x[+1] <= +191 && x[+2] >= +251 && x[+3] == +255;
 }
 
-int maximum(int e_1, int e) {
-  return e >= +1 ? (e_1 <= e ? e_1 : e) : (e_1 >= e ? e_1 : e);
-}
-
-bool move(HANDLE x, int e_2, int e_1, int e, bool a) {
-  return Xyloid2::yx(x, a ? -1 +1 : maximum(e_1 >= +1 ? +e_2 : -e_2, e_1) * (+1 - (e_1 % +1)), maximum(e >= +1 ? +e_2 : -e_2, e) * (+2 - (e % +2)));
+bool move(HANDLE x, int e_3, int e_2, int e_1, bool a) {
+  return Xyloid2::yx(x, a ? -1 +1 : (e_2 >= +1 ? min(e_3, e_2) : max(-e_3, e_2)) * (e_2 >= -4 && e_2 <= +4 ? +1 : +2), (e_1 >= +1 ? min(e_3, e_1) : max(-e_3, e_1)) * (e_1 >= -4 && e_1 <= +4 ? +1 : +2));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
