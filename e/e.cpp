@@ -172,9 +172,6 @@ int main() {
 
   Parallel::ThreadPool x1(system_size);
 
-  Parallel::ThreadPool q2(1);
-  Parallel::ThreadPool q1(1);
-
   const int ex = (screen_wide - wide) / +2;
   const int ey = (screen_high - high) / +2;
 
@@ -185,16 +182,19 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  std::function<void()> queue = [&al, &ar, &q1, &q2, driver]() {
+  std::function<void()> queue = [&al, &ar, driver]() {
+    Parallel::ThreadPool queue2(1);
+    Parallel::ThreadPool queue1(1);
+
     const int time = +16;
     const int size = +64;
-    int pose = +1;
+    int latest = +1;
 
-    Event::KeyboardHook hook([&al, &ar, &q1, &q2, &pose, driver](UINT e, bool a) {
+    Event::KeyboardHook hook([&al, &ar, &latest, &queue1, &queue2, driver](UINT e, bool a) {
       if (e == VK_OEM_6) {
         ar = a;
 
-        q1.enqueue_task([&ar, driver]() mutable {
+        queue1.enqueue_task([&ar, driver]() mutable {
           Xyloid2::e2(driver, ar);
           });
 
@@ -205,14 +205,14 @@ int main() {
         if (a) {
           al = a;
 
-          q1.enqueue_task([&al, &q2, &pose, driver]() mutable {
+          queue1.enqueue_task([&al, &latest, &queue2, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            pose = till([&al, &q2, driver](int e) {
+            latest = till([&al, &queue2, driver](int e) {
               const bool back = al && (size >= e);
 
               if (back) {
-                q2.enqueue_task([e, driver]() mutable {
+                queue2.enqueue_task([e, driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -223,9 +223,9 @@ int main() {
               else {
                 return back;
               }
-              }, pose) - 1;
+              }, latest) - 1;
 
-            printf("%d\n", pose);
+            printf("%d\n", latest);
             });
 
           return false;
@@ -233,14 +233,14 @@ int main() {
         else {
           al = a;
 
-          q1.enqueue_task([&al, &q2, &pose, driver]() mutable {
+          queue1.enqueue_task([&al, &latest, &queue2, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            pose = upon([&al, &q2, driver](int e) {
+            latest = upon([&al, &queue2, driver](int e) {
               const bool back = !al && (+1 <= e);
 
               if (back) {
-                q2.enqueue_task([e, driver]() mutable {
+                queue2.enqueue_task([e, driver]() mutable {
                   pattern(driver, e, false);
                   });
 
@@ -251,9 +251,9 @@ int main() {
               else {
                 return back;
               }
-              }, pose) + 1;
+              }, latest) + 1;
 
-            printf("%d\n", pose);
+            printf("%d\n", latest);
             });
 
           return false;
