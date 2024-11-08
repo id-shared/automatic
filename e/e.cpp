@@ -62,7 +62,12 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UIN
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-  auto nextFrameTime = std::chrono::steady_clock::now();
+  /*auto nextFrameTime = std::chrono::steady_clock::now();
+  nextFrameTime += std::chrono::milliseconds(frame_time);
+  nextFrameTime += std::chrono::milliseconds(frame_time);
+  std::this_thread::sleep_until(nextFrameTime);*/
+
+  double wait = frame_time;
 
   while (true) {
     ComPtr<IDXGIResource> desktopResource;
@@ -70,7 +75,7 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UIN
     hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
 
     if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
-      nextFrameTime += std::chrono::milliseconds(frame_time);
+      wait = wait + frame_time;
       continue;
     }
     if (FAILED(hr)) throw hr;
@@ -93,8 +98,8 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UIN
 
     duplication->ReleaseFrame();
 
-    nextFrameTime += std::chrono::milliseconds(frame_time);
-    std::this_thread::sleep_until(nextFrameTime);
+    Time::XO(wait);
+    wait = frame_time;
   }
 
   return true;
@@ -115,8 +120,8 @@ bool isPurple(uint8_t* x) {
   return x[+0] >= +251 && x[+1] <= +191 && x[+2] >= +251 && x[+3] == +255;
 }
 
-bool move(HANDLE x, int e_2, int e_1, int e, bool a) {
-  return Xyloid2::yx(x, a ? -1 +1 : (e_2 >= +1 ? min(e, e_2) : max(-e, e_2)) * +1, (e_1 >= +1 ? min(e, e_1) : max(-e, e_1)) * (e_1 >= -e && e_1 <= +e ? +1 : +2));
+bool move(HANDLE x, int e_3, int e_2, int e_1, int e_11, bool a) {
+  return Xyloid2::yx(x, a ? -1 + 1 : (e_3 >= +1 ? min(e_11, e_3) : max(-e_11, e_3)) * (e_3 >= -e_11 && e_3 <= +e_11 ? +2 : +3), (e_2 >= +1 ? min(e_1, e_2) : max(-e_1, e_2)) * (e_2 >= -e_1 && e_2 <= +e_1 ? +2 : +3));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -161,11 +166,11 @@ int main() {
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
-  const int high = screen_high / +64;
+  const int high = screen_high / +32;
   const int wide = screen_wide / +8;
 
   const int every = +249;
-  const int frame = +1;
+  const int frame = +16;
 
   const int ex = (screen_wide - wide) / +2;
   const int ey = (screen_high - high) / +2;
@@ -257,7 +262,7 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, high, wide, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -270,15 +275,15 @@ int main() {
           const int move_x = +x;
 
           if (!a_ && ar && move_x <= +4) {
-            system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, high, al);
+            system.enqueue_task([&a_, al, high, wide, move_x, move_y, driver]() mutable {
+              move(driver, move_y, move_x, high, wide, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, high, al);
+            system.enqueue_task([al, high, wide, move_x, move_y, driver]() mutable {
+              move(driver, move_y, move_x, high, wide, al);
               });
             return true;
           }
@@ -289,15 +294,15 @@ int main() {
           const int move_x = -x;
 
           if (!a_ && ar && move_x >= -4) {
-            system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, high, al);
+            system.enqueue_task([&a_, al, high, wide, move_x, move_y, driver]() mutable {
+              move(driver, move_y, move_x, high, wide, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, high, al);
+            system.enqueue_task([al, high, wide, move_x, move_y, driver]() mutable {
+              move(driver, move_y, move_x, high, wide, al);
               });
             return true;
           }
