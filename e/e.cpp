@@ -135,6 +135,13 @@ bool taps(HANDLE x, double e, bool& a_1, bool& a) {
 };
 
 int main() {
+  LPCWSTR device = Contact::device([](std::wstring_view c) {
+    using namespace std::literals;
+    return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
+    });
+
+  HANDLE driver = Device::driver(device);
+
   const int system_size = std::thread::hardware_concurrency();
 
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
@@ -157,16 +164,15 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  Parallel::ThreadPool pool(std::thread::hardware_concurrency());
+  Parallel::ThreadPool pool(system_size);
 
   Event::KeyboardHook hook([&al, &ar](UINT e, bool a) {
-    if (e == VK_OEM_2) {
+    if (e == VK_OEM_4) {
+      al = a;
       if (a) {
-        al = true;
         std::cout << "/ :" << e << std::endl;
       }
       else {
-        al = false;
         std::cout << "/ :" << e << std::endl;
       }
 
@@ -175,13 +181,6 @@ int main() {
 
     return true;
     });
-
-  LPCWSTR device = Contact::device([](std::wstring_view c) {
-    using namespace std::literals;
-    return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
-    });
-
-  HANDLE driver = Device::driver(device);
 
   std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
