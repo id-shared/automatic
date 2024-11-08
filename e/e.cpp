@@ -240,14 +240,16 @@ int main() {
           const int move_x = +x;
 
           if (!a_ && ar && move_x <= +4) {
-            move(driver, high, move_y, move_x, +2, al);
-            pool_system.enqueue_task([&a_, &al, driver]() mutable {
+            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+              move(driver, high, move_y, move_x, +2, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +1, al);
+            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+              move(driver, high, move_y, move_x, +1, al);
+              });
             return true;
           }
         }
@@ -257,14 +259,16 @@ int main() {
           const int move_x = -x;
 
           if (!a_ && ar && move_x >= -4) {
-            move(driver, high, move_y, move_x, +2, al);
-            pool_system.enqueue_task([&a_, &al, driver]() mutable {
+            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+              move(driver, high, move_y, move_x, +2, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            move(driver, high, move_y, move_x, +1, al);
+            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+              move(driver, high, move_y, move_x, +1, al);
+              });
             return true;
           }
         }
