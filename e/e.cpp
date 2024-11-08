@@ -2,6 +2,7 @@
 #include "Device.hpp"
 #include "Event.hpp"
 #include "Parallel.hpp"
+#include "Pattern.hpp"
 #include "Ram.hpp"
 #include "Time.hpp"
 #include "Xyloid1.hpp"
@@ -143,6 +144,13 @@ int till(std::function<bool(int)> z, int i) {
   return z(i) ? till(z, i + 1) : i;
 }
 
+bool pattern(HANDLE x, int e, bool a) {
+  int dy = (a ? +1 : -1) * Pattern::dy(e);
+  int dx = (a ? -1 : +1) * Pattern::dx(e);
+
+  return dy == 0 && dx == 0 || Xyloid2::yx(x, dy * +5, dx * +1);
+}
+
 int main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -162,32 +170,31 @@ int main() {
   const int every = +249;
   const int frame = +1;
 
+  Parallel::ThreadPool x1(system_size);
+
+  Parallel::ThreadPool q2(1);
+  Parallel::ThreadPool q1(1);
+
   const int ex = (screen_wide - wide) / +2;
   const int ey = (screen_high - high) / +2;
 
   const int cx = wide / +2;
   const int cy = high / +2;
 
-  UINT az = +64;
-  UINT ay = +16;
-  UINT ax = +1;
-
   bool ar = false;
   bool al = false;
   bool a_ = false;
 
-  Parallel::ThreadPool pool_system(system_size);
+  std::function<void()> queue = [&al, &ar, &q1, &q2, driver]() {
+    const int time = +16;
+    const int size = +64;
+    int pose = +1;
 
-  Parallel::ThreadPool queue2(1);
-
-  Parallel::ThreadPool queue1(1);
-
-  std::function<void()> queue = [&al, &ar, &ax, &ay, &az, &queue1, driver]() {
-    Event::KeyboardHook hook([&al, &ar, &ax, &ay, &az, &queue1, driver](UINT e, bool a) {
+    Event::KeyboardHook hook([&al, &ar, &q1, &q2, &pose, driver](UINT e, bool a) {
       if (e == VK_OEM_6) {
         ar = a;
 
-        queue1.enqueue_task([&ar, driver]() mutable {
+        q1.enqueue_task([&ar, driver]() mutable {
           Xyloid2::e2(driver, ar);
           });
 
@@ -198,12 +205,27 @@ int main() {
         if (a) {
           al = a;
 
-          queue1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
+          q1.enqueue_task([&al, &q2, &pose, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            ax = till([&al, &ax, &ay, &az, driver](int ci) {
-              return al && (az >= ci) && Time::XO(ay / +1);
-              }, ax) + 1;
+            pose = till([&al, &q2, driver](int e) {
+              const bool back = al && (size >= e);
+
+              if (back) {
+                q2.enqueue_task([e, driver]() mutable {
+                  pattern(driver, e, true);
+                  });
+
+                Time::XO(time / +1);
+
+                return back;
+              }
+              else {
+                return back;
+              }
+              }, pose) - 1;
+
+            printf("%d\n", pose);
             });
 
           return false;
@@ -211,12 +233,27 @@ int main() {
         else {
           al = a;
 
-          queue1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
+          q1.enqueue_task([&al, &q2, &pose, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            ax = upon([&al, &ax, &ay, &az, driver](int ci) {
-              return !al && (+1 <= ci) && Time::XO(ay / +2);
-              }, ax) + 1;
+            pose = upon([&al, &q2, driver](int e) {
+              const bool back = !al && (+1 <= e);
+
+              if (back) {
+                q2.enqueue_task([e, driver]() mutable {
+                  pattern(driver, e, false);
+                  });
+
+                Time::XO(time / +2);
+
+                return back;
+              }
+              else {
+                return back;
+              }
+              }, pose) + 1;
+
+            printf("%d\n", pose);
             });
 
           return false;
@@ -229,7 +266,7 @@ int main() {
 
   std::thread thread(queue);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &pool_system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &x1, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -242,14 +279,14 @@ int main() {
           const int move_x = +x;
 
           if (!a_ && ar && move_x <= +4) {
-            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+            x1.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +2, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+            x1.enqueue_task([al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +1, al);
               });
             return true;
@@ -261,14 +298,14 @@ int main() {
           const int move_x = -x;
 
           if (!a_ && ar && move_x >= -4) {
-            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+            x1.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +2, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            pool_system.enqueue_task([&a_, &al, high, move_x, move_y, driver]() mutable {
+            x1.enqueue_task([al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +1, al);
               });
             return true;

@@ -148,6 +148,7 @@
     <ClInclude Include="..\_\Ram.hpp" />
     <ClInclude Include="..\_\Time.hpp" />
     <ClInclude Include="..\_\Xyloid2.hpp" />
+    <ClInclude Include="Pattern.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="e.txt" />
