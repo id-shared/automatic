@@ -171,6 +171,7 @@ int main() {
   Event::KeyboardHook hook([&al, &ar, &pool_1, driver](UINT e, bool a) {
     if (e == VK_OEM_6) {
       ar = a;
+
       Xyloid2::e2(driver, ar);
 
       return false;
@@ -181,10 +182,12 @@ int main() {
         al = a;
 
         pool_1.enqueue_task([&al, driver]() mutable {
-          while (true) {
-            Xyloid2::e1(driver, al);
+          Xyloid2::e1(driver, true);
+
+          while (al) {
+            Xyloid2::e1(driver, false);
             Time::XO(+149.99999999);
-            if (!al) break;
+            Xyloid2::e1(driver, true);
           }
           });
 
@@ -192,6 +195,10 @@ int main() {
       }
       else {
         al = a;
+
+        pool_1.enqueue_task([&al, driver]() mutable {
+          Xyloid2::e1(driver, al);
+          });
 
         return false;
       }
