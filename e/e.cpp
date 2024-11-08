@@ -135,6 +135,14 @@ bool taps(HANDLE x, double e, bool& a_1, bool& a) {
   }
 };
 
+int upon(std::function<bool(int)> z, int i) {
+  return z(i) ? upon(z, i - 1) : i;
+}
+
+int till(std::function<bool(int)> z, int i) {
+  return z(i) ? till(z, i + 1) : i;
+}
+
 int main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -160,7 +168,10 @@ int main() {
   const int cx = wide / +2;
   const int cy = high / +2;
 
-  bool ax = false;
+  UINT az = +64;
+  UINT ay = +16;
+  UINT ax = +1;
+
   bool ar = false;
   bool al = false;
   bool a_ = false;
@@ -169,12 +180,14 @@ int main() {
 
   Parallel::ThreadPool pool_1(1);
 
-  std::function<void()> queue = [&al, &ar, &pool_1, driver]() {
-    Event::KeyboardHook hook([&al, &ar, &pool_1, driver](UINT e, bool a) {
+  std::function<void()> queue = [&al, &ar, &ax, &ay, &az, &pool_1, driver]() {
+    Event::KeyboardHook hook([&al, &ar, &ax, &ay, &az, &pool_1, driver](UINT e, bool a) {
       if (e == VK_OEM_6) {
         ar = a;
 
-        Xyloid2::e2(driver, ar);
+        pool_1.enqueue_task([&ar, driver]() mutable {
+          Xyloid2::e2(driver, ar);
+          });
 
         return false;
       }
@@ -183,14 +196,12 @@ int main() {
         if (a) {
           al = a;
 
-          pool_1.enqueue_task([&al, driver]() mutable {
-            Xyloid2::e1(driver, true);
+          pool_1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
+            Xyloid2::e1(driver, al);
 
-            while (al) {
-              Xyloid2::e1(driver, false);
-              Time::XO(+149.99999999);
-              Xyloid2::e1(driver, true);
-            }
+            ax = upon([&al, &ax, &ay, &az, driver](int ci) {
+              return al && (az >= ci) && Time::XO(ay / +1);
+              }, ax) + 1;
             });
 
           return false;
@@ -198,8 +209,12 @@ int main() {
         else {
           al = a;
 
-          pool_1.enqueue_task([&al, driver]() mutable {
+          pool_1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
             Xyloid2::e1(driver, al);
+
+            ax = upon([&al, &ax, &ay, &az, driver](int ci) {
+              return al && (az >= ci) && Time::XO(ay / +1);
+              }, ax) + 1;
             });
 
           return false;
@@ -212,7 +227,7 @@ int main() {
 
   std::thread thread(queue);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool_system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &pool_system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
