@@ -7,6 +7,7 @@
 #include "Time.hpp"
 #include "Xyloid1.hpp"
 #include "Xyloid2.hpp"
+#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <d3d11.h>
@@ -118,8 +119,8 @@ int maximum(int e_1, int e) {
   return e >= +1 ? (e_1 <= e ? e_1 : e) : (e_1 >= e ? e_1 : e);
 }
 
-bool move(HANDLE x, int e_3, int e_2, int e_1, int e, bool a) {
-  return Xyloid2::yx(x, a ? +0 : maximum(e_2 >= +1 ? +e_3 : -e_3, e_2) * e, maximum(e_1 >= +1 ? +e_3 : -e_3, e_1) * e);
+bool move(HANDLE x, int e_3, int e_2, int e_1, bool a) {
+  return Xyloid2::yx(x, a ? -1 +1 : maximum(e_2 >= +1 ? +e_3 : -e_3, e_2) * +1, maximum(e_1 >= +1 ? +e_3 : -e_3, e_1) * max((e_1 % +3), +1));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -274,14 +275,14 @@ int main() {
 
           if (!a_ && ar && move_x <= +4) {
             system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, +2, al);
+              move(driver, high, move_y, move_x, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
             system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, +1, al);
+              move(driver, high, move_y, move_x, al);
               });
             return true;
           }
@@ -293,14 +294,14 @@ int main() {
 
           if (!a_ && ar && move_x >= -4) {
             system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, +2, al);
+              move(driver, high, move_y, move_x, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
             system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, +1, al);
+              move(driver, high, move_y, move_x, al);
               });
             return true;
           }
