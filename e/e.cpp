@@ -164,27 +164,29 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  Parallel::ThreadPool pool(system_size);
+  Parallel::ThreadPool pool_system(system_size);
 
-  Event::KeyboardHook hook([&al, &ar, driver](UINT e, bool a) {
+  Parallel::ThreadPool pool_1(1);
+
+  Event::KeyboardHook hook([&al, &ar, &pool_1, driver](UINT e, bool a) {
     if (e == VK_OEM_6) {
       ar = a;
+      Xyloid2::e2(driver, ar);
+
+      return false;
     }
 
     if (e == VK_OEM_4) {
       if (a) {
         al = a;
 
-        std::function<bool()> lambda = [&al, driver]() {
-          while (al) {
+        pool_1.enqueue_task([&al, driver]() mutable {
+          while (true) {
             Xyloid2::e1(driver, al);
             Time::XO(+149.99999999);
             if (!al) break;
           }
-          return true;
-          };
-
-        std::thread t(lambda);
+          });
 
         return false;
       }
@@ -198,7 +200,7 @@ int main() {
     return true;
     });
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool_system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -212,7 +214,7 @@ int main() {
 
           if (!a_ && ar && move_x <= +4) {
             move(driver, high, move_y, move_x, +2, al);
-            pool.enqueue_task([&a_, &al, driver]() mutable {
+            pool_system.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
               });
             return true;
@@ -229,7 +231,7 @@ int main() {
 
           if (!a_ && ar && move_x >= -4) {
             move(driver, high, move_y, move_x, +2, al);
-            pool.enqueue_task([&a_, &al, driver]() mutable {
+            pool_system.enqueue_task([&a_, &al, driver]() mutable {
               taps(driver, every, al, a_);
               });
             return true;
