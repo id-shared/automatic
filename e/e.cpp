@@ -119,8 +119,8 @@ int maximum(int e_1, int e) {
   return e >= +1 ? (e_1 <= e ? e_1 : e) : (e_1 >= e ? e_1 : e);
 }
 
-bool move(HANDLE x, int e_3, int e_2, int e_1, bool a) {
-  return Xyloid2::yx(x, a ? -1 +1 : maximum(e_2 >= +1 ? +e_3 : -e_3, e_2) * +1, maximum(e_1 >= +1 ? +e_3 : -e_3, e_1) * max((e_1 % +3), +1));
+bool move(HANDLE x, int e_2, int e_1, int e, bool a) {
+  return Xyloid2::yx(x, a ? -1 +1 : maximum(e_1 >= +1 ? +e_2 : -e_2, e_1) * (+1 - (e_1 % +1)), maximum(e >= +1 ? +e_2 : -e_2, e) * (+2 - (e % +2)));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -165,7 +165,7 @@ int main() {
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
 
-  const int high = screen_high / +32;
+  const int high = screen_high / +64;
   const int wide = screen_wide / +8;
 
   const int every = +249;
