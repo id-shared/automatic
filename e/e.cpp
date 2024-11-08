@@ -222,8 +222,6 @@ int main() {
                 return back;
               }
               }, latest) - 1;
-
-            printf("%d\n", latest);
             });
 
           return false;
@@ -250,8 +248,6 @@ int main() {
                 return back;
               }
               }, latest) + 1;
-
-            printf("%d\n", latest);
             });
 
           return false;
