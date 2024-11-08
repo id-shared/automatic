@@ -7,7 +7,7 @@
 int main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
-    return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
+    return c.starts_with(L"RZCONTROL"sv) && c.ends_with(L"{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
     });
 
   HANDLE driver = Device::driver(device);
