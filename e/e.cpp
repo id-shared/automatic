@@ -12,6 +12,7 @@
 #include <dxgi1_2.h>
 #include <functional>
 #include <random>
+#include <thread>
 #include <wrl.h>
 
 using Microsoft::WRL::ComPtr;
@@ -168,44 +169,48 @@ int main() {
 
   Parallel::ThreadPool pool_1(1);
 
-  Event::KeyboardHook hook([&al, &ar, &pool_1, driver](UINT e, bool a) {
-    if (e == VK_OEM_6) {
-      ar = a;
+  std::function<void()> queue = [&al, &ar, &pool_1, driver]() {
+    Event::KeyboardHook hook([&al, &ar, &pool_1, driver](UINT e, bool a) {
+      if (e == VK_OEM_6) {
+        ar = a;
 
-      Xyloid2::e2(driver, ar);
+        Xyloid2::e2(driver, ar);
 
-      return false;
-    }
+        return false;
+      }
 
-    if (e == VK_OEM_4) {
-      if (a) {
-        al = a;
+      if (e == VK_OEM_4) {
+        if (a) {
+          al = a;
 
-        pool_1.enqueue_task([&al, driver]() mutable {
-          Xyloid2::e1(driver, true);
-
-          while (al) {
-            Xyloid2::e1(driver, false);
-            Time::XO(+149.99999999);
+          pool_1.enqueue_task([&al, driver]() mutable {
             Xyloid2::e1(driver, true);
-          }
-          });
 
-        return false;
+            while (al) {
+              Xyloid2::e1(driver, false);
+              Time::XO(+149.99999999);
+              Xyloid2::e1(driver, true);
+            }
+            });
+
+          return false;
+        }
+        else {
+          al = a;
+
+          pool_1.enqueue_task([&al, driver]() mutable {
+            Xyloid2::e1(driver, al);
+            });
+
+          return false;
+        }
       }
-      else {
-        al = a;
 
-        pool_1.enqueue_task([&al, driver]() mutable {
-          Xyloid2::e1(driver, al);
-          });
+      return true;
+      });
+    };
 
-        return false;
-      }
-    }
-
-    return true;
-    });
+  std::thread thread(queue);
 
   std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool_system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {

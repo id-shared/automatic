@@ -29,6 +29,7 @@ namespace Event {
 
     void run() {
       MSG msg;
+
       while (GetMessage(&msg, NULL, 0, 0)) {
         if (msg.message == WM_KEYDOWN && msg.wParam == VK_ESCAPE) {
           break;
