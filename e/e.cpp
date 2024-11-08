@@ -166,17 +166,33 @@ int main() {
 
   Parallel::ThreadPool pool(system_size);
 
-  Event::KeyboardHook hook([&al, &ar](UINT e, bool a) {
+  Event::KeyboardHook hook([&al, &ar, driver](UINT e, bool a) {
+    if (e == VK_OEM_6) {
+      ar = a;
+    }
+
     if (e == VK_OEM_4) {
-      al = a;
       if (a) {
-        std::cout << "/ :" << e << std::endl;
+        al = a;
+
+        std::function<bool()> lambda = [&al, driver]() {
+          while (al) {
+            Xyloid2::e1(driver, al);
+            Time::XO(+149.99999999);
+            if (!al) break;
+          }
+          return true;
+          };
+
+        std::thread t(lambda);
+
+        return false;
       }
       else {
-        std::cout << "/ :" << e << std::endl;
-      }
+        al = a;
 
-      return false;
+        return false;
+      }
     }
 
     return true;
