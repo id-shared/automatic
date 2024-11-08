@@ -199,7 +199,7 @@ int main() {
           pool_1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            ax = upon([&al, &ax, &ay, &az, driver](int ci) {
+            ax = till([&al, &ax, &ay, &az, driver](int ci) {
               return al && (az >= ci) && Time::XO(ay / +1);
               }, ax) + 1;
             });
@@ -213,7 +213,7 @@ int main() {
             Xyloid2::e1(driver, al);
 
             ax = upon([&al, &ax, &ay, &az, driver](int ci) {
-              return al && (az >= ci) && Time::XO(ay / +1);
+              return al && (+1 <= ci) && Time::XO(ay / +2);
               }, ax) + 1;
             });
 
