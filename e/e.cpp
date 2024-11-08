@@ -159,14 +159,18 @@ int main() {
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-  Event::KeyboardHook hook([](UINT e, bool a) {
+  Event::KeyboardHook hook([&al, &ar](UINT e, bool a) {
     if (e == VK_OEM_2) {
       if (a) {
-        std::cout << e << std::endl;
+        al = true;
+        std::cout << "/ :" << e << std::endl;
       }
       else {
-        std::cout << e << std::endl;
+        al = false;
+        std::cout << "/ :" << e << std::endl;
       }
+
+      return false;
     }
 
     return true;
@@ -178,16 +182,6 @@ int main() {
     });
 
   HANDLE driver = Device::driver(device);
-  std::function<bool()> lambda = [&al, &ar]() {
-    while (true) {
-      ar = isKeyHeld(VK_RBUTTON);
-      al = isKeyHeld(VK_LBUTTON);
-      Time::XO(frame);
-    }
-    return true;
-    };
-
-  std::thread t(lambda);
 
   std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &ax, &pool, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {

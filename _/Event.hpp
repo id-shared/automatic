@@ -52,7 +52,7 @@ namespace Event {
         KBDLLHOOKSTRUCT* pKeyboard = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
 
         if (instance && instance->keyCallback) {
-          instance->keyCallback(pKeyboard->vkCode, wParam == WM_KEYDOWN);
+          return instance->keyCallback(pKeyboard->vkCode, wParam == WM_KEYDOWN) ? CallNextHookEx(NULL, nCode, wParam, lParam) : +1;
         }
       }
 
