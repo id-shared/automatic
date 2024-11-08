@@ -115,8 +115,8 @@ bool isPurple(uint8_t* x) {
   return x[+0] >= +251 && x[+1] <= +191 && x[+2] >= +251 && x[+3] == +255;
 }
 
-bool move(HANDLE x, int e_3, int e_2, int e_1, bool a) {
-  return Xyloid2::yx(x, a ? -1 +1 : (e_2 >= +1 ? min(e_3, e_2) : max(-e_3, e_2)) * (e_2 >= -4 && e_2 <= +4 ? +1 : +2), (e_1 >= +1 ? min(e_3, e_1) : max(-e_3, e_1)) * (e_1 >= -4 && e_1 <= +4 ? +1 : +2));
+bool move(HANDLE x, int e_2, int e_1, int e, bool a) {
+  return Xyloid2::yx(x, a ? -1 +1 : (e_2 >= +1 ? min(e, e_2) : max(-e, e_2)) * +1, (e_1 >= +1 ? min(e, e_1) : max(-e, e_1)) * (e_1 >= -e && e_1 <= +e ? +1 : +2));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -271,14 +271,14 @@ int main() {
 
           if (!a_ && ar && move_x <= +4) {
             system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, al);
+              move(driver, move_y, move_x, high, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
             system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, al);
+              move(driver, move_y, move_x, high, al);
               });
             return true;
           }
@@ -290,14 +290,14 @@ int main() {
 
           if (!a_ && ar && move_x >= -4) {
             system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, al);
+              move(driver, move_y, move_x, high, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
             system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
-              move(driver, high, move_y, move_x, al);
+              move(driver, move_y, move_x, high, al);
               });
             return true;
           }
