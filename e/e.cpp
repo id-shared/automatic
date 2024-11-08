@@ -213,7 +213,7 @@ int main() {
             Xyloid2::e1(driver, al);
 
             ax = upon([&al, &ax, &ay, &az, driver](int ci) {
-              return al && (+1 <= ci) && Time::XO(ay / +2);
+              return !al && (+1 <= ci) && Time::XO(ay / +2);
               }, ax) + 1;
             });
 
