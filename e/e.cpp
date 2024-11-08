@@ -178,14 +178,16 @@ int main() {
 
   Parallel::ThreadPool pool_system(system_size);
 
-  Parallel::ThreadPool pool_1(1);
+  Parallel::ThreadPool queue2(1);
 
-  std::function<void()> queue = [&al, &ar, &ax, &ay, &az, &pool_1, driver]() {
-    Event::KeyboardHook hook([&al, &ar, &ax, &ay, &az, &pool_1, driver](UINT e, bool a) {
+  Parallel::ThreadPool queue1(1);
+
+  std::function<void()> queue = [&al, &ar, &ax, &ay, &az, &queue1, driver]() {
+    Event::KeyboardHook hook([&al, &ar, &ax, &ay, &az, &queue1, driver](UINT e, bool a) {
       if (e == VK_OEM_6) {
         ar = a;
 
-        pool_1.enqueue_task([&ar, driver]() mutable {
+        queue1.enqueue_task([&ar, driver]() mutable {
           Xyloid2::e2(driver, ar);
           });
 
@@ -196,7 +198,7 @@ int main() {
         if (a) {
           al = a;
 
-          pool_1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
+          queue1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
             Xyloid2::e1(driver, al);
 
             ax = till([&al, &ax, &ay, &az, driver](int ci) {
@@ -209,7 +211,7 @@ int main() {
         else {
           al = a;
 
-          pool_1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
+          queue1.enqueue_task([&al, &ax, &ay, &az, driver]() mutable {
             Xyloid2::e1(driver, al);
 
             ax = upon([&al, &ax, &ay, &az, driver](int ci) {
