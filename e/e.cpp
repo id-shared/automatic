@@ -152,14 +152,14 @@ bool pattern(HANDLE x, int e, bool a) {
 }
 
 int main() {
+  Parallel::ThreadPool system(std::thread::hardware_concurrency());
+
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
     return c.starts_with(L"RZCONTROL#"sv) && c.ends_with(L"#{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
     });
 
   HANDLE driver = Device::driver(device);
-
-  const int system_size = std::thread::hardware_concurrency();
 
   const int screen_high = GetSystemMetrics(SM_CYSCREEN);
   const int screen_wide = GetSystemMetrics(SM_CXSCREEN);
@@ -169,8 +169,6 @@ int main() {
 
   const int every = +249;
   const int frame = +1;
-
-  Parallel::ThreadPool x1(system_size);
 
   const int ex = (screen_wide - wide) / +2;
   const int ey = (screen_high - high) / +2;
@@ -182,7 +180,7 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  std::function<void()> queue = [&al, &ar, driver]() {
+  std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
     Parallel::ThreadPool queue1(1);
 
@@ -264,9 +262,9 @@ int main() {
       });
     };
 
-  std::thread thread(queue);
+  std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &x1, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, high, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -279,14 +277,14 @@ int main() {
           const int move_x = +x;
 
           if (!a_ && ar && move_x <= +4) {
-            x1.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
+            system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +2, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            x1.enqueue_task([al, high, move_x, move_y, driver]() mutable {
+            system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +1, al);
               });
             return true;
@@ -298,14 +296,14 @@ int main() {
           const int move_x = -x;
 
           if (!a_ && ar && move_x >= -4) {
-            x1.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
+            system.enqueue_task([&a_, al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +2, al);
               taps(driver, every, al, a_);
               });
             return true;
           }
           else {
-            x1.enqueue_task([al, high, move_x, move_y, driver]() mutable {
+            system.enqueue_task([al, high, move_x, move_y, driver]() mutable {
               move(driver, high, move_y, move_x, +1, al);
               });
             return true;
