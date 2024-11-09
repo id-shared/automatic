@@ -128,7 +128,8 @@ bool move(HANDLE x, double e_11, int e_4, int e_3, int e_2, int e_1, bool a) {
   double from_y = static_cast<double>(axis_y) * e_11;
   double from_x = static_cast<double>(axis_x) * e_11;
 
-  return Xyloid2::yx(x, a ? -1 + 1 : static_cast<int>(round(from_y)), static_cast<int>(round(from_x)));
+  //return Xyloid2::yx(x, a ? -1 + 1 : static_cast<int>(round(from_y)), static_cast<int>(round(from_x)));
+  return Xyloid2::yx(x, a ? -1 + 1 : e_2, e_1);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -299,40 +300,36 @@ int main() {
 
     //std::cout << ax_x << ", " << ax_y << std::endl;
 
-    for (int y_ = -1 + 1; y_ < xy_; ++y_) {
-      uint8_t* pu = o1 + (cy_ - 1 - y_) * e;
-      uint8_t* pd = o1 + (cy_ - y_) * e;
+    for (int y_ = -1 + 1; y_ < cy; ++y_) {
+      uint8_t* pixel_y = o1 + y_ * e;
 
-      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-        uint8_t* pu_l = pu + (cx_ - 1 - x_) * +4;
-        uint8_t* pd_l = pd + (cx_ - 1 - x_) * +4;
+      for (int x_ = -1 + 1; x_ < cx_; ++x_) {
+        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
+        uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
 
-        uint8_t* pu_r = pu + (cx_ + x_) * +4;
-        uint8_t* pd_r = pd + (cx_ + x_) * +4;
-
-        if (is_red(pu_l)) {
+        if (is_red(pixel_r)) {
           std::cout << y_ << ", " << x_ << std::endl;
 
-          return does(y_ + xy_, x_ - xx_);
+          return does(+y_ - cy_, +x_);
         }
 
-        if (is_red(pu_r)) {
+        if (is_red(pixel_l)) {
           std::cout << y_ << ", " << x_ << std::endl;
 
-          return does(y_ + xy_, x_ + xx_);
+          return does(+y_ - cy_, -x_);
         }
 
-        if (is_red(pd_l)) {
-          std::cout << y_ << ", " << x_ << std::endl;
+        //if (is_red(pd_l)) {
+        //  std::cout << y_ << ", " << x_ << std::endl;
 
-          return does(y_ - xy_, x_ + xx_);
-        }
+        //  return does(-1 + 1, x_ - xx_);
+        //}
 
-        if (is_red(pd_r)) {
-          std::cout << y_ << ", " << x_ << std::endl;
+        //if (is_red(pd_r)) {
+        //  std::cout << y_ << ", " << x_ << std::endl;
 
-          return does(y_ - xy_, x_ - xx_);
-        }
+        //  return does(-1 + 1, x_ + xx_);
+        //}
       }
     }
 
