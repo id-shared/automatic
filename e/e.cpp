@@ -285,19 +285,19 @@ int main() {
           const int as_y = y - cy_;
           const int as_x = x - cx_;
 
-          const int ey_ = ey / +2;
-          const int ex_ = ex / +2;
+          const int xy_ = xy / +2;
+          const int xx_ = xx / +2;
 
-          for (int y_ = -1 + 1; y_ < ey_; ++y_) {
-            uint8_t* pu = o1 + y + (ey_ - 1 - y_) * e;
-            uint8_t* pd = o1 + y + (ey_ + y_) * e;
+          for (int y_ = -1 + 1; y_ < xy_; ++y_) {
+            uint8_t* pu = o1 + (y + (xy_ - 1 - y_)) * e;
+            uint8_t* pd = o1 + (y + (xy_ + y_)) * e;
 
-            for (int x_ = -1 + 1; x_ < ex_; ++x_) {
-              uint8_t* pu_l = pu + (ex_ - 1 - x) * +4;
-              uint8_t* pd_l = pd + (ex_ - 1 - x) * +4;
+            for (int x_ = -1 + 1; x_ < xx_; ++x_) {
+              uint8_t* pu_l = pu + (xx_ - 1 - x) * +4;
+              uint8_t* pd_l = pd + (xx_ - 1 - x) * +4;
 
-              uint8_t* pu_r = pu + (ex_ + x_) * +4;
-              uint8_t* pd_r = pd + (ex_ + x_) * +4;
+              uint8_t* pu_r = pu + (xx_ + x_) * +4;
+              uint8_t* pd_r = pd + (xx_ + x_) * +4;
 
               if (is_red(pu_l) || is_red(pd_l) || is_red(pu_r) || is_red(pd_r)) {
                 const int at_y = as_y;
