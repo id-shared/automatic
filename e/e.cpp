@@ -169,23 +169,27 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  int screen_y = GetSystemMetrics(SM_CYSCREEN);
-  int screen_x = GetSystemMetrics(SM_CXSCREEN);
   double ratio = (+1000 / +365) / +2.0;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  const int xy = screen_y / +16;
-  const int xx = screen_x / +16;
+  const int xy = GetSystemMetrics(SM_CYSCREEN);
+  const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int cy = screen_y / +32;
-  const int cx = screen_x / +8;
+  const int ey = xy / +16;
+  const int ex = xx / +16;
+
+  const int cy = xy / +32;
+  const int cx = xx / +8;
+
+  const int ay = (cy - ey) / +2;
+  const int ax = (cx - ex) / +2;
 
   bool ar = false;
   bool al = false;
   bool a_ = false;
 
-  std::cout << ratio << ", " << frame << ", " << xx << ", " << xy << std::endl;
+  std::cout << ratio << ", " << frame << ", " << ex << ", " << ey << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -267,45 +271,42 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, xx, xy, driver](int e_1, int e) {
-    if (!a_ && ar && e >= -xx && e <= +xx) {
-      system.enqueue_task([&a_, &al, &delay, &ratio, xx, xy, e, e_1, driver]() mutable {
-        move(driver, ratio, xy, xx, e_1, e, al);
+  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, driver](int e_1, int e) {
+    if (!a_ && ar && e >= -ex && e <= +ex) {
+      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
+        move(driver, ratio, ey, ex, e_1, e, al);
         taps(driver, delay, al, a_);
         });
       return true;
     }
     else {
-      system.enqueue_task([&al, &ratio, xx, xy, e, e_1, driver]() mutable {
-        move(driver, ratio, xx, xy, e_1, e, al);
+      system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
+        move(driver, ratio, ex, ey, e_1, e, al);
         });
       return true;
     }
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, xx, xy, does](uint8_t* o1, UINT e) {
-    const int xy_ = xy / +2;
-    const int xx_ = xx / +2;
+  std::function<bool(uint8_t*, UINT)> process = [ax, ay, cx, cy, ex, ey, does](uint8_t* o1, UINT e) {
+    const int ey_ = ey / +2;
+    const int ex_ = ex / +2;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    const int ay = (cy - xy) / +2;
-    const int ax = (cx - xx) / +2;
-
-    for (int y_ = -1 + 1; y_ < xy; ++y_) {
+    for (int y_ = -1 + 1; y_ < ey; ++y_) {
       uint8_t* pixel_y = o1 + (ax + y_) * e;
 
-      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
+      for (int x_ = -1 + 1; x_ < ex_; ++x_) {
         uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
         uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y_ - xy_, +x_);
+          return does(+y_ - ey_, +x_);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y_ - xy_, -x_);
+          return does(+y_ - ey_, -x_);
         }
       }
     }
@@ -330,7 +331,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, (screen_x - cx) / +2, (screen_y - cy) / +2, cx, cy, frame);
+  CaptureScreenArea(process, (xx - cx) / +2, (xy - cy) / +2, cx, cy, frame);
 
   return +1;
 }
