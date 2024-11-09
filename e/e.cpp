@@ -128,7 +128,8 @@ bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1,
   int to_y = static_cast<int>(round(axis_y * e_11));
   int to_x = static_cast<int>(round(axis_x * e_11));
 
-  return Xyloid2::yx(x, a ? -1 + 1 : to_y, to_x);
+  //return Xyloid2::yx(x, a ? -1 + 1 : to_y, to_x);
+  return Xyloid2::yx(x, a ? -1 + 1 : e_2, e_1);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -172,7 +173,7 @@ int main() {
 
   int screen_y = GetSystemMetrics(SM_CYSCREEN);
   int screen_x = GetSystemMetrics(SM_CXSCREEN);
-  double ratio = (+1000 / +400) / +1.5;
+  double ratio = (+1000 / +365) / +3.0;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -294,11 +295,11 @@ int main() {
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    int ax_y = (cy - xy) / +2;
-    int ax_x = (cx - xx) / +2;
+    const int ay = (cy - xy) / +2;
+    const int ax = (cx - xx) / +2;
 
     for (int y_ = -1 + 1; y_ < xy; ++y_) {
-      uint8_t* pixel_y = o1 + (ax_y + y_) * e;
+      uint8_t* pixel_y = o1 + (ax + y_) * e;
 
       for (int x_ = -1 + 1; x_ < xx_; ++x_) {
         uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
@@ -315,13 +316,18 @@ int main() {
     }
 
     for (int y = -1 + 1; y < cy; ++y) {
-      uint8_t* py = o1 + y * e;
+      uint8_t* pixel_y = o1 + y * e;
 
-      for (int x = -1 + 1; x < cx; ++x) {
-        uint8_t* py_x = py + x * +4;
+      for (int x = -1 + 1; x < cx_; ++x) {
+        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x) * +4;
+        uint8_t* pixel_r = pixel_y + (cx_ + x) * +4;
 
-        if (is_red(py_x)) {
-          return does(y - cy_, x - cx_);
+        if (is_red(pixel_r)) {
+          return does(+y - cy_, +x);
+        }
+
+        if (is_red(pixel_l)) {
+          return does(+y - cy_, -x);
         }
       }
     }
@@ -333,46 +339,3 @@ int main() {
 
   return +1;
 }
-
-//for (int x = +0; x < ax; ++x) {
-//  uint8_t* pxl = pyu + (ax - 1 - x) * +4;
-//  uint8_t* pxr = pyu + (ax + x) * +4;
-//
-//  if (is_red(pxr)) {
-//    const int move_y = +y - ay + xy;
-//    const int move_x = +x;
-//
-//    if (!a_ && ar && move_x <= +xx) {
-//      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-//        move(driver, ratio, ey, ex, move_y, move_x, al);
-//        taps(driver, delay, al, a_);
-//        });
-//      return true;
-//    }
-//    else {
-//      system.enqueue_task([&al, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-//        move(driver, ratio, ey, ex, move_y, move_x, al);
-//        });
-//      return true;
-//    }
-//  }
-//
-//  if (is_red(pxl)) {
-//    const int move_y = +y - ay + xy;
-//    const int move_x = -x;
-//
-//    if (!a_ && ar && move_x >= -xx) {
-//      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-//        move(driver, ratio, ey, ex, move_y, move_x, al);
-//        taps(driver, delay, al, a_);
-//        });
-//      return true;
-//    }
-//    else {
-//      system.enqueue_task([&al, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-//        move(driver, ratio, ey, ex, move_y, move_x, al);
-//        });
-//      return true;
-//    }
-//  }
-//}
