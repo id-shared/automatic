@@ -176,8 +176,8 @@ int main() {
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  const int xy = static_cast<int>(round(static_cast<double>(screen_y) / +64));
-  const int xx = static_cast<int>(round(static_cast<double>(screen_x) / +64));
+  const int xy = screen_y / +64;
+  const int xx = screen_x / +64;
 
   const int ey = screen_y / +64;
   const int ex = screen_x / +16;
@@ -297,32 +297,42 @@ int main() {
     int ax_y = (cy - xy) / +2;
     int ax_x = (cx - xx) / +2;
 
+    //std::cout << ax_x << ", " << ax_y << std::endl;
+
     for (int y_ = -1 + 1; y_ < xy_; ++y_) {
-      uint8_t* pu = o1 + (ax_y + xy_ - 1 - y_) * e;
-      uint8_t* pd = o1 + (ax_y + xy_ + y_) * e;
+      uint8_t* pu = o1 + (cy_ - 1 - y_) * e;
+      uint8_t* pd = o1 + (cy_ - y_) * e;
 
       for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-        uint8_t* pu_l = pu + (ax_x + xx_ - 1 - x_) * +4;
-        uint8_t* pd_l = pd + (ax_x + xx_ - 1 - x_) * +4;
+        uint8_t* pu_l = pu + (cx_ - 1 - x_) * +4;
+        uint8_t* pd_l = pd + (cx_ - 1 - x_) * +4;
 
-        uint8_t* pu_r = pu + (ax_x + xx_ + x_) * +4;
-        uint8_t* pd_r = pd + (ax_x + xx_ + x_) * +4;
+        uint8_t* pu_r = pu + (cx_ + x_) * +4;
+        uint8_t* pd_r = pd + (cx_ + x_) * +4;
 
         if (is_red(pu_l)) {
           std::cout << y_ << ", " << x_ << std::endl;
 
-          return true; // does(y_ - xy_, x_ + xx_);
+          return does(y_ + xy_, x_ - xx_);
         }
 
         if (is_red(pu_r)) {
           std::cout << y_ << ", " << x_ << std::endl;
 
-          return true; // does(y_ - xy_, x_ - xx_);
+          return does(y_ + xy_, x_ + xx_);
         }
 
-        /*if (is_red(pd_l) || is_red(pd_r)) {
-          return does(as_y, as_x);
-        }*/
+        if (is_red(pd_l)) {
+          std::cout << y_ << ", " << x_ << std::endl;
+
+          return does(y_ - xy_, x_ + xx_);
+        }
+
+        if (is_red(pd_r)) {
+          std::cout << y_ << ", " << x_ << std::endl;
+
+          return does(y_ - xy_, x_ - xx_);
+        }
       }
     }
 
