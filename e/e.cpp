@@ -176,8 +176,8 @@ int main() {
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  const int xy = static_cast<int>(round(static_cast<double>(screen_y) / +256));
-  const int xx = static_cast<int>(round(static_cast<double>(screen_x) / +256));
+  const int xy = static_cast<int>(round(static_cast<double>(screen_y) / +64));
+  const int xx = static_cast<int>(round(static_cast<double>(screen_x) / +64));
 
   const int ey = screen_y / +64;
   const int ex = screen_x / +16;
@@ -291,7 +291,39 @@ int main() {
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    for (int y = -1 + 1; y < cy; ++y) {
+    const int xy_ = +16 / +2;
+    const int xx_ = +16 / +2;
+
+    for (int y_ = -1 + 1; y_ < xy_; ++y_) {
+      uint8_t* pu = o1 + (xy_ - 1 - y_) * e;
+      uint8_t* pd = o1 + (xy_ + y_) * e;
+
+      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
+        uint8_t* pu_l = pu + (xx_ - 1 - x_) * +4;
+        uint8_t* pd_l = pd + (xx_ - 1 - x_) * +4;
+
+        uint8_t* pu_r = pu + (xx_ + x_) * +4;
+        uint8_t* pd_r = pd + (xx_ + x_) * +4;
+
+        if (is_red(pu_l)) {
+          std::cout << y_ << ", " << x_ << std::endl;
+
+          return does(xy_ - 1 - y_, xx_ - 1 - x_);
+        }
+
+        if (is_red(pu_r)) {
+          std::cout << y_ << ", " << x_ << std::endl;
+
+          return does(xy_ - 1 - y_, xx_ + x_);
+        }
+
+        /*if (is_red(pd_l) || is_red(pd_r)) {
+          return does(as_y, as_x);
+        }*/
+      }
+    }
+
+    /*for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* py = o1 + y * e;
 
       for (int x = -1 + 1; x < cx; ++x) {
@@ -301,38 +333,11 @@ int main() {
           const int as_y = y - cy_;
           const int as_x = x - cx_;
 
-          const int xy_ = xy / +2;
-          const int xx_ = xx / +2;
-
-          for (int y_ = -1 + 1; y_ < xy_; ++y_) {
-            uint8_t* pu = o1 + (y + (xy_ - 1 - y_)) * e;
-            uint8_t* pd = o1 + (y + (xy_ + y_)) * e;
-
-            for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-              uint8_t* pu_l = pu + (x + (xx_ - 1 - x_)) * +4;
-              uint8_t* pd_l = pd + (x + (xx_ - 1 - x_)) * +4;
-
-              uint8_t* pu_r = pu + (x + (xx_ + x_)) * +4;
-              uint8_t* pd_r = pd + (x + (xx_ + x_)) * +4;
-
-              if (is_red(pu_l)) {
-                return does(as_y + (xy_ - 1 - y_), as_x + (xx_ - 1 - x_));
-              }
-
-              if (is_red(pu_r)) {
-                return does(as_y + (xy_ - 1 - y_), as_x + (xx_ + x_));
-              }
-
-              /*if (is_red(pd_l) || is_red(pd_r)) {
-                return does(as_y, as_x);
-              }*/
-            }
-          }
-
           return true;
         }
       }
-    }
+    }*/
+
     return false;
     };
 
