@@ -169,15 +169,15 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +1.5;
+  double ratio = (+1000 / +365) / +2;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = zy / +16;
-  const int xx = zx / +16;
+  const int xy = zy / +256;
+  const int xx = zx / +256;
 
   const int ey = zy / +16;
   const int ex = zx / +16;
@@ -271,31 +271,22 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, driver](int e_1, int e) {
-    if (!a_ && ar && e >= -ex && e <= +ex) {
-      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
-        move(driver, ratio, ey, ex, e_1, e, al);
-        taps(driver, delay, al, a_);
-        });
-      return true;
-    }
-    else {
-      system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
-        move(driver, ratio, ex, ey, e_1, e, al);
-        });
-      return true;
-    }
+  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, driver](int e_1, int e) {
+    system.enqueue_task([&al, &ratio, e_1, e, driver]() mutable {
+      move(driver, ratio, +16, +16, e_1, e, al);
+      });
+    return true;
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, xx, xy, does](uint8_t* o1, UINT e) {
-    const int xy_ = xy / +2;
-    const int xx_ = xx / +2;
+  std::function<bool(uint8_t*, UINT)> process = [cx, cy, ex, ey, xx, xy, does](uint8_t* o1, UINT e) {
+    const int ey_ = ey / +2;
+    const int ex_ = ex / +2;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    const int cxy_ = (cy - xy) / +2;
-    const int cxx_ = (cx - xx) / +2;
+    const int cxy_ = (cy - ey) / +2;
+    const int cxx_ = (cx - ex) / +2;
 
     /*for (int y_ = -1 + 1; y_ < xy; ++y_) {
       uint8_t* pixel_y = o1 + (cxx_ + y_) * e;
@@ -324,11 +315,11 @@ int main() {
         uint8_t* pixel_l = pixel_y + (-x + cx_ - 1) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y - cy_ + xy, +x);
+          return does(+y - cy_, +x);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y - cy_ + xy, -x);
+          return does(+y - cy_, -x);
         }
       }
     }
@@ -340,3 +331,17 @@ int main() {
 
   return +1;
 }
+
+/*if (!a_ && ar && e >= -ex && e <= +ex) {
+  system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
+    move(driver, ratio, ey, ex, e_1, e, al);
+    taps(driver, delay, al, a_);
+    });
+  return true;
+}
+else {
+  system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
+    move(driver, ratio, ex, ey, e_1, e, al);
+    });
+  return true;
+}*/
