@@ -291,8 +291,8 @@ int main() {
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    const int xy_ = +16 / +2;
-    const int xx_ = +16 / +2;
+    const int xy_ = xy / +2;
+    const int xx_ = xx / +2;
 
     for (int y_ = -1 + 1; y_ < xy_; ++y_) {
       uint8_t* pu = o1 + (xy_ - 1 - y_) * e;
