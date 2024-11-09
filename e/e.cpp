@@ -314,20 +314,17 @@ int main() {
       }
     }
 
-    /*for (int y = -1 + 1; y < cy; ++y) {
+    for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* py = o1 + y * e;
 
       for (int x = -1 + 1; x < cx; ++x) {
         uint8_t* py_x = py + x * +4;
 
         if (is_red(py_x)) {
-          const int as_y = y - cy_;
-          const int as_x = x - cx_;
-
-          return true;
+          return does(y - cy_, x - cx_);
         }
       }
-    }*/
+    }
 
     return false;
     };
