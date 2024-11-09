@@ -173,7 +173,7 @@ int main() {
   const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
 
   const int ey = zy / +64;
-  const int ex = zx / +4;
+  const int ex = zx / +8;
 
   const int cx = ex / +2;
   const int cy = ey / +2;
@@ -184,9 +184,9 @@ int main() {
 
   const double ratio = (+1 / +0.429) / +2.0;
   const double delay = +249;
-  const UINT every = +16;
+  const UINT every = +1000 / +64;
 
-  std::cout << ratio << std::endl;
+  std::cout << ratio << ", " << every << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
