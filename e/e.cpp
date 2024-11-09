@@ -271,36 +271,67 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, ex, ey, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, ex, ey, xx, xy, driver](uint8_t* o1, UINT e) {
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
     for (int y = -1 + 1; y < cy; ++y) {
-      uint8_t* py = _o + y * row_pitch;
+      uint8_t* py = o1 + y * e;
 
       for (int x = -1 + 1; x < cx; ++x) {
         uint8_t* px = py + x * +4;
 
         if (is_red(px)) {
-          const int axis_y = +y - cy_;
-          const int axis_x = +x - cx_;
+          const int as_y = y - cy_;
+          const int as_x = x - cx_;
 
-          /*for (int y = -1 + 1; y < xy; ++y) {
-          }*/
+          const int ey_ = ey / +2;
+          const int ex_ = ex / +2;
 
-          if (!a_ && ar && axis_x >= -xx && axis_x <= +xx) {
-            system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, axis_x, axis_y, driver]() mutable {
-              move(driver, ratio, ey, ex, axis_y, axis_x, al);
-              taps(driver, delay, al, a_);
-              });
-            return true;
+          for (int y_ = -1 + 1; y_ < ey_; ++y_) {
+            uint8_t* pyu = o1 + y + (ey_ - 1 - y_) * e;
+            uint8_t* pyd = o1 + y + (ey_ + y_) * e;
+
+            if (is_red(pyu)) {
+              const int at_y = as_y - (ey_ - 1 - y_);
+              const int at_x = as_x;
+
+              if (!a_ && ar && at_x >= -xx && at_x <= +xx) {
+                system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, at_x, at_y, driver]() mutable {
+                  move(driver, ratio, ey, ex, at_y, at_x, al);
+                  taps(driver, delay, al, a_);
+                  });
+                return true;
+              }
+              else {
+                system.enqueue_task([&al, &ratio, ex, ey, at_x, at_y, driver]() mutable {
+                  move(driver, ratio, ey, ex, at_y, at_x, al);
+                  });
+                return true;
+              }
+            }
+
+            if (is_red(pyd)) {
+              const int at_y = as_y + (ey_ + y_);
+              const int at_x = as_x;
+
+              if (!a_ && ar && at_x >= -xx && at_x <= +xx) {
+                system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, at_x, at_y, driver]() mutable {
+                  move(driver, ratio, ey, ex, at_y, at_x, al);
+                  taps(driver, delay, al, a_);
+                  });
+                return true;
+              }
+              else {
+                system.enqueue_task([&al, &ratio, ex, ey, at_x, at_y, driver]() mutable {
+                  move(driver, ratio, ey, ex, at_y, at_x, al);
+                  });
+                return true;
+              }
+            }
           }
-          else {
-            system.enqueue_task([&al, &ratio, ex, ey, axis_x, axis_y, driver]() mutable {
-              move(driver, ratio, ey, ex, axis_y, axis_x, al);
-              });
-            return true;
-          }
+
+          return true;
         }
       }
     }
