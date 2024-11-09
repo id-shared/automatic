@@ -299,10 +299,7 @@ int main() {
               uint8_t* pu_r = pu + (x + (xx_ + x_)) * +4;
               uint8_t* pd_r = pd + (x + (xx_ + x_)) * +4;
 
-              if (is_red(pu_l) || is_red(pd_l) || is_red(pu_r) || is_red(pd_r)) {
-                const int at_y = as_y;
-                const int at_x = as_x;
-
+              std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, xx, xy, driver](int at_y, int at_x) {
                 if (!a_ && ar && at_x >= -xx && at_x <= +xx) {
                   system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, at_x, at_y, driver]() mutable {
                     move(driver, ratio, ey, ex, at_y, at_x, al);
@@ -316,6 +313,11 @@ int main() {
                     });
                   return true;
                 }
+                };
+
+
+              if (is_red(pd_l) || is_red(pd_r) || is_red(pu_l) || is_red(pu_r)) {
+                return does(as_y, as_x);
               }
             }
           }
