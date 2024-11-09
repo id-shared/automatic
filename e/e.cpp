@@ -180,7 +180,7 @@ int main() {
   const int ex = zx / +32;
 
   const int cy = zy / +16;
-  const int cx = zx / +4;
+  const int cx = zx / +16;
 
   const int ay = cx / +2;
   const int ax = cy / +2;
