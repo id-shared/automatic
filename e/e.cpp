@@ -271,7 +271,23 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, ex, ey, xx, xy, driver](uint8_t* o1, UINT e) {
+  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, xx, xy, driver](int e_1, int e) {
+    if (!a_ && ar && e >= -xx && e <= +xx) {
+      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
+        move(driver, ratio, ey, ex, e_1, e, al);
+        taps(driver, delay, al, a_);
+        });
+      return true;
+    }
+    else {
+      system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
+        move(driver, ratio, ey, ex, e_1, e, al);
+        });
+      return true;
+    }
+    };
+
+  std::function<bool(uint8_t*, UINT)> process = [cx, cy, xx, xy, does](uint8_t* o1, UINT e) {
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
@@ -299,33 +315,17 @@ int main() {
               uint8_t* pu_r = pu + (x + (xx_ + x_)) * +4;
               uint8_t* pd_r = pd + (x + (xx_ + x_)) * +4;
 
-              std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, xx, xy, driver](int e_1, int e) {
-                if (!a_ && ar && e >= -xx && e <= +xx) {
-                  system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
-                    move(driver, ratio, ey, ex, e_1, e, al);
-                    taps(driver, delay, al, a_);
-                    });
-                  return true;
-                }
-                else {
-                  system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
-                    move(driver, ratio, ey, ex, e_1, e, al);
-                    });
-                  return true;
-                }
-                };
-
               if (is_red(pu_l)) {
-                return does(as_y, as_x + (xx_ - 1 - x_));
+                return does(as_y + (xy_ - 1 - y_), as_x + (xx_ - 1 - x_));
               }
 
               if (is_red(pu_r)) {
-                return does(as_y, as_x + (xx_ + x_));
+                return does(as_y + (xy_ - 1 - y_), as_x + (xx_ + x_));
               }
 
-              if (is_red(pd_l) || is_red(pd_r)) {
+              /*if (is_red(pd_l) || is_red(pd_r)) {
                 return does(as_y, as_x);
-              }
+              }*/
             }
           }
 
