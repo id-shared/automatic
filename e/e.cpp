@@ -19,7 +19,7 @@
 
 using Microsoft::WRL::ComPtr;
 
-bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UINT frame_time, UINT x, UINT y, UINT width, UINT height) {
+bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UINT x, UINT y, UINT width, UINT height, double e) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
@@ -66,6 +66,8 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UIN
   nextFrameTime += std::chrono::milliseconds(frame_time);
   nextFrameTime += std::chrono::milliseconds(frame_time);
   std::this_thread::sleep_until(nextFrameTime);*/
+
+  const UINT frame_time = static_cast<UINT>(round(e));
 
   double wait = frame_time;
 
@@ -174,22 +176,21 @@ int main() {
   const int xy = static_cast<int>(round(static_cast<double>(zy) / +256));
   const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
 
-  const int ey = zy / +64;
-  const int ex = zx / +64;
+  const int ey = zy / +256;
+  const int ex = zx / +256;
 
   const int cy = zy / +32;
-  const int cx = zx / +8;
+  const int cx = zx / +4;
 
   const int ay = cx / +2;
   const int ax = cy / +2;
 
+  double ratio = (+1 / +0.429) / +2;
+  double every = +1000 / +64;
+  double delay = +1000 / +4;
   bool ar = false;
   bool al = false;
   bool a_ = false;
-
-  const double ratio = (+1 / +0.429) / +2.0;
-  const double delay = +1000 / +4;
-  const UINT every = +1000 / +64;
 
   std::cout << ratio << ", " << every << std::endl;
 
@@ -323,7 +324,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, every, (zx - cx) / +2, (zy - cy) / +2, cx, cy);
+  CaptureScreenArea(process, (zx - cx) / +2, (zy - cy) / +2, cx, cy, every);
 
   return +1;
 }
