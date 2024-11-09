@@ -173,8 +173,8 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = static_cast<int>(round(static_cast<double>(zy) / +512));
-  const int xx = static_cast<int>(round(static_cast<double>(zx) / +512));
+  const int xy = static_cast<int>(round(static_cast<double>(zy) / +256));
+  const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
 
   const int ey = zy / +64;
   const int ex = zx / +16;
@@ -185,14 +185,14 @@ int main() {
   const int ay = cy / +2;
   const int ax = cx / +2;
 
-  double ratio = (+1 / +0.429) / +2;
+  double ratio = (+1 / +0.4) / +2;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
   bool ar = false;
   bool al = false;
   bool a_ = false;
 
-  std::cout << ratio << ", " << frame << ", " << zx << ", " << zy << std::endl;
+  std::cout << ratio << ", " << frame << ", " << xx << ", " << xy << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -282,19 +282,19 @@ int main() {
         uint8_t* px = py + x * +4;
 
         if (is_red(px)) {
-          const int move_y = +y - ay + xy;
-          const int move_x = +x - ax + xx;
+          const int axis_y = +y - ay;
+          const int axis_x = +x - ax;
 
-          if (!a_ && ar && move_x >= -xx && move_x <= +xx) {
-            system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-              move(driver, ratio, ey, ex, move_y, move_x, al);
+          if (!a_ && ar && axis_x >= -xx && axis_x <= +xx) {
+            system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, axis_x, axis_y, driver]() mutable {
+              move(driver, ratio, ey, ex, axis_y, axis_x, al);
               taps(driver, delay, al, a_);
               });
             return true;
           }
           else {
-            system.enqueue_task([&al, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-              move(driver, ratio, ey, ex, move_y, move_x, al);
+            system.enqueue_task([&al, &ratio, ex, ey, axis_x, axis_y, driver]() mutable {
+              move(driver, ratio, ey, ex, axis_y, axis_x, al);
               });
             return true;
           }
