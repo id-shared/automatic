@@ -120,9 +120,9 @@ bool isPurple(uint8_t* x) {
   return x[+0] >= +251 && x[+1] <= +191 && x[+2] >= +251 && x[+3] == +255;
 }
 
-bool move(HANDLE x, int e_3, int e_2, int e_1, int e_11, bool a) {
-  double axis_y = static_cast<double>(e_3) * (+2.5 / +1.33333333);
-  double axis_x = static_cast<double>(e_2) * (+2.5 / +1.33333333);
+bool move(HANDLE x, double e_11, int e_2, int e_1, bool a) {
+  double axis_y = static_cast<double>(e_2) * e_11;
+  double axis_x = static_cast<double>(e_1) * e_11;
 
   return Xyloid2::yx(x, a ? -1 + 1 : static_cast<int>(round(axis_y)), static_cast<int>(round(axis_x)));
 };
@@ -182,8 +182,9 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  const int every = +249;
-  const int frame = +1;
+  const double ratio = +2.5 / +2.0;
+  const double delay = +249;
+  const UINT every = +4;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -191,9 +192,9 @@ int main() {
 
     const int time = +16;
     const int size = +64;
-    int latest = +1;
+    int at = +1;
 
-    Event::KeyboardHook hook([&al, &ar, &latest, &queue1, &queue2, driver](UINT e, bool a) {
+    Event::KeyboardHook hook([&al, &ar, &at, &queue1, &queue2, driver](UINT e, bool a) {
       if (e == VK_OEM_6) {
         ar = a;
 
@@ -208,10 +209,10 @@ int main() {
         if (a) {
           al = a;
 
-          queue1.enqueue_task([&al, &latest, &queue2, driver]() mutable {
+          queue1.enqueue_task([&al, &at, &queue2, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            latest = till([&al, &queue2, driver](int e) {
+            at = till([&al, &queue2, driver](int e) {
               const bool back = al && (size >= e);
 
               if (back) {
@@ -226,7 +227,7 @@ int main() {
               else {
                 return back;
               }
-              }, latest) - 1;
+              }, at) - 1;
             });
 
           return false;
@@ -234,10 +235,10 @@ int main() {
         else {
           al = a;
 
-          queue1.enqueue_task([&al, &latest, &queue2, driver]() mutable {
+          queue1.enqueue_task([&al, &at, &queue2, driver]() mutable {
             Xyloid2::e1(driver, al);
 
-            latest = upon([&al, &queue2, driver](int e) {
+            at = upon([&al, &queue2, driver](int e) {
               const bool back = !al && (+1 <= e);
 
               if (back) {
@@ -252,7 +253,7 @@ int main() {
               else {
                 return back;
               }
-              }, latest) + 1;
+              }, at) + 1;
             });
 
           return false;
@@ -265,7 +266,7 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, ey, ex, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -278,15 +279,15 @@ int main() {
           const int move_x = +x;
 
           if (!a_ && ar && move_x <= +xx) {
-            system.enqueue_task([&a_, al, ey, ex, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, ey, ex, al);
-              taps(driver, every, al, a_);
+            system.enqueue_task([&a_, &al, &delay, &ratio, move_x, move_y, driver]() mutable {
+              move(driver, ratio, move_y, move_x, al);
+              taps(driver, delay, al, a_);
               });
             return true;
           }
           else {
-            system.enqueue_task([al, ey, ex, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, ey, ex, al);
+            system.enqueue_task([&al, &ratio, move_x, move_y, driver]() mutable {
+              move(driver, ratio, move_y, move_x, al);
               });
             return true;
           }
@@ -297,15 +298,15 @@ int main() {
           const int move_x = -x;
 
           if (!a_ && ar && move_x >= -xx) {
-            system.enqueue_task([&a_, al, ey, ex, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, ey, ex, al);
-              taps(driver, every, al, a_);
+            system.enqueue_task([&a_, &al, &delay, &ratio, move_x, move_y, driver]() mutable {
+              move(driver, ratio, move_y, move_x, al);
+              taps(driver, delay, al, a_);
               });
             return true;
           }
           else {
-            system.enqueue_task([al, ey, ex, move_x, move_y, driver]() mutable {
-              move(driver, move_y, move_x, ey, ex, al);
+            system.enqueue_task([&al, &ratio, move_x, move_y, driver]() mutable {
+              move(driver, ratio, move_y, move_x, al);
               });
             return true;
           }
@@ -315,7 +316,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, frame, (zx - ex) / +2, (zy - ey) / +2, ex, ey);
+  CaptureScreenArea(process, every, (zx - ex) / +2, (zy - ey) / +2, ex, ey);
 
   return +1;
 }
