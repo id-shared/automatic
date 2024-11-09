@@ -171,18 +171,12 @@ int main() {
 
   int screen_y = GetSystemMetrics(SM_CYSCREEN);
   int screen_x = GetSystemMetrics(SM_CXSCREEN);
-  double ratio = (+1000 / +365) / +1.0;
+  double ratio = (+1000 / +365) / +2.0;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  //const int xy = screen_y / +256;
-  //const int xx = screen_x / +256;
-
-  const int xy = +4;
-  const int xx = +8;
-
-  const int ey = screen_y / +64;
-  const int ex = screen_x / +16;
+  const int xy = screen_y / +16;
+  const int xx = screen_x / +16;
 
   const int cy = screen_y / +32;
   const int cx = screen_x / +8;
@@ -299,22 +293,22 @@ int main() {
     const int ay = (cy - xy) / +2;
     const int ax = (cx - xx) / +2;
 
-    //for (int y_ = -1 + 1; y_ < xy; ++y_) {
-    //  uint8_t* pixel_y = o1 + (ax + y_) * e;
+    for (int y_ = -1 + 1; y_ < xy; ++y_) {
+      uint8_t* pixel_y = o1 + (ax + y_) * e;
 
-    //  for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-    //    uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
-    //    uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
+      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
+        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
+        uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
 
-    //    if (is_red(pixel_r)) {
-    //      return does(+y_ - xy_, +x_);
-    //    }
+        if (is_red(pixel_r)) {
+          return does(+y_ - xy_, +x_);
+        }
 
-    //    if (is_red(pixel_l)) {
-    //      return does(+y_ - xy_, -x_);
-    //    }
-    //  }
-    //}
+        if (is_red(pixel_l)) {
+          return does(+y_ - xy_, -x_);
+        }
+      }
+    }
 
     for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
