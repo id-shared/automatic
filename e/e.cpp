@@ -170,11 +170,14 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   double ratio = (+1000 / +365) / +1.5;
-  double frame = +1000 / +64;
+  double frame = +1000 / +256;
   double delay = +1000 / +4;
 
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
+
+  const int xy = zy / +256;
+  const int xx = zx / +256;
 
   const int ey = zy / +16;
   const int ex = zx / +16;
@@ -287,7 +290,7 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [ax, ay, cx, cy, ex, ey, does](uint8_t* o1, UINT e) {
+  std::function<bool(uint8_t*, UINT)> process = [ax, ay, cx, cy, ex, ey, xx, xy, does](uint8_t* o1, UINT e) {
     const int ey_ = ey / +2;
     const int ex_ = ex / +2;
 
@@ -319,11 +322,11 @@ int main() {
         uint8_t* pixel_l = pixel_y + (-x + cx_ - 1) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y - cy_ + 5, +x);
+          return does(+y - cy_ + xy, +x);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y - cy_ + 5, -x);
+          return does(+y - cy_ + xy, -x);
         }
       }
     }
