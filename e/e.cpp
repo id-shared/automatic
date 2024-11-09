@@ -170,24 +170,21 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  const int zy = GetSystemMetrics(SM_CYSCREEN);
-  const int zx = GetSystemMetrics(SM_CXSCREEN);
-
-  const int xy = static_cast<int>(round(static_cast<double>(zy) / +256));
-  const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
-
-  const int ey = zy / +64;
-  const int ex = zx / +16;
-
-  const int cy = zy / +32;
-  const int cx = zx / +8;
-
-  const int ay = cy / +2;
-  const int ax = cx / +2;
-
+  int screen_y = GetSystemMetrics(SM_CYSCREEN);
+  int screen_x = GetSystemMetrics(SM_CXSCREEN);
   double ratio = (+1 / +0.4) / +2;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
+
+  const int xy = static_cast<int>(round(static_cast<double>(screen_y) / +256));
+  const int xx = static_cast<int>(round(static_cast<double>(screen_x) / +256));
+
+  const int ey = screen_y / +64;
+  const int ex = screen_x / +16;
+
+  const int cy = screen_y / +32;
+  const int cx = screen_x / +8;
+
   bool ar = false;
   bool al = false;
   bool a_ = false;
@@ -274,7 +271,10 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, ax, ay, cx, cy, ex, ey, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, ex, ey, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
+    const int cy_ = cy / +2;
+    const int cx_ = cx / +2;
+
     for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* py = _o + y * row_pitch;
 
@@ -282,8 +282,11 @@ int main() {
         uint8_t* px = py + x * +4;
 
         if (is_red(px)) {
-          const int axis_y = +y - ay;
-          const int axis_x = +x - ax;
+          const int axis_y = +y - cy_;
+          const int axis_x = +x - cx_;
+
+          /*for (int y = -1 + 1; y < xy; ++y) {
+          }*/
 
           if (!a_ && ar && axis_x >= -xx && axis_x <= +xx) {
             system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, axis_x, axis_y, driver]() mutable {
@@ -304,7 +307,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, (zx - cx) / +2, (zy - cy) / +2, cx, cy, frame);
+  CaptureScreenArea(process, (screen_x - cx) / +2, (screen_y - cy) / +2, cx, cy, frame);
 
   return +1;
 }
