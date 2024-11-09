@@ -293,11 +293,11 @@ int main() {
             uint8_t* pd = o1 + (y + (xy_ + y_)) * e;
 
             for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-              uint8_t* pu_l = pu + (xx_ - 1 - x) * +4;
-              uint8_t* pd_l = pd + (xx_ - 1 - x) * +4;
+              uint8_t* pu_l = pu + (x + (xx_ - 1 - x)) * +4;
+              uint8_t* pd_l = pd + (x + (xx_ - 1 - x)) * +4;
 
-              uint8_t* pu_r = pu + (xx_ + x_) * +4;
-              uint8_t* pd_r = pd + (xx_ + x_) * +4;
+              uint8_t* pu_r = pu + (x + (xx_ + x_)) * +4;
+              uint8_t* pd_r = pd + (x + (xx_ + x_)) * +4;
 
               if (is_red(pu_l) || is_red(pd_l) || is_red(pu_r) || is_red(pd_r)) {
                 const int at_y = as_y;
