@@ -299,24 +299,27 @@ int main() {
               uint8_t* pu_r = pu + (x + (xx_ + x_)) * +4;
               uint8_t* pd_r = pd + (x + (xx_ + x_)) * +4;
 
-              std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, xx, xy, driver](int at_y, int at_x) {
-                if (!a_ && ar && at_x >= -xx && at_x <= +xx) {
-                  system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, at_x, at_y, driver]() mutable {
-                    move(driver, ratio, ey, ex, at_y, at_x, al);
+              std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, xx, xy, driver](int e_1, int e) {
+                if (!a_ && ar && e >= -xx && e <= +xx) {
+                  system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
+                    move(driver, ratio, ey, ex, e_1, e, al);
                     taps(driver, delay, al, a_);
                     });
                   return true;
                 }
                 else {
-                  system.enqueue_task([&al, &ratio, ex, ey, at_x, at_y, driver]() mutable {
-                    move(driver, ratio, ey, ex, at_y, at_x, al);
+                  system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
+                    move(driver, ratio, ey, ex, e_1, e, al);
                     });
                   return true;
                 }
                 };
 
+              /*if (is_red(pd_l) || is_red(pd_r)) {
+                return does(as_y, as_x);
+              }*/
 
-              if (is_red(pd_l) || is_red(pd_r) || is_red(pu_l) || is_red(pu_r)) {
+              if (is_red(pu_r) || is_red(pu_l)) {
                 return does(as_y, as_x);
               }
             }
