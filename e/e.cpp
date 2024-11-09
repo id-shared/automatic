@@ -169,6 +169,9 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
+  const int xy = static_cast<int>(round(static_cast<double>(zy) / +256));
+  const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
+
   const int ey = zy / +64;
   const int ex = zx / +8;
 
@@ -262,7 +265,7 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, ey, ex, zx, zy, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, ey, ex, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -271,12 +274,10 @@ int main() {
         uint8_t* pxr = pyu + (cx + x) * +4;
 
         if (isPurple(pxr)) {
-          const int ignore_y = static_cast<int>(round(static_cast<double>(zy) / +256));
-          const int ignore_x = static_cast<int>(round(static_cast<double>(zx) / +256));
-          const int move_y = +y - cy + ignore_y;
+          const int move_y = +y - cy + xy;
           const int move_x = +x;
 
-          if (!a_ && ar && move_x <= +ignore_x) {
+          if (!a_ && ar && move_x <= +xx) {
             system.enqueue_task([&a_, al, ey, ex, move_x, move_y, driver]() mutable {
               move(driver, move_y, move_x, ey, ex, al);
               taps(driver, every, al, a_);
@@ -292,12 +293,10 @@ int main() {
         }
 
         if (isPurple(pxl)) {
-          const int ignore_y = static_cast<int>(round(static_cast<double>(zy) / +256));
-          const int ignore_x = static_cast<int>(round(static_cast<double>(zx) / +256));
-          const int move_y = +y - cy + ignore_y;
+          const int move_y = +y - cy + xy;
           const int move_x = -x;
 
-          if (!a_ && ar && move_x >= -ignore_x) {
+          if (!a_ && ar && move_x >= -xx) {
             system.enqueue_task([&a_, al, ey, ex, move_x, move_y, driver]() mutable {
               move(driver, move_y, move_x, ey, ex, al);
               taps(driver, every, al, a_);
