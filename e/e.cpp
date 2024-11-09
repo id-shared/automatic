@@ -173,7 +173,7 @@ int main() {
   const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
 
   const int ey = zy / +64;
-  const int ex = zx / +8;
+  const int ex = zx / +4;
 
   const int cx = ex / +2;
   const int cy = ey / +2;
@@ -182,7 +182,7 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  const double ratio = +2.5 / +2.0;
+  const double ratio = +2.5 / +1.5;
   const double delay = +249;
   const UINT every = +4;
 
