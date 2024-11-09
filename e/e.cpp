@@ -123,13 +123,11 @@ bool is_red(uint8_t* x) {
 }
 
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
-  double axis_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
-  double axis_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  int to_y = static_cast<int>(round(axis_y * e_11));
-  int to_x = static_cast<int>(round(axis_x * e_11));
-
-  //return Xyloid2::yx(x, a ? -1 + 1 : to_y, to_x);
-  return Xyloid2::yx(x, a ? -1 + 1 : e_2, e_1);
+  const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
+  const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
+  const int axis_y = static_cast<int>(round(from_y * e_11));
+  const int axis_x = static_cast<int>(round(from_x * e_11));
+  return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -173,12 +171,15 @@ int main() {
 
   int screen_y = GetSystemMetrics(SM_CYSCREEN);
   int screen_x = GetSystemMetrics(SM_CXSCREEN);
-  double ratio = (+1000 / +365) / +3.0;
+  double ratio = (+1000 / +365) / +1.0;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  const int xy = screen_y / +64;
-  const int xx = screen_x / +64;
+  //const int xy = screen_y / +256;
+  //const int xx = screen_x / +256;
+
+  const int xy = +4;
+  const int xx = +8;
 
   const int ey = screen_y / +64;
   const int ex = screen_x / +16;
