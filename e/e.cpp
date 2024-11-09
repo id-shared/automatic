@@ -273,17 +273,17 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ex, ey, xx, xy, driver](int e_1, int e) {
+  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, xx, xy, driver](int e_1, int e) {
     if (!a_ && ar && e >= -xx && e <= +xx) {
-      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
-        move(driver, ratio, ey, ex, e_1, e, al);
+      system.enqueue_task([&a_, &al, &delay, &ratio, xx, xy, e, e_1, driver]() mutable {
+        move(driver, ratio, xy, xx, e_1, e, al);
         taps(driver, delay, al, a_);
         });
       return true;
     }
     else {
-      system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
-        move(driver, ratio, ey, ex, e_1, e, al);
+      system.enqueue_task([&al, &ratio, xx, xy, e, e_1, driver]() mutable {
+        move(driver, ratio, xx, xy, e_1, e, al);
         });
       return true;
     }
