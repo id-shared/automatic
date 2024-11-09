@@ -176,14 +176,14 @@ int main() {
   const int xy = static_cast<int>(round(static_cast<double>(zy) / +512));
   const int xx = static_cast<int>(round(static_cast<double>(zx) / +512));
 
-  const int ey = zy / +32;
-  const int ex = zx / +32;
+  const int ey = zy / +64;
+  const int ex = zx / +16;
 
-  const int cy = zy / +16;
-  const int cx = zx / +16;
+  const int cy = zy / +32;
+  const int cx = zx / +8;
 
-  const int ay = cx / +2;
-  const int ax = cy / +2;
+  const int ay = cy / +2;
+  const int ax = cx / +2;
 
   double ratio = (+1 / +0.429) / +2;
   double frame = +1000 / +64;
@@ -192,7 +192,7 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  std::cout << ratio << ", " << frame << std::endl;
+  std::cout << ratio << ", " << frame << ", " << zx << ", " << zy << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -274,16 +274,16 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, ay, ax, cx, cy, ex, ey, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
-    for (int y = +0; y < (ax * +1.5); ++y) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, ax, ay, cx, cy, ex, ey, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
+    for (int y = +0; y < cy; ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
-      for (int x = +0; x < ay; ++x) {
-        uint8_t* pxl = pyu + (ay - 1 - x) * +4;
-        uint8_t* pxr = pyu + (ay + x) * +4;
+      for (int x = +0; x < ax; ++x) {
+        uint8_t* pxl = pyu + (ax - 1 - x) * +4;
+        uint8_t* pxr = pyu + (ax + x) * +4;
 
         if (is_red(pxr)) {
-          const int move_y = +y - ax + xy;
+          const int move_y = +y - ay + xy;
           const int move_x = +x;
 
           if (!a_ && ar && move_x <= +xx) {
@@ -302,7 +302,7 @@ int main() {
         }
 
         if (is_red(pxl)) {
-          const int move_y = +y - ax + xy;
+          const int move_y = +y - ay + xy;
           const int move_x = -x;
 
           if (!a_ && ar && move_x >= -xx) {
