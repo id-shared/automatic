@@ -293,8 +293,8 @@ int main() {
             uint8_t* pd = o1 + (y + (xy_ + y_)) * e;
 
             for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-              uint8_t* pu_l = pu + (x + (xx_ - 1 - x)) * +4;
-              uint8_t* pd_l = pd + (x + (xx_ - 1 - x)) * +4;
+              uint8_t* pu_l = pu + (x + (xx_ - 1 - x_)) * +4;
+              uint8_t* pd_l = pd + (x + (xx_ - 1 - x_)) * +4;
 
               uint8_t* pu_r = pu + (x + (xx_ + x_)) * +4;
               uint8_t* pd_r = pd + (x + (xx_ + x_)) * +4;
@@ -315,11 +315,15 @@ int main() {
                 }
                 };
 
-              /*if (is_red(pd_l) || is_red(pd_r)) {
-                return does(as_y, as_x);
-              }*/
+              if (is_red(pu_l)) {
+                return does(as_y, as_x + (xx_ - 1 - x_));
+              }
 
-              if (is_red(pu_r) || is_red(pu_l)) {
+              if (is_red(pu_r)) {
+                return does(as_y, as_x + (xx_ + x_));
+              }
+
+              if (is_red(pd_l) || is_red(pd_r)) {
                 return does(as_y, as_x);
               }
             }
