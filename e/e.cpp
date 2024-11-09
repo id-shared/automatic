@@ -275,37 +275,17 @@ int main() {
   std::thread thread(queuing);
 
   std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &delay, &ratio, &system, ax, ay, cx, cy, ex, ey, xx, xy, driver](uint8_t* _o, UINT row_pitch) {
-    for (int y = +0; y < cy; ++y) {
-      uint8_t* pyu = _o + y * row_pitch;
+    for (int y = -1 + 1; y < cy; ++y) {
+      uint8_t* py = _o + y * row_pitch;
 
-      for (int x = +0; x < ax; ++x) {
-        uint8_t* pxl = pyu + (ax - 1 - x) * +4;
-        uint8_t* pxr = pyu + (ax + x) * +4;
+      for (int x = -1 + 1; x < cx; ++x) {
+        uint8_t* px = py + x * +4;
 
-        if (is_red(pxr)) {
+        if (is_red(px)) {
           const int move_y = +y - ay + xy;
-          const int move_x = +x;
+          const int move_x = +x - ax + xx;
 
-          if (!a_ && ar && move_x <= +xx) {
-            system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-              move(driver, ratio, ey, ex, move_y, move_x, al);
-              taps(driver, delay, al, a_);
-              });
-            return true;
-          }
-          else {
-            system.enqueue_task([&al, &ratio, ex, ey, move_x, move_y, driver]() mutable {
-              move(driver, ratio, ey, ex, move_y, move_x, al);
-              });
-            return true;
-          }
-        }
-
-        if (is_red(pxl)) {
-          const int move_y = +y - ay + xy;
-          const int move_x = -x;
-
-          if (!a_ && ar && move_x >= -xx) {
+          if (!a_ && ar && move_x >= -xx && move_x <= +xx) {
             system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
               move(driver, ratio, ey, ex, move_y, move_x, al);
               taps(driver, delay, al, a_);
@@ -328,3 +308,46 @@ int main() {
 
   return +1;
 }
+
+//for (int x = +0; x < ax; ++x) {
+//  uint8_t* pxl = pyu + (ax - 1 - x) * +4;
+//  uint8_t* pxr = pyu + (ax + x) * +4;
+//
+//  if (is_red(pxr)) {
+//    const int move_y = +y - ay + xy;
+//    const int move_x = +x;
+//
+//    if (!a_ && ar && move_x <= +xx) {
+//      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
+//        move(driver, ratio, ey, ex, move_y, move_x, al);
+//        taps(driver, delay, al, a_);
+//        });
+//      return true;
+//    }
+//    else {
+//      system.enqueue_task([&al, &ratio, ex, ey, move_x, move_y, driver]() mutable {
+//        move(driver, ratio, ey, ex, move_y, move_x, al);
+//        });
+//      return true;
+//    }
+//  }
+//
+//  if (is_red(pxl)) {
+//    const int move_y = +y - ay + xy;
+//    const int move_x = -x;
+//
+//    if (!a_ && ar && move_x >= -xx) {
+//      system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, move_x, move_y, driver]() mutable {
+//        move(driver, ratio, ey, ex, move_y, move_x, al);
+//        taps(driver, delay, al, a_);
+//        });
+//      return true;
+//    }
+//    else {
+//      system.enqueue_task([&al, &ratio, ex, ey, move_x, move_y, driver]() mutable {
+//        move(driver, ratio, ey, ex, move_y, move_x, al);
+//        });
+//      return true;
+//    }
+//  }
+//}
