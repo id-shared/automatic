@@ -173,26 +173,26 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = static_cast<int>(round(static_cast<double>(zy) / +256));
-  const int xx = static_cast<int>(round(static_cast<double>(zx) / +256));
+  const int xy = static_cast<int>(round(static_cast<double>(zy) / +512));
+  const int xx = static_cast<int>(round(static_cast<double>(zx) / +512));
 
-  const int ey = zy / +256;
-  const int ex = zx / +256;
+  const int ey = zy / +32;
+  const int ex = zx / +32;
 
-  const int cy = zy / +32;
+  const int cy = zy / +16;
   const int cx = zx / +4;
 
   const int ay = cx / +2;
   const int ax = cy / +2;
 
   double ratio = (+1 / +0.429) / +2;
-  double every = +1000 / +64;
+  double frame = +1000 / +64;
   double delay = +1000 / +4;
   bool ar = false;
   bool al = false;
   bool a_ = false;
 
-  std::cout << ratio << ", " << every << std::endl;
+  std::cout << ratio << ", " << frame << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -324,7 +324,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, (zx - cx) / +2, (zy - cy) / +2, cx, cy, every);
+  CaptureScreenArea(process, (zx - cx) / +2, (zy - cy) / +2, cx, cy, frame);
 
   return +1;
 }
