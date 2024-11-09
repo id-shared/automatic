@@ -182,7 +182,7 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  const double ratio = (+1 / +0.429) / +2.0;
+  const double ratio = (+1 / +0.429) / +1.5;
   const double delay = +249;
   const UINT every = +1000 / +64;
 
