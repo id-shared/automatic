@@ -121,8 +121,8 @@ bool isPurple(uint8_t* x) {
 }
 
 bool move(HANDLE x, int e_3, int e_2, int e_1, int e_11, bool a) {
-  double axis_y = static_cast<double>(e_3) * +2.5;
-  double axis_x = static_cast<double>(e_2) * +2.5;
+  double axis_y = static_cast<double>(e_3) * (+2.5 / +1.33333333);
+  double axis_x = static_cast<double>(e_2) * (+2.5 / +1.33333333);
 
   return Xyloid2::yx(x, a ? -1 + 1 : static_cast<int>(round(axis_y)), static_cast<int>(round(axis_x)));
 };
@@ -135,7 +135,6 @@ bool taps(HANDLE x, double e, bool& a_1, bool& a) {
     a = true;
     Xyloid2::e1(x, true);
     Xyloid2::e1(x, false);
-    //Xyloid2::yx(x, static_cast<int>(round(+8.0 * +2.5)), -1 + 1);
     Time::XO(e);
     a = false;
     return true;
@@ -181,7 +180,7 @@ int main() {
   bool a_ = false;
 
   const int every = +249;
-  const int frame = +32;
+  const int frame = +1;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -263,7 +262,7 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, ey, ex, driver](uint8_t* _o, UINT row_pitch) {
+  std::function<bool(uint8_t*, UINT)> process = [&a_, &al, &ar, &system, cx, cy, ey, ex, zx, zy, driver](uint8_t* _o, UINT row_pitch) {
     for (int y = +0; y < (cy * +1.5); ++y) {
       uint8_t* pyu = _o + y * row_pitch;
 
@@ -272,10 +271,12 @@ int main() {
         uint8_t* pxr = pyu + (cx + x) * +4;
 
         if (isPurple(pxr)) {
-          const int move_y = +y - cy + 5;
+          const int ignore_y = static_cast<int>(round(static_cast<double>(zy) / +256));
+          const int ignore_x = static_cast<int>(round(static_cast<double>(zx) / +256));
+          const int move_y = +y - cy + ignore_y;
           const int move_x = +x;
 
-          if (!a_ && ar && move_x <= +4) {
+          if (!a_ && ar && move_x <= +ignore_x) {
             system.enqueue_task([&a_, al, ey, ex, move_x, move_y, driver]() mutable {
               move(driver, move_y, move_x, ey, ex, al);
               taps(driver, every, al, a_);
@@ -291,10 +292,12 @@ int main() {
         }
 
         if (isPurple(pxl)) {
-          const int move_y = +y - cy + 5;
+          const int ignore_y = static_cast<int>(round(static_cast<double>(zy) / +256));
+          const int ignore_x = static_cast<int>(round(static_cast<double>(zx) / +256));
+          const int move_y = +y - cy + ignore_y;
           const int move_x = -x;
 
-          if (!a_ && ar && move_x >= -4) {
+          if (!a_ && ar && move_x >= -ignore_x) {
             system.enqueue_task([&a_, al, ey, ex, move_x, move_y, driver]() mutable {
               move(driver, move_y, move_x, ey, ex, al);
               taps(driver, every, al, a_);
