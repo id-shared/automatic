@@ -169,7 +169,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2;
+  double ratio = (+1000 / +365) / +4;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -273,7 +273,7 @@ int main() {
 
   std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, driver](int e_1, int e) {
     system.enqueue_task([&al, &ratio, e_1, e, driver]() mutable {
-      move(driver, ratio, +16, +16, e_1, e, al);
+      move(driver, ratio, +4, +4, e_1, e, al);
       });
     return true;
     };
