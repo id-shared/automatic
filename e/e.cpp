@@ -125,8 +125,8 @@ bool is_red(uint8_t* x) {
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = static_cast<int>(round(from_y));
-  const int axis_x = static_cast<int>(round(from_x * e_11));
+  const int axis_y = static_cast<int>(round(from_y)); // * e_11
+  const int axis_x = static_cast<int>(round(from_x)); // * e_11
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
@@ -176,8 +176,8 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = zy / +256;
-  const int xx = zx / +256;
+  const int xy = zy / +16;
+  const int xx = zx / +16;
 
   const int ey = zy / +16;
   const int ex = zx / +16;
@@ -287,7 +287,7 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, ex, ey, xx, xy, does](uint8_t* o1, UINT e) {
+  std::function<bool(uint8_t*, UINT)> process = [cx, cy, xx, xy, does](uint8_t* o1, UINT e) {
     const int xy_ = xy / +2;
     const int xx_ = xx / +2;
 
@@ -297,7 +297,7 @@ int main() {
     const int cxy_ = (cy - xy) / +2;
     const int cxx_ = (cx - xx) / +2;
 
-    for (int y_ = -1 + 1; y_ < xy; ++y_) {
+    /*for (int y_ = -1 + 1; y_ < xy; ++y_) {
       uint8_t* pixel_y = o1 + (cxx_ + y_) * e;
 
       for (int x_ = -1 + 1; x_ < xx_; ++x_) {
@@ -312,7 +312,9 @@ int main() {
           return does(+y_ - xy_, -x_);
         }
       }
-    }
+    }*/
+
+    //std::cout << std::time(nullptr) << std::endl;
 
     for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
