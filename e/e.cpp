@@ -125,7 +125,7 @@ bool is_red(uint8_t* x) {
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = static_cast<int>(round(from_y * e_11));
+  const int axis_y = static_cast<int>(round(from_y));
   const int axis_x = static_cast<int>(round(from_x * e_11));
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
@@ -299,36 +299,36 @@ int main() {
     const int ay = (cy - xy) / +2;
     const int ax = (cx - xx) / +2;
 
-    for (int y_ = -1 + 1; y_ < xy; ++y_) {
-      uint8_t* pixel_y = o1 + (ax + y_) * e;
+    //for (int y_ = -1 + 1; y_ < xy; ++y_) {
+    //  uint8_t* pixel_y = o1 + (ax + y_) * e;
 
-      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
-        uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
+    //  for (int x_ = -1 + 1; x_ < xx_; ++x_) {
+    //    uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
+    //    uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
 
-        if (is_red(pixel_r)) {
-          return does(+y_ - xy_, +x_);
-        }
+    //    if (is_red(pixel_r)) {
+    //      return does(+y_ - xy_, +x_);
+    //    }
 
-        if (is_red(pixel_l)) {
-          return does(+y_ - xy_, -x_);
-        }
-      }
-    }
+    //    if (is_red(pixel_l)) {
+    //      return does(+y_ - xy_, -x_);
+    //    }
+    //  }
+    //}
 
     for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
 
       for (int x = -1 + 1; x < cx_; ++x) {
-        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x) * +4;
-        uint8_t* pixel_r = pixel_y + (cx_ + x) * +4;
+        uint8_t* pixel_r = pixel_y + (+x + cx_ - 1 + 1) * +4;
+        uint8_t* pixel_l = pixel_y + (-x + cx_ - 1) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y - cy_, +x);
+          return does(+y - cy_ + 5, +x);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y - cy_, -x);
+          return does(+y - cy_ + 5, -x);
         }
       }
     }
