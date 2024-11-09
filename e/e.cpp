@@ -172,7 +172,7 @@ int main() {
 
   int screen_y = GetSystemMetrics(SM_CYSCREEN);
   int screen_x = GetSystemMetrics(SM_CXSCREEN);
-  double ratio = (+1 / +0.4) / +2;
+  double ratio = +1; // (+1 / +0.4) / +2;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -288,33 +288,36 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, xx, xy, does](uint8_t* o1, UINT e) {
-    const int cy_ = cy / +2;
-    const int cx_ = cx / +2;
-
     const int xy_ = xy / +2;
     const int xx_ = xx / +2;
 
+    const int cy_ = cy / +2;
+    const int cx_ = cx / +2;
+
+    int ax_y = (cy - xy) / +2;
+    int ax_x = (cx - xx) / +2;
+
     for (int y_ = -1 + 1; y_ < xy_; ++y_) {
-      uint8_t* pu = o1 + (xy_ - 1 - y_) * e;
-      uint8_t* pd = o1 + (xy_ + y_) * e;
+      uint8_t* pu = o1 + (ax_y + xy_ - 1 - y_) * e;
+      uint8_t* pd = o1 + (ax_y + xy_ + y_) * e;
 
       for (int x_ = -1 + 1; x_ < xx_; ++x_) {
-        uint8_t* pu_l = pu + (xx_ - 1 - x_) * +4;
-        uint8_t* pd_l = pd + (xx_ - 1 - x_) * +4;
+        uint8_t* pu_l = pu + (ax_x + xx_ - 1 - x_) * +4;
+        uint8_t* pd_l = pd + (ax_x + xx_ - 1 - x_) * +4;
 
-        uint8_t* pu_r = pu + (xx_ + x_) * +4;
-        uint8_t* pd_r = pd + (xx_ + x_) * +4;
+        uint8_t* pu_r = pu + (ax_x + xx_ + x_) * +4;
+        uint8_t* pd_r = pd + (ax_x + xx_ + x_) * +4;
 
         if (is_red(pu_l)) {
           std::cout << y_ << ", " << x_ << std::endl;
 
-          return does(xy_ - 1 - y_, xx_ - 1 - x_);
+          return true; // does(y_ - xy_, x_ + xx_);
         }
 
         if (is_red(pu_r)) {
           std::cout << y_ << ", " << x_ << std::endl;
 
-          return does(xy_ - 1 - y_, xx_ + x_);
+          return true; // does(y_ - xy_, x_ - xx_);
         }
 
         /*if (is_red(pd_l) || is_red(pd_r)) {
