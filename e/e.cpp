@@ -122,14 +122,13 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +1) && x[+3] == +255;
 }
 
-bool move(HANDLE x, double e_11, int e_4, int e_3, int e_2, int e_1, bool a) {
+bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   double axis_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   double axis_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  double from_y = static_cast<double>(axis_y) * e_11;
-  double from_x = static_cast<double>(axis_x) * e_11;
+  int to_y = static_cast<int>(round(axis_y * e_11));
+  int to_x = static_cast<int>(round(axis_x * e_11));
 
-  //return Xyloid2::yx(x, a ? -1 + 1 : static_cast<int>(round(from_y)), static_cast<int>(round(from_x)));
-  return Xyloid2::yx(x, a ? -1 + 1 : e_2, e_1);
+  return Xyloid2::yx(x, a ? -1 + 1 : to_y, to_x);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -173,7 +172,7 @@ int main() {
 
   int screen_y = GetSystemMetrics(SM_CYSCREEN);
   int screen_x = GetSystemMetrics(SM_CXSCREEN);
-  double ratio = +1; // (+1 / +0.4) / +2;
+  double ratio = (+1000 / +400) / +1.5;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -298,38 +297,20 @@ int main() {
     int ax_y = (cy - xy) / +2;
     int ax_x = (cx - xx) / +2;
 
-    //std::cout << ax_x << ", " << ax_y << std::endl;
+    for (int y_ = -1 + 1; y_ < xy; ++y_) {
+      uint8_t* pixel_y = o1 + (ax_y + y_) * e;
 
-    for (int y_ = -1 + 1; y_ < cy; ++y_) {
-      uint8_t* pixel_y = o1 + y_ * e;
-
-      for (int x_ = -1 + 1; x_ < cx_; ++x_) {
+      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
         uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
         uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
 
         if (is_red(pixel_r)) {
-          std::cout << y_ << ", " << x_ << std::endl;
-
-          return does(+y_ - cy_, +x_);
+          return does(+y_ - xy_, +x_);
         }
 
         if (is_red(pixel_l)) {
-          std::cout << y_ << ", " << x_ << std::endl;
-
-          return does(+y_ - cy_, -x_);
+          return does(+y_ - xy_, -x_);
         }
-
-        //if (is_red(pd_l)) {
-        //  std::cout << y_ << ", " << x_ << std::endl;
-
-        //  return does(-1 + 1, x_ - xx_);
-        //}
-
-        //if (is_red(pd_r)) {
-        //  std::cout << y_ << ", " << x_ << std::endl;
-
-        //  return does(-1 + 1, x_ + xx_);
-        //}
       }
     }
 
