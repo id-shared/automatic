@@ -169,18 +169,18 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2.0;
+  double ratio = (+1000 / +365) / +1.5;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  const int xy = GetSystemMetrics(SM_CYSCREEN);
-  const int xx = GetSystemMetrics(SM_CXSCREEN);
+  const int zy = GetSystemMetrics(SM_CYSCREEN);
+  const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int ey = xy / +16;
-  const int ex = xx / +16;
+  const int ey = zy / +16;
+  const int ex = zx / +16;
 
-  const int cy = xy / +32;
-  const int cx = xx / +8;
+  const int cy = zy / +32;
+  const int cx = zx / +8;
 
   const int ay = (cy - ey) / +2;
   const int ax = (cx - ex) / +2;
@@ -331,7 +331,7 @@ int main() {
     return false;
     };
 
-  CaptureScreenArea(process, (xx - cx) / +2, (xy - cy) / +2, cx, cy, frame);
+  CaptureScreenArea(process, (zx - cx) / +2, (zy - cy) / +2, cx, cy, frame);
 
   return +1;
 }
