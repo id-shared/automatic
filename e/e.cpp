@@ -182,9 +182,11 @@ int main() {
   bool al = false;
   bool a_ = false;
 
-  const double ratio = +2.5 / +1.5;
+  const double ratio = (+1 / +0.429) / +2.0;
   const double delay = +249;
-  const UINT every = +4;
+  const UINT every = +16;
+
+  std::cout << ratio << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
