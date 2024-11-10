@@ -122,11 +122,15 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
+bool to_int(double e) {
+  return static_cast<int>(round(e));
+}
+
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = static_cast<int>(round(from_y));
-  const int axis_x = static_cast<int>(round(from_x * e_11));
+  const int axis_y = to_int(from_y);
+  const int axis_x = to_int(from_x * e_11);
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
@@ -173,14 +177,14 @@ int main() {
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
-  const int xy = GetSystemMetrics(SM_CYSCREEN);
-  const int xx = GetSystemMetrics(SM_CXSCREEN);
+  double xy = GetSystemMetrics(SM_CYSCREEN);
+  double xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int ey = xy / +256;
-  const int ex = xx / +256;
+  double ey = xy / +512;
+  double ex = xx / +256;
 
-  const int cy = xy / +16;
-  const int cx = xx / +4;
+  double cy = xy / +16;
+  double cx = xx / +4;
 
   bool _r = false;
   bool _l = false;
@@ -266,10 +270,10 @@ int main() {
 
   std::thread thread(queuing);
 
-  const int ey_ = ey / +2;
-  const int ex_ = ex / +2;
-  const int cy_ = cy / +2;
-  const int cx_ = cx / +2;
+  const int ey_ = to_int(ey / +2);
+  const int ex_ = to_int(ex / +2);
+  const int cy_ = to_int(cy / +2);
+  const int cx_ = to_int(cx / +2);
 
   std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, ex_, ey_, driver](int e_1, int e) {
     if (!__ && _r && -ey_ <= e_1 && +ey_ >= e_1 && -ex_ <= e && +ex_ >= e) {
@@ -330,19 +334,3 @@ int main() {
 
   return +1;
 }
-
-/*
-for (int x = -1 + 1; x < nx_; ++x) {
-  uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
-  uint8_t* _y_l = _y + (cx_ - x - 1) * +4;
-  int axis_y = +y + ey_ - ny_;
-
-  if (is_red(_y_r)) {
-    return does(axis_y, -ey_ <= axis_y && +ey_ >= axis_y ? +x : -1 +1);
-  }
-
-  if (is_red(_y_l)) {
-    return does(axis_y, -ey_ <= axis_y && +ey_ >= axis_y ? -x : -1 + 1);
-  }
-}
-*/
