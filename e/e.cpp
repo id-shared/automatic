@@ -168,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +1.5;
+  double ratio = (+1000 / +365) / +1.25;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -179,12 +179,17 @@ int main() {
   const int ex = xx / +256;
 
   const int cy = xy / +16;
-  const int cx = xx / +4;
+  const int cx = xx / +16;
+
+  const int ay = xy / +16;
+  const int ax = xx / +4;
 
   int _ey = ey / +2;
   int _ex = ex / +2;
   int _cy = cy / +2;
   int _cx = cx / +2;
+  int _ay = ay / +2;
+  int _ax = ax / +2;
 
   bool _r = false;
   bool _l = false;
@@ -286,15 +291,15 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [_cx, _cy, _ex, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [_ax, _ay, _ex, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((_cy - ny_) + y) * e_2;
+      uint8_t* _y = o1 + ((_ay - ny_) + y) * e_2;
 
       for (int x = -1 + 1; x < e; ++x) {
-        uint8_t* _x = _y + ((_cx - nx_) + x) * +4;
+        uint8_t* _x = _y + ((_ax - nx_) + x) * +4;
 
         if (is_red(_x)) {
           int axis_y = +y + _ey - ny_;
@@ -307,17 +312,17 @@ int main() {
     return false;
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, cy / +1, cx / +16)) {
+  std::function<bool(uint8_t*, UINT)> process = [ax, ay, apple](uint8_t* o1, UINT e) {
+    if (apple(o1, e, ay / +1, ax / +16)) {
       return true;
     }
-    else if (apple(o1, e, cy / +1, cx / +4)) {
+    else if (apple(o1, e, ay / +1, ax / +4)) {
       return true;
     }
-    else if (apple(o1, e, cy / +1, cx / +2)) {
+    else if (apple(o1, e, ay / +1, ax / +2)) {
       return true;
     }
-    else if (apple(o1, e, cy / +1, cx / +1)) {
+    else if (apple(o1, e, ay / +1, ax / +1)) {
       return true;
     }
     else {
@@ -325,7 +330,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(process, (xx - cx) / +2, (xy - cy) / +2, cx, cy, frame);
+  CaptureScreenArea(process, (xx - ax) / +2, (xy - ay) / +2, ax, ay, frame);
 
   return +1;
 }
