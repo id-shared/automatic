@@ -180,7 +180,7 @@ int main() {
   const int xx = zx / +256;
 
   const int cy = +64; // zy / +16;
-  const int cx = zx / +8;
+  const int cx = zx / +4;
 
   bool ar = false;
   bool al = false;
@@ -282,19 +282,19 @@ int main() {
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((cy_ - ny_ + py) + y) * e_2;
+      uint8_t* _y = o1 + ((cy_ - ny_ - py) + y) * e_2;
 
       for (int x = -1 + 1; x < nx_; ++x) {
         uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
         uint8_t* _y_l = _y + (cx_ - x - 1) * +4;
-        int axis_y = +y - ny_;
+        int axis_y = +y - ny_ + py;
 
         if (is_red(_y_r)) {
-          return does(axis_y, axis_y == -1 + 1 ? +x : -1 + 1);
+          return does(axis_y, axis_y == -1 + 1 ? +x : +1);
         }
 
         if (is_red(_y_l)) {
-          return does(axis_y, axis_y == -1 + 1 ? -x : -1 + 1);
+          return does(axis_y, axis_y == -1 + 1 ? -x : -1);
         }
       }
     }
