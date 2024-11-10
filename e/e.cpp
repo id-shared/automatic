@@ -285,24 +285,25 @@ int main() {
   const int cy_ = cy / +2;
   const int cx_ = cx / +2;
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, xy, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cy, xy, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+    const int py = cy - e_1 >= xy ? xy : -1 + 1;
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((cy_ - ny_ - xy) + y) * e_2;
+      uint8_t* _y = o1 + ((cy_ - ny_ - py) + y) * e_2;
 
       for (int x = -1 + 1; x < nx_; ++x) {
         uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
         uint8_t* _y_l = _y + (cx_ - x - 1) * +4;
-        int axis_y = +y - ny_ + xy;
+        int axis_y = +y - ny_ + py;
 
         if (is_red(_y_r)) {
-          return does(axis_y, axis_y <= -xy && axis_y >= +xy ? -1 + 1 : +x);
+          return does(axis_y, axis_y <= -py && axis_y >= +py ? -1 + 1 : +x);
         }
 
         if (is_red(_y_l)) {
-          return does(axis_y, axis_y <= -xy && axis_y >= +xy ? -1 + 1 : -x);
+          return does(axis_y, axis_y <= -py && axis_y >= +py ? -1 + 1 : -x);
         }
       }
     }
