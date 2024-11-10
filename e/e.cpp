@@ -275,13 +275,33 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +5;
-    const int nx = +5;
+    const int ny = +10;
+    const int nx = +10;
+
+    const int ny_ = ny / +2;
+    const int nx_ = nx / +2;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    for (int y = -1 + 1; y < cy; ++y) {
+    for (int y = -1 + 1; y < ny; ++y) {
+      uint8_t* py = o1 + (y + (cy_ - ny_))*e;
+
+      for (int x = -1 + 1; x < nx; ++x) {
+        uint8_t* py_r = py + (+x + (cx_ - nx_) - 1 + 1) * +4;
+        uint8_t* py_l = py + (-x + (cx_ - nx_) - 1) * +4;
+
+        if (is_red(py_r)) {
+          return does(+y - ny_, +x);
+        }
+
+        if (is_red(py_l)) {
+          return does(+y - ny_, -x);
+        }
+      }
+    }
+
+    /*for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* py = o1 + y * e;
 
       for (int x = -1 + 1; x < cx_; ++x) {
@@ -296,7 +316,7 @@ int main() {
           return does(+y - cy_, -x);
         }
       }
-    }
+    }*/
 
     return false;
     };
