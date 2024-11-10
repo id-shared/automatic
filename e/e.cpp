@@ -175,8 +175,8 @@ int main() {
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int ey = xy / +256;
-  const int ex = xx / +256;
+  const int ey = xy / +128;
+  const int ex = xx / +128;
 
   const int cy = xy / +64;
   const int cx = xx / +8;
@@ -275,8 +275,8 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, _cx, _cy, _ex, _ey, driver](int e_1, int e) {
-    if (!__ && _r && -_ey <= e_1 && +_ey >= e_1 && -_ex <= e && +_ex >= e) {
+  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, _cx, _cy, _ex, driver](int e_1, int e) {
+    if (!__ && _r && -_ex <= e && +_ex >= e) {
       system.enqueue_task([&__, &_l, &delay, &ratio, _cx, _cy, e, e_1, driver]() mutable {
         move(driver, ratio, _cy, _cx, e_1, e, _l);
         taps(driver, delay, _l, __);
@@ -285,13 +285,13 @@ int main() {
     }
     else {
       system.enqueue_task([&_l, &ratio, _cx, _cy, e, e_1, driver]() mutable {
-        move(driver, ratio, _cx, _cy, e_1, e, _l);
+        move(driver, ratio, _cy, _cx, e_1, e, _l);
         });
       return true;
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [_ax, _ay, _ex, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [_ax, _ay, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
@@ -303,7 +303,7 @@ int main() {
 
         if (is_red(_x)) {
           int axis_y = +y + _ey - ny_;
-          int axis_x = +x + _ex - nx_;
+          int axis_x = +x - nx_;
           return does(axis_y, axis_x);
         }
       }
@@ -313,7 +313,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [ax, ay, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, ay / +4, ax / +16)) {
+    if (apple(o1, e, ay / +1, ax / +16)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +4)) {
