@@ -275,8 +275,8 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +10;
-    const int nx = +2;
+    const int ny = +4;
+    const int nx = +16;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
