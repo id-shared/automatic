@@ -179,17 +179,12 @@ int main() {
   const int xy = zy / +256;
   const int xx = zx / +256;
 
-  const int ey = zy / +64;
-  const int ex = zx / +128;
-
   const int cy = zy / +32;
   const int cx = zx / +8;
 
   bool ar = false;
   bool al = false;
   bool a_ = false;
-
-  std::cout << ratio << ", " << frame << ", " << ex << ", " << ey << std::endl;
 
   std::function<void()> queuing = [&al, &ar, driver]() {
     Parallel::ThreadPool queue2(1);
@@ -278,7 +273,10 @@ int main() {
     return true;
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, ex, ey, does](uint8_t* o1, UINT e) {
+  std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
+    const int ey = +40;
+    const int ex = +10;
+
     const int ey_ = ey / +2;
     const int ex_ = ex / +2;
 
@@ -289,25 +287,23 @@ int main() {
     const int cex_ = (cx - ex) / +2;
 
     for (int y = -1 + 1; y < ey; ++y) {
-      uint8_t* pixel_y = o1 + (cex_ + y) * e;
+      uint8_t* pixel_y = o1 + (y + cey_) * e;
 
       for (int x = -1 + 1; x < ex_; ++x) {
         uint8_t* pixel_l = pixel_y + (cx_ - 1 - x) * +4;
         uint8_t* pixel_r = pixel_y + (cx_ + x) * +4;
 
         if (is_red(pixel_r)) {
-          std::cout << std::time(nullptr) << std::endl;
           return does(+y - ey_, +x);
         }
 
         if (is_red(pixel_l)) {
-          std::cout << std::time(nullptr) << std::endl;
           return does(+y - ey_, -x);
         }
       }
     }
 
-    //std::cout << std::time(nullptr) << std::endl;
+    std::cout << std::time(nullptr) << std::endl;
 
     /*for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
