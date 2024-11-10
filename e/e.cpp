@@ -169,7 +169,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = +1; // +1000 / (+365 * +2);
+  double ratio = +1000 / (+365 * +2);
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -179,7 +179,7 @@ int main() {
   const int xy = zy / +256;
   const int xx = zx / +256;
 
-  const int cy = zy / +16;
+  const int cy = +64; // zy / +16;
   const int cx = zx / +8;
 
   bool ar = false;
@@ -267,7 +267,6 @@ int main() {
   std::thread thread(queuing);
 
   std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, driver](int e_1, int e) {
-    std::cout << e_1 << ", " << +e << std::endl;
     system.enqueue_task([&al, &ratio, cx, cy, e_1, e, driver]() mutable {
       move(driver, ratio, cy, cx, e_1, e, al);
       });
@@ -283,6 +282,19 @@ int main() {
 
     for (int y = -1 + 1; y < e_1; ++y) {
       uint8_t* py = o1 + (y + (cy_ - ny_)) * e_2;
+
+      //  for (int x = -1 + 1; x < nx; ++x) {
+      //    uint8_t* py_r = py + (+x + (cx_ - nx_) - 1 + 1) * +4;
+      //    uint8_t* py_l = py + (-x + (cx_ - nx_) - 1) * +4;
+      //
+      //    if (is_red(py_r)) {
+      //      return does(+y - ny_ + 4, +x);
+      //    }
+      //
+      //    if (is_red(py_l)) {
+      //      return does(+y - ny_ + 4, -x);
+      //    }
+      //  }
 
       for (int x = -1 + 1; x < e; ++x) {
         uint8_t* px = py + (x + (cx_ - nx_)) * +4;
@@ -349,34 +361,6 @@ else {
 //
 //    if (is_red(pixel_u_l)) {
 //      return does(-y, -1 + 1);
-//    }
-//  }
-//}
-
-//std::cout << std::time(nullptr) << std::endl;
-
-//const int ny = +8 * +2;
-//const int nx = +8 * +1;
-//
-//const int ny_ = ny / +2;
-//const int nx_ = nx / +2;
-//
-//const int cy_ = cy / +2;
-//const int cx_ = cx / +2;
-//
-//for (int y = -1 + 1; y < ny; ++y) {
-//  uint8_t* py = o1 + (y + (cy_ - ny_)) * e;
-//
-//  for (int x = -1 + 1; x < nx; ++x) {
-//    uint8_t* py_r = py + (+x + (cx_ - nx_) - 1 + 1) * +4;
-//    uint8_t* py_l = py + (-x + (cx_ - nx_) - 1) * +4;
-//
-//    if (is_red(py_r)) {
-//      return does(+y - ny_ + 4, +x);
-//    }
-//
-//    if (is_red(py_l)) {
-//      return does(+y - ny_ + 4, -x);
 //    }
 //  }
 //}
