@@ -176,20 +176,17 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = zy / +256;
-  const int xx = zx / +256;
+  const int ey = zy / +256;
+  const int ex = zx / +256;
 
   const int cy = zy / +12;
   const int cx = zx / +6;
 
-  const int ay = cy / +4;
-  const int ax = cx / +4;
+  bool _r = false;
+  bool _l = false;
+  bool __ = false;
 
-  bool ar = false;
-  bool al = false;
-  bool a_ = false;
-
-  std::function<void()> queuing = [&al, &ar, driver]() {
+  std::function<void()> queuing = [&_l, &_r, driver]() {
     Parallel::ThreadPool queue2(1);
     Parallel::ThreadPool queue1(1);
 
@@ -197,12 +194,12 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&al, &ar, &at, &queue1, &queue2, driver](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &at, &queue1, &queue2, driver](UINT e, bool a) {
       if (e == VK_OEM_6) {
-        ar = a;
+        _r = a;
 
-        queue1.enqueue_task([&ar, driver]() mutable {
-          Xyloid2::e2(driver, ar);
+        queue1.enqueue_task([&_r, driver]() mutable {
+          Xyloid2::e2(driver, _r);
           });
 
         return false;
@@ -210,13 +207,13 @@ int main() {
 
       if (e == VK_OEM_4) {
         if (a) {
-          al = a;
+          _l = a;
 
-          queue1.enqueue_task([&al, &at, &queue2, driver]() mutable {
-            Xyloid2::e1(driver, al);
+          queue1.enqueue_task([&_l, &at, &queue2, driver]() mutable {
+            Xyloid2::e1(driver, _l);
 
-            at = till([&al, &queue2, driver](int e) {
-              const bool back = al && (size >= e);
+            at = till([&_l, &queue2, driver](int e) {
+              const bool back = _l && (size >= e);
 
               if (back) {
                 queue2.enqueue_task([e, driver]() mutable {
@@ -236,13 +233,13 @@ int main() {
           return false;
         }
         else {
-          al = a;
+          _l = a;
 
-          queue1.enqueue_task([&al, &at, &queue2, driver]() mutable {
-            Xyloid2::e1(driver, al);
+          queue1.enqueue_task([&_l, &at, &queue2, driver]() mutable {
+            Xyloid2::e1(driver, _l);
 
-            at = upon([&al, &queue2, driver](int e) {
-              const bool back = !al && (+1 <= e);
+            at = upon([&_l, &queue2, driver](int e) {
+              const bool back = !_l && (+1 <= e);
 
               if (back) {
                 queue2.enqueue_task([e, driver]() mutable {
@@ -269,22 +266,22 @@ int main() {
 
   std::thread thread(queuing);
 
-  const int xy_ = xy / +2;
-  const int xx_ = xx / +2;
+  const int xy_ = ey / +2;
+  const int xx_ = ex / +2;
   const int cy_ = cy / +2;
   const int cx_ = cx / +2;
 
-  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ax, ay, xx_, driver](int e_1, int e) {
-    if (!a_ && ar && -xx_ <= e && +xx_ >= e) {
-      system.enqueue_task([&a_, &al, &delay, &ratio, ax, ay, e, e_1, driver]() mutable {
-        move(driver, ratio, ay, ax, e_1, e, al);
-        taps(driver, delay, al, a_);
+  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, xx_, driver](int e_1, int e) {
+    if (!__ && _r && -xx_ <= e && +xx_ >= e) {
+      system.enqueue_task([&__, &_l, &delay, &ratio, cx_, cy_, e, e_1, driver]() mutable {
+        move(driver, ratio, cy_, cx_, e_1, e, _l);
+        taps(driver, delay, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&al, &ratio, ax, ay, e, e_1, driver]() mutable {
-        move(driver, ratio, ax, ay, e_1, e, al);
+      system.enqueue_task([&_l, &ratio, cx_, cy_, e, e_1, driver]() mutable {
+        move(driver, ratio, cx_, cy_, e_1, e, _l);
         });
       return true;
     }
