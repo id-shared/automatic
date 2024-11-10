@@ -169,7 +169,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = +1000 / +365;
+  double ratio = +1000 / (+365 * +2);
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -282,17 +282,17 @@ int main() {
     const int cx_ = cx / +2;
 
     for (int y = -1 + 1; y < cy; ++y) {
-      uint8_t* pixel_y = o1 + y * e;
+      uint8_t* py = o1 + y * e;
 
       for (int x = -1 + 1; x < cx_; ++x) {
-        uint8_t* pixel_r = pixel_y + (+x + cx_ - 1 + 1) * +4;
-        uint8_t* pixel_l = pixel_y + (-x + cx_ - 1) * +4;
+        uint8_t* py_r = py + (+x + cx_ - 1 + 1) * +4;
+        uint8_t* py_l = py + (-x + cx_ - 1) * +4;
 
-        if (is_red(pixel_r)) {
+        if (is_red(py_r)) {
           return does(+y - cy_, +x);
         }
 
-        if (is_red(pixel_l)) {
+        if (is_red(py_l)) {
           return does(+y - cy_, -x);
         }
       }
