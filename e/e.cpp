@@ -124,8 +124,8 @@ int to_int(double e) {
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = to_int(from_y * e_11);
-  const int axis_x = to_int(from_x * e_11);
+  const int axis_y = to_int((from_y * e_11) / +2);
+  const int axis_x = to_int((from_x * e_11) / +1);
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
