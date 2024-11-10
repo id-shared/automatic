@@ -178,8 +178,8 @@ int main() {
   const int ey = xy / +256;
   const int ex = xx / +256;
 
-  const int cy = xy / +16;
-  const int cx = xx / +16;
+  const int cy = xy / +64;
+  const int cx = xx / +8;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
@@ -313,7 +313,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [ax, ay, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, ay / +1, ax / +16)) {
+    if (apple(o1, e, ay / +4, ax / +16)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +4)) {
