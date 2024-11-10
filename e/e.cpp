@@ -182,6 +182,9 @@ int main() {
   const int cy = zy / +16;
   const int cx = zx / +8;
 
+  const int ay = cy / +4;
+  const int ax = cx / +4;
+
   bool ar = false;
   bool al = false;
   bool a_ = false;
@@ -266,32 +269,34 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, driver](int e_1, int e) {
-    if (!a_ && ar) {
-      system.enqueue_task([&a_, &al, &delay, &ratio, cx, cy, e, e_1, driver]() mutable {
-        move(driver, ratio, cy, cx, e_1, e, al);
+  const int xy_ = xy / +2;
+  const int xx_ = xx / +2;
+  const int cy_ = cy / +2;
+  const int cx_ = cx / +2;
+
+  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ax, ay, xx_, driver](int e_1, int e) {
+    if (!a_ && ar && e <= -xx_ && e >= +xx_) {
+      system.enqueue_task([&a_, &al, &delay, &ratio, ax, ay, e, e_1, driver]() mutable {
+        move(driver, ratio, ay, ax, e_1, e, al);
         taps(driver, delay, al, a_);
         });
       return true;
     }
     else {
-      system.enqueue_task([&al, &ratio, cx, cy, e, e_1, driver]() mutable {
-        move(driver, ratio, cx, cy, e_1, e, al);
+      system.enqueue_task([&al, &ratio, ax, ay, e, e_1, driver]() mutable {
+        move(driver, ratio, ax, ay, e_1, e, al);
         });
       return true;
     }
     };
 
-  const int cy_ = cy / +2;
-  const int cx_ = cx / +2;
-
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cy, xy, does](uint8_t* o1, UINT e_2, int e_1, int e) {
-    const int py = cy - e_1 >= xy ? xy : -1 + 1;
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cy, xy_, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+    const int py = cy - e_1 >= xy_ ? xy_ : -1 + 1;
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((cy_ - ny_ - py) + y) * e_2;
+      uint8_t* _y = o1 + ((cy_ - ny_) + y) * e_2;
 
       for (int x = -1 + 1; x < nx_; ++x) {
         uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
