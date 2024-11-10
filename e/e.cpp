@@ -168,8 +168,8 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +1.25;
-  double frame = +1000 / +64;
+  double ratio = (+1000 / +365) / +1.5;
+  double frame = +1000 / +256;
   double delay = +1000 / +4;
 
   const int xy = GetSystemMetrics(SM_CYSCREEN);
