@@ -275,8 +275,8 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +20;
-    const int nx = +20;
+    const int ny = +10;
+    const int nx = +2;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
@@ -292,7 +292,7 @@ int main() {
         uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
 
         if (is_red(pixel_d_r)) {
-          return does(+y, -1 + 1);
+          return does(+y, -1 +1);
         }
 
         if (is_red(pixel_d_l)) {
