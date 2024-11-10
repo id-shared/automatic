@@ -267,10 +267,19 @@ int main() {
   std::thread thread(queuing);
 
   std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, driver](int e_1, int e) {
-    system.enqueue_task([&al, &ratio, cx, cy, e_1, e, driver]() mutable {
-      move(driver, ratio, cy, cx, e_1, e, al);
-      });
-    return true;
+    if (!a_ && ar) {
+      system.enqueue_task([&a_, &al, &delay, &ratio, cx, cy, e, e_1, driver]() mutable {
+        move(driver, ratio, cy, cx, e_1, e, al);
+        taps(driver, delay, al, a_);
+        });
+      return true;
+    }
+    else {
+      system.enqueue_task([&al, &ratio, cx, cy, e, e_1, driver]() mutable {
+        move(driver, ratio, cx, cy, e_1, e, al);
+        });
+      return true;
+    }
     };
 
   const int cy_ = cy / +2;
@@ -314,17 +323,3 @@ int main() {
 
   return +1;
 }
-
-/*if (!a_ && ar && e >= -ex && e <= +ex) {
-  system.enqueue_task([&a_, &al, &delay, &ratio, ex, ey, e, e_1, driver]() mutable {
-    move(driver, ratio, ey, ex, e_1, e, al);
-    taps(driver, delay, al, a_);
-    });
-  return true;
-}
-else {
-  system.enqueue_task([&al, &ratio, ex, ey, e, e_1, driver]() mutable {
-    move(driver, ratio, ex, ey, e_1, e, al);
-    });
-  return true;
-}*/
