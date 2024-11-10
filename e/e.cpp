@@ -290,20 +290,20 @@ int main() {
         uint8_t* pixel_d_l = pixel_d + (cx_ - x - 1) * +4;
         uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
 
-        if (is_red(pixel_u_r)) {
-          return does(-y, -1 + 1);
-        }
-
-        if (is_red(pixel_u_l)) {
-          return does(-y, -1 + 1);
-        }
-
         if (is_red(pixel_d_r)) {
-          return does(+y, -1 +1);
+          return does(+y, +x);
         }
 
         if (is_red(pixel_d_l)) {
-          return does(+y, -1 +1);
+          return does(+y, -x);
+        }
+
+        if (is_red(pixel_u_r)) {
+          return does(-y, +x);
+        }
+
+        if (is_red(pixel_u_l)) {
+          return does(-y, -x);
         }
       }
     }
