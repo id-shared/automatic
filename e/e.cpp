@@ -275,8 +275,8 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +10;
-    const int nx = +10;
+    const int ny = +8 * +2;
+    const int nx = +8 * +2;
 
     const int ny_ = ny / +2;
     const int nx_ = nx / +2;
@@ -288,15 +288,10 @@ int main() {
       uint8_t* py = o1 + (y + (cy_ - ny_))*e;
 
       for (int x = -1 + 1; x < nx; ++x) {
-        uint8_t* py_r = py + (+x + (cx_ - nx_) - 1 + 1) * +4;
-        uint8_t* py_l = py + (-x + (cx_ - nx_) - 1) * +4;
+        uint8_t* px = py + (x + (cx_ - nx_)) * +4;
 
-        if (is_red(py_r)) {
-          return does(+y - ny_, +x);
-        }
-
-        if (is_red(py_l)) {
-          return does(+y - ny_, -x);
+        if (is_red(px)) {
+          return does(+y - ny_, +x - nx_);
         }
       }
     }
@@ -369,3 +364,29 @@ else {
 //}
 
 //std::cout << std::time(nullptr) << std::endl;
+
+//const int ny = +8 * +2;
+//const int nx = +8 * +1;
+//
+//const int ny_ = ny / +2;
+//const int nx_ = nx / +2;
+//
+//const int cy_ = cy / +2;
+//const int cx_ = cx / +2;
+//
+//for (int y = -1 + 1; y < ny; ++y) {
+//  uint8_t* py = o1 + (y + (cy_ - ny_)) * e;
+//
+//  for (int x = -1 + 1; x < nx; ++x) {
+//    uint8_t* py_r = py + (+x + (cx_ - nx_) - 1 + 1) * +4;
+//    uint8_t* py_l = py + (-x + (cx_ - nx_) - 1) * +4;
+//
+//    if (is_red(py_r)) {
+//      return does(+y - ny_ + 4, +x);
+//    }
+//
+//    if (is_red(py_l)) {
+//      return does(+y - ny_ + 4, -x);
+//    }
+//  }
+//}
