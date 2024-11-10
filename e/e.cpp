@@ -168,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +1;
+  double ratio = (+1000 / +365) / +1.5;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
