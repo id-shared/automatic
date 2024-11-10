@@ -179,7 +179,7 @@ int main() {
   const int ex = xx / +128;
 
   const int cy = xy / +64;
-  const int cx = xx / +8;
+  const int cx = xx / +16;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
