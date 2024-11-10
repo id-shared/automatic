@@ -179,7 +179,7 @@ int main() {
   const int xy = zy / +256;
   const int xx = zx / +256;
 
-  const int ey = zy / +32;
+  const int ey = zy / +64;
   const int ex = zx / +128;
 
   const int cy = zy / +32;
@@ -288,19 +288,21 @@ int main() {
     const int cey_ = (cy - ey) / +2;
     const int cex_ = (cx - ex) / +2;
 
-    for (int y_ = -1 + 1; y_ < ey; ++y_) {
-      uint8_t* pixel_y = o1 + (cex_ + y_) * e;
+    for (int y = -1 + 1; y < ey; ++y) {
+      uint8_t* pixel_y = o1 + (cex_ + y) * e;
 
-      for (int x_ = -1 + 1; x_ < ex_; ++x_) {
-        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
-        uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
+      for (int x = -1 + 1; x < ex_; ++x) {
+        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x) * +4;
+        uint8_t* pixel_r = pixel_y + (cx_ + x) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y_ - ey_, +x_);
+          std::cout << std::time(nullptr) << std::endl;
+          return does(+y - ey_, +x);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y_ - ey_, -x_);
+          std::cout << std::time(nullptr) << std::endl;
+          return does(+y - ey_, -x);
         }
       }
     }
