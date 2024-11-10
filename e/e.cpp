@@ -173,23 +173,23 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  const double ratio = (+1000 / +365) / +2;
-  const double frame = +1000 / +64;
-  const double delay = +1000 / +4;
+  double ratio = (+1000 / +365) / +2;
+  double frame = +1000 / +64;
+  double delay = +1000 / +4;
 
-  const double xy = GetSystemMetrics(SM_CYSCREEN);
-  const double xx = GetSystemMetrics(SM_CXSCREEN);
+  const int xy = GetSystemMetrics(SM_CYSCREEN);
+  const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double ey = xy / +256;
-  const double ex = xx / +256;
+  const int ey = xy / +256;
+  const int ex = xx / +256;
 
-  const double cy = xy / +16;
-  const double cx = xx / +4;
+  const int cy = xy / +16;
+  const int cx = xx / +4;
 
-  int _ey = to_int(ey / +2);
-  int _ex = to_int(ex / +2);
-  int _cy = to_int(cy / +2);
-  int _cx = to_int(cx / +2);
+  int _ey = ey / +2;
+  int _ex = ex / +2;
+  int _cy = cy / +2;
+  int _cx = cx / +2;
 
   bool _r = false;
   bool _l = false;
@@ -291,7 +291,7 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, double, double)> apple = [_cx, _cy, _ex, _ey, does](uint8_t* o1, UINT e_2, double e_1, double e) {
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [_cx, _cy, _ex, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
