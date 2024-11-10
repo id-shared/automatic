@@ -279,20 +279,22 @@ int main() {
   std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cx, cy, does](uint8_t* o1, UINT e_2, int e_1, int e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
+    const int abc = +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* py = o1 + ((cy_ - ny_) + y) * e_2;
+      uint8_t* py = o1 + ((cy_ - ny_ + abc) + y) * e_2;
 
       for (int x = -1 + 1; x < nx_; ++x) {
         uint8_t* py_r = py + (cx_ + x - 1 + 1) * +4;
         uint8_t* py_l = py + (cx_ - x - 1) * +4;
+        int axis_y = +y - ny_;
 
         if (is_red(py_r)) {
-          return does(+y - ny_, +x);
+          return does(axis_y, axis_y == -1 + 1 ? +x : -1 + 1);
         }
 
         if (is_red(py_l)) {
-          return does(+y - ny_, -x);
+          return does(axis_y, axis_y == -1 + 1 ? -x : -1 + 1);
         }
       }
     }
@@ -301,8 +303,6 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, cy / +16, cx / +16)) return true;
-    if (apple(o1, e, cy / +8, cx / +8)) return true;
     if (apple(o1, e, cy / +4, cx / +4)) return true;
     if (apple(o1, e, cy / +2, cx / +2)) return true;
     if (apple(o1, e, cy / +1, cx / +1)) return true;
