@@ -179,8 +179,8 @@ int main() {
   const int xy = zy / +256;
   const int xx = zx / +256;
 
-  const int ey = zy / +16;
-  const int ex = zx / +16;
+  const int ey = zy / +32;
+  const int ex = zx / +128;
 
   const int cy = zy / +32;
   const int cx = zx / +8;
@@ -278,36 +278,36 @@ int main() {
     return true;
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, ex, ey, xx, xy, does](uint8_t* o1, UINT e) {
+  std::function<bool(uint8_t*, UINT)> process = [cx, cy, ex, ey, does](uint8_t* o1, UINT e) {
     const int ey_ = ey / +2;
     const int ex_ = ex / +2;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    const int cxy_ = (cy - ey) / +2;
-    const int cxx_ = (cx - ex) / +2;
+    const int cey_ = (cy - ey) / +2;
+    const int cex_ = (cx - ex) / +2;
 
-    /*for (int y_ = -1 + 1; y_ < xy; ++y_) {
-      uint8_t* pixel_y = o1 + (cxx_ + y_) * e;
+    for (int y_ = -1 + 1; y_ < ey; ++y_) {
+      uint8_t* pixel_y = o1 + (cex_ + y_) * e;
 
-      for (int x_ = -1 + 1; x_ < xx_; ++x_) {
+      for (int x_ = -1 + 1; x_ < ex_; ++x_) {
         uint8_t* pixel_l = pixel_y + (cx_ - 1 - x_) * +4;
         uint8_t* pixel_r = pixel_y + (cx_ + x_) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y_ - xy_, +x_);
+          return does(+y_ - ey_, +x_);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y_ - xy_, -x_);
+          return does(+y_ - ey_, -x_);
         }
       }
-    }*/
+    }
 
     //std::cout << std::time(nullptr) << std::endl;
 
-    for (int y = -1 + 1; y < cy; ++y) {
+    /*for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
 
       for (int x = -1 + 1; x < cx_; ++x) {
@@ -322,7 +322,7 @@ int main() {
           return does(+y - cy_, -x);
         }
       }
-    }
+    }*/
 
     return false;
     };
