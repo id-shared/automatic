@@ -290,11 +290,11 @@ int main() {
         int axis_y = +y - ny_ + py;
 
         if (is_red(_y_r)) {
-          return does(axis_y, axis_y == -1 + 1 ? +x : +1);
+          return does(axis_y, axis_y <= -py && axis_y >= +py ? -1 +1 : +x);
         }
 
         if (is_red(_y_l)) {
-          return does(axis_y, axis_y == -1 + 1 ? -x : -1);
+          return does(axis_y, axis_y <= -py && axis_y >= +py ? -1 +1 : -x);
         }
       }
     }
