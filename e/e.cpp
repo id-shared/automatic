@@ -169,18 +169,18 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2;
+  double ratio = +1000 / +365;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = zy / +512;
-  const int xx = zx / +512;
+  const int xy = zy / +256;
+  const int xx = zx / +256;
 
-  const int cy = zy / +16;
-  const int cx = zx / +8;
+  const int cy = zy / +12;
+  const int cx = zx / +6;
 
   const int ay = cy / +4;
   const int ax = cx / +4;
@@ -275,7 +275,7 @@ int main() {
   const int cx_ = cx / +2;
 
   std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, ax, ay, xx_, driver](int e_1, int e) {
-    if (!a_ && ar && e <= -xx_ && e >= +xx_) {
+    if (!a_ && ar && -xx_ <= e && +xx_ >= e) {
       system.enqueue_task([&a_, &al, &delay, &ratio, ax, ay, e, e_1, driver]() mutable {
         move(driver, ratio, ay, ax, e_1, e, al);
         taps(driver, delay, al, a_);
@@ -296,7 +296,7 @@ int main() {
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((cy_ - ny_) + y) * e_2;
+      uint8_t* _y = o1 + ((cy_ - ny_ - py) + y) * e_2;
 
       for (int x = -1 + 1; x < nx_; ++x) {
         uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
@@ -304,11 +304,11 @@ int main() {
         int axis_y = +y - ny_ + py;
 
         if (is_red(_y_r)) {
-          return does(axis_y, axis_y <= -py && axis_y >= +py ? -1 + 1 : +x);
+          return does(axis_y, -py <= axis_y && +py >= axis_y ? +x : -1 +1);
         }
 
         if (is_red(_y_l)) {
-          return does(axis_y, axis_y <= -py && axis_y >= +py ? -1 + 1 : -x);
+          return does(axis_y, -py <= axis_y && +py >= axis_y ? -x : -1 + 1);
         }
       }
     }
