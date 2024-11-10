@@ -170,7 +170,7 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   double ratio = +1000 / +365;
-  double frame = +1000 / +256;
+  double frame = +1000 / +64;
   double delay = +1000 / +4;
 
   const int zy = GetSystemMetrics(SM_CYSCREEN);
@@ -266,13 +266,13 @@ int main() {
 
   std::thread thread(queuing);
 
-  const int xy_ = ey / +2;
-  const int xx_ = ex / +2;
+  const int ey_ = ey / +2;
+  const int ex_ = ex / +2;
   const int cy_ = cy / +2;
   const int cx_ = cx / +2;
 
-  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, xx_, xy_, driver](int e_1, int e) {
-    if (!__ && _r && -xy_ <= e_1 && +xy_ >= e_1 && -xx_ <= e && +xx_ >= e) {
+  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, ex_, ey_, driver](int e_1, int e) {
+    if (!__ && _r && -ey_ <= e_1 && +ey_ >= e_1 && -ex_ <= e && +ex_ >= e) {
       system.enqueue_task([&__, &_l, &delay, &ratio, cx_, cy_, e, e_1, driver]() mutable {
         move(driver, ratio, cy_, cx_, e_1, e, _l);
         taps(driver, delay, _l, __);
@@ -287,8 +287,8 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cy, xy_, does](uint8_t* o1, UINT e_2, int e_1, int e) {
-    const int py = cy - e_1 >= xy_ ? xy_ : -1 + 1;
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cy, ey_, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+    const int py = cy - e_1 >= ey_ ? ey_ : -1 + 1;
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
@@ -314,6 +314,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
+    if (apple(o1, e, cy / +16, cx / +16)) return true;
     if (apple(o1, e, cy / +8, cx / +8)) return true;
     if (apple(o1, e, cy / +4, cx / +4)) return true;
     if (apple(o1, e, cy / +2, cx / +2)) return true;
