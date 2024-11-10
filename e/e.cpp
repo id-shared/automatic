@@ -274,20 +274,17 @@ int main() {
     return true;
     };
 
-  std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +8 * +2;
-    const int nx = +8 * +2;
+  const int cy_ = cy / +2;
+  const int cx_ = cx / +2;
 
-    const int ny_ = ny / +2;
-    const int nx_ = nx / +2;
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cx, cy, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+    const int ny_ = e_1 / +2;
+    const int nx_ = e / +2;
 
-    const int cy_ = cy / +2;
-    const int cx_ = cx / +2;
+    for (int y = -1 + 1; y < e_1; ++y) {
+      uint8_t* py = o1 + (y + (cy_ - ny_)) * e_2;
 
-    for (int y = -1 + 1; y < ny; ++y) {
-      uint8_t* py = o1 + (y + (cy_ - ny_))*e;
-
-      for (int x = -1 + 1; x < nx; ++x) {
+      for (int x = -1 + 1; x < e; ++x) {
         uint8_t* px = py + (x + (cx_ - nx_)) * +4;
 
         if (is_red(px)) {
@@ -296,22 +293,11 @@ int main() {
       }
     }
 
-    /*for (int y = -1 + 1; y < cy; ++y) {
-      uint8_t* py = o1 + y * e;
+    return false;
+    };
 
-      for (int x = -1 + 1; x < cx_; ++x) {
-        uint8_t* py_r = py + (+x + cx_ - 1 + 1) * +4;
-        uint8_t* py_l = py + (-x + cx_ - 1) * +4;
-
-        if (is_red(py_r)) {
-          return does(+y - cy_, +x);
-        }
-
-        if (is_red(py_l)) {
-          return does(+y - cy_, -x);
-        }
-      }
-    }*/
+  std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
+    apple(o1, e, +8, +8);
 
     return false;
     };
