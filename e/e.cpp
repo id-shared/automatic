@@ -287,24 +287,22 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, ey_, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, ex_, ey_, does](uint8_t* o1, UINT e_2, int e_1, int e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
       uint8_t* _y = o1 + ((cy_ - ny_) + y) * e_2;
 
-      for (int x = -1 + 1; x < nx_; ++x) {
-        uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
-        uint8_t* _y_l = _y + (cx_ - x - 1) * +4;
-        int axis_y = +y - ny_ + ey_;
+      for (int x = -1 + 1; x < e; ++x) {
+        uint8_t* _x = _y + ((cx_ - nx_) + x) * +4;
 
-        if (is_red(_y_r)) {
-          return does(axis_y, +x);
-        }
-
-        if (is_red(_y_l)) {
-          return does(axis_y, -x);
+        if (is_red(_x)) {
+          int axis_y = +y + ey_ - ny_;
+          int axis_x = +x + ex_ - nx_;
+          //return does(axis_y, axis_x); // -ey_ <= axis_y && +ey_ >= axis_y ? +x : -1 + 1
+          printf("%d, %d\n", axis_x, axis_y);
+          return true;
         }
       }
     }
@@ -331,3 +329,19 @@ int main() {
 
   return +1;
 }
+
+/*
+for (int x = -1 + 1; x < nx_; ++x) {
+  uint8_t* _y_r = _y + (cx_ + x - 1 + 1) * +4;
+  uint8_t* _y_l = _y + (cx_ - x - 1) * +4;
+  int axis_y = +y + ey_ - ny_;
+
+  if (is_red(_y_r)) {
+    return does(axis_y, -ey_ <= axis_y && +ey_ >= axis_y ? +x : -1 +1);
+  }
+
+  if (is_red(_y_l)) {
+    return does(axis_y, -ey_ <= axis_y && +ey_ >= axis_y ? -x : -1 + 1);
+  }
+}
+*/
