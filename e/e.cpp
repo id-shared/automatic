@@ -119,7 +119,7 @@ int random(int e_1, int e) {
 }
 
 bool is_red(uint8_t* x) {
-  return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +1) && x[+3] == +255;
+  return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
@@ -169,7 +169,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = +1000 / (+365 * +2);
+  double ratio = +1; // +1000 / (+365 * +2);
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
@@ -284,35 +284,28 @@ int main() {
       uint8_t* py = o1 + ((cy_ - ny_) + y) * e_2;
 
       for (int x = -1 + 1; x < nx_; ++x) {
-        uint8_t* py_r = py + ((cx_ - nx_) + x - 1 + 1) * +4;
-        uint8_t* py_l = py + ((cx_ - nx_) - x - 1) * +4;
+        uint8_t* py_r = py + (cx_ + x - 1 + 1) * +4;
+        uint8_t* py_l = py + (cx_ - x - 1) * +4;
 
         if (is_red(py_r)) {
-          return does(+y - ny_ + 2, +x);
+          return does(+y - ny_, +x);
         }
 
         if (is_red(py_l)) {
-          return does(+y - ny_ + 2, -x);
+          return does(+y - ny_, -x);
         }
       }
-
-      /*for (int x = -1 + 1; x < e; ++x) {
-        uint8_t* px = py + (x + (cx_ - nx_)) * +4;
-
-        if (is_red(px)) {
-          return does(+y - ny_ + 2, +x - nx_ + 2);
-        }
-      }*/
     }
 
     return false;
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
+    if (apple(o1, e, cy / +16, cx / +16)) return true;
     if (apple(o1, e, cy / +8, cx / +8)) return true;
     if (apple(o1, e, cy / +4, cx / +4)) return true;
     if (apple(o1, e, cy / +2, cx / +2)) return true;
-    if (apple(o1, e, cy, cx)) return true;
+    if (apple(o1, e, cy / +1, cx / +1)) return true;
 
     return false;
     };
@@ -335,31 +328,3 @@ else {
     });
   return true;
 }*/
-
-//for (int y = -1 + 1; y < ny; ++y) {
-//  uint8_t* pixel_u = o1 + (cy_ - y - 1) * e;
-//  uint8_t* pixel_d = o1 + (cy_ + y) * e;
-//
-//  for (int x = -1 + 1; x < nx; ++x) {
-//    uint8_t* pixel_u_l = pixel_u + (cx_ - x - 1) * +4;
-//    uint8_t* pixel_u_r = pixel_u + (cx_ + x) * +4;
-//    uint8_t* pixel_d_l = pixel_d + (cx_ - x - 1) * +4;
-//    uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
-//
-//    if (is_red(pixel_d_r)) {
-//      return does(+y, -1 + 1);
-//    }
-//
-//    if (is_red(pixel_d_l)) {
-//      return does(+y, -1 + 1);
-//    }
-//
-//    if (is_red(pixel_u_r)) {
-//      return does(-y, -1 + 1);
-//    }
-//
-//    if (is_red(pixel_u_l)) {
-//      return does(-y, -1 + 1);
-//    }
-//  }
-//}
