@@ -285,15 +285,25 @@ int main() {
       uint8_t* pixel_d = o1 + (cy_ + y) * e;
 
       for (int x = -1 + 1; x < nx; ++x) {
-        uint8_t* pixel_l = pixel_d + (cx_ - x - 1) * +4;
-        uint8_t* pixel_r = pixel_d + (cx_ + x) * +4;
+        uint8_t* pixel_u_l = pixel_u + (cx_ - x - 1) * +4;
+        uint8_t* pixel_u_r = pixel_u + (cx_ + x) * +4;
+        uint8_t* pixel_d_l = pixel_d + (cx_ - x - 1) * +4;
+        uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
 
-        if (is_red(pixel_r)) {
-          return does(+y - ny, +x);
+        if (is_red(pixel_u_r)) {
+          return does(-y, -1 + 1);
         }
 
-        if (is_red(pixel_l)) {
-          return does(+y - ny, -x);
+        if (is_red(pixel_u_l)) {
+          return does(-y, -1 + 1);
+        }
+
+        if (is_red(pixel_d_r)) {
+          return does(+y, -1 +1);
+        }
+
+        if (is_red(pixel_d_l)) {
+          return does(+y, -1 +1);
         }
       }
     }
