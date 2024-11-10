@@ -271,8 +271,8 @@ int main() {
   const int cy_ = cy / +2;
   const int cx_ = cx / +2;
 
-  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, xx_, driver](int e_1, int e) {
-    if (!__ && _r && -xx_ <= e && +xx_ >= e) {
+  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, xx_, xy_, driver](int e_1, int e) {
+    if (!__ && _r && -xy_ <= e_1 && +xy_ >= e_1 && -xx_ <= e && +xx_ >= e) {
       system.enqueue_task([&__, &_l, &delay, &ratio, cx_, cy_, e, e_1, driver]() mutable {
         move(driver, ratio, cy_, cx_, e_1, e, _l);
         taps(driver, delay, _l, __);
@@ -301,11 +301,11 @@ int main() {
         int axis_y = +y - ny_ + py;
 
         if (is_red(_y_r)) {
-          return does(axis_y, -py <= axis_y && +py >= axis_y ? +x : -1 +1);
+          return does(axis_y, +x);
         }
 
         if (is_red(_y_l)) {
-          return does(axis_y, -py <= axis_y && +py >= axis_y ? -x : -1 + 1);
+          return does(axis_y, -x);
         }
       }
     }
@@ -314,6 +314,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
+    if (apple(o1, e, cy / +8, cx / +8)) return true;
     if (apple(o1, e, cy / +4, cx / +4)) return true;
     if (apple(o1, e, cy / +2, cx / +2)) return true;
     if (apple(o1, e, cy / +1, cx / +1)) return true;
