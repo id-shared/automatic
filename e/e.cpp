@@ -173,18 +173,23 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2;
-  double frame = +1000 / +64;
-  double delay = +1000 / +4;
+  const double ratio = (+1000 / +365) / +2;
+  const double frame = +1000 / +64;
+  const double delay = +1000 / +4;
 
-  double xy = GetSystemMetrics(SM_CYSCREEN);
-  double xx = GetSystemMetrics(SM_CXSCREEN);
+  const double xy = GetSystemMetrics(SM_CYSCREEN);
+  const double xx = GetSystemMetrics(SM_CXSCREEN);
 
-  double ey = xy / +256;
-  double ex = xx / +256;
+  const double ey = xy / +256;
+  const double ex = xx / +256;
 
-  double cy = xy / +16;
-  double cx = xx / +4;
+  const double cy = xy / +16;
+  const double cx = xx / +4;
+
+  int _ey = to_int(ey / +2);
+  int _ex = to_int(ex / +2);
+  int _cy = to_int(cy / +2);
+  int _cx = to_int(cx / +2);
 
   bool _r = false;
   bool _l = false;
@@ -270,40 +275,35 @@ int main() {
 
   std::thread thread(queuing);
 
-  const int ey_ = to_int(ey / +2);
-  const int ex_ = to_int(ex / +2);
-  const int cy_ = to_int(cy / +2);
-  const int cx_ = to_int(cx / +2);
-
-  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, cx_, cy_, ex_, ey_, driver](int e_1, int e) {
-    if (!__ && _r && -ey_ <= e_1 && +ey_ >= e_1 && -ex_ <= e && +ex_ >= e) {
-      system.enqueue_task([&__, &_l, &delay, &ratio, cx_, cy_, e, e_1, driver]() mutable {
-        move(driver, ratio, cy_, cx_, e_1, e, _l);
+  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, _cx, _cy, _ex, _ey, driver](int e_1, int e) {
+    if (!__ && _r && -_ey <= e_1 && +_ey >= e_1 && -_ex <= e && +_ex >= e) {
+      system.enqueue_task([&__, &_l, &delay, &ratio, _cx, _cy, e, e_1, driver]() mutable {
+        move(driver, ratio, _cy, _cx, e_1, e, _l);
         taps(driver, delay, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &ratio, cx_, cy_, e, e_1, driver]() mutable {
-        move(driver, ratio, cx_, cy_, e_1, e, _l);
+      system.enqueue_task([&_l, &ratio, _cx, _cy, e, e_1, driver]() mutable {
+        move(driver, ratio, _cx, _cy, e_1, e, _l);
         });
       return true;
     }
     };
 
-  std::function<bool(uint8_t*, UINT, double, double)> apple = [cx_, cy_, ex_, ey_, does](uint8_t* o1, UINT e_2, double e_1, double e) {
+  std::function<bool(uint8_t*, UINT, double, double)> apple = [_cx, _cy, _ex, _ey, does](uint8_t* o1, UINT e_2, double e_1, double e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((cy_ - ny_) + y) * e_2;
+      uint8_t* _y = o1 + ((_cy - ny_) + y) * e_2;
 
       for (int x = -1 + 1; x < e; ++x) {
-        uint8_t* _x = _y + ((cx_ - nx_) + x) * +4;
+        uint8_t* _x = _y + ((_cx - nx_) + x) * +4;
 
         if (is_red(_x)) {
-          int axis_y = +y + ey_ - ny_;
-          int axis_x = +x + ex_ - nx_;
+          int axis_y = +y + _ey - ny_;
+          int axis_x = +x + _ex - nx_;
           return does(axis_y, axis_x);
         }
       }
