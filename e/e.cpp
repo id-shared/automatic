@@ -178,7 +178,7 @@ int main() {
   const int ey = xy / +128;
   const int ex = xx / +128;
 
-  const int cy = xy / +64;
+  const int cy = xy / +16;
   const int cx = xx / +16;
 
   const int ay = xy / +16;
@@ -275,8 +275,8 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, _cx, _cy, _ex, driver](int e_1, int e) {
-    if (!__ && _r && -_ex <= e && +_ex >= e) {
+  std::function<bool(int, int)> does = [&__, &_l, &_r, &delay, &ratio, &system, _cx, _cy, _ex, _ey, driver](int e_1, int e) {
+    if (!__ && _r && -_ey <= e_1 && +_ey >= e_1 && -_ex <= e && +_ex >= e) {
       system.enqueue_task([&__, &_l, &delay, &ratio, _cx, _cy, e, e_1, driver]() mutable {
         move(driver, ratio, _cy, _cx, e_1, e, _l);
         taps(driver, delay, _l, __);
