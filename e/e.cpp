@@ -170,7 +170,7 @@ int main() {
   HANDLE driver = Device::driver(device);
 
   double ratio = +1000 / +365;
-  double frame = +1000 / +256;
+  double frame = +1000 / +64;
   double delay = +1000 / +4;
 
   const int zy = GetSystemMetrics(SM_CYSCREEN);
@@ -275,43 +275,13 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +4;
-    const int nx = +16;
+    const int ny = +5;
+    const int nx = +5;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    for (int y = -1 + 1; y < ny; ++y) {
-      uint8_t* pixel_u = o1 + (cy_ - y - 1) * e;
-      uint8_t* pixel_d = o1 + (cy_ + y) * e;
-
-      for (int x = -1 + 1; x < nx; ++x) {
-        uint8_t* pixel_u_l = pixel_u + (cx_ - x - 1) * +4;
-        uint8_t* pixel_u_r = pixel_u + (cx_ + x) * +4;
-        uint8_t* pixel_d_l = pixel_d + (cx_ - x - 1) * +4;
-        uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
-
-        if (is_red(pixel_d_r)) {
-          return does(+y, -1 +1);
-        }
-
-        if (is_red(pixel_d_l)) {
-          return does(+y, -1 + 1);
-        }
-
-        if (is_red(pixel_u_r)) {
-          return does(-y, -1 + 1);
-        }
-
-        if (is_red(pixel_u_l)) {
-          return does(-y, -1 + 1);
-        }
-      }
-    }
-
-    //std::cout << std::time(nullptr) << std::endl;
-
-    /*for (int y = -1 + 1; y < cy; ++y) {
+    for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
 
       for (int x = -1 + 1; x < cx_; ++x) {
@@ -326,7 +296,7 @@ int main() {
           return does(+y - cy_, -x);
         }
       }
-    }*/
+    }
 
     return false;
     };
@@ -349,3 +319,33 @@ else {
     });
   return true;
 }*/
+
+//for (int y = -1 + 1; y < ny; ++y) {
+//  uint8_t* pixel_u = o1 + (cy_ - y - 1) * e;
+//  uint8_t* pixel_d = o1 + (cy_ + y) * e;
+//
+//  for (int x = -1 + 1; x < nx; ++x) {
+//    uint8_t* pixel_u_l = pixel_u + (cx_ - x - 1) * +4;
+//    uint8_t* pixel_u_r = pixel_u + (cx_ + x) * +4;
+//    uint8_t* pixel_d_l = pixel_d + (cx_ - x - 1) * +4;
+//    uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
+//
+//    if (is_red(pixel_d_r)) {
+//      return does(+y, -1 + 1);
+//    }
+//
+//    if (is_red(pixel_d_l)) {
+//      return does(+y, -1 + 1);
+//    }
+//
+//    if (is_red(pixel_u_r)) {
+//      return does(-y, -1 + 1);
+//    }
+//
+//    if (is_red(pixel_u_l)) {
+//      return does(-y, -1 + 1);
+//    }
+//  }
+//}
+
+//std::cout << std::time(nullptr) << std::endl;
