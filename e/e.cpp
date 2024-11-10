@@ -314,13 +314,18 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, cy / +16, cx / +16)) return true;
-    if (apple(o1, e, cy / +8, cx / +8)) return true;
-    if (apple(o1, e, cy / +4, cx / +4)) return true;
-    if (apple(o1, e, cy / +2, cx / +2)) return true;
-    if (apple(o1, e, cy / +1, cx / +1)) return true;
-
-    return false;
+    if (apple(o1, e, cy / +4, cx / +4)) {
+      return true;
+    }
+    else if (apple(o1, e, cy / +2, cx / +2)) {
+      return true;
+    }
+    else if (apple(o1, e, cy / +1, cx / +1)) {
+      return true;
+    }
+    else {
+      return false;
+    }
     };
 
   CaptureScreenArea(process, (zx - cx) / +2, (zy - cy) / +2, cx, cy, frame);
