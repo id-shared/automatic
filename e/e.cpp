@@ -267,6 +267,7 @@ int main() {
   std::thread thread(queuing);
 
   std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, driver](int e_1, int e) {
+    std::cout << e_1 << ", " << +e << std::endl;
     system.enqueue_task([&al, &ratio, e_1, e, driver]() mutable {
       move(driver, ratio, +4, +4, e_1, e, al);
       });
@@ -274,8 +275,8 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +10;
-    const int nx = +4;
+    const int ny = +20;
+    const int nx = +20;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
@@ -291,7 +292,7 @@ int main() {
         uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
 
         if (is_red(pixel_d_r)) {
-          return does(+y, -1 +1);
+          return does(+y, -1 + 1);
         }
 
         if (is_red(pixel_d_l)) {
@@ -308,7 +309,7 @@ int main() {
       }
     }
 
-    std::cout << std::time(nullptr) << std::endl;
+    //std::cout << std::time(nullptr) << std::endl;
 
     /*for (int y = -1 + 1; y < cy; ++y) {
       uint8_t* pixel_y = o1 + y * e;
