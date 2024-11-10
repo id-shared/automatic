@@ -179,7 +179,7 @@ int main() {
   const int xy = zy / +256;
   const int xx = zx / +256;
 
-  const int cy = zy / +32;
+  const int cy = zy / +16;
   const int cx = zx / +8;
 
   bool ar = false;
@@ -274,8 +274,8 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ny = +20;
-    const int nx = +20;
+    const int ny = +10;
+    const int nx = +4;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
@@ -291,19 +291,19 @@ int main() {
         uint8_t* pixel_d_r = pixel_d + (cx_ + x) * +4;
 
         if (is_red(pixel_d_r)) {
-          return does(+y, +x);
+          return does(+y, -1 +1);
         }
 
         if (is_red(pixel_d_l)) {
-          return does(+y, -x);
+          return does(+y, -1 + 1);
         }
 
         if (is_red(pixel_u_r)) {
-          return does(-y, +x);
+          return does(-y, -1 + 1);
         }
 
         if (is_red(pixel_u_l)) {
-          return does(-y, -x);
+          return does(-y, -1 + 1);
         }
       }
     }
