@@ -62,11 +62,6 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UIN
 
   Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-  /*auto nextFrameTime = std::chrono::steady_clock::now();
-  nextFrameTime += std::chrono::milliseconds(frame_time);
-  nextFrameTime += std::chrono::milliseconds(frame_time);
-  std::this_thread::sleep_until(nextFrameTime);*/
-
   const UINT frame_time = static_cast<UINT>(round(e));
 
   double wait = frame_time;
@@ -122,14 +117,14 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
-bool to_int(double e) {
+int to_int(double e) {
   return static_cast<int>(round(e));
 }
 
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = to_int(from_y);
+  const int axis_y = to_int(from_y * e_11);
   const int axis_x = to_int(from_x * e_11);
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
@@ -173,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2;
+  double ratio = (+1000 / +365) / +1;
   double frame = +1000 / +64;
   double delay = +1000 / +4;
 
