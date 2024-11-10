@@ -176,8 +176,8 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = zy / +256;
-  const int xx = zx / +256;
+  const int xy = zy / +512;
+  const int xx = zx / +512;
 
   const int cy = 256; // zy / +16;
   const int cx = zx / +4;
