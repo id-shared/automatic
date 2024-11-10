@@ -298,10 +298,9 @@ int main() {
         uint8_t* _x = _y + ((cx_ - nx_) + x) * +4;
 
         if (is_red(_x)) {
-          int axis_y = +y - ny_;
-          int axis_x = +x - nx_;
-          //printf("%d, %d\n", axis_x, axis_y);
-          return does(axis_y, axis_x); // -ey_ <= axis_y && +ey_ >= axis_y ? +x : -1 + 1
+          int axis_y = +y + ey_ - ny_;
+          int axis_x = +x + ex_ - nx_;
+          return does(axis_y, axis_x);
         }
       }
     }
