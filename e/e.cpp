@@ -125,8 +125,8 @@ bool is_red(uint8_t* x) {
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = static_cast<int>(round(e_2 * e_11));
-  const int axis_x = static_cast<int>(round(e_1 * e_11));
+  const int axis_y = static_cast<int>(round(from_y));
+  const int axis_x = static_cast<int>(round(from_x * e_11));
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
@@ -266,10 +266,10 @@ int main() {
 
   std::thread thread(queuing);
 
-  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, driver](int e_1, int e) {
+  std::function<bool(int, int)> does = [&a_, &al, &ar, &delay, &ratio, &system, cx, cy, driver](int e_1, int e) {
     std::cout << e_1 << ", " << +e << std::endl;
-    system.enqueue_task([&al, &ratio, e_1, e, driver]() mutable {
-      move(driver, ratio, +4, +4, e_1, e, al);
+    system.enqueue_task([&al, &ratio, cx, cy, e_1, e, driver]() mutable {
+      move(driver, ratio, cy, cx, e_1, e, al);
       });
     return true;
     };
@@ -297,13 +297,10 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, +2, +2)) return true;
-    if (apple(o1, e, +4, +4)) return true;
-    if (apple(o1, e, +8, +8)) return true;
-    if (apple(o1, e, +12, +12)) return true;
-    if (apple(o1, e, +16, +16)) return true;
-    if (apple(o1, e, +32, +32)) return true;
-    if (apple(o1, e, +64, +64)) return true;
+    if (apple(o1, e, cy / +16, cx / +16)) return true;
+    if (apple(o1, e, cy / +8, cx / +8)) return true;
+    if (apple(o1, e, cy / +4, cx / +4)) return true;
+    if (apple(o1, e, cy / +2, cx / +2)) return true;
     if (apple(o1, e, cy, cx)) return true;
 
     return false;
