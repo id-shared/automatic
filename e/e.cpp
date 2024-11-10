@@ -180,7 +180,7 @@ int main() {
   double xy = GetSystemMetrics(SM_CYSCREEN);
   double xx = GetSystemMetrics(SM_CXSCREEN);
 
-  double ey = xy / +512;
+  double ey = xy / +256;
   double ex = xx / +256;
 
   double cy = xy / +16;
@@ -291,7 +291,7 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, ex_, ey_, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+  std::function<bool(uint8_t*, UINT, double, double)> apple = [cx_, cy_, ex_, ey_, does](uint8_t* o1, UINT e_2, double e_1, double e) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
