@@ -125,8 +125,8 @@ bool is_red(uint8_t* x) {
 bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = static_cast<int>(round(from_y)); // * e_11
-  const int axis_x = static_cast<int>(round(from_x)); // * e_11
+  const int axis_y = static_cast<int>(round(e_2 * e_11));
+  const int axis_x = static_cast<int>(round(e_1 * e_11));
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
@@ -169,7 +169,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +4;
+  double ratio = +1000 / +365;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -274,31 +274,26 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, does](uint8_t* o1, UINT e) {
-    const int ey = +40;
-    const int ex = +10;
-
-    const int ey_ = ey / +2;
-    const int ex_ = ex / +2;
+    const int ny = +20;
+    const int nx = +20;
 
     const int cy_ = cy / +2;
     const int cx_ = cx / +2;
 
-    const int cey_ = (cy - ey) / +2;
-    const int cex_ = (cx - ex) / +2;
+    for (int y = -1 + 1; y < ny; ++y) {
+      uint8_t* pixel_u = o1 + (cy_ - y - 1) * e;
+      uint8_t* pixel_d = o1 + (cy_ + y) * e;
 
-    for (int y = -1 + 1; y < ey; ++y) {
-      uint8_t* pixel_y = o1 + (y + cey_) * e;
-
-      for (int x = -1 + 1; x < ex_; ++x) {
-        uint8_t* pixel_l = pixel_y + (cx_ - 1 - x) * +4;
-        uint8_t* pixel_r = pixel_y + (cx_ + x) * +4;
+      for (int x = -1 + 1; x < nx; ++x) {
+        uint8_t* pixel_l = pixel_d + (cx_ - x - 1) * +4;
+        uint8_t* pixel_r = pixel_d + (cx_ + x) * +4;
 
         if (is_red(pixel_r)) {
-          return does(+y - ey_, +x);
+          return does(+y - ny, +x);
         }
 
         if (is_red(pixel_l)) {
-          return does(+y - ey_, -x);
+          return does(+y - ny, -x);
         }
       }
     }
