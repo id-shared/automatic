@@ -179,7 +179,7 @@ int main() {
   const int xy = zy / +256;
   const int xx = zx / +256;
 
-  const int cy = +64; // zy / +16;
+  const int cy = zy / +16;
   const int cx = zx / +4;
 
   bool ar = false;
@@ -286,7 +286,7 @@ int main() {
   const int cx_ = cx / +2;
 
   std::function<bool(uint8_t*, UINT, int, int)> apple = [cx_, cy_, cx, cy, does](uint8_t* o1, UINT e_2, int e_1, int e) {
-    const int py = cy - e_1 >= +2 ? +2 : -1 + 1;
+    const int py = cy - e_1 >= +3 ? +3 : -1 + 1;
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
@@ -312,6 +312,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [cx, cy, apple](uint8_t* o1, UINT e) {
+    if (apple(o1, e, cy / +8, cx / +8)) return true;
     if (apple(o1, e, cy / +4, cx / +4)) return true;
     if (apple(o1, e, cy / +2, cx / +2)) return true;
     if (apple(o1, e, cy / +1, cx / +1)) return true;
