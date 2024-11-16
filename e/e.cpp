@@ -302,12 +302,7 @@ int main() {
         uint8_t* px = py + ((_ax - _x) + e_x) * 4;
 
         if (is_red(px)) {
-          int to_y = e_y - _y;
-          int to_x = e_x - _x;
-          return does(
-            to_y <= -1 && to_y >= -2 ? -1 + 1 : to_y,
-            to_x <= -1 && to_x >= -2 ? -1 + 1 : to_x
-          );
+          return does(e_y - _y + 3, e_x - _x + 3);
         }
       }
     }
