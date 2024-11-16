@@ -303,10 +303,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    if (find(o1, e, ay / +1, ax / +64, true)) {
-      return true;
-    }
-    else if (find(o1, e, ay / +1, ax / +16, true)) {
+    /**/if (find(o1, e, ay / +1, ax / +16, true)) {
       return true;
     }
     else if (find(o1, e, ay / +1, ax / +4, true)) {
@@ -319,7 +316,7 @@ int main() {
       return true;
     }
     };
-  
+
   CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, frame);
 
   return +1;
