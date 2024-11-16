@@ -181,8 +181,8 @@ int main() {
   const int cy = xy / +1;
   const int cx = xx / +1;
 
-  const int ay = xy / +32;
-  const int ax = xx / +8;
+  const int ay = xy / +8;
+  const int ax = xx / +4;
 
   int _ey = ey / +2;
   int _ex = ex / +2;
@@ -292,17 +292,17 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT, int, int, bool)> apple = [_ax, _ay, does](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
-    const int ny_ = e_1 / +2;
-    const int nx_ = e / +2;
+    const int _y = e_1 / +2;
+    const int _x = e / +2;
 
-    for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((_ay - ny_) + y) * +e_2;
+    for (int e_y = -1 + 1; e_y < e_1; ++e_y) {
+      uint8_t* py = o1 + e_y * e_2;
 
-      for (int x = -1 + 1; x < e; ++x) {
-        uint8_t* _x = _y + ((_ax - nx_) + x) * +4;
+      for (int e_x = -1 + 1; e_x < e; ++e_x) { 
+        uint8_t* px = py + ((_ax - _x) + e_x) * 4;
 
-        if (is_red(_x)) {
-          return does(+y - ny_ + 2, +x - nx_ + 2);
+        if (is_red(px)) {
+          return does(e_y - _y, e_x - _x);
         }
       }
     }
