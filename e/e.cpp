@@ -168,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2.0;
+  double ratio = (+1000 / +365) / +1.25;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -178,11 +178,11 @@ int main() {
   const int ey = xy / +128;
   const int ex = xx / +128;
 
-  const int cy = xy / +32;
-  const int cx = xx / +8;
+  const int cy = xy / +1;
+  const int cx = xx / +1;
 
-  const int ay = xy / +16;
-  const int ax = xx / +4;
+  const int ay = xy / +32;
+  const int ax = xx / +8;
 
   int _ey = ey / +2;
   int _ex = ex / +2;
@@ -291,7 +291,7 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int, bool)> apple = [_ax, _ay, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
+  std::function<bool(uint8_t*, UINT, int, int, bool)> apple = [_ax, _ay, does](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
@@ -303,8 +303,8 @@ int main() {
 
         if (is_red(_x)) {
           if (a) {
-            int axis_y = +y + _ey - ny_;
-            int axis_x = +x - nx_;
+            int axis_y = +y - ny_ + 2;
+            int axis_x = +x - nx_ + 2;
             return does(axis_y, axis_x);
           }
           else {
@@ -321,13 +321,7 @@ int main() {
     if (apple(o1, e, ay / +1, ax / +16, true)) {
       return true;
     }
-    else if (apple(o1, e, ay / +1, ax / +8, true)) {
-      return true;
-    }
     else if (apple(o1, e, ay / +1, ax / +4, true)) {
-      return true;
-    }
-    else if (apple(o1, e, ay / +1, ax / +2, true)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +1, true)) {
