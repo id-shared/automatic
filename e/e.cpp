@@ -168,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +2.0;
+  double ratio = (+1000 / +365) / +1.25;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -178,8 +178,8 @@ int main() {
   const int ey = xy / +128;
   const int ex = xx / +128;
 
-  const int cy = xy / +16;
-  const int cx = xx / +16;
+  const int cy = xy / +32;
+  const int cx = xx / +32;
 
   const int ay = xy / +16;
   const int ax = xx / +6;
@@ -319,6 +319,9 @@ int main() {
 
   std::function<bool(uint8_t*, UINT)> process = [ax, ay, apple](uint8_t* o1, UINT e) {
     if (apple(o1, e, ay / +1, ax / +16, true)) {
+      return true;
+    }
+    else if (apple(o1, e, ay / +1, ax / +8, true)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +4, true)) {
