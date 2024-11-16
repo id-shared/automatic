@@ -318,16 +318,19 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [ax, ay, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, ay / +1, ax / +16, true)) {
+    if (apple(o1, e, ay / +1, ax / +64, true)) {
+      return true;
+    }
+    else if (apple(o1, e, ay / +1, ax / +16, true)) {
+      return true;
+    }
+    else if (apple(o1, e, ay / +1, ax / +12, true)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +8, true)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +4, true)) {
-      return true;
-    }
-    else if (apple(o1, e, ay / +1, ax / +2, true)) {
       return true;
     }
     else if (apple(o1, e, ay / +1, ax / +1, true)) {
