@@ -168,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +1.25;
+  double ratio = (+1000 / +365) / +1.5;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -178,8 +178,8 @@ int main() {
   const int ey = xy / +128;
   const int ex = xx / +128;
 
-  const int cy = xy / +32;
-  const int cx = xx / +32;
+  const int cy = xy / +16;
+  const int cx = xx / +16;
 
   const int ay = xy / +16;
   const int ax = xx / +6;
@@ -343,7 +343,7 @@ int main() {
       return true;
     }
     else {
-      return false;
+      return true;
     }
     };
 
