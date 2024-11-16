@@ -296,20 +296,13 @@ int main() {
     const int nx_ = e / +2;
 
     for (int y = -1 + 1; y < e_1; ++y) {
-      uint8_t* _y = o1 + ((_ay - ny_) + y) * e_2;
+      uint8_t* _y = o1 + ((_ay - ny_) + y) * +e_2;
 
       for (int x = -1 + 1; x < e; ++x) {
         uint8_t* _x = _y + ((_ax - nx_) + x) * +4;
 
         if (is_red(_x)) {
-          if (a) {
-            int axis_y = +y - ny_ + 2;
-            int axis_x = +x - nx_ + 2;
-            return does(axis_y, axis_x);
-          }
-          else {
-            return true;
-          }
+          return does(+y - ny_ + 2, +x - nx_ + 2);
         }
       }
     }
