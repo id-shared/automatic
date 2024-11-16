@@ -168,7 +168,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  double ratio = (+1000 / +365) / +1.5;
+  double ratio = (+1000 / +365) / +1; // +1.5
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -291,7 +291,7 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> apple = [_ax, _ay, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e) {
+  std::function<bool(uint8_t*, UINT, int, int, bool)> apple = [_ax, _ay, _ey, does](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
     const int ny_ = e_1 / +2;
     const int nx_ = e / +2;
 
@@ -302,9 +302,14 @@ int main() {
         uint8_t* _x = _y + ((_ax - nx_) + x) * +4;
 
         if (is_red(_x)) {
-          int axis_y = +y + _ey - ny_;
-          int axis_x = +x - nx_;
-          return does(axis_y, axis_x);
+          if (a) {
+            int axis_y = +y + _ey - ny_;
+            int axis_x = +x - nx_;
+            return does(axis_y, axis_x);
+          }
+          else {
+            return true;
+          }
         }
       }
     }
@@ -313,16 +318,19 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> process = [ax, ay, apple](uint8_t* o1, UINT e) {
-    if (apple(o1, e, ay / +1, ax / +16)) {
+    if (apple(o1, e, ay / +1, ax / +64, false)) {
       return true;
     }
-    else if (apple(o1, e, ay / +1, ax / +4)) {
+    else if (apple(o1, e, ay / +1, ax / +16, true)) {
       return true;
     }
-    else if (apple(o1, e, ay / +1, ax / +2)) {
+    else if (apple(o1, e, ay / +1, ax / +4, true)) {
       return true;
     }
-    else if (apple(o1, e, ay / +1, ax / +1)) {
+    else if (apple(o1, e, ay / +1, ax / +2, true)) {
+      return true;
+    }
+    else if (apple(o1, e, ay / +1, ax / +1, true)) {
       return true;
     }
     else {
