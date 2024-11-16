@@ -263,21 +263,21 @@ int main() {
     };
   std::thread thread(queuing);
 
-  double ratio = (+1000 / +429) / +2;
-  double frame = (+1000 / +256) / +2;
-  double delay = (+1000 / +4) / +2;
+  double ratio = +1000 / (+429 * +2);
+  double frame = +1000 / +512;
+  double delay = +1000 / +8;
 
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int ey = xy / (+256 * +2);
-  const int ex = xx / (+256 * +2);
+  const int ey = xy / +512;
+  const int ex = xx / +512;
 
-  const int cy = xy / (+16 * +2);
-  const int cx = xx / (+16 * +2);
+  const int cy = xy / +16;
+  const int cx = xx / +16;
 
-  const int ay = xy / (+8 * +2);
-  const int ax = xx / (+2 * +2);
+  const int ay = xy / +16;
+  const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &delay, &ratio, &system, cx, cy, ex, ey, driver](int e_1, int e) {
     if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
