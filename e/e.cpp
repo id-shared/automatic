@@ -181,7 +181,7 @@ int main() {
   const int cy = xy / +1;
   const int cx = xx / +1;
 
-  const int ay = xy / +8;
+  const int ay = xy / +16;
   const int ax = xx / +4;
 
   int _ey = ey / +2;
@@ -298,11 +298,16 @@ int main() {
     for (int e_y = -1 + 1; e_y < e_1; ++e_y) {
       uint8_t* py = o1 + e_y * e_2;
 
-      for (int e_x = -1 + 1; e_x < e; ++e_x) { 
+      for (int e_x = -1 + 1; e_x < e; ++e_x) {
         uint8_t* px = py + ((_ax - _x) + e_x) * 4;
 
         if (is_red(px)) {
-          return does(e_y - _y, e_x - _x);
+          int to_y = e_y - _y;
+          int to_x = e_x - _x;
+          return does(
+            to_y <= -1 && to_y >= -2 ? -1 + 1 : to_y,
+            to_x <= -1 && to_x >= -2 ? -1 + 1 : to_x
+          );
         }
       }
     }
