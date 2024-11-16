@@ -250,7 +250,7 @@ int main() {
     };
   std::thread thread(queuing);
 
-  double ratio = (+1000 / +365) / +1.25;
+  double ratio = (+1000 / +365) / +2;
   double frame = +1000 / +256;
   double delay = +1000 / +4;
 
@@ -260,10 +260,10 @@ int main() {
   const int ey = xy / +256;
   const int ex = xx / +256;
 
-  const int cy = xy / +128;
+  const int cy = xy / +16;
   const int cx = xx / +16;
 
-  const int ay = xy / +32;
+  const int ay = xy / +16;
   const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &delay, &ratio, &system, cx, cy, ex, ey, driver](int e_1, int e) {
