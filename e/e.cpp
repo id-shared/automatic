@@ -155,7 +155,7 @@ bool pattern(HANDLE x, int e, bool a) {
   int dy = (a ? +1 : -1) * Pattern::dy(e);
   int dx = (a ? -1 : +1) * Pattern::dx(e);
 
-  return dy == 0 && dx == 0 || Xyloid2::yx(x, dy * +5, dx * +1);
+  return dy == 0 && dx == 0 || Xyloid2::yx(x, dy * +4, dx * +1);
 }
 
 int main() {
@@ -168,6 +168,8 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
+  constexpr UINT VK_D = 0x44;
+  constexpr UINT VK_A = 0x41;
   bool _r = false;
   bool _l = false;
   bool __ = false;
@@ -189,8 +191,7 @@ int main() {
 
         return false;
       }
-
-      if (e == VK_OEM_4) {
+      else if (e == VK_OEM_4) {
         if (a) {
           _l = a;
 
@@ -244,8 +245,20 @@ int main() {
           return false;
         }
       }
-
-      return true;
+      else if (e == VK_A || e == VK_D) {
+        if (a) {
+          return true;
+        }
+        else {
+          queue1.enqueue_task([]() mutable {
+            Time::XO(+96);
+            });
+          return true;
+        }
+      }
+      else {
+        return true;
+      }
       });
     };
   std::thread thread(queuing);
