@@ -294,16 +294,16 @@ int main() {
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int, bool)> find = [ax, ay, work](uint8_t* o1, UINT e_3, int e_1, int e, bool a) {
+  std::function<bool(uint8_t*, UINT, int, int)> find = [ax, ay, work](uint8_t* o1, UINT e_3, int e_2, int e_1) {
+    const int _y = e_2 / +2;
+    const int _x = e_1 / +2;
     const int y_ = ay / +2;
     const int x_ = ax / +2;
-    const int _y = e_1 / +2;
-    const int _x = e / +2;
 
-    for (int e_y = -1 + 1; e_y < e_1; ++e_y) {
-      uint8_t* px_y = o1 + (e_y) * e_3;
+    for (int e_y = -1 + 1; e_y < e_2; ++e_y) {
+      uint8_t* px_y = o1 + ((y_ - _y) + e_y) * e_3;
 
-      for (int e_x = -1 + 1; e_x < e; ++e_x) {
+      for (int e_x = -1 + 1; e_x < e_1; ++e_x) {
         uint8_t* px_x = px_y + ((x_ - _x) + e_x) * 4;
 
         if (is_red(px_x)) {
@@ -320,13 +320,13 @@ int main() {
     const int ac = +4;
     const int aa = +1;
 
-    /***/if (find(o1, e, ay / aa, ax / ae, true)) {
+    /***/if (find(o1, e, ay / aa, ax / ae)) {
       return true;
     }
-    else if (find(o1, e, ay / ac, ax / ac, true)) {
+    else if (find(o1, e, ay / ac, ax / ac)) {
       return true;
     }
-    else if (find(o1, e, ay / ae, ax / aa, true)) {
+    else if (find(o1, e, ay / ae, ax / aa)) {
       return true;
     }
     else {
