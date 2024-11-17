@@ -264,14 +264,14 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = +999.999 / (+429 * +3.999);
-  const double xx = +999.999 / (+429 * +1.333);
+  const double xy = +999.999 / (+429 * +4);
+  const double xx = +999.999 / (+429 * +1);
 
   const int ey = zy / +256;
   const int ex = zx / +256;
 
-  const int cy = zy / +16;
-  const int cx = zx / +16;
+  const int cy = zy / +64;
+  const int cx = zx / +64;
 
   const int ay = zy / +16;
   const int ax = zx / +4;
