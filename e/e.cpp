@@ -121,11 +121,11 @@ int to_int(double e) {
   return static_cast<int>(round(e));
 }
 
-bool move(HANDLE x, double e_11, double e_4, double e_3, double e_2, double e_1, bool a) {
+bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
   const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = to_int(from_y * (e_11 / +2));
-  const int axis_x = to_int(from_x * (e_11 / +1));
+  const int axis_y = to_int(from_y * (e_y / +2));
+  const int axis_x = to_int(from_x * (e_x / +1));
   return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
 };
 
@@ -266,8 +266,8 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = +1000 / (+429 * +1.25);
-  const double xx = +1000 / +8;
+  const double xy = +1000 / (+429 * +2);
+  const double xx = +1000 / (+429 * +1);
 
   const int ey = zy / +512;
   const int ex = zx / +512;
@@ -278,25 +278,25 @@ int main() {
   const int ay = zy / +16;
   const int ax = zx / +4;
 
-  const double ee = +125;
+  const double ee = +1000 / +16;
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, ee, cx, cy, ex, ey, xx, xy](int e_1, int e) {
     if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
       system.enqueue_task([&__, &_l, &driver, ee, cx, cy, xx, xy, e, e_1]() mutable {
-        move(driver, xy, cy, cx, e_1, e, _l);
+        move(driver, xy, xx, cy, cx, e_1, e, _l);
         taps(driver, ee, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, cx, cy, xy, e, e_1, driver]() mutable {
-        move(driver, xy, cy, cx, e_1, e, _l);
+      system.enqueue_task([&_l, cx, cy, xx, xy, e, e_1, driver]() mutable {
+        move(driver, xy, xx, cy, cx, e_1, e, _l);
         });
       return true;
     }
     };
 
   const int ce = ax / +2;
-  const int cc = +4;
+  const int cc = +3;
   const int ca = +3;
   std::function<bool(uint8_t*, UINT, int, int, bool)> find = [ce, work](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
     const int _y = e_1 / +2;
