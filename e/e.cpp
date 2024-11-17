@@ -117,16 +117,18 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
-int to_int(double e) {
+int show(double e) {
+  return printf("%d\n", e);
+}
+
+int ace(double e) {
   return static_cast<int>(round(e));
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double from_y = e_2 >= -1 + 1 ? min(+e_4, e_2) : max(-e_4, e_2);
-  const double from_x = e_1 >= -1 + 1 ? min(+e_3, e_1) : max(-e_3, e_1);
-  const int axis_y = to_int(from_y * (e_y / +2));
-  const int axis_x = to_int(from_x * (e_x / +1));
-  return Xyloid2::yx(x, a ? -1 + 1 : axis_y, axis_x);
+  const double _y = e_2 <= -1 + 1 ? max(-e_4, e_2) : min(+e_4, e_2);
+  const double _x = e_1 <= -1 + 1 ? max(-e_3, e_1) : min(+e_3, e_1);
+  return Xyloid2::yx(x, a ? -1 + 1 : ace(_y * e_y), ace(_x * e_x));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -266,8 +268,8 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = +1000 / (+429 * +2);
-  const double xx = +1000 / (+429 * +1);
+  const double xy = +999.999 / (+429.999 * +3);
+  const double xx = +999.999 / (+429.999 * +1);
 
   const int ey = zy / +512;
   const int ex = zx / +512;
@@ -333,7 +335,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +1);
+  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +4);
 
   return +1;
 }
