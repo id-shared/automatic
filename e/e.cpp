@@ -276,13 +276,12 @@ int main() {
   const int ay = zy / +16;
   const int ax = zx / +4;
 
-  const double ee = +999.999 / +3.999;
-  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, ee, cx, cy, ex, ey, xx, xy](int e_1, int e) {
+  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey, xx, xy](int e_1, int e) {
     if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, ee, cx, cy, xx, xy, e, e_1]() mutable {
+      system.enqueue_task([&__, &_l, &driver, cx, cy, xx, xy, e, e_1]() mutable {
         move(driver, xy, xx, cy, cx, e_1, e, _l);
-        Time::XO(+3.99999999999);
-        taps(driver, ee, _l, __);
+        Time::XO(+3.999999999999999999999999999);
+        taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
