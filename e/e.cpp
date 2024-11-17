@@ -265,7 +265,7 @@ int main() {
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
   const double xy = +999.999 / (+429 * +4);
-  const double xx = +999.999 / (+429 * +2);
+  const double xx = +999.999 / (+429 * +1);
 
   const int ey = zy / +256;
   const int ex = zx / +256;
