@@ -267,8 +267,8 @@ int main() {
   const double xy = +999.999 / (+429.999 * +1.999);
   const double xx = +999.999 / (+429.999 * +1.333);
 
-  const int ey = zy / +1024;
-  const int ex = zx / +1024;
+  const int ey = zy / +256;
+  const int ex = zx / +256;
 
   const int cy = zy / +16;
   const int cx = zx / +16;
@@ -277,7 +277,10 @@ int main() {
   const int ax = zx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey, xx, xy](int e_1, int e) {
-    if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
+    const int y_ = ey / +2;
+    const int x_ = ex / +2;
+
+    if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
       system.enqueue_task([&__, &_l, &driver, cx, cy, xx, xy, e, e_1]() mutable {
         move(driver, xy, xx, cy, cx, e_1, e, _l);
         Time::XO(+3.999999999999999999999999999);
