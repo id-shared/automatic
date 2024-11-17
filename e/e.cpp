@@ -314,17 +314,13 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    const int ae = +16;
-    const int ac = +4;
-    const int aa = +1;
+    const int y_ = +4;
+    const int x_ = +1;
 
-    /***/if (find(o1, e, ay / aa, ax / ae)) {
+    /***/if (find(o1, e, ay / x_, ax / y_)) {
       return true;
     }
-    else if (find(o1, e, ay / ac, ax / ac)) {
-      return true;
-    }
-    else if (find(o1, e, ay / ae, ax / aa)) {
+    else if (find(o1, e, ay / y_, ax / x_)) {
       return true;
     }
     else {
