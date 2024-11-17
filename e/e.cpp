@@ -263,40 +263,40 @@ int main() {
     };
   std::thread thread(queuing);
 
-  double ratio = +1000 / (+429 * +2);
-  double frame = +1000 / +512;
-  double delay = +1000 / +8;
+  const int zy = GetSystemMetrics(SM_CYSCREEN);
+  const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const int xy = GetSystemMetrics(SM_CYSCREEN);
-  const int xx = GetSystemMetrics(SM_CXSCREEN);
+  const double xy = +1000 / (+429 * +2);
+  const double xx = +1000 / +8;
 
-  const int ey = xy / +512;
-  const int ex = xx / +512;
+  const int ey = zy / +512;
+  const int ex = zx / +512;
 
-  const int cy = xy / +16;
-  const int cx = xx / +16;
+  const int cy = zy / +16;
+  const int cx = zx / +16;
 
-  const int ay = xy / +16;
-  const int ax = xx / +4;
+  const int ay = zy / +16;
+  const int ax = zx / +4;
 
-  std::function<bool(int, int)> work = [&__, &_l, &_r, &delay, &ratio, &system, cx, cy, ex, ey, driver](int e_1, int e) {
+  const double ae = +125;
+  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, ae, cx, cy, ex, ey, xx, xy](int e_1, int e) {
     if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
-      system.enqueue_task([&__, &_l, &delay, &ratio, cx, cy, e, e_1, driver]() mutable {
-        move(driver, ratio, cy, cx, e_1, e, _l);
-        taps(driver, delay, _l, __);
+      system.enqueue_task([&__, &_l, &driver, ae, cx, cy, xx, xy, e, e_1]() mutable {
+        move(driver, xy, cy, cx, e_1, e, _l);
+        taps(driver, ae, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &ratio, cx, cy, e, e_1, driver]() mutable {
-        move(driver, ratio, cy, cx, e_1, e, _l);
+      system.enqueue_task([&_l, cx, cy, xy, e, e_1, driver]() mutable {
+        move(driver, xy, cy, cx, e_1, e, _l);
         });
       return true;
     }
     };
 
-  const int _ax = ax / +2;
-  std::function<bool(uint8_t*, UINT, int, int, bool)> find = [_ax, work](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
+  const int ac = ax / +2;
+  std::function<bool(uint8_t*, UINT, int, int, bool)> find = [ac, work](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
     const int _y = e_1 / +2;
     const int _x = e / +2;
 
@@ -304,7 +304,7 @@ int main() {
       uint8_t* py = o1 + e_y * e_2;
 
       for (int e_x = -1 + 1; e_x < e; ++e_x) {
-        uint8_t* px = py + ((_ax - _x) + e_x) * 4;
+        uint8_t* px = py + ((ac - _x) + e_x) * +4;
 
         if (is_red(px)) {
           return work(e_y - _y + 3, e_x - _x + 3);
@@ -315,14 +315,15 @@ int main() {
     return false;
     };
 
-  std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    /**/if (find(o1, e, ay / +1, ax / +16, true)) {
+  const int aa = +1;
+  std::function<bool(uint8_t*, UINT)> each = [aa, ax, ay, find](uint8_t* o1, UINT e) {
+    /**/if (find(o1, e, ay / aa, ax / +16, true)) {
       return true;
     }
-    else if (find(o1, e, ay / +1, ax / +4, true)) {
+    else if (find(o1, e, ay / aa, ax / +4, true)) {
       return true;
     }
-    else if (find(o1, e, ay / +1, ax / +1, true)) {
+    else if (find(o1, e, ay / aa, ax / +1, true)) {
       return true;
     }
     else {
@@ -330,7 +331,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, frame);
+  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +1);
 
   return +1;
 }
