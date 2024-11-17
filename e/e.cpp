@@ -301,6 +301,8 @@ int main() {
     const int x_2 = e_1 / +2;
     const int y_ = ay / +2;
     const int x_ = ax / +2;
+    const int _y = +3 * +2;
+    const int _x = +3 * +2;
 
     for (int e_y = -1 + 1; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((y_ - y_2) + e_y) * e_3;
@@ -309,7 +311,7 @@ int main() {
         uint8_t* px_x = px_y + ((x_ - x_2) + e_x) * 4;
 
         if (is_red(px_x)) {
-          return work(e_y - y_2 + 4, e_x - x_2 + 4);
+          return work(e_y - y_2 + _y, e_x - x_2 + _x);
         }
       }
     }
