@@ -264,11 +264,11 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = +999.999 / (+429.999 * +2.999);
-  const double xx = +999.999 / (+429.999 * +1.499);
+  const double xy = +999.999 / (+429.999 * +1.999);
+  const double xx = +999.999 / (+429.999 * +1.333);
 
-  const int ey = zy / +256;
-  const int ex = zx / +256;
+  const int ey = zy / +1024;
+  const int ex = zx / +1024;
 
   const int cy = zy / +16;
   const int cx = zx / +16;
@@ -276,11 +276,12 @@ int main() {
   const int ay = zy / +16;
   const int ax = zx / +4;
 
-  const double ee = +999.999 / +7.999;
+  const double ee = +999.999 / +3.999;
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, ee, cx, cy, ex, ey, xx, xy](int e_1, int e) {
     if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
       system.enqueue_task([&__, &_l, &driver, ee, cx, cy, xx, xy, e, e_1]() mutable {
         move(driver, xy, xx, cy, cx, e_1, e, _l);
+        Time::XO(+3.99999999999);
         taps(driver, ee, _l, __);
         });
       return true;
@@ -293,21 +294,20 @@ int main() {
     }
     };
 
-  const int ce = ax / +2;
-  const int cc = +3;
-  const int ca = +3;
-  std::function<bool(uint8_t*, UINT, int, int, bool)> find = [ce, work](uint8_t* o1, UINT e_2, int e_1, int e, bool a) {
+  std::function<bool(uint8_t*, UINT, int, int, bool)> find = [ax, ay, work](uint8_t* o1, UINT e_3, int e_1, int e, bool a) {
+    const int y_ = ay / +2;
+    const int x_ = ax / +2;
     const int _y = e_1 / +2;
     const int _x = e / +2;
 
     for (int e_y = -1 + 1; e_y < e_1; ++e_y) {
-      uint8_t* px_y = o1 + e_y * e_2;
+      uint8_t* px_y = o1 + (e_y) * e_3;
 
       for (int e_x = -1 + 1; e_x < e; ++e_x) {
-        uint8_t* px_x = px_y + ((ce - _x) + e_x) * 4;
+        uint8_t* px_x = px_y + ((x_ - _x) + e_x) * 4;
 
         if (is_red(px_x)) {
-          return work(e_y - _y + cc, e_x - _x + ca);
+          return work(e_y - _y + 4, e_x - _x + 4);
         }
       }
     }
@@ -315,10 +315,11 @@ int main() {
     return false;
     };
 
-  const int ae = +8;
-  const int ac = +4;
-  const int aa = +1;
-  std::function<bool(uint8_t*, UINT)> each = [ae, ax, ay, find](uint8_t* o1, UINT e) {
+  std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
+    const int ae = +16;
+    const int ac = +4;
+    const int aa = +1;
+
     /***/if (find(o1, e, ay / aa, ax / ae, true)) {
       return true;
     }
