@@ -126,7 +126,7 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double x_ = e_1 <= -1 + 1 ? max(-e_3, e_1) : min(+e_3, e_1);
   const int _y = integer(y_ * e_y);
   const int _x = integer(x_ * e_x);
-  return Xyloid2::yx(x, a && _y <= -1 +1 ? -1 + 1 : _y, _x);
+  return Xyloid2::yx(x, a && _y <= -1 + 1 ? -1 + 1 : _y, _x);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -152,10 +152,12 @@ int till(std::function<bool(int)> z, int i) {
 }
 
 bool pattern(HANDLE x, int e, bool a) {
-  int dy = (a ? +1 : -1) * Pattern::dy(e);
-  int dx = (a ? -1 : +1) * Pattern::dx(e);
+  int y_ = (a ? +1 : -1) * Pattern::dy(e);
+  int x_ = (a ? -1 : +1) * Pattern::dx(e);
+  int _y = e % +2 == +1 ? +5 : +4;
+  int _x = +1;
 
-  return dy == 0 && dx == 0 || Xyloid2::yx(x, dy * +5, dx * +1);
+  return y_ == 0 && x_ == 0 || Xyloid2::yx(x, y_ * _y, x_ * _x);
 }
 
 int main() {
