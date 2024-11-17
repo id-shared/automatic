@@ -264,8 +264,8 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = +999.999 / (+429 * +4);
-  const double xx = +999.999 / (+429 * +1);
+  const double xy = +999.999 / (+429 * +3.999);
+  const double xx = +999.999 / (+429 * +1.333);
 
   const int ey = zy / +256;
   const int ex = zx / +256;
@@ -320,7 +320,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    const int ae = +8;
+    const int ae = +16;
     const int ac = +4;
     const int aa = +1;
 
