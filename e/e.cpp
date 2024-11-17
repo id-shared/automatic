@@ -117,18 +117,14 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
-int show(double e) {
-  return printf("%d\n", e);
-}
-
-int ace(double e) {
+int integer(double e) {
   return static_cast<int>(round(e));
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double _y = e_2 <= -1 + 1 ? max(-e_4, e_2) : min(+e_4, e_2);
   const double _x = e_1 <= -1 + 1 ? max(-e_3, e_1) : min(+e_3, e_1);
-  return Xyloid2::yx(x, a ? -1 + 1 : ace(_y * e_y), ace(_x * e_x));
+  return Xyloid2::yx(x, a ? -1 + 1 : integer(_y * e_y), integer(_x * e_x));
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -268,19 +264,19 @@ int main() {
   const int zy = GetSystemMetrics(SM_CYSCREEN);
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = +999.999 / (+429.999 * +3);
-  const double xx = +999.999 / (+429.999 * +1);
+  const double xy = +999.999 / (+429.999 * +2.999);
+  const double xx = +999.999 / (+429.999 * +1.499);
 
-  const int ey = zy / +512;
-  const int ex = zx / +512;
+  const int ey = zy / +256;
+  const int ex = zx / +256;
 
-  const int cy = zy / +64;
+  const int cy = zy / +16;
   const int cx = zx / +16;
 
   const int ay = zy / +16;
   const int ax = zx / +4;
 
-  const double ee = +1000 / +16;
+  const double ee = +999.999 / +7.999;
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, ee, cx, cy, ex, ey, xx, xy](int e_1, int e) {
     if (!__ && _r && -ex <= e && +ex >= e && -ey <= e_1 && +ey >= e_1) {
       system.enqueue_task([&__, &_l, &driver, ee, cx, cy, xx, xy, e, e_1]() mutable {
@@ -319,15 +315,17 @@ int main() {
     return false;
     };
 
-  const int ae = +1;
+  const int ae = +8;
+  const int ac = +4;
+  const int aa = +1;
   std::function<bool(uint8_t*, UINT)> each = [ae, ax, ay, find](uint8_t* o1, UINT e) {
-    /**/if (find(o1, e, ay / ae, ax / +16, true)) {
+    /***/if (find(o1, e, ay / aa, ax / ae, true)) {
       return true;
     }
-    else if (find(o1, e, ay / ae, ax / +4, true)) {
+    else if (find(o1, e, ay / ac, ax / ac, true)) {
       return true;
     }
-    else if (find(o1, e, ay / ae, ax / +1, true)) {
+    else if (find(o1, e, ay / ae, ax / aa, true)) {
       return true;
     }
     else {
@@ -335,7 +333,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +4);
+  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +16);
 
   return +1;
 }
