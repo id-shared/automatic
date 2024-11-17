@@ -270,8 +270,8 @@ int main() {
   const int ey = zy / +256;
   const int ex = zx / +256;
 
-  const int cy = zy / +64;
-  const int cx = zx / +64;
+  const int cy = zy / +16;
+  const int cx = zx / +16;
 
   const int ay = zy / +16;
   const int ax = zx / +4;
@@ -279,37 +279,39 @@ int main() {
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey, xx, xy](int e_1, int e) {
     const int y_ = ey / +2;
     const int x_ = ex / +2;
+    const int _y = cy / +2;
+    const int _x = cx / +2;
 
     if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, cx, cy, xx, xy, e, e_1]() mutable {
-        move(driver, xy, xx, cy, cx, e_1, e, _l);
+      system.enqueue_task([&__, &_l, &driver, xx, xy, _x, _y, e, e_1]() mutable {
+        move(driver, xy, xx, _y, _x, e_1, e, _l);
         Time::XO(+3.999999999999999999999999999);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, cx, cy, xx, xy, e, e_1, driver]() mutable {
-        move(driver, xy, xx, cy, cx, e_1, e, _l);
+      system.enqueue_task([&_l, xx, xy, _x, _y, e, e_1, driver]() mutable {
+        move(driver, xy, xx, _y, _x, e_1, e, _l);
         });
       return true;
     }
     };
 
   std::function<bool(uint8_t*, UINT, int, int)> find = [ax, ay, work](uint8_t* o1, UINT e_3, int e_2, int e_1) {
-    const int _y = e_2 / +2;
-    const int _x = e_1 / +2;
-    const int y_ = ay / +2;
-    const int x_ = ax / +2;
+    const int y_ = e_2 / +2;
+    const int x_ = e_1 / +2;
+    const int _y = ay / +2;
+    const int _x = ax / +2;
 
     for (int e_y = -1 + 1; e_y < e_2; ++e_y) {
-      uint8_t* px_y = o1 + ((y_ - _y) + e_y) * e_3;
+      uint8_t* px_y = o1 + ((_y - y_) + e_y) * e_3;
 
       for (int e_x = -1 + 1; e_x < e_1; ++e_x) {
-        uint8_t* px_x = px_y + ((x_ - _x) + e_x) * 4;
+        uint8_t* px_x = px_y + ((_x - x_) + e_x) * 4;
 
         if (is_red(px_x)) {
-          return work(e_y - _y + 2, e_x - _x + 2);
+          return work(e_y - y_ + 2, e_x - x_ + 2);
         }
       }
     }
