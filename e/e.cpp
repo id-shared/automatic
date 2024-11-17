@@ -122,9 +122,11 @@ int integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double _y = e_2 <= -1 + 1 ? max(-e_4, e_2) : min(+e_4, e_2);
-  const double _x = e_1 <= -1 + 1 ? max(-e_3, e_1) : min(+e_3, e_1);
-  return Xyloid2::yx(x, a ? -1 + 1 : integer(_y * e_y), integer(_x * e_x));
+  const double y_ = e_2 <= -1 + 1 ? max(-e_4, e_2) : min(+e_4, e_2);
+  const double x_ = e_1 <= -1 + 1 ? max(-e_3, e_1) : min(+e_3, e_1);
+  const int _y = integer(y_ * e_y);
+  const int _x = integer(x_ * e_x);
+  return Xyloid2::yx(x, a && _y <= -1 +1 ? -1 + 1 : _y, _x);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -153,7 +155,7 @@ bool pattern(HANDLE x, int e, bool a) {
   int dy = (a ? +1 : -1) * Pattern::dy(e);
   int dx = (a ? -1 : +1) * Pattern::dx(e);
 
-  return dy == 0 && dx == 0 || Xyloid2::yx(x, dy * +4, dx * +1);
+  return dy == 0 && dx == 0 || Xyloid2::yx(x, dy * +5, dx * +1);
 }
 
 int main() {
