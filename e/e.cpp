@@ -270,8 +270,8 @@ int main() {
   const int ey = zy / +256;
   const int ex = zx / +256;
 
-  const int cy = zy / +16;
-  const int cx = zx / +16;
+  const int cy = zy / +64;
+  const int cx = zx / +64;
 
   const int ay = zy / +16;
   const int ax = zx / +4;
@@ -309,7 +309,7 @@ int main() {
         uint8_t* px_x = px_y + ((x_ - _x) + e_x) * 4;
 
         if (is_red(px_x)) {
-          return work(e_y - _y + 4, e_x - _x + 4);
+          return work(e_y - _y + 2, e_x - _x + 2);
         }
       }
     }
