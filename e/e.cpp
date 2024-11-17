@@ -265,34 +265,29 @@ int main() {
   const int zx = GetSystemMetrics(SM_CXSCREEN);
 
   const double xy = +999.999 / (+429 * +4);
-  const double xx = +999.999 / (+429 * +2);
+  const double xx = +999.999 / (+429 * +1);
 
-  const int ey = zy / +256;
-  const int ex = zx / +256;
-
-  const int cy = zy / +64;
-  const int cx = zx / +64;
+  const int cy = zy / +256;
+  const int cx = zx / +256;
 
   const int ay = zy / +16;
   const int ax = zx / +4;
 
-  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey, xx, xy](int e_1, int e) {
-    const int y_ = ey / +2;
-    const int x_ = ex / +2;
-    const int _y = cy / +2;
-    const int _x = cx / +2;
+  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, xx, xy](int e_1, int e) {
+    const int y_ = cy / +2;
+    const int x_ = cx / +2;
 
     if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, xx, xy, _x, _y, e, e_1]() mutable {
-        move(driver, xy, xx, _y, _x, e_1, e, _l);
+      system.enqueue_task([&__, &_l, &driver, cx, cy, xx, xy, e, e_1]() mutable {
+        move(driver, xy, xx, cy, cx, e_1, e, _l);
         Time::XO(+3.999999999999999999999999999);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, xx, xy, _x, _y, e, e_1, driver]() mutable {
-        move(driver, xy, xx, _y, _x, e_1, e, _l);
+      system.enqueue_task([&_l, cx, cy, xx, xy, e, e_1, driver]() mutable {
+        move(driver, xy, xx, cy, cx, e_1, e, _l);
         });
       return true;
     }
@@ -311,7 +306,7 @@ int main() {
         uint8_t* px_x = px_y + ((_x - x_) + e_x) * 4;
 
         if (is_red(px_x)) {
-          return work(e_y - y_ + 3, e_x - x_ + 3);
+          return work(e_y - y_ + 4, e_x - x_ + 4);
         }
       }
     }
@@ -338,7 +333,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +16);
+  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +1);
 
   return +1;
 }
