@@ -124,8 +124,8 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_ = e_2 <= _ ? max(-e_4, e_2) : min(+e_4, e_2);
-  const double x_ = e_1 <= _ ? max(-e_3, e_1) : min(+e_3, e_1);
+  const double y_ = e_2 <= _ ? max(-e_4 / +2, e_2) : min(+e_4 / +2, e_2);
+  const double x_ = e_1 <= _ ? max(-e_3 / +2, e_1) : min(+e_3 / +2, e_1);
   const int _y = a ? _ : to_integer(y_ * e_y);
   const int _x = to_integer(x_ * e_x);
   return Xyloid2::yx(x, _y, _x);
@@ -277,19 +277,16 @@ int main() {
   const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
-    const int y_ = cy / +2;
-    const int x_ = cx / +2;
-
-    if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
-        move(driver, ey, ex, y_, x_, e_1, e, _l);
+    if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
+      system.enqueue_task([&__, &_l, &driver, ex, ey, cx, cy, e, e_1]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
-        move(driver, ey, ex, y_, x_, e_1, e, _l);
+      system.enqueue_task([&_l, &driver, ex, ey, cx, cy, e, e_1]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
         });
       return true;
     }
