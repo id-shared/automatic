@@ -319,9 +319,9 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    const int n3 = +4 * +4;
+    const int n3 = +4 * +2;
     const int n2 = +2 * +2;
-    const int n1 = +1 * +1;
+    const int n1 = +1 * +2;
 
     /***/if (find(o1, e, ay / n1, ax / n3)) {
       return true;
