@@ -278,10 +278,7 @@ int main() {
   const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
-    const int y_ = cy;
-    const int x_ = cx;
-
-    if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
+    if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
       system.enqueue_task([&__, &_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
         move(driver, ey, ex, cy, cx, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
@@ -289,7 +286,7 @@ int main() {
       return true;
     }
     else {
-      system.enqueue_task([&_l, cx, cy, ex, ey, e, e_1, driver]() mutable {
+      system.enqueue_task([&_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
         move(driver, ey, ex, cy, cx, e_1, e, _l);
         });
       return true;
