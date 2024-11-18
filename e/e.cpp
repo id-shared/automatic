@@ -265,32 +265,32 @@ int main() {
     };
   std::thread thread(queuing);
 
-  const int zy = GetSystemMetrics(SM_CYSCREEN);
-  const int zx = GetSystemMetrics(SM_CXSCREEN);
+  const int xy = GetSystemMetrics(SM_CYSCREEN);
+  const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double xy = (+1 / +0.429) / +3.999;
-  const double xx = (+1 / +0.429) / +1.333;
+  const double ey = (+1 / +0.429) / +3.999;
+  const double ex = (+1 / +0.429) / +1.333;
 
-  const int cy = zy / +256;
-  const int cx = zx / +256;
+  const int cy = xy / +256;
+  const int cx = xx / +256;
 
-  const int ay = zy / +16;
-  const int ax = zx / +4;
+  const int ay = xy / +16;
+  const int ax = xx / +4;
 
-  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, xx, xy](int e_1, int e) {
+  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
     const int y_ = cy / +2;
     const int x_ = cx / +2;
 
     if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, cx, cy, xx, xy, e, e_1]() mutable {
-        move(driver, xy, xx, cy, cx, e_1, e, _l);
+      system.enqueue_task([&__, &_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, cx, cy, xx, xy, e, e_1, driver]() mutable {
-        move(driver, xy, xx, cy, cx, e_1, e, _l);
+      system.enqueue_task([&_l, cx, cy, ex, ey, e, e_1, driver]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
         });
       return true;
     }
@@ -334,7 +334,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (zx - ax) / +2, (zy - ay) / +2, ax, ay, +4);
+  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +4);
 
   return +1;
 }
