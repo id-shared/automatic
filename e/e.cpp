@@ -270,8 +270,8 @@ int main() {
   const double ey = +0.429 * +1;
   const double ex = +0.429 * +4;
 
-  const int cy = xy / +64;
-  const int cx = xx / +64;
+  const int cy = xy / +256;
+  const int cx = xx / +256;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
@@ -316,10 +316,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    /***/if (find(o1, e, ay / +4, ax / +8)) {
-      return true;
-    }
-    else if (find(o1, e, ay / +1, ax / +8)) {
+    /***/if (find(o1, e, ay / +1, ax / +8)) {
       return true;
     }
     else if (find(o1, e, ay / +1, ax / +1)) {
