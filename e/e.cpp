@@ -271,15 +271,15 @@ int main() {
   const double ey = (+1 / +0.429) / +3.999;
   const double ex = (+1 / +0.429) / +1.333;
 
-  const int cy = xy / +256;
-  const int cx = xx / +256;
+  const int cy = xy / +64;
+  const int cx = xx / +64;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
-    const int y_ = cy / +2;
-    const int x_ = cx / +2;
+    const int y_ = cy;
+    const int x_ = cx;
 
     if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
       system.enqueue_task([&__, &_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
@@ -338,7 +338,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +4);
+  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +16);
 
   return +1;
 }
