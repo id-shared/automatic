@@ -119,16 +119,16 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
-int t_integer(double e) {
+int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double y_ = e_2 <= _ ? max(-e_4, e_2) : min(+e_4, e_2);
   const double x_ = e_1 <= _ ? max(-e_3, e_1) : min(+e_3, e_1);
-  const int _y = t_integer(y_ * e_y);
-  const int _x = t_integer(x_ * e_x);
-  return Xyloid2::yx(x, a ? _ : (_y >= _ ? _y * +4 : _y), a ? _ : _x);
+  const int _y = a ? _ : to_integer(y_ * e_y);
+  const int _x = a ? _ : to_integer(x_ * e_x);
+  return Xyloid2::yx(x, _y, _x);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -254,9 +254,6 @@ int main() {
           return true;
         }
         else {
-          queue1.enqueue_task([]() mutable {
-            Time::XO(+96);
-            });
           return true;
         }
       }
