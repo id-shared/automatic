@@ -267,11 +267,11 @@ int main() {
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double ey = (+1 / +0.429) / +2;
-  const double ex = (+1 / +0.429) / +2;
+  const double ey = +0.429 * +1;
+  const double ex = +0.429 * +4;
 
-  const int cy = xy / +256;
-  const int cx = xx / +256;
+  const int cy = xy / +64;
+  const int cx = xx / +64;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
@@ -316,10 +316,13 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    /***/if (find(o1, e, ay, ax / +16)) {
+    /***/if (find(o1, e, ay / +4, ax / +8)) {
       return true;
     }
-    else if (find(o1, e, ay, ax)) {
+    else if (find(o1, e, ay / +1, ax / +8)) {
+      return true;
+    }
+    else if (find(o1, e, ay / +1, ax / +1)) {
       return true;
     }
     else {
@@ -327,7 +330,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +16);
+  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2 * +2 * +2 * +2);
 
   return +1;
 }
