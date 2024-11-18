@@ -267,7 +267,7 @@ int main() {
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double ey = +0.429 * +1;
+  const double ey = +0.429 * +4;
   const double ex = +0.429 * +4;
 
   const int cy = xy / +256;
@@ -327,7 +327,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2 * +2 * +2 * +2);
+  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2);
 
   return +1;
 }
