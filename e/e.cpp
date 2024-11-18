@@ -124,8 +124,8 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_ = e_2 <= _ ? max(-e_4 / +2, e_2) : min(+e_4 / +2, e_2);
-  const double x_ = e_1 <= _ ? max(-e_3 / +2, e_1) : min(+e_3 / +2, e_1);
+  const double y_ = e_2 <= _ ? max(-e_4, e_2) : min(+e_4, e_2);
+  const double x_ = e_1 <= _ ? max(-e_3, e_1) : min(+e_3, e_1);
   const int _y = a ? _ : to_integer(y_ * e_y);
   const int _x = to_integer(x_ * e_x);
   return Xyloid2::yx(x, _y, _x);
@@ -334,7 +334,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2);
+  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2 * +2 * +2 * +2);
 
   return +1;
 }
