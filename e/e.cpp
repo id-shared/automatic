@@ -267,7 +267,7 @@ int main() {
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double ey = +0.429 * +4;
+  const double ey = +0.429 * +4 / +2;
   const double ex = +0.429 * +4;
 
   const int cy = xy / +256;
