@@ -19,6 +19,8 @@
 
 using Microsoft::WRL::ComPtr;
 
+const int _ = -1 + 1;
+
 bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UINT x, UINT y, UINT width, UINT height, double e) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
@@ -117,16 +119,16 @@ bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
 
-int integer(double e) {
+int t_integer(double e) {
   return static_cast<int>(round(e));
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_ = e_2 <= -1 + 1 ? max(-e_4, e_2) : min(+e_4, e_2);
-  const double x_ = e_1 <= -1 + 1 ? max(-e_3, e_1) : min(+e_3, e_1);
-  const int _y = integer(y_ * e_y);
-  const int _x = integer(x_ * e_x);
-  return Xyloid2::yx(x, a && _y <= -1 + 1 ? -1 + 1 : _y, _x);
+  const double y_ = e_2 <= _ ? max(-e_4, e_2) : min(+e_4, e_2);
+  const double x_ = e_1 <= _ ? max(-e_3, e_1) : min(+e_3, e_1);
+  const int _y = t_integer(y_ * e_y);
+  const int _x = t_integer(x_ * e_x);
+  return Xyloid2::yx(x, a ? _ : (_y >= _ ? _y * +4 : _y), a ? _ : _x);
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -304,10 +306,10 @@ int main() {
     const int _y = +2 * +2;
     const int _x = +2 * +2;
 
-    for (int e_y = -1 + 1; e_y < e_2; ++e_y) {
+    for (int e_y = _; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((y_ - y_2) + e_y) * e_3;
 
-      for (int e_x = -1 + 1; e_x < e_1; ++e_x) {
+      for (int e_x = _; e_x < e_1; ++e_x) {
         uint8_t* px_x = px_y + ((x_ - x_2) + e_x) * 4;
 
         if (is_red(px_x)) {
