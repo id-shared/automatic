@@ -268,8 +268,8 @@ int main() {
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double ey = (+1 / +0.429) / +3.999;
-  const double ex = (+1 / +0.429) / +1.333;
+  const double ey = (+1 / +0.429) / +4;
+  const double ex = (+1 / +0.429) / +2;
 
   const int cy = xy / +64;
   const int cx = xx / +64;
@@ -278,16 +278,19 @@ int main() {
   const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
-    if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
+    const int y_ = cy / +2;
+    const int x_ = cx / +2;
+
+    if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
+      system.enqueue_task([&__, &_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
+        move(driver, ey, ex, y_, x_, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
+      system.enqueue_task([&_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
+        move(driver, ey, ex, y_, x_, e_1, e, _l);
         });
       return true;
     }
@@ -298,8 +301,8 @@ int main() {
     const int x_2 = e_1 / +2;
     const int y_ = ay / +2;
     const int x_ = ax / +2;
-    const int _y = +3 * +2;
-    const int _x = +3 * +2;
+    const int _y = +2 * +2;
+    const int _x = +2 * +2;
 
     for (int e_y = -1 + 1; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((y_ - y_2) + e_y) * e_3;
