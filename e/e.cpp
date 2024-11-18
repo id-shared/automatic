@@ -270,8 +270,8 @@ int main() {
   const double ey = (+1 / +0.429) / +2;
   const double ex = (+1 / +0.429) / +2;
 
-  const int cy = xy / +64;
-  const int cx = xx / +64;
+  const int cy = xy / +256;
+  const int cx = xx / +256;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
@@ -327,7 +327,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2 * +2 * +2 * +2);
+  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +16);
 
   return +1;
 }
