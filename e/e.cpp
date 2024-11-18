@@ -127,7 +127,7 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double y_ = e_2 <= _ ? max(-e_4, e_2) : min(+e_4, e_2);
   const double x_ = e_1 <= _ ? max(-e_3, e_1) : min(+e_3, e_1);
   const int _y = a ? _ : to_integer(y_ * e_y);
-  const int _x = a ? _ : to_integer(x_ * e_x);
+  const int _x = to_integer(x_ * e_x);
   return Xyloid2::yx(x, _y, _x);
 };
 
@@ -319,9 +319,9 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    const int n3 = +16;
-    const int n2 = +4;
-    const int n1 = +1;
+    const int n3 = +4 * +2;
+    const int n2 = +2 * +2;
+    const int n1 = +1 * +2;
 
     /***/if (find(o1, e, ay / n1, ax / n3)) {
       return true;
