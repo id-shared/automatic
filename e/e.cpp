@@ -177,7 +177,7 @@ int main() {
   bool _r = false;
   bool _l = false;
   bool __ = false;
-  std::function<void()> queuing = [&_l, &_r, driver]() {
+  std::function<void()> queuing = [&_l, &_r, &driver]() {
     Parallel::ThreadPool queue2(1);
     Parallel::ThreadPool queue1(1);
 
@@ -185,11 +185,11 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &at, &queue1, &queue2, driver](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &at, &driver, &queue1, &queue2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
 
-        queue1.enqueue_task([&_r, driver]() mutable {
+        queue1.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r);
           });
 
@@ -199,18 +199,18 @@ int main() {
         if (a) {
           _l = a;
 
-          queue1.enqueue_task([&_l, &at, &queue2, driver]() mutable {
+          queue1.enqueue_task([&_l, &at, &driver, &queue2]() mutable {
             Xyloid2::e1(driver, _l);
 
-            at = till([&_l, &queue2, driver](int e) {
+            at = till([&_l, &queue2, &driver](int e) {
               const bool back = _l && (size >= e);
 
               if (back) {
-                queue2.enqueue_task([e, driver]() mutable {
+                queue2.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
-                Time::XO(time / +1);
+                Time::XO(time / +0.999);
 
                 return back;
               }
@@ -225,18 +225,18 @@ int main() {
         else {
           _l = a;
 
-          queue1.enqueue_task([&_l, &at, &queue2, driver]() mutable {
+          queue1.enqueue_task([&_l, &at, &driver, &queue2]() mutable {
             Xyloid2::e1(driver, _l);
 
-            at = upon([&_l, &queue2, driver](int e) {
+            at = upon([&_l, &driver, &queue2](int e) {
               const bool back = !_l && (+1 <= e);
 
               if (back) {
-                queue2.enqueue_task([e, driver]() mutable {
+                queue2.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
-                Time::XO(time / +2);
+                Time::XO(time / +1.499);
 
                 return back;
               }
