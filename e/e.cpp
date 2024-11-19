@@ -307,10 +307,10 @@ int main() {
     const int _y = +2;
     const int _x = +2;
 
-    for (int e_y = _; e_y < e_2; ++e_y) {
+    for (UINT e_y = _; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((ay - y_2) + e_y) * e;
 
-      for (int e_x = _; e_x < e_1; ++e_x) {
+      for (UINT e_x = _; e_x < e_1; ++e_x) {
         uint8_t* px_x = px_y + ((ax - x_2) + e_x) * 4;
 
         if (is_red(px_x)) {
