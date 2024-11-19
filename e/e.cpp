@@ -282,8 +282,8 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy_ = xy / +32;
-  const int cx_ = xx / +32;
+  const int cy_ = xy / +64;
+  const int cx_ = xx / +64;
   const int cy = cy_ / +2;
   const int cx = cx_ / +2;
 
