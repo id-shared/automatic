@@ -321,11 +321,14 @@ int main() {
         uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
 
         if (is_red(px_x)) {
-          if (a) {
-            return work(e_y - y_ + _y, e_x - x_ + _x);
+          const int axis_y = e_y - y_ + _y;
+          const int axis_x = e_x - x_ + _x;
+
+          if (!a) {
+            return work(axis_y / +4, axis_x / +2);
           }
           else {
-            return work(_, e_x - x_ + _x);
+            return work(axis_y / +4, axis_x / +1);
           }
         }
       }
@@ -335,10 +338,7 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-    /***/if (find(o1, e_2 / +1, e_1 / +64, e, false)) {
-      return true;
-    }
-    else if (find(o1, e_2, e_1 / +8, e, true)) {
+    /***/if (find(o1, e_2, e_1 / +8, e, false)) {
       return true;
     }
     else if (find(o1, e_2, e_1 / +1, e, true)) {
