@@ -279,7 +279,7 @@ int main() {
   const int xy = GetSystemMetrics(SM_CYSCREEN);
   const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-  const double ey = +0.429 * +4;
+  const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
   const int cy_ = xy / +32;
@@ -311,8 +311,8 @@ int main() {
   std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) {
     const int y_ = e_2 / +2;
     const int x_ = e_1 / +2;
-    const int _y = +3;
-    const int _x = +3;
+    const int _y = +2;
+    const int _x = +2;
 
     for (UINT e_y = _; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
@@ -325,10 +325,10 @@ int main() {
           const int axis_x = e_x - x_ + _x;
 
           if (!a) {
-            return work(axis_y / +4, axis_x / +2);
+            return work(axis_y, axis_x / +2);
           }
           else {
-            return work(axis_y / +4, axis_x / +1);
+            return work(axis_y, axis_x);
           }
         }
       }
