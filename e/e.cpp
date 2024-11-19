@@ -157,11 +157,14 @@ int till(std::function<bool(int)> z, int i) {
 
 bool pattern(HANDLE x, int e, bool a) {
   int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  int x_ = (a ? -1 : +1) * Pattern::dx(e);
   int _y = e % +2 == _ ? +5 : +4;
-  int _x = +1;
 
-  return y_ == 0 && x_ == 0 || Xyloid2::yx(x, y_ * _y, x_ * _x);
+  if (abs(y_) > _) {
+    return Xyloid2::yx(x, y_ * _y, _);
+  }
+  else {
+    return false;
+  }
 }
 
 int main() {
