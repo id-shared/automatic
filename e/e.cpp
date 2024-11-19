@@ -21,7 +21,7 @@ using Microsoft::WRL::ComPtr;
 
 const int _ = -1 + 1;
 
-bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UINT x, UINT y, UINT width, UINT height, double e) {
+bool CaptureScreenArea(std::function<bool(uint8_t*, int, int, UINT)> processPixelData, UINT x, UINT y, UINT width, UINT height, double e) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
@@ -89,8 +89,8 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, UINT)> processPixelData, UIN
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      pool.enqueue_task([&processPixelData, &mappedResource]() mutable {
-        processPixelData((uint8_t*)mappedResource.pData, mappedResource.RowPitch);
+      pool.enqueue_task([&processPixelData, &mappedResource, height, width]() mutable {
+        processPixelData((uint8_t*)mappedResource.pData, height, width, mappedResource.RowPitch);
         });
       context->Unmap(stagingTexture.Get(), 0);
     }
@@ -275,44 +275,43 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy = xy / +64;
-  const int cx = xx / +64;
+  const int cy_ = xy / +64;
+  const int cx_ = xx / +64;
+  const int cy = cy_ / +2;
+  const int cx = cx_ / +2;
 
-  const int ay = xy / +16;
-  const int ax = xx / +4;
+  const int ay_ = xy / +16;
+  const int ax_ = xx / +4;
+  const int ay = ay_ / +2;
+  const int ax = ax_ / +2;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
-    const int y_ = y_ / +2;
-    const int x_ = x_ / +2;
-
-    if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
-        move(driver, ey, ex, y_, x_, e_1, e, _l);
+    if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
+      system.enqueue_task([&__, &_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
-        move(driver, ey, ex, y_, x_, e_1, e, _l);
+      system.enqueue_task([&_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
         });
       return true;
     }
     };
 
-  std::function<bool(uint8_t*, UINT, int, int)> find = [ax, ay, work](uint8_t* o1, UINT e_3, int e_2, int e_1) {
+  std::function<bool(uint8_t*, int, int, UINT)> find = [ax, ay, work](uint8_t* o1, int e_2, int e_1, UINT e) {
     const int y_2 = e_2 / +2;
     const int x_2 = e_1 / +2;
-    const int y_ = ay / +2;
-    const int x_ = ax / +2;
     const int _y = +2;
     const int _x = +2;
 
     for (int e_y = _; e_y < e_2; ++e_y) {
-      uint8_t* px_y = o1 + ((y_ - y_2) + e_y) * e_3;
+      uint8_t* px_y = o1 + ((ay - y_2) + e_y) * e;
 
       for (int e_x = _; e_x < e_1; ++e_x) {
-        uint8_t* px_x = px_y + ((x_ - x_2) + e_x) * 4;
+        uint8_t* px_x = px_y + ((ax - x_2) + e_x) * 4;
 
         if (is_red(px_x)) {
           return work(e_y - y_2 + _y, e_x - x_2 + _x);
@@ -323,11 +322,11 @@ int main() {
     return false;
     };
 
-  std::function<bool(uint8_t*, UINT)> each = [ax, ay, find](uint8_t* o1, UINT e) {
-    /***/if (find(o1, e, ay / +1, ax / +8)) {
+  std::function<bool(uint8_t*, int, int, UINT)> each = [find](uint8_t* o1, int e_2, int e_1, UINT e) {
+    /***/if (find(o1, e_2, e_1 / +8, e)) {
       return true;
     }
-    else if (find(o1, e, ay / +1, ax / +1)) {
+    else if (find(o1, e_2, e_1, e)) {
       return true;
     }
     else {
@@ -335,7 +334,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax) / +2, (xy - ay) / +2, ax, ay, +2);
+  CaptureScreenArea(each, (xx - ax_) / +2, (xy - ay_) / +2, ax_, ay_, +2);
 
   return +1;
 }
