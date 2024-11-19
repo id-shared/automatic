@@ -124,8 +124,8 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_2 = e_4 >= abs(e_2) ? e_4 / +2 : e_4;
-  const double x_2 = e_3 >= abs(e_1) ? e_3 / +2 : e_3;
+  const double y_2 = e_4 >= abs(e_2) ? e_4 / (e_4 / +2 / +2) : e_4;
+  const double x_2 = e_3 >= abs(e_1) ? e_3 / (e_4 / +2 / +2) : e_3;
   const double y_ = e_2 >= _ ? min(+y_2, e_2) : max(-y_2, e_2);
   const double x_ = e_1 >= _ ? min(+x_2, e_1) : max(-x_2, e_1);
   const int _y = a ? _ : to_integer(y_ * e_y);
@@ -275,23 +275,26 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy = xy / +256;
-  const int cx = xx / +256;
+  const int cy = xy / +64;
+  const int cx = xx / +64;
 
   const int ay = xy / +16;
   const int ax = xx / +4;
 
   std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
-    if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, ex, ey, cx, cy, e, e_1]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
+    const int y_ = y_ / +2;
+    const int x_ = x_ / +2;
+
+    if (!__ && _r && -x_ <= e && +x_ >= e && -y_ <= e_1 && +y_ >= e_1) {
+      system.enqueue_task([&__, &_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
+        move(driver, ey, ex, y_, x_, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &driver, ex, ey, cx, cy, e, e_1]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
+      system.enqueue_task([&_l, &driver, ex, ey, x_, y_, e, e_1]() mutable {
+        move(driver, ey, ex, y_, x_, e_1, e, _l);
         });
       return true;
     }
@@ -302,8 +305,8 @@ int main() {
     const int x_2 = e_1 / +2;
     const int y_ = ay / +2;
     const int x_ = ax / +2;
-    const int _y = +2 * +2;
-    const int _x = +2 * +2;
+    const int _y = +2;
+    const int _x = +2;
 
     for (int e_y = _; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((y_ - y_2) + e_y) * e_3;
