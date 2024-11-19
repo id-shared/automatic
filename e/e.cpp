@@ -21,7 +21,7 @@ using Microsoft::WRL::ComPtr;
 
 const int _ = -1 + 1;
 
-bool CaptureScreenArea(std::function<bool(uint8_t*, int, int, UINT)> processPixelData, UINT x, UINT y, UINT width, UINT height, double e) {
+bool CaptureScreenArea(std::function<bool(uint8_t*, UINT, UINT, UINT)> processPixelData, UINT y, UINT x, UINT height, UINT width, double e) {
   ComPtr<ID3D11Device> device;
   ComPtr<ID3D11DeviceContext> context;
   D3D_FEATURE_LEVEL featureLevel;
@@ -89,7 +89,7 @@ bool CaptureScreenArea(std::function<bool(uint8_t*, int, int, UINT)> processPixe
     D3D11_MAPPED_SUBRESOURCE mappedResource;
     hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
     if (SUCCEEDED(hr)) {
-      pool.enqueue_task([&processPixelData, &mappedResource, height, width]() mutable {
+      pool.enqueue_task([&processPixelData, &height, &width, &mappedResource]() mutable {
         processPixelData((uint8_t*)mappedResource.pData, height, width, mappedResource.RowPitch);
         });
       context->Unmap(stagingTexture.Get(), 0);
@@ -285,23 +285,23 @@ int main() {
   const int ay = ay_ / +2;
   const int ax = ax_ / +2;
 
-  std::function<bool(int, int)> work = [&__, &_l, &_r, &driver, &system, cx, cy, ex, ey](int e_1, int e) {
+  std::function<bool(int, int)> work = [&__, &_l, &_r, &cx, &cy, &ex, &ey, &driver, &system](int e_1, int e) {
     if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-      system.enqueue_task([&__, &_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
+      system.enqueue_task([&__, &_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
         move(driver, ey, ex, cy, cx, e_1, e, _l);
         taps(driver, +999.999 / +3.999, _l, __);
         });
       return true;
     }
     else {
-      system.enqueue_task([&_l, &driver, cx, cy, ex, ey, e, e_1]() mutable {
+      system.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
         move(driver, ey, ex, cy, cx, e_1, e, _l);
         });
       return true;
     }
     };
 
-  std::function<bool(uint8_t*, int, int, UINT)> find = [ax, ay, work](uint8_t* o1, int e_2, int e_1, UINT e) {
+  std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
     const int y_2 = e_2 / +2;
     const int x_2 = e_1 / +2;
     const int _y = +2;
@@ -322,7 +322,7 @@ int main() {
     return false;
     };
 
-  std::function<bool(uint8_t*, int, int, UINT)> each = [find](uint8_t* o1, int e_2, int e_1, UINT e) {
+  std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
     /***/if (find(o1, e_2, e_1 / +8, e)) {
       return true;
     }
@@ -334,7 +334,7 @@ int main() {
     }
     };
 
-  CaptureScreenArea(each, (xx - ax_) / +2, (xy - ay_) / +2, ax_, ay_, +2);
+  CaptureScreenArea(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2);
 
   return +1;
 }
