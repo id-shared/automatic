@@ -124,8 +124,10 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_2 = (e_4 >= abs(e_2) ? e_4 / +2 / +2 : e_4) / +2;
-  const double x_2 = (e_3 >= abs(e_1) ? e_3 / +2 / +2 : e_3) / +2;
+  const double y_3 = e_4 / +2;
+  const double x_3 = e_3 / +2;
+  const double y_2 = y_3 >= abs(e_2) ? y_3 / +2 : y_3;
+  const double x_2 = x_3 >= abs(e_1) ? x_3 / +2 : x_3;
   const double y_ = e_2 >= _ ? min(y_2, e_2) : max(-y_2, e_2);
   const double x_ = e_1 >= _ ? min(x_2, e_1) : max(-x_2, e_1);
   const int _y = a ? _ : to_integer(y_ * e_y);
@@ -275,10 +277,8 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy_ = xy / +64;
-  const int cx_ = xx / +64;
-  const int cy = cy_ / +2;
-  const int cx = cx_ / +2;
+  const int cy = xy / +64;
+  const int cx = xx / +64;
 
   const int ay_ = xy / +16;
   const int ax_ = xx / +4;
