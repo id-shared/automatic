@@ -124,15 +124,16 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_3 = e_4 / +2;
-  const double x_3 = e_3 / +2;
-  const double y_2 = y_3 >= abs(e_2) ? y_3 / +2 : y_3;
-  const double x_2 = x_3 >= abs(e_1) ? x_3 / +2 : x_3;
-  const double y_ = e_2 >= _ ? min(y_2, e_2) : max(-y_2, e_2);
-  const double x_ = e_1 >= _ ? min(x_2, e_1) : max(-x_2, e_1);
-  const int _y = a ? _ : to_integer(y_ * e_y);
-  const int _x = to_integer(x_ * e_x);
-  return Xyloid2::yx(x, _y, _x);
+  const double y_ = abs(e_2) >= e_4 ? e_4 : e_4 / +4;
+  const double x_ = abs(e_1) >= e_3 ? e_3 : e_3 / +4;
+  const double _y = e_2 >= _ ? min(y_, e_2) : max(-y_, e_2);
+  const double _x = e_1 >= _ ? min(x_, e_1) : max(-x_, e_1);
+  if (a) {
+    return Xyloid2::yx(x, _, to_integer(_x * e_x));
+  }
+  else {
+    return Xyloid2::yx(x, to_integer(_y * e_y), to_integer(_x * e_x));
+  }
 };
 
 bool taps(HANDLE x, double e, bool& a_1, bool& a) {
@@ -277,8 +278,8 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy = xy / +64;
-  const int cx = xx / +64;
+  const int cy = xy / +256;
+  const int cx = xx / +256;
 
   const int ay_ = xy / +16;
   const int ax_ = xx / +4;
@@ -304,8 +305,8 @@ int main() {
   std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
     const int y_ = e_2 / +2;
     const int x_ = e_1 / +2;
-    const int _y = +2 * +2;
-    const int _x = +2 * +2;
+    const int _y = +3;
+    const int _x = +3;
 
     for (UINT e_y = _; e_y < e_2; ++e_y) {
       uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
