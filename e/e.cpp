@@ -124,8 +124,8 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_ = abs(e_2) >= e_4 ? e_4 : e_4 / +2;
-  const double x_ = abs(e_1) >= e_3 ? e_3 : e_3 / +2;
+  const double y_ = e_4 >= abs(e_2) ? e_4 / +4 : e_4;
+  const double x_ = e_3 >= abs(e_1) ? e_3 / +4 : e_3;
   const double _y = e_2 >= _ ? min(y_, e_2) : max(-y_, e_2);
   const double _x = e_1 >= _ ? min(x_, e_1) : max(-x_, e_1);
 
