@@ -128,8 +128,9 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double x_ = abs(e_1) >= e_3 ? e_3 : e_3 / +4;
   const double _y = e_2 >= _ ? min(y_, e_2) : max(-y_, e_2);
   const double _x = e_1 >= _ ? min(x_, e_1) : max(-x_, e_1);
+
   if (a) {
-    return Xyloid2::yx(x, _, to_integer(_x * e_x));
+    return Xyloid2::yx(x, _y >= _ ? to_integer(_y * e_y * +4) : _, to_integer(_x * e_x));
   }
   else {
     return Xyloid2::yx(x, to_integer(_y * e_y), to_integer(_x * e_x));
