@@ -325,10 +325,10 @@ int main() {
           const int axis_x = e_x - x_ + _x;
 
           if (!a) {
-            return work(axis_y, axis_x / +2);
+            return work(axis_y / +1, axis_x / +2);
           }
           else {
-            return work(axis_y, axis_x);
+            return work(axis_y / +1, axis_x / +1);
           }
         }
       }
