@@ -124,8 +124,8 @@ int to_integer(double e) {
 }
 
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
-  const double y_2 = e_4 >= abs(e_2) ? e_4 / (e_4 / +2 / +2) : e_4;
-  const double x_2 = e_3 >= abs(e_1) ? e_3 / (e_4 / +2 / +2) : e_3;
+  const double y_2 = e_4 >= abs(e_2) ? e_4 / (e_4 / +2) : e_4;
+  const double x_2 = e_3 >= abs(e_1) ? e_3 / (e_4 / +2) : e_3;
   const double y_ = e_2 >= _ ? min(+y_2, e_2) : max(-y_2, e_2);
   const double x_ = e_1 >= _ ? min(+x_2, e_1) : max(-x_2, e_1);
   const int _y = a ? _ : to_integer(y_ * e_y);
@@ -302,19 +302,19 @@ int main() {
     };
 
   std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-    const int y_2 = e_2 / +2;
-    const int x_2 = e_1 / +2;
-    const int _y = +2;
-    const int _x = +2;
+    const int y_ = e_2 / +2;
+    const int x_ = e_1 / +2;
+    const int _y = +2 * +2;
+    const int _x = +2 * +2;
 
     for (UINT e_y = _; e_y < e_2; ++e_y) {
-      uint8_t* px_y = o1 + ((ay - y_2) + e_y) * e;
+      uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
 
       for (UINT e_x = _; e_x < e_1; ++e_x) {
-        uint8_t* px_x = px_y + ((ax - x_2) + e_x) * 4;
+        uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
 
         if (is_red(px_x)) {
-          return work(e_y - y_2 + _y, e_x - x_2 + _x);
+          return work(e_y - y_ + _y, e_x - x_ + _x);
         }
       }
     }
