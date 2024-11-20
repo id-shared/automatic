@@ -169,10 +169,10 @@ int main() {
           _l = a;
 
           parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
-            Time::XO(+32);
+            Time::XO(+16);
             _y = true;
 
-            //Xyloid2::e1(driver, _l);
+            Xyloid2::e1(driver, _l);
 
             at = till([&_l, &parallel2, &driver](int e) {
               const bool back = _l && (size >= e);
@@ -198,10 +198,10 @@ int main() {
           _l = a;
 
           parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
-            Time::XO(+32);
+            Time::XO(+16);
             _y = false;
 
-            //Xyloid2::e1(driver, _l);
+            Xyloid2::e1(driver, _l);
 
             at = upon([&_l, &driver, &parallel2](int e) {
               const bool back = !_l && (+1 <= e);
