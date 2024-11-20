@@ -20,7 +20,7 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
 
   if (a) {
     const int _y = +1;
-    const int _x = +1; // x_ >= -e_3 && x_ <= e_3 ? +2 : +1;
+    const int _x = e_1 <= -e_3 && e_1 >= e_3 ? +1 : +1;
 
     if (y_ >= _) {
       return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
@@ -30,7 +30,7 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
     }
   }
   else {
-    return Xyloid2::yx(x, to_integer(y_ * e_y), to_integer(x_ * e_x));
+    return Xyloid2::yx(x, to_integer(y_ / e_y), to_integer(x_ / e_x));
   }
 };
 
@@ -101,8 +101,8 @@ int main() {
     const double ey = +0.429 * +4;
     const double ex = +0.429 * +4;
 
-    const int cy_ = xy / +32;
-    const int cx_ = xx / +32;
+    const int cy_ = xy / +16;
+    const int cx_ = xx / +16;
     const int cy = cy_ / +2;
     const int cx = cx_ / +2;
 
@@ -156,18 +156,8 @@ int main() {
       return false;
       };
 
-    long previous = _;
     int at = +64;
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &previous, &find, &zx](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      auto now = std::chrono::system_clock::now();
-      auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
-      auto count = duration.count();
-      std::cout << count << std::endl;
-      previous = count;
-
-      /*zx.enqueue_task([&count, &previous]() mutable {
-        });*/
-
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find, &zx](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       /***/if (find(o1, e_2, e_1 / +8, e, false)) {
         return true;
       }
@@ -180,7 +170,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +500);
+    Capture::screen(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2 * +2 * +2 * +2);
     };
   std::thread thread2(action2);
 
@@ -276,3 +266,14 @@ int main() {
 
   return +1;
 }
+
+/*
+auto previous = std::chrono::milliseconds::rep{ 0 };
+auto now = std::chrono::system_clock::now();
+auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+auto count = duration.count();
+zx.enqueue_task([count, previous]() mutable {
+  std::cout << count - previous << std::endl;
+  });
+previous = count;
+*/
