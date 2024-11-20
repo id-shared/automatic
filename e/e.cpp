@@ -17,11 +17,10 @@ int to_integer(double e) {
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
+  const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +0.5 : +1;
+  const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +0.5 : +1;
 
   if (a) {
-    const int _y = +1;
-    const int _x = e_1 <= -e_3 && e_1 >= e_3 ? +4 : +1;
-
     if (y_ >= _) {
       return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
     }
@@ -30,7 +29,7 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
     }
   }
   else {
-    return Xyloid2::yx(x, to_integer(y_ * e_y), to_integer(x_ * e_x));
+    return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
   }
 };
 
@@ -101,12 +100,12 @@ int main() {
     const double ey = +0.429 * +4;
     const double ex = +0.429 * +4;
 
-    const int cy_ = xy / +1;
-    const int cx_ = xx / +1;
+    const int cy_ = xy / +32;
+    const int cx_ = xx / +32;
     const int cy = cy_ / +2;
     const int cx = cx_ / +2;
 
-    const int ay_ = xy / +16;
+    const int ay_ = xy / +8;
     const int ax_ = xx / +4;
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
