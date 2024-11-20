@@ -107,7 +107,7 @@ int main() {
     const int cx = cx_ / +2;
 
     const int ay_ = xy / +16;
-    const int ax_ = xx / +9;
+    const int ax_ = xx / +4;
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
 
@@ -156,16 +156,16 @@ int main() {
       return false;
       };
 
-    int at = +256;
+    int at = +64;
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +4, e, false)) {
+      /***/if (find(o1, e_2, e_1 / +8, e, false)) {
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e, true)) {
         return true;
       }
       else {
-        at = +256;
+        at = +64;
         return true;
       }
       };
