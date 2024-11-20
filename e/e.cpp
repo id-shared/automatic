@@ -59,13 +59,12 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  long _z = GetTickCount64();
   bool _y = false;
   bool _x = false;
   bool _r = false;
   bool _l = false;
 
-  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &_z, &driver, &single, &system]() {
+  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver, &single, &system]() {
     const double xy = +0.429 * +4;
     const double xx = +0.429 * +4;
 
@@ -78,10 +77,12 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int, int)> work = [&_y, &_z, &xx, &xy, &system, &driver](int e_2, int e_1, int e) {
-      system.enqueue_task([&_y, &_z, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
-        _z = GetTickCount64();
-        return Xyloid2::yx(driver, _y ? _ : _, to_integer((e + e_1) * xx));
+    std::function<bool(int, int, int)> work = [&_x, &_y, &xx, &xy, &driver, &system](int e_2, int e_1, int e) {
+      system.enqueue_task([&_x, &_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
+        Xyloid2::yx(driver, to_integer((_y ? _ : +1) * (e_2 + e) * xy), to_integer((_x ? +1 / +2 : +1) * (e_1 + e) * xx));
+        _y = true;
+        _x = true;
+        return _y;
         });
 
       return true;
@@ -131,7 +132,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &_z, &driver, &single, &system]() {
+  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver, &single, &system]() {
     Parallel::ThreadPool parallel2(1);
     Parallel::ThreadPool parallel1(1);
 
@@ -139,7 +140,7 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &single, &system](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &single, &system](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
 
@@ -153,11 +154,10 @@ int main() {
         if (a) {
           _l = a;
 
-          system.enqueue_task([&_l, &_y, &_z, &at, &driver, &single]() mutable {
+          system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
             Time::XO(+16);
-            _y = true;
 
-            Xyloid2::e1(driver, _l);
+            //Xyloid2::e1(driver, _l);
 
             at = till([&_l, &single, &driver](int e) {
               const bool back = _l && (size >= e);
@@ -182,11 +182,12 @@ int main() {
         else {
           _l = a;
 
-          system.enqueue_task([&_l, &_y, &at, &driver, &single]() mutable {
+          system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
             Time::XO(+16);
             _y = false;
+            _x = false;
 
-            Xyloid2::e1(driver, _l);
+            //Xyloid2::e1(driver, _l);
 
             at = upon([&_l, &driver, &single](int e) {
               const bool back = !_l && (+1 <= e);
