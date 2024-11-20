@@ -151,7 +151,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &driver]() {
+  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver]() {
     Parallel::ThreadPool parallel2(1);
     Parallel::ThreadPool parallel1(1);
 
@@ -159,7 +159,7 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
 
@@ -173,8 +173,9 @@ int main() {
         if (a) {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+          parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
             Time::XO(+16);
+            _y = true;
 
             Xyloid2::e1(driver, _l);
 
@@ -201,7 +202,9 @@ int main() {
         else {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+          parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
+            _y = false;
+
             Xyloid2::e1(driver, _l);
 
             at = upon([&_l, &driver, &parallel2](int e) {
