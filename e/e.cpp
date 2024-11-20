@@ -17,33 +17,17 @@ int to_integer(double e) {
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
-
   const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +0.5 : +1;
   const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +0.5 : +1;
 
-  if (a) {
-    if (y_ >= _) {
-      return Xyloid2::yx(x, to_integer(y_ * e_y), to_integer(x_ * e_x));
-    }
-    else {
-      return Xyloid2::yx(x, _, to_integer(x_ * e_x));
-    }
-  }
-  else {
-    return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
-  }
+  return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
 };
 
-bool taps(HANDLE x, double e, bool a) {
-  if (a) {
-    return false;
-  }
-  else {
-    Xyloid2::e1(x, true);
-    Xyloid2::e1(x, false);
-    Time::XO(e);
-    return true;
-  }
+bool taps(HANDLE x, double e) {
+  Xyloid2::e1(x, true);
+  Time::XO(e);
+  Xyloid2::e1(x, false);
+  return true;
 };
 
 bool pattern(HANDLE x, int e, bool a) {
@@ -93,7 +77,7 @@ int main() {
 
   std::function<void()> action2 = [&_l, &_r, &driver]() {
     Parallel::ThreadPool zy(std::thread::hardware_concurrency());
-    Parallel::ThreadPool zx(+16);
+    Parallel::ThreadPool zx(+1);
 
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
@@ -111,18 +95,18 @@ int main() {
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
 
-    std::function<bool(int, int)> work = [&_l, &_r, &cx, &cy, &ex, &ey, &driver, &zy](int e_1, int e) {
-      if (_r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-        zy.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-          move(driver, ey, ex, cy, cx, e_1, e, _l);
-          taps(driver, +999.999 / +3.999, _l);
+    std::function<bool(int, int)> work = [&_l, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
+      zx.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e, _l);
+        });
+
+      if (-cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
+        zx.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+          taps(driver, +999.999 / +3.999);
           });
         return true;
       }
       else {
-        zy.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-          move(driver, ey, ex, cy, cx, e_1, e, _l);
-          });
         return true;
       }
       };
@@ -156,17 +140,20 @@ int main() {
       return false;
       };
 
-    int at = +64;
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find, &zx](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +8, e, false)) {
-        return true;
-      }
-      else if (find(o1, e_2, e_1 / +1, e, true)) {
-        return true;
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      if (_l) {
+        /***/if (find(o1, e_2, e_1 / +8, e, false)) {
+          return true;
+        }
+        else if (find(o1, e_2, e_1 / +1, e, true)) {
+          return true;
+        }
+        else {
+          return false;
+        }
       }
       else {
-        at = +64;
-        return true;
+        return false;
       }
       };
 
@@ -186,9 +173,9 @@ int main() {
       if (e == VK_OEM_6) {
         _r = a;
 
-        parallel1.enqueue_task([&_r, &driver]() mutable {
+        /*parallel1.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r);
-          });
+          });*/
 
         return false;
       }
@@ -196,7 +183,7 @@ int main() {
         if (a) {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+          /*parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
             Xyloid2::e1(driver, _l);
 
             at = till([&_l, &parallel2, &driver](int e) {
@@ -215,14 +202,14 @@ int main() {
                 return back;
               }
               }, at) - 1;
-            });
+            });*/
 
           return false;
         }
         else {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+          /*parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
             Xyloid2::e1(driver, _l);
 
             at = upon([&_l, &driver, &parallel2](int e) {
@@ -241,7 +228,7 @@ int main() {
                 return back;
               }
               }, at) + 1;
-            });
+            });*/
 
           return false;
         }
