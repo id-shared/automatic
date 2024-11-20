@@ -154,7 +154,7 @@ int main() {
           _l = a;
 
           system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
-            Time::XO(+16);
+            Time::XO(+32);
 
             Xyloid2::e1(driver, _l);
 
@@ -182,7 +182,7 @@ int main() {
           _l = a;
 
           system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
-            Time::XO(+16);
+            Time::XO(+32);
             _y = false;
             _x = false;
 
