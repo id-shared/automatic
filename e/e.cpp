@@ -126,19 +126,20 @@ int to_integer(double e) {
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
+  const double _y = y_ * e_y;
+  const double _x = x_ * e_x;
+
 
   if (a) {
-    const double xx = to_integer((x_ * e_x) / +4);
-
     if (y_ >= _) {
-      return Xyloid2::yx(x, to_integer(y_ * e_y), xx);
+      return Xyloid2::yx(x, to_integer(_y * +2), to_integer(_x * +2));
     }
     else {
-      return Xyloid2::yx(x, _, to_integer(x_ * e_x));
+      return Xyloid2::yx(x, _, to_integer(_x * +2));
     }
   }
   else {
-    return Xyloid2::yx(x, to_integer(y_ * e_y), to_integer(x_ * e_x));
+    return Xyloid2::yx(x, to_integer(_y), to_integer(_x));
   }
 };
 
@@ -165,14 +166,24 @@ int till(std::function<bool(int)> z, int i) {
 }
 
 bool pattern(HANDLE x, int e, bool a) {
-  int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  int _y = e % +2 == _ ? +5 : +4;
+  const int y_ = (a ? +1 : -1) * Pattern::dy(e);
+  const int _y = +3;
 
   if (abs(y_) > _) {
-    return Xyloid2::yx(x, y_ * _y, _);
+    Xyloid2::yx(x, e % +2 == _ ? y_ : _, _);
+    Time::XO(_y);
+    Xyloid2::yx(x, y_, _);
+    Time::XO(_y);
+    Xyloid2::yx(x, y_, _);
+    Time::XO(_y);
+    Xyloid2::yx(x, y_, _);
+    Time::XO(_y);
+    Xyloid2::yx(x, y_, _);
+    Time::XO(_y);
+    return true;
   }
   else {
-    return false;
+    return true;
   }
 }
 
@@ -290,7 +301,7 @@ int main() {
   const int cx = cx_ / +2;
 
   const int ay_ = xy / +16;
-  const int ax_ = xx / +4;
+  const int ax_ = xx / +9;
   const int ay = ay_ / +2;
   const int ax = ax_ / +2;
 
