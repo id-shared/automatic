@@ -97,19 +97,19 @@ int main() {
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
 
-    std::function<bool(int, int)> work = [&_x, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
-      zx.enqueue_task([&_x, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, _x ? _ : e_1, e);
+    std::function<bool(int, int)> work = [&cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
+      zx.enqueue_task([&cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+        move(driver, ey, ex, cy, cx, _, e); // e_1
         });
 
-      return _x;
+      return true;
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
-      const int _y = +3;
-      const int _x = +3;
+      const int _y = +2 * +2;
+      const int _x = +2 * +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
         uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
@@ -129,24 +129,20 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &_x, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       if (_l) {
         /***/if (find(o1, e_2, e_1 / +8, e)) {
-          _x = true;
-          return _x;
+          return true;
         }
         else if (find(o1, e_2, e_1 / +1, e)) {
-          _x = true;
-          return _x;
+          return true;
         }
         else {
-          _x = false;
-          return _x;
+          return false;
         }
       }
       else {
-        _x = false;
-        return _x;
+        return false;
       }
       };
 
