@@ -261,7 +261,8 @@ int main() {
     };
   std::thread thread1(action1);
 
-  while (true) {};
+  thread2.join();
+  thread1.join();
 
   return +1;
 }
