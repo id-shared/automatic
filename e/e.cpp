@@ -130,7 +130,7 @@ int main() {
             const int axis_y = e_y - y_ + _y;
             const int axis_x = e_x - x_ + _x;
 
-            return work(axis_y / +1, axis_x / +1);
+            return work(axis_y, axis_x);
           }
         }
       }
@@ -170,66 +170,11 @@ int main() {
     Event::KeyboardHook hook([&_l, &_r, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
-
-        /*parallel1.enqueue_task([&_r, &driver]() mutable {
-          Xyloid2::e2(driver, _r);
-          });*/
-
         return false;
       }
       else if (e == VK_OEM_4) {
-        if (a) {
-          _l = a;
-
-          /*parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
-            Xyloid2::e1(driver, _l);
-
-            at = till([&_l, &parallel2, &driver](int e) {
-              const bool back = _l && (size >= e);
-
-              if (back) {
-                parallel2.enqueue_task([e, &driver]() mutable {
-                  pattern(driver, e, true);
-                  });
-
-                Time::XO(time / +0.999);
-
-                return back;
-              }
-              else {
-                return back;
-              }
-              }, at) - 1;
-            });*/
-
-          return false;
-        }
-        else {
-          _l = a;
-
-          /*parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
-            Xyloid2::e1(driver, _l);
-
-            at = upon([&_l, &driver, &parallel2](int e) {
-              const bool back = !_l && (+1 <= e);
-
-              if (back) {
-                parallel2.enqueue_task([&driver, e]() mutable {
-                  pattern(driver, e, false);
-                  });
-
-                Time::XO(time / +1.499);
-
-                return back;
-              }
-              else {
-                return back;
-              }
-              }, at) + 1;
-            });*/
-
-          return false;
-        }
+        _l = a;
+        return false;
       }
       else if (e == VK_A || e == VK_D) {
         if (a) {
@@ -251,6 +196,52 @@ int main() {
 
   return +1;
 }
+
+/*parallel1.enqueue_task([&_r, &driver]() mutable {
+  Xyloid2::e2(driver, _r);
+  });*/
+
+/*parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+  Xyloid2::e1(driver, _l);
+
+  at = till([&_l, &parallel2, &driver](int e) {
+    const bool back = _l && (size >= e);
+
+    if (back) {
+      parallel2.enqueue_task([e, &driver]() mutable {
+        pattern(driver, e, true);
+        });
+
+      Time::XO(time / +0.999);
+
+      return back;
+    }
+    else {
+      return back;
+    }
+    }, at) - 1;
+  });*/
+
+/*parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+  Xyloid2::e1(driver, _l);
+
+  at = upon([&_l, &driver, &parallel2](int e) {
+    const bool back = !_l && (+1 <= e);
+
+    if (back) {
+      parallel2.enqueue_task([&driver, e]() mutable {
+        pattern(driver, e, false);
+        });
+
+      Time::XO(time / +1.499);
+
+      return back;
+    }
+    else {
+      return back;
+    }
+    }, at) + 1;
+  });*/
 
 /*
 auto previous = std::chrono::milliseconds::rep{ 0 };
