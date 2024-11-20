@@ -128,8 +128,10 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
 
   if (a) {
+    const double xx = to_integer((x_ * e_x) / +4);
+
     if (y_ >= _) {
-      return Xyloid2::yx(x, to_integer(y_ * e_y), to_integer(x_ * e_x));
+      return Xyloid2::yx(x, to_integer(y_ * e_y), xx);
     }
     else {
       return Xyloid2::yx(x, _, to_integer(x_ * e_x));
@@ -282,8 +284,8 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy_ = xy / +32;
-  const int cx_ = xx / +32;
+  const int cy_ = xy / +64;
+  const int cx_ = xx / +64;
   const int cy = cy_ / +2;
   const int cx = cx_ / +2;
 
