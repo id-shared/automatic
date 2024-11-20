@@ -79,10 +79,9 @@ int main() {
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &xx, &xy, &driver, &system](int e_2, int e_1, int e) {
       system.enqueue_task([&_x, &_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((_y ? _ : +1) * (e_2 + e) * xy), to_integer((_x ? +1 / +2 : +1) * (e_1 + e) * xx));
+        Xyloid2::yx(driver, to_integer((xy * (e_2 + e)) * (_y ? _ : +1)), to_integer((xx * (e_1 + e)) / (_x ? +2 : +1)));
         _y = true;
         _x = true;
-        return _y;
         });
 
       return true;
@@ -157,7 +156,7 @@ int main() {
           system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
             Time::XO(+16);
 
-            //Xyloid2::e1(driver, _l);
+            Xyloid2::e1(driver, _l);
 
             at = till([&_l, &single, &driver](int e) {
               const bool back = _l && (size >= e);
@@ -187,7 +186,7 @@ int main() {
             _y = false;
             _x = false;
 
-            //Xyloid2::e1(driver, _l);
+            Xyloid2::e1(driver, _l);
 
             at = upon([&_l, &driver, &single](int e) {
               const bool back = !_l && (+1 <= e);
