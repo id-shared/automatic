@@ -72,7 +72,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  bool _z = false;
+  bool _y = false;
   bool _x = false;
   bool _r = false;
   bool _l = false;
@@ -99,8 +99,7 @@ int main() {
 
     std::function<bool(int, int)> work = [&_x, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
       zx.enqueue_task([&_x, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e);
-        _x = true;
+        move(driver, ey, ex, cy, cx, _x ? _ : e_1, e);
         });
 
       return _x;
@@ -109,8 +108,8 @@ int main() {
     std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
-      const int _y = +2 * +2;
-      const int _x = +2 * +2;
+      const int _y = +3;
+      const int _x = +3;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
         uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
@@ -133,17 +132,21 @@ int main() {
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &_x, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       if (_l) {
         /***/if (find(o1, e_2, e_1 / +8, e)) {
-          return true;
+          _x = true;
+          return _x;
         }
         else if (find(o1, e_2, e_1 / +1, e)) {
-          return true;
+          _x = true;
+          return _x;
         }
         else {
-          return false;
+          _x = false;
+          return _x;
         }
       }
       else {
-        return false;
+        _x = false;
+        return _x;
       }
       };
 
@@ -175,6 +178,8 @@ int main() {
           _l = a;
 
           parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
+            Time::XO(+16);
+
             Xyloid2::e1(driver, _l);
 
             at = till([&_l, &parallel2, &driver](int e) {
