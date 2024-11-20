@@ -19,13 +19,14 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
 
   if (a) {
+    const int _y = +1;
     const int _x = +1; // x_ >= -e_3 && x_ <= e_3 ? +2 : +1;
 
     if (y_ >= _) {
-      return Xyloid2::yx(x, to_integer(y_ * e_y), to_integer((x_ * e_x) * _x));
+      return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
     }
     else {
-      return Xyloid2::yx(x, _, to_integer((x_ * e_x) * _x));
+      return Xyloid2::yx(x, _, to_integer(x_ * e_x * _x));
     }
   }
   else {
@@ -47,11 +48,9 @@ bool taps(HANDLE x, double e, bool a) {
 
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  const int _y = +3;
+  const int _y = +4;
 
   if (abs(y_) > _) {
-    Xyloid2::yx(x, e % +2 == _ ? y_ : _, _);
-    Time::XO(_y);
     Xyloid2::yx(x, y_, _);
     Time::XO(_y);
     Xyloid2::yx(x, y_, _);
@@ -98,11 +97,11 @@ int main() {
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const double ey = +0.429 * +4 / +4;
+    const double ey = +0.429 * +4;
     const double ex = +0.429 * +4;
 
-    const int cy_ = xy / +1;
-    const int cx_ = xx / +1;
+    const int cy_ = xy / +32;
+    const int cx_ = xx / +32;
     const int cy = cy_ / +2;
     const int cx = cx_ / +2;
 
@@ -130,8 +129,8 @@ int main() {
     std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
-      const int _y = +2;
-      const int _x = +2;
+      const int _y = +2 * +2;
+      const int _x = +2 * +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
         uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
@@ -144,7 +143,7 @@ int main() {
             const int axis_x = e_x - x_ + _x;
 
             if (!a) {
-              return work(axis_y / +1, axis_x / +2);
+              return work(axis_y / +1, axis_x / +1);
             }
             else {
               return work(axis_y / +1, axis_x / +1);
