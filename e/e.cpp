@@ -14,21 +14,6 @@ int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
-bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1) {
-  const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
-  const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
-  const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +1 : +1;
-  const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +1 : +1;
-
-};
-
-bool taps(HANDLE x, double e) {
-  Xyloid2::e1(x, true);
-  Time::XO(e);
-  Xyloid2::e1(x, false);
-  return true;
-};
-
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int _y = +4;
@@ -86,7 +71,7 @@ int main() {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
-    const int cy = ey / +8;
+    const int cy = ey / +16;
     const int cx = ex / +4;
 
     const int ay = cy / +2;
@@ -244,3 +229,10 @@ int main() {
 
   return +1;
 }
+
+/*const double xvy = cy / +16;
+const double xvx = cx / +16;
+const double y2_ = e_2 >= _ ? min(xvy, e_2) : max(-xvy, e_2);
+const double x2_ = e_1 >= _ ? min(xvx, e_2) : max(-xvx, e_1);
+const double _y2 = e_2 >= -xvy && e_2 <= xvy ? +0.5 : +1;
+const double _x2 = e_1 >= -xvx && e_1 <= xvx ? +0.5 : +1;*/
