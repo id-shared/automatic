@@ -13,6 +13,7 @@ namespace Parallel {
     ~ThreadPool();
 
     void enqueue_task(std::function<void()> task);
+    bool is_busy();
 
   private:
     std::vector<std::thread> workers;
@@ -60,5 +61,10 @@ namespace Parallel {
       }
       task();
     }
+  }
+
+  bool ThreadPool::is_busy() {
+    std::lock_guard<std::mutex> lock(queue_mutex);
+    return !tasks.empty();
   }
 }

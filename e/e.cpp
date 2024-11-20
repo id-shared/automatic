@@ -201,19 +201,100 @@ int main() {
   bool _r = false;
   bool _l = false;
   bool __ = false;
-  std::function<void()> queuing = [&_l, &_r, &driver]() {
-    Parallel::ThreadPool queue2(1);
-    Parallel::ThreadPool queue1(1);
+
+  std::function<void()> action2 = [&__, &_l, &_r, &system, &driver]() {
+    const int xy = GetSystemMetrics(SM_CYSCREEN);
+    const int xx = GetSystemMetrics(SM_CXSCREEN);
+
+    const double ey = +0.429 * +4 / +4;
+    const double ex = +0.429 * +4;
+
+    const int cy_ = xy / +32;
+    const int cx_ = xx / +32;
+    const int cy = cy_ / +2;
+    const int cx = cx_ / +2;
+
+    const int ay_ = xy / +16;
+    const int ax_ = xx / +9;
+    const int ay = ay_ / +2;
+    const int ax = ax_ / +2;
+
+    std::function<bool(int, int)> work = [&__, &_l, &_r, &cx, &cy, &ex, &ey, &driver, &system](int e_1, int e) {
+      if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
+        system.enqueue_task([&__, &_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+          move(driver, ey, ex, cy, cx, e_1, e, _l);
+          taps(driver, +999.999 / +3.999, _l, __);
+          });
+        return true;
+      }
+      else {
+        system.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+          move(driver, ey, ex, cy, cx, e_1, e, _l);
+          });
+        return true;
+      }
+      };
+
+    std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) {
+      const int y_ = e_2 / +2;
+      const int x_ = e_1 / +2;
+      const int _y = +2;
+      const int _x = +2;
+
+      for (UINT e_y = _; e_y < e_2; ++e_y) {
+        uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
+
+        for (UINT e_x = _; e_x < e_1; ++e_x) {
+          uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
+
+          if (is_red(px_x)) {
+            const int axis_y = e_y - y_ + _y;
+            const int axis_x = e_x - x_ + _x;
+
+            if (!a) {
+              return work(axis_y / +1, axis_x / +2);
+            }
+            else {
+              return work(axis_y / +1, axis_x / +1);
+            }
+          }
+        }
+      }
+
+      return false;
+      };
+
+    int at = +256;
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      /***/if (find(o1, e_2, e_1 / +8, e, false)) {
+        return true;
+      }
+      else if (find(o1, e_2, e_1 / +1, e, true)) {
+        return true;
+      }
+      else {
+        at = +256;
+        return true;
+      }
+      };
+
+    CaptureScreenArea(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2);
+    };
+  std::thread thread2(action2);
+
+  std::function<void()> action1 = [&_l, &_r, &driver]() {
+    Parallel::ThreadPool parallel2(1);
+    Parallel::ThreadPool parallel1(1);
 
     const int time = +16;
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &at, &driver, &queue1, &queue2](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
 
-        queue1.enqueue_task([&_r, &driver]() mutable {
+        parallel1.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r);
           });
 
@@ -223,14 +304,14 @@ int main() {
         if (a) {
           _l = a;
 
-          queue1.enqueue_task([&_l, &at, &driver, &queue2]() mutable {
+          parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
             Xyloid2::e1(driver, _l);
 
-            at = till([&_l, &queue2, &driver](int e) {
+            at = till([&_l, &parallel2, &driver](int e) {
               const bool back = _l && (size >= e);
 
               if (back) {
-                queue2.enqueue_task([e, &driver]() mutable {
+                parallel2.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -249,14 +330,14 @@ int main() {
         else {
           _l = a;
 
-          queue1.enqueue_task([&_l, &at, &driver, &queue2]() mutable {
+          parallel1.enqueue_task([&_l, &at, &driver, &parallel2]() mutable {
             Xyloid2::e1(driver, _l);
 
-            at = upon([&_l, &driver, &queue2](int e) {
+            at = upon([&_l, &driver, &parallel2](int e) {
               const bool back = !_l && (+1 <= e);
 
               if (back) {
-                queue2.enqueue_task([&driver, e]() mutable {
+                parallel2.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
@@ -286,82 +367,7 @@ int main() {
       }
       });
     };
-  std::thread thread(queuing);
-
-  const int xy = GetSystemMetrics(SM_CYSCREEN);
-  const int xx = GetSystemMetrics(SM_CXSCREEN);
-
-  const double ey = +0.429 * +4 / +4;
-  const double ex = +0.429 * +4;
-
-  const int cy_ = xy / +64;
-  const int cx_ = xx / +64;
-  const int cy = cy_ / +2;
-  const int cx = cx_ / +2;
-
-  const int ay_ = xy / +16;
-  const int ax_ = xx / +9;
-  const int ay = ay_ / +2;
-  const int ax = ax_ / +2;
-
-  std::function<bool(int, int)> work = [&__, &_l, &_r, &cx, &cy, &ex, &ey, &driver, &system](int e_1, int e) {
-    if (!__ && _r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-      system.enqueue_task([&__, &_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
-        taps(driver, +999.999 / +3.999, _l, __);
-        });
-      return true;
-    }
-    else {
-      system.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
-        });
-      return true;
-    }
-    };
-
-  std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) {
-    const int y_ = e_2 / +2;
-    const int x_ = e_1 / +2;
-    const int _y = +2;
-    const int _x = +2;
-
-    for (UINT e_y = _; e_y < e_2; ++e_y) {
-      uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
-
-      for (UINT e_x = _; e_x < e_1; ++e_x) {
-        uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
-
-        if (is_red(px_x)) {
-          const int axis_y = e_y - y_ + _y;
-          const int axis_x = e_x - x_ + _x;
-
-          if (!a) {
-            return work(axis_y / +1, axis_x / +2);
-          }
-          else {
-            return work(axis_y / +1, axis_x / +1);
-          }
-        }
-      }
-    }
-
-    return false;
-    };
-
-  std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-    /***/if (find(o1, e_2, e_1 / +8, e, false)) {
-      return true;
-    }
-    else if (find(o1, e_2, e_1 / +1, e, true)) {
-      return true;
-    }
-    else {
-      return true;
-    }
-    };
-
-  CaptureScreenArea(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2);
+  std::thread thread1(action1);
 
   return +1;
 }
