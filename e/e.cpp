@@ -93,6 +93,7 @@ int main() {
 
   std::function<void()> action2 = [&_l, &_r, &driver]() {
     Parallel::ThreadPool zy(std::thread::hardware_concurrency());
+    Parallel::ThreadPool zx(+1);
 
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
@@ -157,6 +158,10 @@ int main() {
 
     int at = +64;
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      auto now = std::chrono::system_clock::now();
+      auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
+      std::cout << duration.count() << std::endl;
+
       /***/if (find(o1, e_2, e_1 / +8, e, false)) {
         return true;
       }

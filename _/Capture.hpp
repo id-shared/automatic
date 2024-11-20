@@ -1,8 +1,9 @@
 #pragma once
 #include "Parallel.hpp"
-#include "Time.hpp"
+#include <chrono>
 #include <d3d11.h>
 #include <dxgi1_2.h>
+#include <thread>
 #include <wrl.h>
 
 namespace Capture {
@@ -51,17 +52,14 @@ namespace Capture {
 
     Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-    const UINT frame_time = static_cast<UINT>(round(e));
-
-    double wait = frame_time;
+    const auto frame_time = std::chrono::milliseconds(static_cast<int>(round(e)));
 
     while (true) {
       ComPtr<IDXGIResource> desktopResource;
       DXGI_OUTDUPL_FRAME_INFO frameInfo;
-      hr = duplication->AcquireNextFrame(frame_time, &frameInfo, &desktopResource);
+      hr = duplication->AcquireNextFrame(static_cast<UINT>(frame_time.count()), &frameInfo, &desktopResource);
 
       if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
-        wait = wait + frame_time;
         continue;
       }
       if (FAILED(hr)) throw hr;
@@ -84,8 +82,7 @@ namespace Capture {
 
       duplication->ReleaseFrame();
 
-      Time::XO(wait);
-      wait = frame_time;
+      std::this_thread::sleep_for(frame_time);
     }
 
     return true;
