@@ -167,7 +167,7 @@ int main() {
                   pattern(driver, e, true);
                   });
 
-                Time::XO(time / +0.999);
+                Time::XO(time);
 
                 return back;
               }
