@@ -52,14 +52,20 @@ namespace Capture {
 
     Parallel::ThreadPool pool(std::thread::hardware_concurrency());
 
-    const auto frame_time = std::chrono::milliseconds(static_cast<int>(round(e)));
+    const auto frame_duration = std::chrono::milliseconds(static_cast<int>(std::round(e)));
+    auto next_frame_time = std::chrono::steady_clock::now();
 
     while (true) {
       ComPtr<IDXGIResource> desktopResource;
       DXGI_OUTDUPL_FRAME_INFO frameInfo;
-      hr = duplication->AcquireNextFrame(static_cast<UINT>(frame_time.count()), &frameInfo, &desktopResource);
+
+      // Wait until the next frame
+      std::this_thread::sleep_until(next_frame_time);
+
+      hr = duplication->AcquireNextFrame(0, &frameInfo, &desktopResource);
 
       if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
+        next_frame_time += frame_duration;
         continue;
       }
       if (FAILED(hr)) throw hr;
@@ -82,7 +88,8 @@ namespace Capture {
 
       duplication->ReleaseFrame();
 
-      std::this_thread::sleep_for(frame_time);
+      // Calculate next frame time
+      next_frame_time += frame_duration;
     }
 
     return true;

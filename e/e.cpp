@@ -93,7 +93,7 @@ int main() {
 
   std::function<void()> action2 = [&_l, &_r, &driver]() {
     Parallel::ThreadPool zy(std::thread::hardware_concurrency());
-    Parallel::ThreadPool zx(+1);
+    Parallel::ThreadPool zx(+16);
 
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
@@ -156,11 +156,17 @@ int main() {
       return false;
       };
 
+    long previous = _;
     int at = +64;
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &previous, &find, &zx](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       auto now = std::chrono::system_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
-      std::cout << duration.count() << std::endl;
+      auto count = duration.count();
+      std::cout << count << std::endl;
+      previous = count;
+
+      /*zx.enqueue_task([&count, &previous]() mutable {
+        });*/
 
       /***/if (find(o1, e_2, e_1 / +8, e, false)) {
         return true;
@@ -174,7 +180,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2);
+    Capture::screen(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +500);
     };
   std::thread thread2(action2);
 
