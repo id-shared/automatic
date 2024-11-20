@@ -47,6 +47,9 @@ int till(std::function<bool(int)> z, int i) {
 }
 
 int main() {
+  Parallel::ThreadPool system(std::thread::hardware_concurrency());
+  Parallel::ThreadPool single(+1);
+
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
     return c.starts_with(L"RZCONTROL"sv) && c.ends_with(L"{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
@@ -56,15 +59,13 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
+  long _z = GetTickCount64();
   bool _y = false;
   bool _x = false;
   bool _r = false;
   bool _l = false;
 
-  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver]() {
-    Parallel::ThreadPool zy(std::thread::hardware_concurrency());
-    Parallel::ThreadPool zx(+1);
-
+  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &_z, &driver, &single, &system]() {
     const double xy = +0.429 * +4;
     const double xx = +0.429 * +4;
 
@@ -77,8 +78,9 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int, int)> work = [&_y, &xx, &xy, &zx, &driver](int e_2, int e_1, int e) {
-      zx.enqueue_task([&_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
+    std::function<bool(int, int, int)> work = [&_y, &_z, &xx, &xy, &single, &driver](int e_2, int e_1, int e) {
+      single.enqueue_task([&_y, &_z, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
+        _z = GetTickCount64();
         return Xyloid2::yx(driver, _y ? _ : _, to_integer((e + e_1) * xx));
         });
 
@@ -129,7 +131,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver]() {
+  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &_z, &driver, &single, &system]() {
     Parallel::ThreadPool parallel2(1);
     Parallel::ThreadPool parallel1(1);
 
@@ -137,7 +139,7 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
 
@@ -151,7 +153,7 @@ int main() {
         if (a) {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
+          parallel1.enqueue_task([&_l, &_y, &_z, &at, &driver, &parallel2]() mutable {
             Time::XO(+16);
             _y = true;
 
