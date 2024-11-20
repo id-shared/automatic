@@ -114,7 +114,7 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
       const int _y = +2 * +2;
@@ -130,12 +130,7 @@ int main() {
             const int axis_y = e_y - y_ + _y;
             const int axis_x = e_x - x_ + _x;
 
-            if (!a) {
-              return work(axis_y / +1, axis_x / +1);
-            }
-            else {
-              return work(axis_y / +1, axis_x / +1);
-            }
+            return work(axis_y / +1, axis_x / +1);
           }
         }
       }
@@ -145,10 +140,10 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       if (_l) {
-        /***/if (find(o1, e_2, e_1 / +8, e, false)) {
+        /***/if (find(o1, e_2, e_1 / +8, e)) {
           return true;
         }
-        else if (find(o1, e_2, e_1 / +1, e, true)) {
+        else if (find(o1, e_2, e_1 / +1, e)) {
           return true;
         }
         else {
