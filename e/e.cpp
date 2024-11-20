@@ -14,20 +14,6 @@ int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
-bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1) {
-  const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
-  const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
-  const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +1 : +1;
-  const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +1 : +1;
-};
-
-bool taps(HANDLE x, double e) {
-  Xyloid2::e1(x, true);
-  Time::XO(e);
-  Xyloid2::e1(x, false);
-  return true;
-};
-
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int _y = +4;
