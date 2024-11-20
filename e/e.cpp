@@ -78,8 +78,8 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int, int)> work = [&_y, &_z, &xx, &xy, &single, &driver](int e_2, int e_1, int e) {
-      single.enqueue_task([&_y, &_z, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
+    std::function<bool(int, int, int)> work = [&_y, &_z, &xx, &xy, &system, &driver](int e_2, int e_1, int e) {
+      system.enqueue_task([&_y, &_z, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
         _z = GetTickCount64();
         return Xyloid2::yx(driver, _y ? _ : _, to_integer((e + e_1) * xx));
         });
@@ -139,11 +139,11 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &parallel1, &parallel2](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &single, &system](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a;
 
-        parallel1.enqueue_task([&_r, &driver]() mutable {
+        system.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r);
           });
 
@@ -153,17 +153,17 @@ int main() {
         if (a) {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &_y, &_z, &at, &driver, &parallel2]() mutable {
+          system.enqueue_task([&_l, &_y, &_z, &at, &driver, &single]() mutable {
             Time::XO(+16);
             _y = true;
 
             Xyloid2::e1(driver, _l);
 
-            at = till([&_l, &parallel2, &driver](int e) {
+            at = till([&_l, &single, &driver](int e) {
               const bool back = _l && (size >= e);
 
               if (back) {
-                parallel2.enqueue_task([e, &driver]() mutable {
+                single.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -182,17 +182,17 @@ int main() {
         else {
           _l = a;
 
-          parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
+          system.enqueue_task([&_l, &_y, &at, &driver, &single]() mutable {
             Time::XO(+16);
             _y = false;
 
             Xyloid2::e1(driver, _l);
 
-            at = upon([&_l, &driver, &parallel2](int e) {
+            at = upon([&_l, &driver, &single](int e) {
               const bool back = !_l && (+1 <= e);
 
               if (back) {
-                parallel2.enqueue_task([&driver, e]() mutable {
+                single.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
