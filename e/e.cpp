@@ -81,25 +81,21 @@ int main() {
     Parallel::ThreadPool zy(std::thread::hardware_concurrency());
     Parallel::ThreadPool zx(+1);
 
-    const int xy = GetSystemMetrics(SM_CYSCREEN);
-    const int xx = GetSystemMetrics(SM_CXSCREEN);
+    const double xy = +0.429 * +4;
+    const double xx = +0.429 * +4;
 
-    const double ey = +0.429 * +4;
-    const double ex = +0.429 * +4;
+    const int ey = GetSystemMetrics(SM_CYSCREEN);
+    const int ex = GetSystemMetrics(SM_CXSCREEN);
 
-    const int cy_ = xy / +32;
-    const int cx_ = xx / +32;
-    const int cy = cy_ / +2;
-    const int cx = cx_ / +2;
+    const int cy = ey / +8;
+    const int cx = ex / +4;
 
-    const int ay_ = xy / +8;
-    const int ax_ = xx / +4;
-    const int ay = ay_ / +2;
-    const int ax = ax_ / +2;
+    const int ay = cy / +2;
+    const int ax = cx / +2;
 
-    std::function<bool(int, int)> work = [&_y, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
-      zx.enqueue_task([&_y, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, _y ? _ : e_1, e);
+    std::function<bool(int, int)> work = [&_y, &ax, &ay, &xx, &xy, &driver, &zx](int e_1, int e) {
+      zx.enqueue_task([&_y, &ax, &ay, &xx, &xy, &driver, &e_1, &e]() mutable {
+        move(driver, xy, xx, ay, ax, _y ? _ : e_1, e);
         });
 
       return true;
@@ -146,7 +142,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2 * +2 * +2 * +2);
+    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, +2 * +2 * +2 * +2);
     };
   std::thread thread2(action2);
 
@@ -174,7 +170,7 @@ int main() {
           _l = a;
 
           parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
-            Time::XO(+16);
+            Time::XO(+32);
             _y = true;
 
             Xyloid2::e1(driver, _l);
@@ -203,7 +199,7 @@ int main() {
           _l = a;
 
           parallel1.enqueue_task([&_l, &_y, &at, &driver, &parallel2]() mutable {
-            Time::XO(+16);
+            Time::XO(+32);
             _y = false;
 
             Xyloid2::e1(driver, _l);
