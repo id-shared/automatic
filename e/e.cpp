@@ -101,8 +101,8 @@ int main() {
     const double ey = +0.429 * +4 / +4;
     const double ex = +0.429 * +4;
 
-    const int cy_ = xy / +32;
-    const int cx_ = xx / +32;
+    const int cy_ = xy / +1;
+    const int cx_ = xx / +1;
     const int cy = cy_ / +2;
     const int cx = cx_ / +2;
 
@@ -158,7 +158,7 @@ int main() {
 
     int at = +256;
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&at, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +8, e, false)) {
+      /***/if (find(o1, e_2, e_1 / +4, e, false)) {
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e, true)) {
