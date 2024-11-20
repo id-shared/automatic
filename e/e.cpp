@@ -14,7 +14,7 @@ int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
-bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
+bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1) {
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
   const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +0.5 : +1;
@@ -72,10 +72,11 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
+  bool _x = false;
   bool _r = false;
   bool _l = false;
 
-  std::function<void()> action2 = [&_l, &_r, &driver]() {
+  std::function<void()> action2 = [&_x, &_l, &_r, &driver]() {
     Parallel::ThreadPool zy(std::thread::hardware_concurrency());
     Parallel::ThreadPool zx(+1);
 
@@ -95,18 +96,20 @@ int main() {
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
 
-    std::function<bool(int, int)> work = [&_l, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
-      zx.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, e_1, e, _l);
+    std::function<bool(int, int)> work = [&_x, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
+      zx.enqueue_task([&cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+        move(driver, ey, ex, cy, cx, e_1, e);
         });
 
-      if (-cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-        zx.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-          taps(driver, +999.999 / +3.999);
+      if (!_x && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
+        _x = true;
+        zx.enqueue_task([&cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+          taps(driver, +99.99);
           });
         return true;
       }
       else {
+        _x = false;
         return true;
       }
       };
