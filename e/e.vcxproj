@@ -142,6 +142,7 @@
     <ClCompile Include="e.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\_\Capture.hpp" />
     <ClInclude Include="..\_\Contact.hpp" />
     <ClInclude Include="..\_\Device.hpp" />
     <ClInclude Include="..\_\Event.hpp" />

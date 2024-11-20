@@ -62,4 +62,8 @@ namespace Event {
   };
 
   KeyboardHook* KeyboardHook::instance = nullptr;
+
+  bool isKeyHeld(int e) {
+    return (GetAsyncKeyState(e) & 0x8000) != +0;
+  }
 }
