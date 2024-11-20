@@ -18,9 +18,8 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
   const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +1 : +1;
-  const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +0.5 : +1;
+  const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +1 : +1;
 
-  return Xyloid2::yx(x, to_integer(y_ * e_y * _y), to_integer(x_ * e_x * _x));
 };
 
 bool taps(HANDLE x, double e) {
@@ -93,9 +92,9 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int)> work = [&_y, &ax, &ay, &xx, &xy, &driver, &zx](int e_1, int e) {
-      zx.enqueue_task([&_y, &ax, &ay, &xx, &xy, &driver, &e_1, &e]() mutable {
-        move(driver, xy, xx, ay, ax, _y ? _ : e_1, e);
+    std::function<bool(int, int)> work = [&_y, &xx, &xy, &driver, &zx](int e_1, int e) {
+      zx.enqueue_task([&_y, &xx, &xy, &driver, &e_1, &e]() mutable {
+        return Xyloid2::yx(driver, _y ? _ : to_integer(e_1 * xy), to_integer(e * xx));
         });
 
       return true;
@@ -142,7 +141,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, +2 * +2 * +2 * +2);
+    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, +16);
     };
   std::thread thread2(action2);
 
@@ -173,7 +172,7 @@ int main() {
             Time::XO(+32);
             _y = true;
 
-            Xyloid2::e1(driver, _l);
+            //Xyloid2::e1(driver, _l);
 
             at = till([&_l, &parallel2, &driver](int e) {
               const bool back = _l && (size >= e);
@@ -202,7 +201,7 @@ int main() {
             Time::XO(+32);
             _y = false;
 
-            Xyloid2::e1(driver, _l);
+            //Xyloid2::e1(driver, _l);
 
             at = upon([&_l, &driver, &parallel2](int e) {
               const bool back = !_l && (+1 <= e);
