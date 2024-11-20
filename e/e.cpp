@@ -77,7 +77,7 @@ int main() {
   bool _r = false;
   bool _l = false;
 
-  std::function<void()> action2 = [&_x, &_l, &_r, &driver]() {
+  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver]() {
     Parallel::ThreadPool zy(std::thread::hardware_concurrency());
     Parallel::ThreadPool zx(+1);
 
@@ -97,9 +97,9 @@ int main() {
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
 
-    std::function<bool(int, int)> work = [&cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
-      zx.enqueue_task([&cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
-        move(driver, ey, ex, cy, cx, _, e); // e_1
+    std::function<bool(int, int)> work = [&_y, &cx, &cy, &ex, &ey, &driver, &zx](int e_1, int e) {
+      zx.enqueue_task([&_y, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+        move(driver, ey, ex, cy, cx, _y ? _ : e_1, e);
         });
 
       return true;
@@ -245,14 +245,3 @@ int main() {
 
   return +1;
 }
-
-/*
-auto previous = std::chrono::milliseconds::rep{ 0 };
-auto now = std::chrono::system_clock::now();
-auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
-auto count = duration.count();
-zx.enqueue_task([count, previous]() mutable {
-  std::cout << count - previous << std::endl;
-  });
-previous = count;
-*/
