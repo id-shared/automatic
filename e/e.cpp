@@ -180,7 +180,8 @@ int main() {
   std::thread thread2(action2);
 
   std::function<void()> action1 = [&_l, &_r, &driver]() {
-    Parallel::ThreadPool system(std::thread::hardware_concurrency());
+    Parallel::ThreadPool zy(std::thread::hardware_concurrency());
+
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
@@ -197,16 +198,16 @@ int main() {
     const int ay = ay_ / +2;
     const int ax = ax_ / +2;
 
-    std::function<bool(int, int)> work = [&_l, &_r, &cx, &cy, &ex, &ey, &driver, &system](int e_1, int e) {
+    std::function<bool(int, int)> work = [&_l, &_r, &cx, &cy, &ex, &ey, &driver, &zy](int e_1, int e) {
       if (_r && -cx <= e && +cx >= e && -cy <= e_1 && +cy >= e_1) {
-        system.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+        zy.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
           move(driver, ey, ex, cy, cx, e_1, e, _l);
           taps(driver, +999.999 / +3.999, _l);
           });
         return true;
       }
       else {
-        system.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
+        zy.enqueue_task([&_l, &cx, &cy, &ex, &ey, &driver, &e_1, &e]() mutable {
           move(driver, ey, ex, cy, cx, e_1, e, _l);
           });
         return true;
@@ -259,6 +260,8 @@ int main() {
     Capture::screen(each, (xy - ay_) / +2, (xx - ax_) / +2, ay_, ax_, +2);
     };
   std::thread thread1(action1);
+
+  while (true) {};
 
   return +1;
 }
