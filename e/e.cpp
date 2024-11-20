@@ -126,15 +126,15 @@ int to_integer(double e) {
 bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1, bool a) {
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
-  const double _y = (y_ * e_y) / +2;
-  const double _x = (x_ * e_x) * +2;
+  const double _y = y_ * e_y;
+  const double _x = x_ * e_x;
 
   if (a) {
     if (y_ >= _) {
-      return Xyloid2::yx(x, to_integer(_y), to_integer(_x));
+      return Xyloid2::yx(x, to_integer(_y / +2), to_integer(_x * +2));
     }
     else {
-      return Xyloid2::yx(x, _, to_integer(_x));
+      return Xyloid2::yx(x, _, to_integer(_x * +2));
     }
   }
   else {
