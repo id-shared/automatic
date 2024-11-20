@@ -14,6 +14,20 @@ int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
+bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, double e_1) {
+  const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
+  const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
+  const double _y = e_2 >= -e_4 && e_2 <= e_4 ? +1 : +1;
+  const double _x = e_1 >= -e_3 && e_1 <= e_3 ? +1 : +1;
+};
+
+bool taps(HANDLE x, double e) {
+  Xyloid2::e1(x, true);
+  Time::XO(e);
+  Xyloid2::e1(x, false);
+  return true;
+};
+
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int _y = +4;
@@ -77,9 +91,9 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int)> work = [&_y, &xx, &xy, &driver, &zx](int e_1, int e) {
-      zx.enqueue_task([&_y, &xx, &xy, &driver, &e_1, &e]() mutable {
-        return Xyloid2::yx(driver, _y ? _ : to_integer(e_1 * xy), to_integer(e * xx));
+    std::function<bool(int, int, int)> work = [&_y, &xx, &xy, &zx, &driver](int e_2, int e_1, int e) {
+      zx.enqueue_task([&_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
+        return Xyloid2::yx(driver, _y ? _ : _, to_integer((e + e_1) * xx));
         });
 
       return true;
@@ -88,8 +102,6 @@ int main() {
     std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
-      const int _y = +2 * +2;
-      const int _x = +2 * +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
         uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
@@ -98,10 +110,10 @@ int main() {
           uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
 
           if (is_red(px_x)) {
-            const int axis_y = e_y - y_ + _y;
-            const int axis_x = e_x - x_ + _x;
+            const int axis_y = e_y - y_;
+            const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x);
+            return work(axis_y, axis_x, +4);
           }
         }
       }
@@ -229,10 +241,3 @@ int main() {
 
   return +1;
 }
-
-/*const double xvy = cy / +16;
-const double xvx = cx / +16;
-const double y2_ = e_2 >= _ ? min(xvy, e_2) : max(-xvy, e_2);
-const double x2_ = e_1 >= _ ? min(xvx, e_2) : max(-xvx, e_1);
-const double _y2 = e_2 >= -xvy && e_2 <= xvy ? +0.5 : +1;
-const double _x2 = e_1 >= -xvx && e_1 <= xvx ? +0.5 : +1;*/
