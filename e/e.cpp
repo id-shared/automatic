@@ -127,7 +127,7 @@ bool move(HANDLE x, double e_y, double e_x, double e_4, double e_3, double e_2, 
   const double y_ = e_2 >= _ ? min(e_4, e_2) : max(-e_4, e_2);
   const double x_ = e_1 >= _ ? min(e_3, e_1) : max(-e_3, e_1);
   const double _y = (y_ * e_y) / +2;
-  const double _x = (x_ * e_x) / +1;
+  const double _x = (x_ * e_x) * +2;
 
   if (a) {
     if (y_ >= _) {
@@ -294,8 +294,8 @@ int main() {
   const double ey = +0.429 * +4 / +4;
   const double ex = +0.429 * +4;
 
-  const int cy_ = xy / +32;
-  const int cx_ = xx / +32;
+  const int cy_ = xy / +64;
+  const int cx_ = xx / +64;
   const int cy = cy_ / +2;
   const int cx = cx_ / +2;
 
