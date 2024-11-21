@@ -77,15 +77,18 @@ int main() {
     const double ex = +0.429 * +4;
 
     const int cy = xy / +16;
-    const int cx = xx / +6;
+    const int cx = xx / +8;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
 
     std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
       zx.enqueue_task([&_l, &_r, &_x, &_y, &_z, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
+        const int y_ = e_2 + e;
+        const int x_ = e_1 + e;
+
         /***/if (_r > _) {
-          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +16);
+          move(driver, (y_ * ey), (x_ * ex), +16);
           if (_x > +1 && abs(e_1) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
@@ -95,13 +98,13 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, ((e_2 + e) * ey) * (_y < (+128 / _z) ? +1 : _), ((e_1 + e) * ex) / max(+1, _x % +3), +16);
+          move(driver, (y_ * ey) * (_y < (+128 / _z) ? +1 : _), (x_ * ex) / max(+1, _x % +3), +16);
 
           _y = _y + 1;
           _x = _x + 1;
         }
         else {
-          move(driver, ((e_2 + e) * ey) / +16, ((e_1 + e) * ex) / +16, +16);
+          move(driver, (y_ * ey) / +16, (x_ * ex) / +16, +16);
 
           _y = _;
           _x = _;
