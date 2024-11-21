@@ -50,7 +50,7 @@ namespace Capture {
     hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
     if (FAILED(hr)) throw hr;
 
-    Parallel::ThreadPool pool(std::thread::hardware_concurrency());
+    Parallel::Pool pool(std::thread::hardware_concurrency());
 
     const auto frame_time = std::chrono::milliseconds(static_cast<int>(std::round(e)));
     auto queue_frame_time = std::chrono::steady_clock::now();

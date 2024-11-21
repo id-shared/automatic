@@ -40,7 +40,7 @@ namespace Driver {
     Byte data[+13];
     int size;
 
-    Parallel::ThreadPool pool(std::thread::hardware_concurrency());
+    Parallel::Pool pool(std::thread::hardware_concurrency());
 
     while (true) {
       int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, +0);

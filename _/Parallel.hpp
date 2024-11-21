@@ -7,10 +7,10 @@ namespace Parallel {
   using Byte = unsigned char;
   std::atomic<bool> keep_running{ true };
 
-  class ThreadPool {
+  class Pool {
   public:
-    ThreadPool(size_t num_threads);
-    ~ThreadPool();
+    Pool(size_t num_threads);
+    ~Pool();
 
     void enqueue_task(std::function<void()> task);
     bool is_busy();
@@ -25,13 +25,13 @@ namespace Parallel {
     void worker_thread();
   };
 
-  ThreadPool::ThreadPool(size_t num_threads) : stop(false) {
+  Pool::Pool(size_t num_threads) : stop(false) {
     for (size_t i = 0; i < num_threads; ++i) {
-      workers.emplace_back(&ThreadPool::worker_thread, this);
+      workers.emplace_back(&Pool::worker_thread, this);
     }
   }
 
-  ThreadPool::~ThreadPool() {
+  Pool::~Pool() {
     stop = true;
     condition.notify_all();
     for (std::thread& worker : workers) {
@@ -40,7 +40,7 @@ namespace Parallel {
     }
   }
 
-  void ThreadPool::enqueue_task(std::function<void()> task) {
+  void Pool::enqueue_task(std::function<void()> task) {
     {
       std::lock_guard<std::mutex> lock(queue_mutex);
       tasks.push(task);
@@ -48,7 +48,7 @@ namespace Parallel {
     condition.notify_one();
   }
 
-  void ThreadPool::worker_thread() {
+  void Pool::worker_thread() {
     while (!stop) {
       std::function<void()> task;
       {
@@ -63,7 +63,7 @@ namespace Parallel {
     }
   }
 
-  bool ThreadPool::is_busy() {
+  bool Pool::is_busy() {
     std::lock_guard<std::mutex> lock(queue_mutex);
     return !tasks.empty();
   }
