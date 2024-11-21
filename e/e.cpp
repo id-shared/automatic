@@ -71,14 +71,14 @@ int main() {
     const double ex = +0.429 * +4;
 
     const int cy = xy / +16;
-    const int cx = xx / +9;
+    const int cx = xx / +5;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &ex, &ey, &z1, &driver](int e_2, int e_1, int e) {
       z1.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y ? _ : +1)), to_integer((ex * (e_1 + e)) / (_x < +4 ? +1 : +2)));
+        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y ? _ : +1)), to_integer((ex * (e_1 + e)) / (_x < +2 ? +1 : +2)));
         _y = _y + 1;
         _x = _x + 1;
         });
@@ -153,9 +153,9 @@ int main() {
           _l = _l + 1;
 
           z2.enqueue_task([&_l, &_x, &_y, &at, &driver, &z1]() mutable {
-            /*while (_l > _ && _x < +4) {
+            while (_l > _ && _x < +2) {
               Time::XO(+1);
-            }*/
+            }
 
             Xyloid2::e1(driver, _l > _);
 
