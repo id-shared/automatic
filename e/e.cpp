@@ -34,6 +34,10 @@ bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
+bool move(HANDLE x, double e_2, double e_1, double e) {
+  return Xyloid2::yx(x, to_integer(e_2), to_integer(e_1));
+}
+
 bool is_red(uint8_t* x) {
   return x[+0] <= +63 && x[+1] <= +63 && x[+2] >= (+255 - +4) && x[+3] == +255;
 }
@@ -77,7 +81,7 @@ int main() {
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &_z, &ex, &ey, &driver](int e_2, int e_1, int e) {
       _z.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y < _ ? +1 : _)), to_integer((ex * (e_1 + e)) * (_x < _ ? +1 : (_x < +7 ? +1 : _))));
+        move(driver, (_y < _ ? +1 : _) * (e_2 + e) * ey, (_x < _ ? +1 : (_x < +7 ? +1 : _)) * (e_1 + e) * ex, +32);
         _y = _y + 1;
         _x = _x + 1;
         });
@@ -153,7 +157,7 @@ int main() {
 
           z1.enqueue_task([&_l, &_x, &_y, &at, &driver, &z2]() mutable {
             int ms = _;
-            while (_l > _ && _x < +1 && ms < 256) {
+            while (_l > _ && _x < +1 && ms < (+256 / +2)) {
               Time::XO(+1);
               ms = ms + 1;
             }
