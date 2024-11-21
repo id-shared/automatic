@@ -69,8 +69,8 @@ int main() {
     const double ey = +0.429 * +4;
     const double ex = +0.429 * +4;
 
-    const int cy = xy / +8;
-    const int cx = xx / +4;
+    const int cy = xy / +16;
+    const int cx = xx / +8;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
