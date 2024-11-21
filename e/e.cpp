@@ -104,7 +104,7 @@ int main() {
           _x = _x + 1;
         }
         else {
-          move(driver, (y_ * ey) / +4, (x_ * ex) / +4, +4);
+          move(driver, (y_ * ey) * _, (x_ * ex) / +4, +4);
 
           _y = _;
           _x = _;
@@ -231,7 +231,7 @@ int main() {
                   pattern(driver, e, false);
                   });
 
-                Time::XO(time / +2);
+                Time::XO(time);
 
                 return back;
               }
