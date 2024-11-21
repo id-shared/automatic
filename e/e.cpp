@@ -129,7 +129,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver]() {
+  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &_z, &driver]() {
     Parallel::Pool z2(+1);
     Parallel::Pool z1(+1);
 
@@ -137,7 +137,7 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &z1, &z2](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &z1, &z2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a ? +1 : _;
 
@@ -152,7 +152,7 @@ int main() {
           _l = _l + 1;
 
           z1.enqueue_task([&_l, &_x, &_y, &at, &driver, &z2]() mutable {
-            while (_l > _ && _x < _) {
+            while (_l > _ && _x < +1) {
               Time::XO(+1);
             }
 
