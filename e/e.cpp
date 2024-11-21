@@ -77,7 +77,7 @@ int main() {
     const double ex = +0.429 * +4;
 
     const int cy = xy / +16;
-    const int cx = xx / +6;
+    const int cx = xx / +5;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
@@ -101,7 +101,7 @@ int main() {
           _x = _x + 1;
         }
         else {
-          move(driver, (e_2 + e) * ey / +4, (e_1 + e) * ex / +4, +64);
+          move(driver, (e_2 + e) * ey / +5, (e_1 + e) * ex / +5, +64);
 
           _y = _;
           _x = _;
