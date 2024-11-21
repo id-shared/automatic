@@ -62,27 +62,24 @@ int main() {
   UINT _l = _;
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver]() {
-    Parallel::ThreadPool system(std::thread::hardware_concurrency());
+    Parallel::ThreadPool zx(std::thread::hardware_concurrency());
     Parallel::ThreadPool z1(+1);
 
-    const int zy = GetSystemMetrics(SM_CYSCREEN);
-    const int zx = GetSystemMetrics(SM_CXSCREEN);
+    const int xy = GetSystemMetrics(SM_CYSCREEN);
+    const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const double xy = +0.429 * +4;
-    const double xx = +0.429 * +4;
+    const double ey = +0.429 * +4;
+    const double ex = +0.429 * +4;
 
-    const int ey = zy / +16;
-    const int ex = zx / +9;
-
-    const int cy = ey / +2;
-    const int cx = ex / +2;
+    const int cy = xy / +16;
+    const int cx = xx / +9;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int, int)> work = [&_x, &_y, &xx, &xy, &driver, &system](int e_2, int e_1, int e) {
-      system.enqueue_task([&_x, &_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((xy * (e_2 + e)) * (_y ? _ : +1)), to_integer((xx * (e_1 + e)) / (_x < +4 ? +1 : +2)));
+    std::function<bool(int, int, int)> work = [&_x, &_y, &ex, &ey, &z1, &driver](int e_2, int e_1, int e) {
+      z1.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
+        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y ? _ : +1)), to_integer((ex * (e_1 + e)) / (_x < +4 ? +1 : +2)));
         _y = _y + 1;
         _x = _x + 1;
         });
@@ -90,15 +87,15 @@ int main() {
       return true;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
-        uint8_t* px_y = o1 + ((cy - y_) + e_y) * e;
+        uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
 
         for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((cx - x_) + e_x) * 4;
+          uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
 
           if (is_red(px_x)) {
             const int axis_y = e_y - y_;
@@ -129,7 +126,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (zy - ey) / +2, (zx - ex) / +2, ey, ex, +16);
+    Capture::screen(each, (xy - cy) / +2, (xx - cx) / +2, cy, cx, +16);
     };
   std::thread thread2(action2);
 
