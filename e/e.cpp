@@ -59,10 +59,10 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  bool _y = false;
-  bool _x = false;
-  bool _r = false;
-  bool _l = false;
+  UINT _y = _;
+  UINT _x = _;
+  UINT _r = _;
+  UINT _l = _;
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver, &single, &system]() {
     const int zy = GetSystemMetrics(SM_CYSCREEN);
@@ -82,11 +82,9 @@ int main() {
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &xx, &xy, &driver, &system](int e_2, int e_1, int e) {
       system.enqueue_task([&_x, &_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((xy * (e_2 + e)) * (_y ? _ : +1)), to_integer((xx * (e_1 + e)) / (_x ? +1 : +1)));
-        if (true) {
-          _y = true;
-          _x = true;
-        }
+        Xyloid2::yx(driver, to_integer((xy * (e_2 + e)) * (_y ? _ : +1)), to_integer((xx * (e_1 + e)) / (_x <= +2 ? +1 : +2)));
+        _y = _y + 1;
+        _x = _x + 1;
         });
 
       return true;
@@ -106,7 +104,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, +4);
+            return work(axis_y, axis_x, +3);
           }
         }
       }
@@ -114,8 +112,8 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      if (_l) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &_r, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      if (_l > _ || _r > _) {
         /***/if (find(o1, e_2, e_1 / +4, e)) {
           return true;
         }
@@ -146,30 +144,30 @@ int main() {
 
     Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &single, &system](UINT e, bool a) {
       if (e == VK_OEM_6) {
-        _r = a;
+        _r = a ? +1 : _;
 
-        system.enqueue_task([&_r, &driver]() mutable {
-          Xyloid2::e2(driver, _r);
+        single.enqueue_task([&_r, &driver]() mutable {
+          Xyloid2::e2(driver, _r > _);
           });
 
         return false;
       }
       else if (e == VK_OEM_4) {
         if (a) {
-          _l = a;
+          _l = _l + 1;
 
-          system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
+          single.enqueue_task([&_l, &_x, &_y, &at, &driver, &single, &system]() mutable {
             while (_l && !_x) {
               Time::XO(+1);
             }
 
-            Xyloid2::e1(driver, _l);
+            Xyloid2::e1(driver, _l > _);
 
-            at = till([&_l, &single, &driver](int e) {
+            at = till([&_l, &driver, &system](int e) {
               const bool back = _l && (size >= e);
 
               if (back) {
-                single.enqueue_task([e, &driver]() mutable {
+                system.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -186,20 +184,19 @@ int main() {
           return false;
         }
         else {
-          _l = a;
+          _l = _;
 
-          system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
-            Time::XO(+32);
-            _y = false;
-            _x = false;
+          single.enqueue_task([&_l, &_x, &_y, &at, &driver, &single, &system]() mutable {
+            _y = _;
+            _x = _;
 
-            Xyloid2::e1(driver, _l);
+            Xyloid2::e1(driver, _l > _);
 
-            at = upon([&_l, &driver, &single](int e) {
+            at = upon([&_l, &driver, &system](int e) {
               const bool back = !_l && (+1 <= e);
 
               if (back) {
-                single.enqueue_task([&driver, e]() mutable {
+                system.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
