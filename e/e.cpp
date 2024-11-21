@@ -77,7 +77,7 @@ int main() {
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &_z, &ex, &ey, &driver](int e_2, int e_1, int e) {
       _z.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y < +1 ? +1 : _)), to_integer((ex * (e_1 + e)) * (_x < _ ? +1 : +1)));
+        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y < _ ? +1 : _)), to_integer((ex * (e_1 + e)) * (_x < _ ? +1 : (_x < +7 ? +1 : _))));
         _y = _y + 1;
         _x = _x + 1;
         });
