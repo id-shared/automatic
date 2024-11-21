@@ -85,8 +85,8 @@ int main() {
     std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
       zx.enqueue_task([&_l, &_r, &_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
         if (_r > _) {
-          move(driver, (_y < +1 ? +1 : +1) * (e_2 + e) * ey, (e_1 + e) * ex, +32);
-          if (_x > +1 && abs(e_2) < 4 && abs(e_1) < 4) {
+          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +32);
+          if (_x > +1 && abs(e_1) < +4) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
