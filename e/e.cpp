@@ -187,7 +187,7 @@ int main() {
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
             int ms = _;
-            while (_l > _ && _x < _ && ms < (+256 / +2)) {
+            while (_l > _ && _x < +1 && ms < (+256 / +2)) {
               Time::XO(+1);
               ms = ms + 1;
             }
