@@ -69,7 +69,7 @@ int main() {
     const double ey = +0.429 * +4;
     const double ex = +0.429 * +4;
 
-    const int cy = xy / +16;
+    const int cy = xy / +8;
     const int cx = xx / +4;
 
     const int ay = cy / +2;
@@ -77,7 +77,7 @@ int main() {
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &_z, &ex, &ey, &driver](int e_2, int e_1, int e) {
       _z.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y > _ ? _ : +0.999)), to_integer((ex * (e_1 + e)) * (_x > _ ? +0.499 : +0.999)));
+        Xyloid2::yx(driver, to_integer((ey * (e_2 + e)) * (_y > +1 ? _ : +1)), to_integer((ex * (e_1 + e)) * (_x > _ ? +1 : +1)));
         _y = _y + 1;
         _x = _x + 1;
         });
