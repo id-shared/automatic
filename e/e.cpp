@@ -134,18 +134,20 @@ int main() {
 
 
   std::function<void()> action1 = [&_l, &_r, &_x, &_y, &_z, &driver]() {
-    Parallel::Pool z2(+1);
-    Parallel::Pool z1(+1);
+    Parallel::Pool zy(+1);
+    Parallel::Pool zx(+1);
+    Parallel::Pool zr(+1);
+    Parallel::Pool zl(+1);
 
     const int time = +16;
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &z1, &z2](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a ? +1 : _;
 
-        z1.enqueue_task([&_r, &driver]() mutable {
+        zr.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r > _);
           });
 
@@ -155,7 +157,7 @@ int main() {
         if (a) {
           _l = _l + 1;
 
-          z1.enqueue_task([&_l, &_x, &_y, &at, &driver, &z2]() mutable {
+          zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
             int ms = _;
             while (_l > _ && _x < +2 && ms < (+256 / +2)) {
               Time::XO(+1);
@@ -164,11 +166,11 @@ int main() {
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
 
-            at = till([&_l, &driver, &z2](int e) {
+            at = till([&_l, &driver, &zy](int e) {
               const bool back = _l > _ && (size >= e);
 
               if (back) {
-                z2.enqueue_task([e, &driver]() mutable {
+                zy.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -187,17 +189,17 @@ int main() {
         else {
           _l = _;
 
-          z1.enqueue_task([&_l, &_x, &_y, &at, &driver, &z2]() mutable {
+          zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
             _y = _;
             _x = _;
 
             _l > _ ? _ : Xyloid2::e1(driver, false);
 
-            at = upon([&_l, &driver, &z2](int e) {
+            at = upon([&_l, &driver, &zy](int e) {
               const bool back = !(_l > _) && (+1 <= e);
 
               if (back) {
-                z2.enqueue_task([&driver, e]() mutable {
+                zy.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
