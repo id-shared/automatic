@@ -74,14 +74,14 @@ int main() {
     const double ex = +0.429 * +4;
 
     const int cy = xy / +16;
-    const int cx = xx / +8;
+    const int cx = xx / +4;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &_z, &ex, &ey, &driver](int e_2, int e_1, int e) {
       _z.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
-        move(driver, (_y < _ ? +1 : _) * (e_2 + e) * ey, (_x < _ ? +1 : (_x < +7 ? +1 : _)) * (e_1 + e) * ex, +32);
+        move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (_x < +7 ? +1 : +0.5) * (e_1 + e) * ex, +32);
         _y = _y + 1;
         _x = _x + 1;
         });
@@ -157,7 +157,7 @@ int main() {
 
           z1.enqueue_task([&_l, &_x, &_y, &at, &driver, &z2]() mutable {
             int ms = _;
-            while (_l > _ && _x < +1 && ms < (+256 / +2)) {
+            while (_l > _ && _x < +2 && ms < (+256 / +2)) {
               Time::XO(+1);
               ms = ms + 1;
             }
