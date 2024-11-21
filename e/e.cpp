@@ -90,15 +90,19 @@ int main() {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
+
+          _y = _y + 1;
+          _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +64);
+          move(driver, (_y < _ ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +64);
+
+          _y = _y + 1;
+          _x = _x + 1;
         }
         else {
-          move(driver, (e_2 + e) * ey * +0.5, (e_1 + e) * ex * +0.5, +64);
+          move(driver, (e_2 + e) * ey / +4, (e_1 + e) * ex / +4, +64);
         }
-        _y = _y + 1;
-        _x = _x + 1;
         });
 
       return true;
@@ -182,7 +186,7 @@ int main() {
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
             int ms = _;
-            while (_l > _ && _x < +2 && ms < (+256 / +2)) {
+            while (_l > _ && _x < _ && ms < (+256 / +2)) {
               Time::XO(+1);
               ms = ms + 1;
             }
