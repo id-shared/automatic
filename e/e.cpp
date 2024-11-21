@@ -65,37 +65,42 @@ int main() {
   bool _l = false;
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver, &single, &system]() {
+    const int zy = GetSystemMetrics(SM_CYSCREEN);
+    const int zx = GetSystemMetrics(SM_CXSCREEN);
+
     const double xy = +0.429 * +4;
     const double xx = +0.429 * +4;
 
-    const int ey = GetSystemMetrics(SM_CYSCREEN);
-    const int ex = GetSystemMetrics(SM_CXSCREEN);
+    const int ey = zy / +16;
+    const int ex = zx / +4;
 
-    const int cy = ey / +16;
-    const int cx = ex / +5;
+    const int cy = ey / +2;
+    const int cx = ex / +2;
 
-    const int ay = cy / +2;
-    const int ax = cx / +2;
+    const int ay = ey / +2;
+    const int ax = ex / +2;
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &xx, &xy, &driver, &system](int e_2, int e_1, int e) {
       system.enqueue_task([&_x, &_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
-        Xyloid2::yx(driver, to_integer((xy * (e_2 + e)) * (_y ? _ : +1)), to_integer((xx * (e_1 + e)) / (_x ? +2 : +1)));
-        _y = true;
-        _x = true;
+        Xyloid2::yx(driver, to_integer((xy * (e_2 + e)) * (_y ? _ : +1)), to_integer((xx * (e_1 + e)) / (_x ? +1 : +1)));
+        if (true) {
+          _y = true;
+          _x = true;
+        }
         });
 
       return true;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
-        uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
+        uint8_t* px_y = o1 + ((cy - y_) + e_y) * e;
 
         for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
+          uint8_t* px_x = px_y + ((cx - x_) + e_x) * 4;
 
           if (is_red(px_x)) {
             const int axis_y = e_y - y_;
@@ -111,7 +116,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       if (_l) {
-        /***/if (find(o1, e_2, e_1 / +8, e)) {
+        /***/if (find(o1, e_2, e_1 / +4, e)) {
           return true;
         }
         else if (find(o1, e_2, e_1 / +1, e)) {
@@ -126,7 +131,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, +16);
+    Capture::screen(each, (zy - ey) / +2, (zx - ex) / +2, ey, ex, +16);
     };
   std::thread thread2(action2);
 
@@ -154,7 +159,9 @@ int main() {
           _l = a;
 
           system.enqueue_task([&_l, &_x, &_y, &at, &driver, &single]() mutable {
-            Time::XO(+32);
+            while (_l && !_x) {
+              Time::XO(+1);
+            }
 
             Xyloid2::e1(driver, _l);
 
@@ -196,7 +203,7 @@ int main() {
                   pattern(driver, e, false);
                   });
 
-                Time::XO(time / +1.499);
+                Time::XO(time / +2);
 
                 return back;
               }
