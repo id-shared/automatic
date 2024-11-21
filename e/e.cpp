@@ -152,11 +152,13 @@ int main() {
           _l = _l + 1;
 
           z1.enqueue_task([&_l, &_x, &_y, &at, &driver, &z2]() mutable {
-            while (_l > _ && _x < +1) {
+            int ms = _;
+            while (_l > _ && _x < +1 && ms < 256) {
               Time::XO(+1);
+              ms = ms + 1;
             }
 
-            Xyloid2::e1(driver, _l > _);
+            _l > _ ? Xyloid2::e1(driver, true) : _;
 
             at = till([&_l, &driver, &z2](int e) {
               const bool back = _l > _ && (size >= e);
@@ -185,7 +187,7 @@ int main() {
             _y = _;
             _x = _;
 
-            Xyloid2::e1(driver, _l > _);
+            _l > _ ? _ : Xyloid2::e1(driver, true);
 
             at = upon([&_l, &driver, &z2](int e) {
               const bool back = !(_l > _) && (+1 <= e);
