@@ -98,7 +98,7 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ey) * (_y < (+128 / _z) ? +1 : _), (x_ * ex), +16);
+          move(driver, (y_ * ey) * (_y < (+128 / _z) ? +1 : _), (x_ * ex) / (_x % +4 == _ ? +1 : +2), +16);
 
           _y = _y + 1;
           _x = _x + 1;
