@@ -95,7 +95,7 @@ int main() {
           move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +32);
         }
         else {
-          move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +32);
+          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +32);
         }
         _y = _y + 1;
         _x = _x + 1;
