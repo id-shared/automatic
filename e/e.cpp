@@ -16,9 +16,11 @@ int to_integer(double e) {
 
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  const int _y = +4;
+  const int _y = +3;
 
   if (abs(y_) > _) {
+    Xyloid2::yx(x, y_, _);
+    Time::XO(_y);
     Xyloid2::yx(x, y_, _);
     Time::XO(_y);
     Xyloid2::yx(x, y_, _);
