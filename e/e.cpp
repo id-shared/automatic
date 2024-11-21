@@ -16,11 +16,9 @@ int to_integer(double e) {
 
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  const int _y = +3;
+  const int _y = +4;
 
   if (abs(y_) > _) {
-    Xyloid2::yx(x, y_, _);
-    Time::XO(_y);
     Xyloid2::yx(x, y_, _);
     Time::XO(_y);
     Xyloid2::yx(x, y_, _);
@@ -49,9 +47,6 @@ int till(std::function<bool(int)> z, int i) {
 }
 
 int main() {
-  Parallel::ThreadPool system(std::thread::hardware_concurrency());
-  Parallel::ThreadPool single(+1);
-
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
     return c.starts_with(L"RZCONTROL"sv) && c.ends_with(L"{e3be005d-d130-4910-88ff-09ae02f680e9}"sv);
@@ -66,7 +61,10 @@ int main() {
   UINT _r = _;
   UINT _l = _;
 
-  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver, &single, &system]() {
+  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver]() {
+    Parallel::ThreadPool system(std::thread::hardware_concurrency());
+    Parallel::ThreadPool z1(+1);
+
     const int zy = GetSystemMetrics(SM_CYSCREEN);
     const int zx = GetSystemMetrics(SM_CXSCREEN);
 
@@ -74,7 +72,7 @@ int main() {
     const double xx = +0.429 * +4;
 
     const int ey = zy / +16;
-    const int ex = zx / +4;
+    const int ex = zx / +9;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -136,19 +134,20 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver, &single, &system]() {
-    Parallel::ThreadPool parallel2(1);
-    Parallel::ThreadPool parallel1(1);
+  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver]() {
+    Parallel::ThreadPool zx(std::thread::hardware_concurrency());
+    Parallel::ThreadPool z2(+1);
+    Parallel::ThreadPool z1(+1);
 
     const int time = +16;
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &single, &system](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &at, &driver, &z1, &z2](UINT e, bool a) {
       if (e == VK_OEM_6) {
         _r = a ? +1 : _;
 
-        single.enqueue_task([&_r, &driver]() mutable {
+        z1.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r > _);
           });
 
@@ -158,18 +157,18 @@ int main() {
         if (a) {
           _l = _l + 1;
 
-          single.enqueue_task([&_l, &_x, &_y, &at, &driver, &single, &system]() mutable {
-            while (_l > _ && _x < +4) {
+          z2.enqueue_task([&_l, &_x, &_y, &at, &driver, &z1]() mutable {
+            /*while (_l > _ && _x < +4) {
               Time::XO(+1);
-            }
+            }*/
 
             Xyloid2::e1(driver, _l > _);
 
-            at = till([&_l, &driver, &system](int e) {
+            at = till([&_l, &driver, &z1](int e) {
               const bool back = _l > _ && (size >= e);
 
               if (back) {
-                system.enqueue_task([e, &driver]() mutable {
+                z1.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -188,17 +187,17 @@ int main() {
         else {
           _l = _;
 
-          single.enqueue_task([&_l, &_x, &_y, &at, &driver, &single, &system]() mutable {
+          z2.enqueue_task([&_l, &_x, &_y, &at, &driver, &z1]() mutable {
             _y = _;
             _x = _;
 
             Xyloid2::e1(driver, _l > _);
 
-            at = upon([&_l, &driver, &system](int e) {
+            at = upon([&_l, &driver, &z1](int e) {
               const bool back = !(_l > _) && (+1 <= e);
 
               if (back) {
-                system.enqueue_task([&driver, e]() mutable {
+                z1.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
