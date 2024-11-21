@@ -86,7 +86,7 @@ int main() {
       zx.enqueue_task([&_l, &_r, &_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
         if (_r > _) {
           move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +32);
-          if (_x > +1 && abs(e_1) < +4) {
+          if (_x > +1 && abs(e_1) < +5) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
