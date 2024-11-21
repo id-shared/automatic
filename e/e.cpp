@@ -19,7 +19,7 @@ bool pattern(HANDLE x, int e, bool a) {
   const int _y = +4;
 
   if (abs(y_) > _) {
-    Xyloid2::yx(x, y_, _);
+    Xyloid2::yx(x, to_integer(y_ * 1.5), _);
     Time::XO(_y);
     Xyloid2::yx(x, y_, _);
     Time::XO(_y);
@@ -62,7 +62,6 @@ int main() {
   UINT _l = _;
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &driver]() {
-    Parallel::ThreadPool zx(std::thread::hardware_concurrency());
     Parallel::ThreadPool z1(+1);
 
     const int xy = GetSystemMetrics(SM_CYSCREEN);
@@ -132,7 +131,6 @@ int main() {
 
 
   std::function<void()> action1 = [&_l, &_r, &_x, &_y, &driver]() {
-    Parallel::ThreadPool zx(std::thread::hardware_concurrency());
     Parallel::ThreadPool z2(+1);
     Parallel::ThreadPool z1(+1);
 
