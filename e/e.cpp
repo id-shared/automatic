@@ -84,7 +84,7 @@ int main() {
 
     std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
       zx.enqueue_task([&_l, &_r, &_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
-        if (_r > _) {
+        /***/if (_r > _) {
           move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +64);
           if (_x > +1 && abs(e_1) < +5) {
             Xyloid2::e1(driver, true);
@@ -95,7 +95,7 @@ int main() {
           move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +64);
         }
         else {
-          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +64);
+          move(driver, (e_2 + e) * ey * +0.5, (e_1 + e) * ex * +0.5, +64);
         }
         _y = _y + 1;
         _x = _x + 1;
@@ -126,17 +126,12 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &_r, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      if (_l > _ || _r > _) {
-        /***/if (find(o1, e_2, e_1 / +4, e)) {
-          return true;
-        }
-        else if (find(o1, e_2, e_1 / +1, e)) {
-          return true;
-        }
-        else {
-          return false;
-        }
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      /***/if (find(o1, e_2, e_1 / +8, e)) {
+        return true;
+      }
+      else if (find(o1, e_2, e_1 / +1, e)) {
+        return true;
       }
       else {
         return false;
