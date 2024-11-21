@@ -67,6 +67,9 @@ int main() {
   UINT _l = _;
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &_z, &driver]() {
+    Parallel::Pool zy(+1);
+    Parallel::Pool zx(+1);
+
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
@@ -79,9 +82,13 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int, int)> work = [&_x, &_y, &_z, &ex, &ey, &driver](int e_2, int e_1, int e) {
-      _z.enqueue_task([&_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
+    std::function<bool(int, int, int)> work = [&_r, &_x, &_y, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
+      zx.enqueue_task([&_r, &_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
         move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (_x < +7 ? +1 : +0.5) * (e_1 + e) * ex, +32);
+        if (_r > _) {
+          Xyloid2::e1(driver, true);
+          Xyloid2::e1(driver, false);
+        }
         _y = _y + 1;
         _x = _x + 1;
         });
@@ -112,7 +119,7 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_l, &_r, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      if (_l > _) {
+      if (_l > _ || _r > _) {
         /***/if (find(o1, e_2, e_1 / +4, e)) {
           return true;
         }
@@ -145,7 +152,7 @@ int main() {
 
     Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
       if (e == VK_OEM_6) {
-        _r = a ? +1 : _;
+        _r = a ? _r + 1 : _;
 
         zr.enqueue_task([&_r, &driver]() mutable {
           Xyloid2::e2(driver, _r > _);
