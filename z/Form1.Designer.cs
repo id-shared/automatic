@@ -11,8 +11,8 @@
 
     #region Windows Form Designer generated code
     private void InitializeComponent() {
-      int wide = Screen.PrimaryScreen.Bounds.Width / (+16 * +2);
-      int high = Screen.PrimaryScreen.Bounds.Height / (+9 * +2);
+      int wide = Screen.PrimaryScreen.Bounds.Width / +64;
+      int high = Screen.PrimaryScreen.Bounds.Height / +1;
 
       components = new System.ComponentModel.Container();
       timer = new System.Windows.Forms.Timer(components);
