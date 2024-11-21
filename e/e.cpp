@@ -77,7 +77,7 @@ int main() {
     const double ex = +0.429 * +4;
 
     const int cy = xy / +16;
-    const int cx = xx / +4;
+    const int cx = xx / +6;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
@@ -102,6 +102,9 @@ int main() {
         }
         else {
           move(driver, (e_2 + e) * ey / +4, (e_1 + e) * ex / +4, +64);
+
+          _y = _;
+          _x = _;
         }
         });
 
@@ -131,7 +134,7 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +8, e)) {
+      /***/if (find(o1, e_2, e_1 / +4, e)) {
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e)) {
@@ -169,8 +172,6 @@ int main() {
           return false;
         }
         else {
-          _y = _;
-          _x = _;
           _r = _;
 
           zr.enqueue_task([&_r, &driver]() mutable {
@@ -214,8 +215,6 @@ int main() {
           return false;
         }
         else {
-          _y = _;
-          _x = _;
           _l = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
