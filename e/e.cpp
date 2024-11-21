@@ -77,8 +77,8 @@ int main() {
     const int cy = ey / +2;
     const int cx = ex / +2;
 
-    const int ay = ey / +2;
-    const int ax = ex / +2;
+    const int ay = cy / +2;
+    const int ax = cx / +2;
 
     std::function<bool(int, int, int)> work = [&_x, &_y, &xx, &xy, &driver, &system](int e_2, int e_1, int e) {
       system.enqueue_task([&_x, &_y, &xx, &xy, &e, &e_1, &e_2, &driver]() mutable {
