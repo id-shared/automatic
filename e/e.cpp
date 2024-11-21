@@ -85,17 +85,17 @@ int main() {
     std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
       zx.enqueue_task([&_l, &_r, &_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
         if (_r > _) {
-          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +32);
+          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +64);
           if (_x > +1 && abs(e_1) < +5) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
         }
         else if (_l > _) {
-          move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +32);
+          move(driver, (_y < +1 ? +1 : _) * (e_2 + e) * ey, (e_1 + e) * ex, +64);
         }
         else {
-          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +32);
+          move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +64);
         }
         _y = _y + 1;
         _x = _x + 1;
@@ -160,13 +160,26 @@ int main() {
 
     Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
       if (e == VK_OEM_6) {
-        _r = a ? _r + 1 : _;
+        if (a) {
+          _r = _r + 1;
 
-        zr.enqueue_task([&_r, &driver]() mutable {
-          Xyloid2::e2(driver, _r > _);
-          });
+          zr.enqueue_task([&_r, &driver]() mutable {
+            _r > _ ? Xyloid2::e2(driver, true) : _;
+            });
 
-        return false;
+          return false;
+        }
+        else {
+          _y = _;
+          _x = _;
+          _r = _;
+
+          zr.enqueue_task([&_r, &driver]() mutable {
+            _r > _ ? _ : Xyloid2::e2(driver, false);
+            });
+
+          return false;
+        }
       }
       else if (e == VK_OEM_4) {
         if (a) {
@@ -202,12 +215,11 @@ int main() {
           return false;
         }
         else {
+          _y = _;
+          _x = _;
           _l = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
-            _y = _;
-            _x = _;
-
             _l > _ ? _ : Xyloid2::e1(driver, false);
 
             at = upon([&_l, &driver, &zy](int e) {
