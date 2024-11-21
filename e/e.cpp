@@ -60,7 +60,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  Parallel::Pool _z(+1);
+  UINT _z = +2 * +2 * +2 * +2 * +2;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -82,11 +82,11 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
-      zx.enqueue_task([&_l, &_r, &_x, &_y, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
+    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
+      zx.enqueue_task([&_l, &_r, &_x, &_y, &_z, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
         /***/if (_r > _) {
           move(driver, (e_2 + e) * ey, (e_1 + e) * ex, +16);
-          if (_x > +1 && abs(e_1) < +5) {
+          if (_x > +1 && abs(e_1) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
@@ -95,7 +95,7 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, ((e_2 + e) * ey) * (_y < _ ? +1 : _), ((e_1 + e) * ex) / _x, +16);
+          move(driver, ((e_2 + e) * ey) * (_y < (+128 / _z) ? +1 : _), ((e_1 + e) * ex) / max(+1, _x % +3), +16);
 
           _y = _y + 1;
           _x = _x + 1;
@@ -145,7 +145,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (xy - cy) / +2, (xx - cx) / +2, cy, cx, +2 * +2 * +2 * +2 * +2);
+    Capture::screen(each, (xy - cy) / +2, (xx - cx) / +2, cy, cx, _z);
     };
   std::thread thread2(action2);
 
