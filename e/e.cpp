@@ -16,17 +16,18 @@ int to_integer(double e) {
 
 bool pattern(HANDLE x, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  const int _y = +4;
+  const int x_ = (a ? -1 : +1) * Pattern::dx(e);
+  const int n_ = +4;
 
   if (abs(y_) > _) {
-    Xyloid2::yx(x, to_integer(y_ * 1.5), _);
-    Time::XO(_y);
+    Xyloid2::yx(x, y_ + (y_ > _ ? +1 : _), x_ + (x_ > _ ? +1 : _));
+    Time::XO(n_);
     Xyloid2::yx(x, y_, _);
-    Time::XO(_y);
+    Time::XO(n_);
     Xyloid2::yx(x, y_, _);
-    Time::XO(_y);
+    Time::XO(n_);
     Xyloid2::yx(x, y_, _);
-    Time::XO(_y);
+    Time::XO(n_);
     return true;
   }
   else {
@@ -98,14 +99,12 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ay) * (_y == _ ? +1 : _), (x_ * ax) * (_x == _ ? +1 : (_x % +4 == _ ? +1 : +0.5)), +64);
+          move(driver, (y_ * ay) * (_y < _ ? +1 : _), (x_ * ax) / (_x < _ ? +1 : _), +64);
 
           _y = _y + 1;
           _x = _x + 1;
         }
         else {
-          //move(driver, (y_ * ay) * _, (x_ * ax) / +16, +64);
-
           _y = _;
           _x = _;
         }
