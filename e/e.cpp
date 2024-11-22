@@ -98,13 +98,13 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ay) * (_y == _ ? +1 : _), (x_ * ax) * (_x == _ ? +1 : _), +2);
+          move(driver, (y_ * ay) * (_y == _ ? +1 : _), (x_ * ax) * (_x == _ ? +1 : +0.5), +2);
 
           _y = _y + 1;
           _x = _x + 1;
         }
         else {
-          //move(driver, (y_ * ey) / +4, (x_ * ex) / +4, +2);
+          move(driver, (y_ * ay) / +4, (x_ * ax) / +4, +2);
 
           _y = _;
           _x = _;
@@ -190,7 +190,7 @@ int main() {
 
           zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
             int n_ = _;
-            while (_l > _ && _x == _ && n_ < +16) {
+            while (_l > _ && _x == _ && n_ < +4) {
               Time::XO(_z);
               n_ = n_ + _z;
             }
