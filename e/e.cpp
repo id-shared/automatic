@@ -83,7 +83,7 @@ int main() {
     const int ay = +2;
     const int ax = +2;
 
-    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ax, &ay, &driver](int e_3, int e_2, int e_1, int e) {
+    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &ax, &ay, &xx, &zx, &driver](int e_3, int e_2, int e_1, int e) {
       const int y_ = e_3 + e_1;
       const int x_ = e_2 + e;
 
@@ -94,16 +94,14 @@ int main() {
           Xyloid2::e1(driver, false);
         }
 
-        Time::XO(_z);
         _y = _y + 1;
         _x = _x + 1;
 
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, _z * +4, _x > _);
+        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xx / +256, _x > _);
 
-        Time::XO(_z);
         _y = _y + 1;
         _x = _x + 1;
 
