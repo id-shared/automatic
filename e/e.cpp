@@ -60,7 +60,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +2 * +2 * +2 * +2 * +2;
+  UINT _z = +1;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -88,7 +88,7 @@ int main() {
         const int x_ = e_1 + e;
 
         /***/if (_r > _) {
-          move(driver, (y_ * ey), (x_ * ex), +16);
+          move(driver, (y_ * ey), (x_ * ex), +2);
           if (_x > +1 && abs(e_1) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
@@ -98,7 +98,7 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ey) * (_y < (+128 / _z) ? +1 : _), (x_ * ex) / (_x % +2 == _ ? +1 : +2), +16);
+          move(driver, (y_ * ey) * (_y < _ ? +1 : _), (x_ * ex) / (_x % +2 == _ ? +1 : +2), +2);
 
           _y = _y + 1;
           _x = _x + 1;
@@ -190,7 +190,7 @@ int main() {
 
           zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
             int n_ = _;
-            while (_l > _ && _x == _ && n_ < +128) {
+            while (_l > _ && _x == _ && n_ < +16) {
               Time::XO(_z);
               n_ = n_ + _z;
             }

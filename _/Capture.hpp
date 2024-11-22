@@ -9,7 +9,7 @@
 namespace Capture {
   using Microsoft::WRL::ComPtr;
 
-  bool screen(std::function<bool(uint8_t*, UINT, UINT, UINT)> z, UINT y, UINT x, UINT height, UINT width, double e) {
+  bool screen(std::function<bool(uint8_t*, UINT, UINT, UINT)> z, UINT y, UINT x, UINT height, UINT width, UINT e) {
     ComPtr<ID3D11Device> device;
     ComPtr<ID3D11DeviceContext> context;
     D3D_FEATURE_LEVEL featureLevel;
@@ -50,10 +50,10 @@ namespace Capture {
     hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
     if (FAILED(hr)) throw hr;
 
-    Parallel::Pool pool(std::thread::hardware_concurrency());
+    Parallel::Pool pool(+1000);
 
-    const auto frame_time = std::chrono::milliseconds(static_cast<int>(std::round(e)));
     auto queue_frame_time = std::chrono::steady_clock::now();
+    const auto frame_time = std::chrono::milliseconds(e);
 
     while (true) {
       ComPtr<IDXGIResource> desktopResource;
