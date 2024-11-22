@@ -98,13 +98,13 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ey) * (_y < _ ? +1 : _), (x_ * ex) / (_x % +2 == _ ? +1 : +2), +2);
+          move(driver, (y_ * ey) * (_y < +64 ? +1 : _), (x_ * ex) / (_x % +2 == _ ? +1 : +2), +2);
 
           _y = _y + 1;
           _x = _x + 1;
         }
         else {
-          //move(driver, (y_ * ey) / +4, (x_ * ex) / +4, +16);
+          move(driver, (y_ * ey) / +1, (x_ * ex) / +1, +16);
 
           _y = _;
           _x = _;
