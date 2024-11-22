@@ -61,7 +61,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +2 * +2 * +2;
+  UINT _z = +32;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -83,37 +83,33 @@ int main() {
     const int ay = +2;
     const int ax = +2;
 
-    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ax, &ay, &driver](int e_3, int e_2, int e_1, int e) {
-      zx.enqueue_task([&_l, &_r, &_x, &_y, &ax, &ay, &e, &e_1, &e_2, &e_3, &driver]() mutable {
-        const int y_ = e_3 + e_1;
-        const int x_ = e_2 + e;
+    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ax, &ay, &driver](int e_3, int e_2, int e_1, int e) {
+      const int y_ = e_3 + e_1;
+      const int x_ = e_2 + e;
 
-        /***/if (_r > _) {
-          move(driver, y_ * ay, x_ * ax, +16, false);
-          if (_x > +1 && abs(e_2) < +8) {
-            Xyloid2::e1(driver, true);
-            Xyloid2::e1(driver, false);
-          }
-
-          //Time::XO(+4);
-          _y = _y + 1;
-          _x = _x + 1;
-          return true;
+      /***/if (_r > _) {
+        move(driver, y_ * ay, x_ * ax, +16, false);
+        if (_x > +1 && abs(e_2) < +8) {
+          Xyloid2::e1(driver, true);
+          Xyloid2::e1(driver, false);
         }
-        else if (_l > _) {
-          move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, +16, _x > _);
 
-          //Time::XO(+4);
-          _y = _y + 1;
-          _x = _x + 1;
-          return true;
-        }
-        else {
-          return true;
-        }
-        });
+        Time::XO(_z);
+        _y = _y + 1;
+        _x = _x + 1;
+        return true;
+      }
+      else if (_l > _) {
+        move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, +16, _x > _);
 
-      return true;
+        Time::XO(_z);
+        _y = _y + 1;
+        _x = _x + 1;
+        return true;
+      }
+      else {
+        return true;
+      }
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
@@ -130,7 +126,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, +2, _);
+            return work(axis_y, axis_x, +2, +2);
           }
         }
       }
