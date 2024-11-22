@@ -73,22 +73,22 @@ int main() {
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const double ey = +0.429 * +4;
-    const double ex = +0.429 * +4;
+    const int ey = xy / +16;
+    const int ex = xx / +8;
 
-    const int cy = xy / +16;
-    const int cx = xx / +6;
+    const int cy = ey / +2;
+    const int cx = ex / +2;
 
-    const int ay = cy / +2;
-    const int ax = cx / +2;
+    const int ay = +2;
+    const int ax = +2;
 
-    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ex, &ey, &driver](int e_2, int e_1, int e) {
-      zx.enqueue_task([&_l, &_r, &_x, &_y, &_z, &ex, &ey, &e, &e_1, &e_2, &driver]() mutable {
+    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ax, &ay, &driver](int e_2, int e_1, int e) {
+      zx.enqueue_task([&_l, &_r, &_x, &_y, &_z, &ax, &ay, &e, &e_1, &e_2, &driver]() mutable {
         const int y_ = e_2 + e;
         const int x_ = e_1 + e;
 
         /***/if (_r > _) {
-          move(driver, (y_ * ey), (x_ * ex), +2);
+          move(driver, (y_ * ay), (x_ * ax), +2);
           if (_x > +1 && abs(e_1) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
@@ -98,13 +98,13 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ey) * (_y < +64 ? +1 : _), (x_ * ex) / (_x % +2 == _ ? +1 : +2), +2);
+          move(driver, (y_ * ay) * (_y == _ ? +1 : _), (x_ * ax) * (_x == _ ? +1 : _), +2);
 
           _y = _y + 1;
           _x = _x + 1;
         }
         else {
-          move(driver, (y_ * ey) / +1, (x_ * ex) / +1, +16);
+          //move(driver, (y_ * ey) / +4, (x_ * ex) / +4, +2);
 
           _y = _;
           _x = _;
@@ -114,15 +114,15 @@ int main() {
       return true;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
-        uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
+        uint8_t* px_y = o1 + ((cy - y_) + e_y) * e;
 
         for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((ax - x_) + e_x) * 4;
+          uint8_t* px_x = px_y + ((cx - x_) + e_x) * 4;
 
           if (is_red(px_x)) {
             const int axis_y = e_y - y_;
@@ -137,7 +137,7 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +3, e)) {
+      /***/if (find(o1, e_2, e_1 / +4, e)) {
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e)) {
@@ -148,7 +148,7 @@ int main() {
       }
       };
 
-    Capture::screen(each, (xy - cy) / +2, (xx - cx) / +2, cy, cx, _z);
+    Capture::screen(each, (xy - ey) / +2, (xx - ex) / +2, ey, ex, _z);
     };
   std::thread thread2(action2);
 
@@ -195,7 +195,7 @@ int main() {
               n_ = n_ + _z;
             }
 
-            _l > _ ? Xyloid2::e1(driver, true) : _;
+            /*_l > _ ? Xyloid2::e1(driver, true) : _;
 
             at = till([&_l, &driver, &zy](int e) {
               const bool back = _l > _ && (size >= e);
@@ -212,7 +212,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) - 1;
+              }, at) - 1;*/
             });
 
           return false;
@@ -221,7 +221,7 @@ int main() {
           _l = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
-            _l > _ ? _ : Xyloid2::e1(driver, false);
+            /*_l > _ ? _ : Xyloid2::e1(driver, false);
 
             at = upon([&_l, &driver, &zy](int e) {
               const bool back = !(_l > _) && (+1 <= e);
@@ -238,7 +238,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) + 1;
+              }, at) + 1;*/
             });
 
           return false;
