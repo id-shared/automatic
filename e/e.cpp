@@ -61,7 +61,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +1;
+  UINT _z = +2 * +2 * +2;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -75,7 +75,7 @@ int main() {
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
     const int ey = xy / +16;
-    const int ex = xx / +8;
+    const int ex = xx / +4;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -83,8 +83,8 @@ int main() {
     const int ay = +2;
     const int ax = +2;
 
-    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &_z, &zx, &ax, &ay, &driver](int e_2, int e_1, int e) {
-      zx.enqueue_task([&_l, &_r, &_x, &_y, &_z, &ax, &ay, &e, &e_1, &e_2, &driver]() mutable {
+    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ax, &ay, &driver](int e_2, int e_1, int e) {
+      zx.enqueue_task([&_l, &_r, &_x, &_y, &ax, &ay, &e, &e_1, &e_2, &driver]() mutable {
         const int y_ = e_2 + e;
         const int x_ = e_1 + e;
 
@@ -94,19 +94,14 @@ int main() {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
-
-          _y = _y + 1;
-          _x = _x + 1;
+          return true;
         }
         else if (_l > _) {
-          move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, +16, _x > _);
-
-          _y = _y + 1;
-          _x = _x + 1;
+          move(driver, y_ * ay * (_y > +1 ? _ : +1), x_ * ax, +16, _x > +1);
+          return true;
         }
         else {
-          _y = _;
-          _x = _;
+          return true;
         }
         });
 
@@ -127,7 +122,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, +4);
+            return work(axis_y, axis_x, +2, _);
           }
         }
       }
@@ -135,15 +130,23 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +4, e)) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      /***/if (find(o1, e_2, e_1 / +8, e)) {
+        Time::XO(_z);
+        _y = _y + 1;
+        _x = _x + 1;
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e)) {
+        Time::XO(_z);
+        _y = _y + 1;
+        _x = _x + 1;
         return true;
       }
       else {
-        return false;
+        _y = _;
+        _x = _;
+        return true;
       }
       };
 
@@ -166,6 +169,8 @@ int main() {
       if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
+          _y = _;
+          _x = _;
 
           zr.enqueue_task([&_r, &driver]() mutable {
             _r > _ ? Xyloid2::e2(driver, true) : _;
@@ -175,6 +180,8 @@ int main() {
         }
         else {
           _r = _;
+          _y = _;
+          _x = _;
 
           zr.enqueue_task([&_r, &driver]() mutable {
             _r > _ ? _ : Xyloid2::e2(driver, false);
@@ -186,11 +193,13 @@ int main() {
       else if (e == VK_OEM_4) {
         if (a) {
           _l = _l + 1;
+          _y = _;
+          _x = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
             UINT n_ = +16;
             UINT e_ = _;
-            while (_l > _ && _x < n_ && _y < n_ && e_ < n_) {
+            while (_l > _ && _x < +10 && _y < +10 && e_ < n_) {
               Time::XO(_z);
               e_ = e_ + _z;
             }
@@ -219,6 +228,8 @@ int main() {
         }
         else {
           _l = _;
+          _y = _;
+          _x = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
             _l > _ ? _ : Xyloid2::e1(driver, false);
