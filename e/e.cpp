@@ -61,7 +61,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +32;
+  UINT _z = +4;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -97,14 +97,16 @@ int main() {
         Time::XO(_z);
         _y = _y + 1;
         _x = _x + 1;
+
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, +16, _x > _);
+        move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, _z * +4, _x > _);
 
         Time::XO(_z);
         _y = _y + 1;
         _x = _x + 1;
+
         return true;
       }
       else {
