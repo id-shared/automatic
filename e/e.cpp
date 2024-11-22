@@ -35,8 +35,10 @@ bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-bool move(HANDLE x, double e_2, double e_1, double e, bool a) {
-  return Xyloid2::yx(x, to_integer(e_2), a ? e_1 > _ ? to_integer(min(e_1, e)) : to_integer(max(e_1, -e)) : to_integer(e_1));
+bool move(HANDLE x, double e_3, double e_2, double e_1, double e, bool a) {
+  const int y_ = a ? e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1)) : to_integer(e_3);
+  const int x_ = a ? e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e)) : to_integer(e_2);
+  return Xyloid2::yx(x, y_, x_);
 }
 
 bool is_red(uint8_t* x) {
@@ -83,13 +85,13 @@ int main() {
     const int ay = +2;
     const int ax = +2;
 
-    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &ax, &ay, &xx, &zx, &driver](int e_3, int e_2, int e_1, int e) {
+    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &ax, &ay, &xx, &xy, &zx, &driver](int e_3, int e_2, int e_1, int e) {
       const int y_ = e_3 + e_1;
       const int x_ = e_2 + e;
 
       /***/if (_r > _) {
-        move(driver, y_ * ay, x_ * ax, +16, false);
-        if (_x > +1 && abs(e_2) < +8) {
+        move(driver, y_ * ay, x_ * ax, xy / +64., xx / +64., _x > _);
+        if (_x > _ && abs(e_2) < +4) {
           Xyloid2::e1(driver, true);
           Xyloid2::e1(driver, false);
         }
@@ -100,7 +102,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xx / +64., _x > _);
+        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xy / +64., xx / +64., _x > _);
 
         _y = _y + 1;
         _x = _x + 1;
@@ -108,7 +110,7 @@ int main() {
         return true;
       }
       else {
-        move(driver, _, x_ * ax, +4., true);
+        //move(driver, y_ * ay, x_ * ax, xy / +256., xx / +256., true);
 
         return true;
       }
