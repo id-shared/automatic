@@ -83,14 +83,14 @@ int main() {
     const int ay = +2;
     const int ax = +2;
 
-    std::function<bool(int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ax, &ay, &driver](int e_2, int e_1, int e) {
-      zx.enqueue_task([&_l, &_r, &_x, &_y, &ax, &ay, &e, &e_1, &e_2, &driver]() mutable {
-        const int y_ = e_2 + e;
-        const int x_ = e_1 + e;
+    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &zx, &ax, &ay, &driver](int e_3, int e_2, int e_1, int e) {
+      zx.enqueue_task([&_l, &_r, &_x, &_y, &ax, &ay, &e, &e_1, &e_2, &e_3, &driver]() mutable {
+        const int y_ = e_3 + e_1;
+        const int x_ = e_2 + e;
 
         /***/if (_r > _) {
           move(driver, y_ * ay, x_ * ax, +4, false);
-          if (_x > +1 && abs(e_1) < +8) {
+          if (_x > +1 && abs(e_2) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
