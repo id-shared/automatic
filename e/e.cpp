@@ -89,15 +89,23 @@ int main() {
         const int x_ = e_2 + e;
 
         /***/if (_r > _) {
-          move(driver, y_ * ay, x_ * ax, +4, false);
+          move(driver, y_ * ay, x_ * ax, +16, false);
           if (_x > +1 && abs(e_2) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
+
+          //Time::XO(+4);
+          _y = _y + 1;
+          _x = _x + 1;
           return true;
         }
         else if (_l > _) {
-          move(driver, y_ * ay * (_y > +1 ? _ : +1), x_ * ax, +16, _x > +1);
+          move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, +16, _x > _);
+
+          //Time::XO(+4);
+          _y = _y + 1;
+          _x = _x + 1;
           return true;
         }
         else {
@@ -132,20 +140,12 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       /***/if (find(o1, e_2, e_1 / +8, e)) {
-        Time::XO(_z);
-        _y = _y + 1;
-        _x = _x + 1;
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e)) {
-        Time::XO(_z);
-        _y = _y + 1;
-        _x = _x + 1;
         return true;
       }
       else {
-        _y = _;
-        _x = _;
         return true;
       }
       };
@@ -199,7 +199,7 @@ int main() {
           zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
             UINT n_ = +16;
             UINT e_ = _;
-            while (_l > _ && _x < +10 && _y < +10 && e_ < n_) {
+            while (_l > _ && _x < +1 && _y < +1 && e_ < n_) {
               Time::XO(_z);
               e_ = e_ + _z;
             }
