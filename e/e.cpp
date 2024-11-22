@@ -100,7 +100,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xx / +256, _x > _);
+        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xx / +64., _x > _);
 
         _y = _y + 1;
         _x = _x + 1;
@@ -108,6 +108,8 @@ int main() {
         return true;
       }
       else {
+        move(driver, _, x_ * ax, +4., true);
+
         return true;
       }
       };
@@ -135,7 +137,10 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1, e)) {
+      /***/if (find(o1, e_2, e_1 / +4, e)) {
+        return true;
+      }
+      else if (find(o1, e_2, e_1, e)) {
         return true;
       }
       else {
@@ -173,8 +178,6 @@ int main() {
         }
         else {
           _r = _;
-          _y = _;
-          _x = _;
 
           zr.enqueue_task([&_r, &driver]() mutable {
             _r > _ ? _ : Xyloid2::e2(driver, false);
@@ -221,8 +224,6 @@ int main() {
         }
         else {
           _l = _;
-          _y = _;
-          _x = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
             _l > _ ? _ : Xyloid2::e1(driver, false);
