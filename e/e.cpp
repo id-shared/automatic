@@ -87,9 +87,10 @@ int main() {
         const int y_ = e_2 + e;
         const int x_ = e_1 + e;
 
-        /***/if (_r > _) {
-          move(driver, (y_ * ay), (x_ * ax), +2);
-          if (_x > +1 && abs(e_1) < +8) {
+        if (_l > _ || _r > _) {
+          move(driver, (y_ * ay) * (_y == _ ? +1 : _), (x_ * ax) / (_x == _ ? +1 : +4), +64);
+
+          if (_r > _ && _x > +1 && abs(e_1) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
           }
@@ -97,14 +98,8 @@ int main() {
           _y = _y + 1;
           _x = _x + 1;
         }
-        else if (_l > _) {
-          move(driver, (y_ * ay) * (_y == _ ? +1 : _), (x_ * ax) * (_x == _ ? +1 : +0.5), +2);
-
-          _y = _y + 1;
-          _x = _x + 1;
-        }
         else {
-          move(driver, (y_ * ay) / +4, (x_ * ax) / +4, +2);
+          move(driver, (y_ * ay) * _, (x_ * ax) / +16, +64);
 
           _y = _;
           _x = _;
