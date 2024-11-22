@@ -20,7 +20,7 @@ bool pattern(HANDLE x, int e, bool a) {
   const int n_ = +4;
 
   if (abs(y_) > _) {
-    Xyloid2::yx(x, y_ + (y_ > _ ? +1 : _), x_ + (x_ > _ ? +1 : _));
+    Xyloid2::yx(x, to_integer(y_ * +1.5), x_);
     Time::XO(n_);
     Xyloid2::yx(x, y_, _);
     Time::XO(n_);
@@ -35,8 +35,8 @@ bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-bool move(HANDLE x, double e_2, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e_2), to_integer(e_1));
+bool move(HANDLE x, double e_2, double e_1, double e, bool a) {
+  return Xyloid2::yx(x, to_integer(e_2), a ? e_1 > _ ? to_integer(min(e_1, e)) : to_integer(max(e_1, -e)) : to_integer(e_1));
 }
 
 bool is_red(uint8_t* x) {
@@ -89,7 +89,7 @@ int main() {
         const int x_ = e_1 + e;
 
         /***/if (_r > _) {
-          move(driver, (y_ * ay), (x_ * ax), +64);
+          move(driver, y_ * ay, x_ * ax, +4, false);
           if (_x > +1 && abs(e_1) < +8) {
             Xyloid2::e1(driver, true);
             Xyloid2::e1(driver, false);
@@ -99,7 +99,7 @@ int main() {
           _x = _x + 1;
         }
         else if (_l > _) {
-          move(driver, (y_ * ay) * (_y < _ ? +1 : _), (x_ * ax) / (_x < _ ? +1 : _), +64);
+          move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, +16, _x > _);
 
           _y = _y + 1;
           _x = _x + 1;
@@ -188,10 +188,11 @@ int main() {
           _l = _l + 1;
 
           zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
-            int n_ = _;
-            while (_l > _ && _x == _ && _y == _ && n_ < +16) {
+            UINT n_ = +16;
+            UINT e_ = _;
+            while (_l > _ && _x < n_ && _y < n_ && e_ < n_) {
               Time::XO(_z);
-              n_ = n_ + _z;
+              e_ = e_ + _z;
             }
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
