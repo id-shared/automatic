@@ -61,7 +61,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +2 * +2 * +2;
+  UINT _z = +2 * +2 * +2 * +2 * +2;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -101,7 +101,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, _z * +4, false);
+        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, _z * +4, _x > _);
 
         Time::XO(_z);
         _y = _y + 1;
@@ -137,10 +137,7 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +4, e)) {
-        return true;
-      }
-      else if (find(o1, e_2, e_1 / +1, e)) {
+      /***/if (find(o1, e_2, e_1, e)) {
         return true;
       }
       else {
