@@ -195,7 +195,7 @@ int main() {
               n_ = n_ + _z;
             }
 
-            /*_l > _ ? Xyloid2::e1(driver, true) : _;
+            _l > _ ? Xyloid2::e1(driver, true) : _;
 
             at = till([&_l, &driver, &zy](int e) {
               const bool back = _l > _ && (size >= e);
@@ -212,7 +212,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) - 1;*/
+              }, at) - 1;
             });
 
           return false;
@@ -221,7 +221,7 @@ int main() {
           _l = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
-            /*_l > _ ? _ : Xyloid2::e1(driver, false);
+            _l > _ ? _ : Xyloid2::e1(driver, false);
 
             at = upon([&_l, &driver, &zy](int e) {
               const bool back = !(_l > _) && (+1 <= e);
@@ -238,7 +238,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) + 1;*/
+              }, at) + 1;
             });
 
           return false;
