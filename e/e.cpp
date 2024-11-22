@@ -75,7 +75,7 @@ int main() {
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
     const int ey = xy / +16;
-    const int ex = xx / +4;
+    const int ex = xx / +6;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -101,7 +101,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax, _z * +4, _x > _);
+        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, _z * +4, _x > +4);
 
         Time::XO(_z);
         _y = _y + 1;
@@ -122,13 +122,13 @@ int main() {
         uint8_t* px_y = o1 + ((cy - y_) + e_y) * e;
 
         for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((cx - x_) + e_x) * 4;
+          uint8_t* px_x = px_y + ((cx - x_) + e_x) * +4;
 
           if (is_red(px_x)) {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, +2, +2);
+            return work(axis_y, axis_x, +4, +4);
           }
         }
       }
@@ -137,7 +137,7 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +8, e)) {
+      /***/if (find(o1, e_2, e_1 / +4, e)) {
         return true;
       }
       else if (find(o1, e_2, e_1 / +1, e)) {
@@ -164,7 +164,7 @@ int main() {
     int at = +1;
 
     Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
-      if (e == VK_OEM_6) {
+      /***/if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
           _y = _;
@@ -195,9 +195,9 @@ int main() {
           _x = _;
 
           zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
-            UINT n_ = +16;
+            UINT n_ = +4;
             UINT e_ = _;
-            while (_l > _ && _x < +1 && _y < +1 && e_ < n_) {
+            while (_l > _ && _x == _ && _y == _ && e_ < n_) {
               Time::XO(_z);
               e_ = e_ + _z;
             }
@@ -251,14 +251,6 @@ int main() {
             });
 
           return false;
-        }
-      }
-      else if (e == VK_A || e == VK_D) {
-        if (a) {
-          return true;
-        }
-        else {
-          return true;
         }
       }
       else {
