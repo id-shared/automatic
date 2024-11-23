@@ -1,5 +1,5 @@
 #pragma once
-#include "Parallel.hpp"
+#include <functional>
 #include <chrono>
 #include <d3d11.h>
 #include <dxgi1_2.h>
@@ -50,8 +50,6 @@ namespace Capture {
     hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
     if (FAILED(hr)) throw hr;
 
-    Parallel::Pool pool(+1000);
-
     auto queue_frame_time = std::chrono::steady_clock::now();
     const auto frame_time = std::chrono::milliseconds(e);
 
@@ -78,9 +76,7 @@ namespace Capture {
       D3D11_MAPPED_SUBRESOURCE mappedResource;
       hr = context->Map(stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
       if (SUCCEEDED(hr)) {
-        pool.enqueue_task([&z, &height, &width, &mappedResource]() mutable {
-          z((uint8_t*)mappedResource.pData, height, width, mappedResource.RowPitch);
-          });
+        z((uint8_t*)mappedResource.pData, height, width, mappedResource.RowPitch);
         context->Unmap(stagingTexture.Get(), 0);
       }
 

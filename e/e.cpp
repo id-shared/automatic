@@ -102,7 +102,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xy / +64., xx / +64., _x > _);
+        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xy / +64., xx / +32., _x > _);
 
         _y = _y + 1;
         _x = _x + 1;
@@ -110,7 +110,16 @@ int main() {
         return true;
       }
       else {
-        //move(driver, y_ * ay, x_ * ax, xy / +256., xx / +256., true);
+        //move(driver, y_ * ay, x_ * ax, xy / (+128. * +4.), xx / (+64. * +4), true);
+
+        //zx.enqueue_task([&_l, &driver]() mutable {
+        //  if (!(_l > _)) {
+        //    Xyloid1::ea(driver, 0x1a, true);
+        //    Time::XO(+128);
+        //    Xyloid1::ea(driver, 0x1a, false);
+        //    Time::XO(+128);
+        //  }
+        //  });
 
         return true;
       }
@@ -263,3 +272,14 @@ int main() {
 
   return +1;
 }
+
+/*Xyloid2::e2(driver, true);
+Xyloid2::e2(driver, false);
+
+while (_l > _) {
+  Xyloid1::ea(driver, 0x1a, true);
+  Time::XO(+99);
+  Xyloid1::ea(driver, 0x1a, false);
+  Xyloid2::e1(driver, true);
+  Xyloid2::e1(driver, false);
+}*/
