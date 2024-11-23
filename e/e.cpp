@@ -98,12 +98,16 @@ int main() {
         }
 
         _a = _a + 1;
+        _y = y_;
+        _x = x_;
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_a > _ ? _ : +1), x_ * ax * (_a > _ ? _ : +1), xy / +64., xx / +32., false);
+        move(driver, y_ == _y ? _ : y_ * ay * (_a > _ ? _ : +1), x_ == _x ? _ : x_ * ax * (_a > _ ? _ : +1), xy / +64., xx / +32., false);
 
         _a = _a + 1;
+        _y = y_;
+        _x = x_;
         return true;
       }
       else {
