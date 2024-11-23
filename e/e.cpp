@@ -15,7 +15,11 @@ static int to_integer(double e) {
 }
 
 static bool prevent(HANDLE x, USHORT e_1, UINT e) {
-  return Xyloid1::hold(x, e_1, Pattern::dn(e));
+  const int n_ = Pattern::dn(e);
+
+  printf("%d\n", n_);
+
+  return n_ > _ && Xyloid1::hold(x, e_1, n_);
 }
 
 static bool pattern(HANDLE x, int e, bool a) {
@@ -75,12 +79,13 @@ int main() {
   constexpr UINT VK_A = 0x41;
 
   ULONGLONG _n64 = GetTickCount64();
-  ULONGLONG _not = false;
   UINT _z = _;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
   UINT _l = _;
+  UINT _d = _;
+  UINT _a = _;
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &_z, &driver]() mutable {
     Parallel::Pool zz(+1000);
@@ -182,7 +187,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_z, &_not, &_n64, &driver]() mutable {
+  std::function<void()> action1 = [&_a, &_d, &_l, &_r, &_z, &_n64, &driver]() mutable {
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
     Parallel::Pool zr(+1);
@@ -194,7 +199,7 @@ int main() {
     const int each = +16;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_z, &_not, &_n64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_a, &_d, &_l, &_r, &_z, &_n64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
@@ -221,11 +226,15 @@ int main() {
           _l = _l + 1;
           _z = _;
 
-          zl.enqueue_task([&_l, &_z, &_not, &at, &driver, &zy]() mutable {
+          zl.enqueue_task([&_a, &_d, &_l, &_z, &at, &driver, &zy]() mutable {
             UINT e_ = _;
-            while (_not || (_l > _ && _z == _ && e_ < +4)) {
+            while (_l > _ && _z == _ && e_ < +4) {
               Time::XO(frame_rate);
               e_ = e_ + 1;
+            }
+
+            while (_a > _ || _d > _) {
+              Time::XO(frame_rate);
             }
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
@@ -280,16 +289,16 @@ int main() {
       else if (e == VK_D) {
         if (a) {
           _n64 = GetTickCount64();
-          _not = true;
+          _d = _d + 1;
 
           return true;
         }
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _n64);
 
-          zd.enqueue_task([&_not, &diff, &driver]() mutable {
+          zd.enqueue_task([&_d, &diff, &driver]() mutable {
             prevent(driver, VZ_L, diff / 10);
-            _not = false;
+            _d = _;
             });
 
           return true;
@@ -298,16 +307,16 @@ int main() {
       else if (e == VK_A) {
         if (a) {
           _n64 = GetTickCount64();
-          _not = true;
+          _a = _a + 1;
 
           return true;
         }
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _n64);
 
-          za.enqueue_task([&_not, &diff, &driver]() mutable {
+          za.enqueue_task([&_a, &diff, &driver]() mutable {
             prevent(driver, VZ_R, diff / 10);
-            _not = false;
+            _a = _;
             });
 
           return true;
