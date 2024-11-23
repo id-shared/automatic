@@ -17,8 +17,6 @@ static int to_integer(double e) {
 static bool prevent(HANDLE x, USHORT e_1, UINT e) {
   const int n_ = Pattern::dn(e);
 
-  printf("%d\n", n_);
-
   return n_ > _ && Xyloid1::hold(x, e_1, n_);
 }
 
@@ -236,6 +234,8 @@ int main() {
             while (_a > _ || _d > _) {
               Time::XO(frame_rate);
             }
+
+            printf("%d\n", _a);
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
 
