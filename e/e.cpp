@@ -76,8 +76,8 @@ int main() {
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const int ey = xy / +16;
-    const int ex = xx / +6;
+    const int ey = xy / +32;
+    const int ex = xx / +8;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -102,8 +102,8 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xy / +64., xx / +32., _x > _);
-        Time::XO(+32);
+        move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax * (_x > _ ? _ : +1), xy / +64., xx / +32., false);
+        Time::XO(+4);
 
         _y = _y + 1;
         _x = _x + 1;
