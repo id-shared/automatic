@@ -118,7 +118,7 @@ int main() {
         return true;
       }
       else {
-        //move(driver, y_ * ay, x_ * ax, xy, xx, false);
+        //move(driver, y_ == _y ? _ : y_ * ay * (_a > _ ? _ : +1), x_ == _x ? _ : x_ * ax * (_a > _ ? +0.5 : +1), xy / +64., xx / +64., _a > _);
 
         //zx.enqueue_task([&_l, &driver]() mutable {
         //  if (!(_l > _)) {
