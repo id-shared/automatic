@@ -78,7 +78,7 @@ int main() {
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
 
-  ULONGLONG _n64 = GetTickCount64();
+  ULONGLONG _z64 = GetTickCount64();
   UINT _z = _;
   UINT _y = _;
   UINT _x = _;
@@ -187,7 +187,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_a, &_d, &_l, &_r, &_z, &_n64, &driver]() mutable {
+  std::function<void()> action1 = [&_a, &_d, &_l, &_r, &_z, &_z64, &driver]() mutable {
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
     Parallel::Pool zr(+1);
@@ -199,7 +199,7 @@ int main() {
     const int each = +16;
     int at = +1;
 
-    Event::KeyboardHook hook([&_a, &_d, &_l, &_r, &_z, &_n64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_a, &_d, &_l, &_r, &_z, &_z64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
@@ -288,13 +288,13 @@ int main() {
       }
       else if (e == VK_D) {
         if (a) {
-          _n64 = GetTickCount64();
+          _z64 = GetTickCount64();
           _d = _d + 1;
 
           return true;
         }
         else {
-          UINT diff = static_cast<unsigned int>(GetTickCount64() - _n64);
+          UINT diff = static_cast<unsigned int>(GetTickCount64() - _z64);
 
           zd.enqueue_task([&_d, &diff, &driver]() mutable {
             prevent(driver, VZ_L, diff / 10);
@@ -306,13 +306,13 @@ int main() {
       }
       else if (e == VK_A) {
         if (a) {
-          _n64 = GetTickCount64();
+          _z64 = GetTickCount64();
           _a = _a + 1;
 
           return true;
         }
         else {
-          UINT diff = static_cast<unsigned int>(GetTickCount64() - _n64);
+          UINT diff = static_cast<unsigned int>(GetTickCount64() - _z64);
 
           za.enqueue_task([&_a, &diff, &driver]() mutable {
             prevent(driver, VZ_R, diff / 10);
