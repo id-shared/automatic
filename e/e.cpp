@@ -38,7 +38,10 @@ bool pattern(HANDLE x, int e, bool a) {
 bool move(HANDLE x, double e_3, double e_2, double e_1, double e, bool a) {
   const int y_ = a ? e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1)) : to_integer(e_3);
   const int x_ = a ? e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e)) : to_integer(e_2);
-  return Xyloid2::yx(x, y_, x_);
+
+  Xyloid2::yx(x, y_, x_);
+
+  return Time::XO(+4);
 }
 
 bool is_red(uint8_t* x) {
@@ -63,7 +66,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +2 * +2 + 2 * +2 * +2 * +2;
+  UINT _z = +4;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -71,6 +74,7 @@ int main() {
   UINT _a = _;
 
   std::function<void()> action2 = [&_a, &_l, &_r, &_x, &_y, &_z, &driver]() {
+    Parallel::Pool zz(+1000);
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
 
@@ -91,7 +95,8 @@ int main() {
       const int x_ = e_2 + e;
 
       /***/if (_r > _) {
-        move(driver, y_ * ay, x_ * ax, xy / +64., xx / +64., _x > _);
+        move(driver, y_ * ay, x_ * ax, xy / +64., xx / +64., _x > _);\
+
         if (_x > _ && abs(e_2) < +4) {
           Xyloid2::e1(driver, true);
           Xyloid2::e1(driver, false);
@@ -100,14 +105,16 @@ int main() {
         _a = _a + 1;
         _y = y_;
         _x = x_;
+
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ == _y ? _ : y_ * ay * (_a > _ ? _ : +1), x_ == _x ? _ : x_ * ax * (_a > _ ? _ : +1), xy / +64., xx / +32., false);
+        move(driver, y_ == _y ? _ : y_ * ay * (_a > _ ? _ : +1), x_ == _x ? _ : x_ * ax, xy / +64., xx / +64., _a > _);
 
         _a = _a + 1;
         _y = y_;
         _x = x_;
+
         return true;
       }
       else {
@@ -148,13 +155,17 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1, e)) {
-        return true;
-      }
-      else {
-        return true;
-      }
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+      zz.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
+        /***/if (find(o1, e_2, e_1, e)) {
+          return true;
+        }
+        else {
+          return true;
+        }
+        });
+
+      return true;
       };
 
     Capture::screen(each, (xy - ey) / +2, (xx - ex) / +2, ey, ex, _z);
@@ -200,16 +211,15 @@ int main() {
           _a = _;
 
           zl.enqueue_task([&_a, &_l, &_z, &at, &driver, &zy]() mutable {
-            UINT n_ = +4;
             UINT e_ = _;
-            while (_l > _ && _a == _ && e_ < n_) {
+            while (_l > _ && _a == _ && e_ < +4) {
               Time::XO(_z);
-              e_ = e_ + _z;
+              e_ = e_ + 1;
             }
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
 
-            /*at = till([&_l, &driver, &zy](int e) {
+            at = till([&_l, &driver, &zy](int e) {
               const bool back = _l > _ && (size >= e);
 
               if (back) {
@@ -224,7 +234,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) - 1;*/
+              }, at) - 1;
             });
 
           return false;
@@ -235,7 +245,7 @@ int main() {
           zl.enqueue_task([&_l, &at, &driver, &zy]() mutable {
             _l > _ ? _ : Xyloid2::e1(driver, false);
 
-            /*at = upon([&_l, &driver, &zy](int e) {
+            at = upon([&_l, &driver, &zy](int e) {
               const bool back = !(_l > _) && (+1 <= e);
 
               if (back) {
@@ -250,7 +260,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) + 1;*/
+              }, at) + 1;
             });
 
           return false;
