@@ -1,5 +1,6 @@
 #pragma once
 #include "Xyloid.hpp"
+#include "Time.hpp"
 
 namespace Xyloid1 {
   Xyloid::Xyloid xyloid_ = Xyloid::Xyloid{
@@ -19,5 +20,12 @@ namespace Xyloid1 {
     back.ki.Flags = a ? KEY_MAKE : KEY_BREAK;
     back.ki.ExtraInformation = 0;
     return act(x, back);
+  }
+
+  bool hold(HANDLE x, USHORT e_1, int e) {
+    ea(x, e_1, true);
+    Time::XO(e);
+    ea(x, e_1, false);
+    return true;
   }
 }
