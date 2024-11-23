@@ -67,6 +67,8 @@ int main() {
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
   const UINT frame_rate = +1;
+  long _Z = GetTickCount64();
+  bool _A = true;
   UINT _z = _;
   UINT _y = _;
   UINT _x = _;
@@ -173,23 +175,24 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_z, &driver]() {
+  std::function<void()> action1 = [&_l, &_r, &_z, &_A, &_Z, &driver]() {
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
     Parallel::Pool zr(+1);
     Parallel::Pool zl(+1);
+    Parallel::Pool za(+1);
 
     const int time = +16;
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
+    Event::KeyboardHook hook([&_l, &_r, &_z, &_A, &_Z, &at, &driver, &za, &zl, &zr, &zy](UINT e, bool a) {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
           _z = _;
 
-          zr.enqueue_task([&_r, &driver]() mutable {
+          zr.enqueue_task([&_r, &_A, &driver]() mutable {
             _r > _ ? Xyloid2::e2(driver, true) : _;
             });
 
@@ -210,7 +213,7 @@ int main() {
           _l = _l + 1;
           _z = _;
 
-          zl.enqueue_task([&_l, &_z, &at, &driver, &zy]() mutable {
+          zl.enqueue_task([&_l, &_z, &_A, &at, &driver, &zy]() mutable {
             UINT e_ = _;
             while (_l > _ && _z == _ && e_ < +4) {
               Time::XO(frame_rate);
@@ -268,9 +271,17 @@ int main() {
       }
       else if (e == VK_A || e == VK_D) {
         if (a) {
+          _Z = GetTickCount64();
+          _A = false;
+
           return true;
         }
         else {
+          za.enqueue_task([&_Z, &driver]() mutable {
+            const long diff = GetTickCount64() - _Z;
+            printf("%d\n", diff);
+            });
+
           return true;
         }
       }
