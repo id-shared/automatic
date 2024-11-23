@@ -109,7 +109,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        x_ == _x && y_ == _y ? _ : move(driver, y_ * ay * (_a > _ ? _ : +1), x_ * ax * (_a > _ ? +0.5 : +1), xy / +64., xx / +64., _a > _);
+        x_ == _x && y_ == _y ? _ : move(driver, y_ * ay * (_a > _ ? _ : +1), x_ * ax * (_a > _ ? +0.5 : +1), xy / +32., xx / +32., _a > _);
 
         _a = _a + 1;
         _y = y_;
@@ -133,7 +133,7 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &xx, &xy, &work](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
 
@@ -147,7 +147,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, +4, +4);
+            return work(axis_y, axis_x, xy / 1024, xx / 1024);
           }
         }
       }
