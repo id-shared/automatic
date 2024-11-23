@@ -235,8 +235,6 @@ int main() {
               Time::XO(frame_rate);
             }
 
-            printf("%d\n", _a);
-
             _l > _ ? Xyloid2::e1(driver, true) : _;
 
             at = till([&_l, &driver, &zy](int e) {
