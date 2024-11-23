@@ -75,6 +75,7 @@ int main() {
   constexpr UINT VK_A = 0x41;
 
   ULONGLONG _n64 = GetTickCount64();
+  ULONGLONG _not = false;
   UINT _z = _;
   UINT _y = _;
   UINT _x = _;
@@ -181,18 +182,19 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_z, &_n64, &driver]() mutable {
+  std::function<void()> action1 = [&_l, &_r, &_z, &_not, &_n64, &driver]() mutable {
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
     Parallel::Pool zr(+1);
     Parallel::Pool zl(+1);
+    Parallel::Pool zd(+1);
     Parallel::Pool za(+1);
 
     const int size = +64;
     const int each = +16;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_z, &_n64, &at, &driver, &za, &zl, &zr, &zy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_l, &_r, &_z, &_not, &_n64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
@@ -219,9 +221,9 @@ int main() {
           _l = _l + 1;
           _z = _;
 
-          zl.enqueue_task([&_l, &_z, &at, &driver, &zy]() mutable {
+          zl.enqueue_task([&_l, &_z, &_not, &at, &driver, &zy]() mutable {
             UINT e_ = _;
-            while (_l > _ && _z == _ && e_ < +4) {
+            while (_not || (_l > _ && _z == _ && e_ < +4)) {
               Time::XO(frame_rate);
               e_ = e_ + 1;
             }
@@ -275,17 +277,37 @@ int main() {
           return false;
         }
       }
-      else if (e == VK_A || e == VK_D) {
+      else if (e == VK_D) {
         if (a) {
           _n64 = GetTickCount64();
+          _not = true;
 
           return true;
         }
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _n64);
 
-          zl.enqueue_task([&diff, &driver]() mutable {
+          zd.enqueue_task([&_not, &diff, &driver]() mutable {
             prevent(driver, VZ_L, diff / 10);
+            _not = false;
+            });
+
+          return true;
+        }
+      }
+      else if (e == VK_A) {
+        if (a) {
+          _n64 = GetTickCount64();
+          _not = true;
+
+          return true;
+        }
+        else {
+          UINT diff = static_cast<unsigned int>(GetTickCount64() - _n64);
+
+          za.enqueue_task([&_not, &diff, &driver]() mutable {
+            prevent(driver, VZ_R, diff / 10);
+            _not = false;
             });
 
           return true;
