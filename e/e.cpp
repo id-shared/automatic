@@ -68,8 +68,9 @@ int main() {
   UINT _x = _;
   UINT _r = _;
   UINT _l = _;
+  UINT _a = _;
 
-  std::function<void()> action2 = [&_l, &_r, &_x, &_y, &_z, &driver]() {
+  std::function<void()> action2 = [&_a, &_l, &_r, &_x, &_y, &_z, &driver]() {
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
 
@@ -85,7 +86,7 @@ int main() {
     const int ay = +2;
     const int ax = +2;
 
-    std::function<bool(int, int, int, int)> work = [&_l, &_r, &_x, &_y, &ax, &ay, &xx, &xy, &zx, &driver](int e_3, int e_2, int e_1, int e) {
+    std::function<bool(int, int, int, int)> work = [&_a, &_l, &_r, &_x, &_y, &ax, &ay, &xx, &xy, &zx, &driver](int e_3, int e_2, int e_1, int e) {
       const int y_ = e_3 + e_1;
       const int x_ = e_2 + e;
 
@@ -96,18 +97,13 @@ int main() {
           Xyloid2::e1(driver, false);
         }
 
-        _y = _y + 1;
-        _x = _x + 1;
-
+        _a = _a + 1;
         return true;
       }
       else if (_l > _) {
-        move(driver, y_ * ay * (_y > _ ? _ : +1), x_ * ax * (_x > _ ? _ : +1), xy / +64., xx / +32., false);
-        Time::XO(+4);
+        move(driver, y_ * ay * (_a > _ ? _ : +1), x_ * ax * (_a > _ ? _ : +1), xy / +64., xx / +32., false);
 
-        _y = _y + 1;
-        _x = _x + 1;
-
+        _a = _a + 1;
         return true;
       }
       else {
@@ -162,7 +158,7 @@ int main() {
   std::thread thread2(action2);
 
 
-  std::function<void()> action1 = [&_l, &_r, &_x, &_y, &_z, &driver]() {
+  std::function<void()> action1 = [&_a, &_l, &_r, &_z, &driver]() {
     Parallel::Pool zy(+1);
     Parallel::Pool zx(+1);
     Parallel::Pool zr(+1);
@@ -172,12 +168,11 @@ int main() {
     const int size = +64;
     int at = +1;
 
-    Event::KeyboardHook hook([&_l, &_r, &_x, &_y, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
+    Event::KeyboardHook hook([&_a, &_l, &_r, &_z, &at, &driver, &zl, &zr, &zy](UINT e, bool a) {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _r = _r + 1;
-          _y = _;
-          _x = _;
+          _a = _;
 
           zr.enqueue_task([&_r, &driver]() mutable {
             _r > _ ? Xyloid2::e2(driver, true) : _;
@@ -198,20 +193,19 @@ int main() {
       else if (e == VK_OEM_4) {
         if (a) {
           _l = _l + 1;
-          _y = _;
-          _x = _;
+          _a = _;
 
-          zl.enqueue_task([&_l, &_x, &_y, &_z, &at, &driver, &zy]() mutable {
+          zl.enqueue_task([&_a, &_l, &_z, &at, &driver, &zy]() mutable {
             UINT n_ = +4;
             UINT e_ = _;
-            while (_l > _ && _x == _ && _y == _ && e_ < n_) {
+            while (_l > _ && _a == _ && e_ < n_) {
               Time::XO(_z);
               e_ = e_ + _z;
             }
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
 
-            at = till([&_l, &driver, &zy](int e) {
+            /*at = till([&_l, &driver, &zy](int e) {
               const bool back = _l > _ && (size >= e);
 
               if (back) {
@@ -226,7 +220,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) - 1;
+              }, at) - 1;*/
             });
 
           return false;
@@ -234,10 +228,10 @@ int main() {
         else {
           _l = _;
 
-          zl.enqueue_task([&_l, &_x, &_y, &at, &driver, &zy]() mutable {
+          zl.enqueue_task([&_l, &at, &driver, &zy]() mutable {
             _l > _ ? _ : Xyloid2::e1(driver, false);
 
-            at = upon([&_l, &driver, &zy](int e) {
+            /*at = upon([&_l, &driver, &zy](int e) {
               const bool back = !(_l > _) && (+1 <= e);
 
               if (back) {
@@ -252,7 +246,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) + 1;
+              }, at) + 1;*/
             });
 
           return false;
