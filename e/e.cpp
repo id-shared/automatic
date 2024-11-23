@@ -63,7 +63,7 @@ int main() {
 
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  UINT _z = +2 * +2 * +2 * +2 * +2;
+  UINT _z = +2 * +2 + 2 * +2 * +2 * +2;
   UINT _y = _;
   UINT _x = _;
   UINT _r = _;
@@ -103,6 +103,7 @@ int main() {
       }
       else if (_l > _) {
         move(driver, y_ * ay * (_y > +4 ? _ : +1), x_ * ax, xy / +64., xx / +32., _x > _);
+        Time::XO(+32);
 
         _y = _y + 1;
         _x = _x + 1;
@@ -110,7 +111,7 @@ int main() {
         return true;
       }
       else {
-        //move(driver, y_ * ay, x_ * ax, xy / (+128. * +4.), xx / (+64. * +4), true);
+        //move(driver, y_ * ay, x_ * ax, xy, xx, false);
 
         //zx.enqueue_task([&_l, &driver]() mutable {
         //  if (!(_l > _)) {
@@ -148,10 +149,7 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &_z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) {
-      /***/if (find(o1, e_2, e_1 / +4, e)) {
-        return true;
-      }
-      else if (find(o1, e_2, e_1, e)) {
+      /***/if (find(o1, e_2, e_1, e)) {
         return true;
       }
       else {
