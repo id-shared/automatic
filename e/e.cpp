@@ -154,7 +154,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, xy / 1024, xx / 1024);
+            return work(axis_y, axis_x, xy / 256, xx / 1024);
           }
         }
       }
@@ -221,7 +221,7 @@ int main() {
 
           zl.enqueue_task([&_a, &_d, &_l, &_z, &at, &driver, &zy]() mutable {
             UINT e_ = _;
-            while (_l > _ && _z == _ && e_ < +64) {
+            while (_l > _ && _z == _ && e_ < +16) {
               Time::XO(+1);
               e_ = e_ + 1;
             }
