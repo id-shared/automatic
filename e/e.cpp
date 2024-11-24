@@ -45,7 +45,9 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e, bool a)
   const int y_ = a ? e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1)) : to_integer(e_3);
   const int x_ = a ? e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e)) : to_integer(e_2);
 
-  return Xyloid2::yx(x, y_, x_);
+  Xyloid2::yx(x, y_, x_);
+
+  return Time::XO(+4);
 }
 
 static bool is_red(uint8_t* x) {
@@ -102,9 +104,7 @@ int main() {
 
 
     std::function<bool(double, double, int, int, bool)> work2 = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e, bool a) mutable {
-        const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > _ ? +1 : +1), xy / e_3, xx / e_2, _z > _);
-
-        Time::XO(+4);
+        const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax, xy / e_3, xx / e_2, _z > _);
 
         _z = a ? _ : _z + 1;
         _y = a ? _ : e_1;
@@ -178,6 +178,7 @@ int main() {
 
     const int size = +64;
     const int each = +16;
+    const bool is = false;
     int at = +1;
 
     Event::KeyboardHook hook([&_a, &_d, &_l, &_r, &_z, &_z64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
@@ -220,7 +221,7 @@ int main() {
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
 
-            at = till([&_l, &driver, &zy](int e) {
+            is ? at = till([&_l, &driver, &zy](int e) {
               const bool back = _l > _ && (size >= e);
 
               if (back) {
@@ -235,7 +236,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) - 1;
+              }, at) - 1 : _;
             });
 
           return false;
@@ -246,7 +247,7 @@ int main() {
           zl.enqueue_task([&_l, &at, &driver, &zy]() mutable {
             _l > _ ? _ : Xyloid2::e1(driver, false);
 
-            at = upon([&_l, &driver, &zy](int e) {
+            is ? at = upon([&_l, &driver, &zy](int e) {
               const bool back = !(_l > _) && (+1 <= e);
 
               if (back) {
@@ -261,7 +262,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) + 1;
+              }, at) + 1 : _;
             });
 
           return false;
