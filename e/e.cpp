@@ -160,7 +160,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_z, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       zz.enqueue_task([&_z, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, _z > _ ? e_1 / +16 : e_1, e)) {
+        /***/if (find(o1, e_2, _z > _ ? e_1 / +4 : e_1, e)) {
           return true;
         }
         else {
