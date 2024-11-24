@@ -87,14 +87,14 @@ int main() {
 
   std::function<void()> action2 = [&_l, &_r, &_x, &_y, &_z, &driver]() mutable {
     Parallel::Pool zz(+1000);
-    Parallel::Pool zy(+1);
-    Parallel::Pool zx(+1);
+    Parallel::Pool zr(+1);
+    Parallel::Pool zl(+1);
 
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const int ey = xy / +18;
-    const int ex = xx / +6;
+    const int ey = xy / +9;
+    const int ex = xx / +4;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -103,17 +103,17 @@ int main() {
     const int ax = +2;
 
 
-    std::function<bool(double, double, int, int, bool)> work2 = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e, bool a) mutable {
-        const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax, xy / e_3, xx / e_2, _z > _);
+    std::function<bool(double, double, int, int, bool)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e, bool a) mutable {
+      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > +256 ? _ : +1), xy / e_3, xx / e_2, _z > _);
 
-        _z = a ? _ : _z + 1;
-        _y = a ? _ : e_1;
-        _x = a ? _ : e;
+      _z = a ? _ : _z + 1;
+      _y = a ? _ : e_1;
+      _x = a ? _ : e;
 
-        return back;
+      return back;
       };
 
-    std::function<bool(int, int, int, int)> task = [&_l, &_r, &work2](int e_3, int e_2, int e_1, int e) mutable {
+    std::function<bool(int, int, int, int)> task = [&_l, &_r, &zl, &zr, &work](int e_3, int e_2, int e_1, int e) mutable {
       const int y_ = e_3 + e_1;
       const int x_ = e_2 + e;
 
@@ -121,7 +121,10 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        return work2(+64, +64, y_, x_, false);
+        zl.enqueue_task([&work, y_, x_]() mutable {
+          work(+64, +64, y_, x_, false);
+          });
+        return true;
       }
       else {
         return true;
@@ -178,7 +181,7 @@ int main() {
 
     const int size = +64;
     const int each = +16;
-    const bool is = false;
+    const bool is = true;
     int at = +1;
 
     Event::KeyboardHook hook([&_a, &_d, &_l, &_r, &_z, &_z64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
