@@ -45,9 +45,7 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e, bool a)
   const int y_ = a ? e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1)) : to_integer(e_3);
   const int x_ = a ? e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e)) : to_integer(e_2);
 
-  Xyloid2::yx(x, y_, x_);
-
-  return Time::XO(+4);
+  return Xyloid2::yx(x, y_, x_);
 }
 
 static bool is_red(uint8_t* x) {
@@ -109,6 +107,8 @@ int main() {
       /***/if (_r > _) {
         x_ == _x && y_ == _y ? _ : move(driver, y_ * ay, x_ * ax, xy / +64., xx / +64., _z > _);
 
+        Time::XO(+16);
+
         if (_x > _ && abs(e_2) < +4) {
           Xyloid2::e1(driver, true);
           Xyloid2::e1(driver, false);
@@ -123,6 +123,8 @@ int main() {
       else if (_l > _) {
         x_ == _x && y_ == _y ? _ : move(driver, y_ * ay * (_z > _ ? _ : +1), x_ * ax * (_z > _ ? +0.5 : +1), xy / +32., xx / +32., _z > _);
 
+        Time::XO(+16);
+
         _z = _z + 1;
         _y = y_;
         _x = x_;
@@ -130,16 +132,8 @@ int main() {
         return true;
       }
       else {
-        //move(driver, y_ == _y ? _ : y_ * ay * (_a > _ ? _ : +1), x_ == _x ? _ : x_ * ax * (_a > _ ? +0.5 : +1), xy / +64., xx / +64., _a > _);
-
-        //zx.enqueue_task([&_l, &driver]() mutable {
-        //  if (!(_l > _)) {
-        //    Xyloid1::ea(driver, 0x1a, true);
-        //    Time::XO(+128);
-        //    Xyloid1::ea(driver, 0x1a, false);
-        //    Time::XO(+128);
-        //  }
-        //  });
+        _y = _;
+        _x = _;
 
         return true;
       }
@@ -159,7 +153,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, xy / 1024, xx / 1024);
+            return work(axis_y, axis_x, xy / 512, xx / 512);
           }
         }
       }
@@ -332,14 +326,3 @@ int main() {
 
   return +1;
 }
-
-/*Xyloid2::e2(driver, true);
-Xyloid2::e2(driver, false);
-
-while (_l > _) {
-  Xyloid1::ea(driver, 0x1a, true);
-  Time::XO(+99);
-  Xyloid1::ea(driver, 0x1a, false);
-  Xyloid2::e1(driver, true);
-  Xyloid2::e1(driver, false);
-}*/
