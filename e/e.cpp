@@ -91,8 +91,8 @@ int main() {
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const int ey = xy / +16;
-    const int ex = xx / +8;
+    const int ey = xy / +18;
+    const int ex = xx / +6;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -102,7 +102,7 @@ int main() {
 
 
     std::function<bool(double, double, int, int, bool)> work2 = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e, bool a) mutable {
-        const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > _ ? +0.5 : +1), xy / e_3, xx / e_2, _z > _);
+        const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > _ ? +1 : +1), xy / e_3, xx / e_2, _z > _);
 
         Time::XO(+4);
 
@@ -121,7 +121,7 @@ int main() {
         return true;
       }
       else if (_l > _) {
-        return work2(+32, +32, y_, x_, false);
+        return work2(+64, +64, y_, x_, false);
       }
       else {
         return true;
