@@ -154,7 +154,7 @@ int main() {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return work(axis_y, axis_x, xy / 512, xx / 512);
+            return work(axis_y, axis_x, xy / 1024, xx / 1024);
           }
         }
       }
