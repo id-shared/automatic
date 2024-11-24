@@ -41,11 +41,8 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
-  const int y_ = e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1));
-  const int x_ = e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e));
-
-  return Xyloid2::yx(x, y_, x_);
+static bool move(HANDLE x, double e_1, double e) {
+  return Xyloid2::yx(x, e_1, e);
 }
 
 static bool is_red(uint8_t* x) {
@@ -102,8 +99,8 @@ int main() {
     const int ax = +2;
 
 
-    std::function<bool(double, double, int, int)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e) mutable {
-      const bool back = (e == _x && e_1 == _y) || move(driver, _z > _ ? xy / e_3 : xy, _z > _ ? xx / e_2 : xx, e_1 * ay * (_z > _ ? _ : +1), e * ax);
+    std::function<bool(int, int)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](int e_1, int e) mutable {
+      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax);
 
       _z = _z + 1;
       _y = e_1;
@@ -118,13 +115,13 @@ int main() {
 
       /***/if (_r > _) {
         zr.enqueue_task([&x_, &y_, &work]() mutable {
-          work(+64, +64, y_, x_);
+          work(y_, x_);
           });
         return true;
       }
       else if (_l > _) {
         zl.enqueue_task([&x_, &y_, &work]() mutable {
-          work(+64, +64, y_, x_);
+          work(y_, x_);
           });
         return true;
       }
