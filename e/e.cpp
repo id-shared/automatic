@@ -45,9 +45,7 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e, bool a)
   const int y_ = a ? e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1)) : to_integer(e_3);
   const int x_ = a ? e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e)) : to_integer(e_2);
 
-  Xyloid2::yx(x, y_, x_);
-
-  return Time::XO(+4);
+  return Xyloid2::yx(x, y_, x_);
 }
 
 static bool is_red(uint8_t* x) {
@@ -70,7 +68,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  constexpr UINT frame_rate = +1;
+  constexpr UINT fr = +1;
   constexpr UINT VZ_R = 0x4d;
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
@@ -89,12 +87,13 @@ int main() {
     Parallel::Pool zz(+1000);
     Parallel::Pool zr(+1);
     Parallel::Pool zl(+1);
+    Parallel::Pool za(+1);
 
     const int xy = GetSystemMetrics(SM_CYSCREEN);
     const int xx = GetSystemMetrics(SM_CXSCREEN);
 
-    const int ey = xy / +9;
-    const int ex = xx / +4;
+    const int ey = xy / +12;
+    const int ex = xx / +6;
 
     const int cy = ey / +2;
     const int cx = ex / +2;
@@ -103,30 +102,36 @@ int main() {
     const int ax = +2;
 
 
-    std::function<bool(double, double, int, int, bool)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e, bool a) mutable {
-      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > +256 ? _ : +1), xy / e_3, xx / e_2, _z > _);
+    std::function<bool(double, double, int, int)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e) mutable {
+      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > _ ? +0.5 : +1), xy / e_3, xx / e_2, _z > _);
 
-      _z = a ? _ : _z + 1;
-      _y = a ? _ : e_1;
-      _x = a ? _ : e;
+      _z = _z + 1;
+      _y = e_1;
+      _x = e;
 
       return back;
       };
 
-    std::function<bool(int, int, int, int)> task = [&_l, &_r, &zl, &zr, &work](int e_3, int e_2, int e_1, int e) mutable {
+    std::function<bool(int, int, int, int)> task = [&_x, &_y, &_z, &_l, &_r, &za, &zl, &zr, &work](int e_3, int e_2, int e_1, int e) mutable {
       const int y_ = e_3 + e_1;
       const int x_ = e_2 + e;
 
       /***/if (_r > _) {
+        zr.enqueue_task([&x_, &y_, &work]() mutable {
+          work(+64, +64, y_, x_);
+          });
         return true;
       }
       else if (_l > _) {
-        zl.enqueue_task([&work, y_, x_]() mutable {
-          work(+64, +64, y_, x_, false);
+        zl.enqueue_task([&x_, &y_, &work]() mutable {
+          work(+64, +64, y_, x_);
           });
         return true;
       }
       else {
+        _z = _;
+        _y = _;
+        _x = _;
         return true;
       }
       };
@@ -166,7 +171,7 @@ int main() {
       return true;
       };
 
-    Capture::screen(each, (xy - ey) / +2, (xx - ex) / +2, ey, ex, frame_rate);
+    Capture::screen(each, (xy - ey) / +2, (xx - ex) / +2, ey, ex, fr);
     };
   std::thread thread2(action2);
 
@@ -212,14 +217,12 @@ int main() {
           _z = _;
 
           zl.enqueue_task([&_a, &_d, &_l, &_z, &at, &driver, &zy]() mutable {
-            UINT e_ = _;
-            while (_l > _ && _z == _ && e_ < +16) {
+            while (_l > _ && _z < +1) {
               Time::XO(+1);
-              e_ = e_ + 1;
             }
 
             while (_a > _ || _d > _) {
-              Time::XO(frame_rate);
+              Time::XO(fr);
             }
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
@@ -319,16 +322,3 @@ int main() {
 
   return +1;
 }
-
-/*x_ == _x && y_ == _y ? _ : move(driver, y_ * ay, x_ * ax, xy / +64., xx / +64., _z > _);
-
-Time::XO(+4);
-
-if (_x > _ && abs(e_2) < +4) {
-  Xyloid2::e1(driver, true);
-  Xyloid2::e1(driver, false);
-}
-
-_z = _z + 1;
-_y = y_;
-_x = x_;*/
