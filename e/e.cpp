@@ -41,9 +41,9 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_3, double e_2, double e_1, double e, bool a) {
-  const int y_ = a ? e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1)) : to_integer(e_3);
-  const int x_ = a ? e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e)) : to_integer(e_2);
+static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
+  const int y_ = e_3 > _ ? to_integer(min(e_3, e_1)) : to_integer(max(e_3, -e_1));
+  const int x_ = e_2 > _ ? to_integer(min(e_2, e)) : to_integer(max(e_2, -e));
 
   return Xyloid2::yx(x, y_, x_);
 }
@@ -68,11 +68,11 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  constexpr UINT fr = +1;
   constexpr UINT VZ_R = 0x4d;
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
+  constexpr UINT fr = +1;
 
   ULONGLONG _z64 = GetTickCount64();
   UINT _z = _;
@@ -103,7 +103,7 @@ int main() {
 
 
     std::function<bool(double, double, int, int)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e) mutable {
-      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax * (_z > _ ? +0.5 : +1), xy / e_3, xx / e_2, _z > _);
+      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax, _z > _ ? xy / e_3 : xy, _z > _ ? xx / e_2 : xx);
 
       _z = _z + 1;
       _y = e_1;
@@ -118,13 +118,13 @@ int main() {
 
       /***/if (_r > _) {
         zr.enqueue_task([&x_, &y_, &work]() mutable {
-          work(+64, +64, y_, x_);
+          work(+16, +16, y_, x_);
           });
         return true;
       }
       else if (_l > _) {
         zl.enqueue_task([&x_, &y_, &work]() mutable {
-          work(+64, +64, y_, x_);
+          work(+16, +16, y_, x_);
           });
         return true;
       }
@@ -158,9 +158,9 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_x, &_y, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      zz.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, e_1, e)) {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_z, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      zz.enqueue_task([&_z, &find, o1, e_2, e_1, e]() mutable {
+        /***/if (find(o1, e_2, _z > _ ? e_1 / +16 : e_1, e)) {
           return true;
         }
         else {
@@ -217,11 +217,7 @@ int main() {
           _z = _;
 
           zl.enqueue_task([&_a, &_d, &_l, &_z, &at, &driver, &zy]() mutable {
-            while (_l > _ && _z < +1) {
-              Time::XO(+1);
-            }
-
-            while (_a > _ || _d > _) {
+            while (_l > _ && (_a > _ || _d > _ || _z < +1)) {
               Time::XO(fr);
             }
 
