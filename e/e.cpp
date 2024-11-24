@@ -107,7 +107,7 @@ int main() {
       /***/if (_r > _) {
         x_ == _x && y_ == _y ? _ : move(driver, y_ * ay, x_ * ax, xy / +64., xx / +64., _z > _);
 
-        Time::XO(+16);
+        Time::XO(+4);
 
         if (_x > _ && abs(e_2) < +4) {
           Xyloid2::e1(driver, true);
@@ -123,7 +123,7 @@ int main() {
       else if (_l > _) {
         x_ == _x && y_ == _y ? _ : move(driver, y_ * ay * (_z > _ ? _ : +1), x_ * ax * (_z > _ ? +0.5 : +1), xy / +32., xx / +32., _z > _);
 
-        Time::XO(+16);
+        Time::XO(+4);
 
         _z = _z + 1;
         _y = y_;
@@ -132,6 +132,7 @@ int main() {
         return true;
       }
       else {
+        _z = _;
         _y = _;
         _x = _;
 
@@ -220,8 +221,8 @@ int main() {
 
           zl.enqueue_task([&_a, &_d, &_l, &_z, &at, &driver, &zy]() mutable {
             UINT e_ = _;
-            while (_l > _ && _z == _ && e_ < +4) {
-              Time::XO(frame_rate);
+            while (_l > _ && _z == _ && e_ < +64) {
+              Time::XO(+1);
               e_ = e_ + 1;
             }
 
