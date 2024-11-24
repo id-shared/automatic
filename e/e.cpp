@@ -103,7 +103,7 @@ int main() {
 
 
     std::function<bool(double, double, int, int)> work = [&_x, &_y, &_z, &ax, &ay, &xx, &xy, &driver](double e_3, double e_2, int e_1, int e) mutable {
-      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_z > _ ? _ : +1), e * ax, _z > _ ? xy / e_3 : xy, _z > _ ? xx / e_2 : xx);
+      const bool back = (e == _x && e_1 == _y) || move(driver, _z > _ ? xy / e_3 : xy, _z > _ ? xx / e_2 : xx, e_1 * ay * (_z > _ ? _ : +1), e * ax);
 
       _z = _z + 1;
       _y = e_1;
@@ -118,13 +118,13 @@ int main() {
 
       /***/if (_r > _) {
         zr.enqueue_task([&x_, &y_, &work]() mutable {
-          work(+16, +16, y_, x_);
+          work(+64, +64, y_, x_);
           });
         return true;
       }
       else if (_l > _) {
         zl.enqueue_task([&x_, &y_, &work]() mutable {
-          work(+16, +16, y_, x_);
+          work(+64, +64, y_, x_);
           });
         return true;
       }
@@ -160,7 +160,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_z, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       zz.enqueue_task([&_z, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, _z > _ ? e_1 / +16 : e_1, e)) {
+        /***/if (find(o1, e_2, _z > _ ? e_1 / (+4 + (_z % +13)) : e_1, e)) {
           return true;
         }
         else {
@@ -217,8 +217,10 @@ int main() {
           _z = _;
 
           zl.enqueue_task([&_a, &_d, &_l, &_z, &at, &driver, &zy]() mutable {
-            while (_l > _ && (_a > _ || _d > _ || _z < +1)) {
+            UINT e_ = _;
+            while (_l > _ && (_a > _ || _d > _ || _z < +1) && e_ < +16) {
               Time::XO(fr);
+              e_ = e_ + fr;
             }
 
             _l > _ ? Xyloid2::e1(driver, true) : _;
