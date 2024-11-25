@@ -41,9 +41,9 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_2, double e_1, double e) {
-  const double y_ = e_2 >= _ ? min(e, e_2) : max(-e, e_2);
-  const double x_ = e_1 >= _ ? min(e, e_1) : max(-e, e_1);
+static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
+  const double y_ = e_3 >= _ ? min(e_1, e_3) : max(-e_1, e_3);
+  const double x_ = e_2 >= _ ? min(e, e_2) : max(-e, e_2);
 
   return Xyloid2::yx(x, to_integer(y_), to_integer(x_));
 }
@@ -102,30 +102,30 @@ int main() {
     int _y = _;
     int _x = _;
 
-    std::function<bool(int, int, int)> work = [&_x, &_y, &_A, &_D, &_Z, &xx, &xy, &driver](int e_2, int e_1, int e) mutable {
-      const bool back = (e_1 == _x && e_2 == _y) || move(driver, e_2 * xy * (_Z > _ ? _ : +1), e_1 * xx, e);
+    std::function<bool(double, double, double, double)> work = [&_x, &_y, &_A, &_D, &_Z, &xx, &xy, &driver](double e_3, double e_2, double e_1, double e) mutable {
+      const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * xy * (_Z > _ ? _ : +1), e_2 * xx, e_1, e);
 
       _Z = _A > _ || _D > _ ? _ : _Z + 1;
-      _y = e_2;
-      _x = e_1;
+      _y = e_3;
+      _x = e_2;
 
       return back;
       };
 
-    std::function<bool(int, int, int, int)> task = [&_x, &_y, &_L, &_R, &_Z, &ex, &ey, &za, &zl, &zr, &work](int e_3, int e_2, int e_1, int e) mutable {
-      const int y_ = e_3 + e_1;
-      const int x_ = e_2 + e;
+    std::function<bool(double, double, double, double)> task = [&_x, &_y, &_L, &_R, &_Z, &za, &zl, &zr, &work](double e_3, double e_2, double e_1, double e) mutable {
+      const double y_ = e_3 + e_1;
+      const double x_ = e_2 + e;
 
       /***/if (_R > _) {
-        zr.enqueue_task([&x_, &y_, &work]() mutable {
-          work(y_, x_, +10);
+        zr.enqueue_task([&e_1, &e, &x_, &y_, &work]() mutable {
+          work(y_, x_, e_1, e);
           });
 
         return true;
       }
       else if (_L > _) {
-        zl.enqueue_task([&x_, &y_, &work]() mutable {
-          work(y_, x_, +10);
+        zl.enqueue_task([&e_1, &e, &x_, &y_, &work]() mutable {
+          work(y_, x_, e_1, e);
           });
 
         return true;
