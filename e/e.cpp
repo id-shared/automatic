@@ -102,15 +102,17 @@ int main() {
     double _y = _;
     double _x = _;
 
-    std::function<bool(double, double, double, double)> work = [&_x, &_y, &_Z, &xx, &xy, &driver](double e_3, double e_2, double e_1, double e) mutable {
-      const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * (_Z > _ ? _ : +1) * xy, e_2 * xx, e_1 * xy, e * xx);
+    std::function<bool(double, double, double, double)> work = [&_x, &_y, &_Z, &xx, &xy, &zl, &driver](double e_3, double e_2, double e_1, double e) mutable {
+      zl.enqueue_task([&_x, &_y, &_Z, &xx, &xy, &driver, e_3, e_2, e_1, e]() mutable {
+        const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * (_Z > _ ? _ : +1) * xy, e_2 * xx, e_1 * xy, e * xx);
 
-      _Z = abs(e_2) < +4 > _ ? _ : +1;
+        _Z = abs(e_2) < +1 ? _ : +1;
 
-      _y = e_3;
-      _x = e_2;
+        _y = e_3;
+        _x = e_2;
+        });
 
-      return back;
+      return true;
       };
 
     std::function<bool(double, double, double, double)> task = [&_x, &_y, &_L, &_R, &_Z, &za, &zl, &zr, &work](double e_3, double e_2, double e_1, double e) mutable {
@@ -118,18 +120,10 @@ int main() {
       const double x_ = e_2 + e;
 
       /***/if (_R > _) {
-        zr.enqueue_task([&e_1, &e, &x_, &y_, &work]() mutable {
-          work(y_, x_, e_1, e);
-          });
-
-        return true;
+        return work(y_, x_, e_1 * +4, e * +4);
       }
       else if (_L > _) {
-        zl.enqueue_task([&e_1, &e, &x_, &y_, &work]() mutable {
-          work(y_, x_, e_1 * +4, e * +4);
-          });
-
-        return true;
+        return work(y_, x_, e_1 * +4, e * +4);
       }
       else {
         _Z = _;
@@ -227,7 +221,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && !(_Z > _) && e_ < +64) {
+            while (_L > _ && _Z == _ && e_ < +64) {
               Time::XO(fr);
               e_ = e_ + fr;
             }
