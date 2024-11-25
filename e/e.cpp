@@ -41,8 +41,11 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e_1), to_integer(e));
+static bool move(HANDLE x, double e_2, double e_1, double e) {
+  const double y_ = e_2 >= _ ? min(e, e_2) : max(-e, e_2);
+  const double x_ = e_1 >= _ ? min(e, e_1) : max(-e, e_1);
+
+  return Xyloid2::yx(x, to_integer(y_), to_integer(x_));
 }
 
 static bool is_red(uint8_t* x) {
@@ -84,70 +87,73 @@ int main() {
     Parallel::Pool zl(+1);
     Parallel::Pool za(+1);
 
-    const int xy = GetSystemMetrics(SM_CYSCREEN);
-    const int xx = GetSystemMetrics(SM_CXSCREEN);
+    const int xy = +2;
+    const int xx = +2;
 
-    const int ey = xy / +12;
-    const int ex = xx / +6;
+    const int ey = GetSystemMetrics(SM_CYSCREEN);
+    const int ex = GetSystemMetrics(SM_CXSCREEN);
 
-    const int cy = ey / +2;
-    const int cx = ex / +2;
+    const int cy = ey / +16;
+    const int cx = ex / +8;
 
-    const int ay = +2;
-    const int ax = +2;
+    const int ay = cy / +2;
+    const int ax = cx / +2;
 
     int _y = _;
     int _x = _;
 
-    std::function<bool(int, int)> work = [&_x, &_y, &_A, &_D, &_Z, &ax, &ay, &xx, &xy, &driver](int e_1, int e) mutable {
-      const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_Z > _ ? _ : +1), e * ax);
+    std::function<bool(int, int, int)> work = [&_x, &_y, &_A, &_D, &_Z, &xx, &xy, &driver](int e_2, int e_1, int e) mutable {
+      const bool back = (e_1 == _x && e_2 == _y) || move(driver, e_2 * xy * (_Z > _ ? _ : +1), e_1 * xx, e);
 
       _Z = _A > _ || _D > _ ? _ : _Z + 1;
-      _y = e_1;
-      _x = e;
+      _y = e_2;
+      _x = e_1;
 
       return back;
       };
 
-    std::function<bool(int, int, int, int)> task = [&_x, &_y, &_L, &_R, &_Z, &za, &zl, &zr, &work](int e_3, int e_2, int e_1, int e) mutable {
+    std::function<bool(int, int, int, int)> task = [&_x, &_y, &_L, &_R, &_Z, &ex, &ey, &za, &zl, &zr, &work](int e_3, int e_2, int e_1, int e) mutable {
       const int y_ = e_3 + e_1;
       const int x_ = e_2 + e;
 
       /***/if (_R > _) {
         zr.enqueue_task([&x_, &y_, &work]() mutable {
-          work(y_, x_);
+          work(y_, x_, +10);
           });
+
         return true;
       }
       else if (_L > _) {
         zl.enqueue_task([&x_, &y_, &work]() mutable {
-          work(y_, x_);
+          work(y_, x_, +10);
           });
+
         return true;
       }
       else {
         _Z = _;
         _y = _;
         _x = _;
+
         return true;
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&cx, &cy, &xx, &xy, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &ex, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       const int y_ = e_2 / +2;
       const int x_ = e_1 / +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
-        uint8_t* px_y = o1 + ((cy - y_) + e_y) * e;
+        uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
 
         for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((cx - x_) + e_x) * +4;
+          uint8_t* px_x = px_y + ((ax - x_) + e_x) * +4;
 
           if (is_red(px_x)) {
             const int axis_y = e_y - y_;
             const int axis_x = e_x - x_;
 
-            return task(axis_y, axis_x, xy / 256, xx / 1024);
+            return task(axis_y, axis_x, ey / 256, ex / 1024);
           }
         }
       }
@@ -157,7 +163,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_Z, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       zz.enqueue_task([&_Z, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, _Z > _ ? e_1 / +16 : e_1, e)) {
+        /***/if (find(o1, e_2, _Z > _ ? e_1 / +4 : e_1, e)) {
           return true;
         }
         else {
@@ -168,7 +174,7 @@ int main() {
       return true;
       };
 
-    Capture::screen(each, (xy - ey) / +2, (xx - ex) / +2, ey, ex, fr);
+    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, fr);
     };
   std::thread thread2(action2);
 
