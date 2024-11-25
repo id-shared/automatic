@@ -214,8 +214,12 @@ int main() {
           _Z = _;
 
           zl.enqueue_task([&_A, &_D, &_L, &_Z, &at, &driver, &zy]() mutable {
+            while (_A > _ || _D > _) {
+              Time::XO(fr);
+            }
+
             UINT e_ = _;
-            while (_L > _ && (_A > _ || _D > _ || _Z < +1) && e_ < +16) {
+            while (_L > _ && _Z < +1 && e_ < +16) {
               Time::XO(fr);
               e_ = e_ + fr;
             }
