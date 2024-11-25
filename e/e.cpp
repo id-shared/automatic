@@ -78,7 +78,7 @@ int main() {
   UINT _D = _;
   UINT _A = _;
 
-  std::function<void()> action2 = [&_L, &_R, &_Z, &driver]() mutable {
+  std::function<void()> action2 = [&_A, &_D, &_L, &_R, &_Z, &driver]() mutable {
     Parallel::Pool zz(+1000);
     Parallel::Pool zr(+1);
     Parallel::Pool zl(+1);
@@ -99,10 +99,10 @@ int main() {
     int _y = _;
     int _x = _;
 
-    std::function<bool(int, int)> work = [&_x, &_y, &_Z, &ax, &ay, &xx, &xy, &driver](int e_1, int e) mutable {
+    std::function<bool(int, int)> work = [&_x, &_y, &_A, &_D, &_Z, &ax, &ay, &xx, &xy, &driver](int e_1, int e) mutable {
       const bool back = (e == _x && e_1 == _y) || move(driver, e_1 * ay * (_Z > _ ? _ : +1), e * ax);
 
-      _Z = _Z + 1;
+      _Z = _A > _ || _D > _ ? _ : _Z + 1;
       _y = e_1;
       _x = e;
 
