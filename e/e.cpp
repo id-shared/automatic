@@ -87,8 +87,8 @@ int main() {
     Parallel::Pool zl(+1);
     Parallel::Pool za(+1);
 
-    const int xy = +2;
-    const int xx = +2;
+    const double xy = +2;
+    const double xx = +2;
 
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
@@ -102,10 +102,11 @@ int main() {
     double _y = _;
     double _x = _;
 
-    std::function<bool(double, double, double, double)> work = [&_x, &_y, &_A, &_D, &_Z, &xx, &xy, &driver](double e_3, double e_2, double e_1, double e) mutable {
-      const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * xy * (_Z > _ ? _ : +1), e_2 * xx, e_1, e);
+    std::function<bool(double, double, double, double)> work = [&_x, &_y, &_Z, &xx, &xy, &driver](double e_3, double e_2, double e_1, double e) mutable {
+      const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * (_Z > _ ? _ : +1) * xy, e_2 * xx, e_1 * xy, e * xx);
 
-      _Z = _A > _ || _D > _ ? _ : _Z + 1;
+      _Z = abs(e_2) < +4 > _ ? _ : +1;
+
       _y = e_3;
       _x = e_2;
 
@@ -125,13 +126,14 @@ int main() {
       }
       else if (_L > _) {
         zl.enqueue_task([&e_1, &e, &x_, &y_, &work]() mutable {
-          work(y_, x_, e_1, e);
+          work(y_, x_, e_1 * +4, e * +4);
           });
 
         return true;
       }
       else {
         _Z = _;
+
         _y = _;
         _x = _;
 
@@ -140,20 +142,20 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &ex, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      const int y_ = e_2 / +2;
-      const int x_ = e_1 / +2;
+      const int ny = e_2 / +2;
+      const int nx = e_1 / +2;
 
       for (UINT e_y = _; e_y < e_2; ++e_y) {
-        uint8_t* px_y = o1 + ((ay - y_) + e_y) * e;
+        uint8_t* px_y = o1 + ((ay - ny) + e_y) * e;
 
         for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((ax - x_) + e_x) * +4;
+          uint8_t* px_x = px_y + ((ax - nx) + e_x) * +4;
 
           if (is_red(px_x)) {
-            const int axis_y = e_y - y_;
-            const int axis_x = e_x - x_;
+            const int axis_y = e_y - ny;
+            const int axis_x = e_x - nx;
 
-            return task(axis_y, axis_x, ey / 256, ex / 1024);
+            return task(axis_y, axis_x, ey / +256., ex / +1024.);
           }
         }
       }
@@ -225,7 +227,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && _Z < +1 && e_ < +16) {
+            while (_L > _ && !(_Z > _) && e_ < +64) {
               Time::XO(fr);
               e_ = e_ + fr;
             }
@@ -290,7 +292,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           zd.enqueue_task([&_D, &diff, &driver]() mutable {
-            prevent(driver, VZ_L, diff / 10);
+            prevent(driver, VZ_L, diff / +10);
             _D = _;
             });
 
@@ -308,7 +310,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           za.enqueue_task([&_A, &diff, &driver]() mutable {
-            prevent(driver, VZ_R, diff / 10);
+            prevent(driver, VZ_R, diff / +10);
             _A = _;
             });
 
