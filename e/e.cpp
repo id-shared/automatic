@@ -99,8 +99,8 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    int _y = _;
-    int _x = _;
+    double _y = _;
+    double _x = _;
 
     std::function<bool(double, double, double, double)> work = [&_x, &_y, &_A, &_D, &_Z, &xx, &xy, &driver](double e_3, double e_2, double e_1, double e) mutable {
       const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * xy * (_Z > _ ? _ : +1), e_2 * xx, e_1, e);
