@@ -72,7 +72,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT fr = +1;
+  constexpr UINT fr = +16;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -105,7 +105,7 @@ int main() {
 
     std::function<bool(double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_3, double e_2, double e_1, double e) mutable {
       zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +4, xx * e * +4);
+        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +16, xx * e * +16);
 
         _Y = abs(e_3) < e_1 ? +1 : _Y;
         _X = abs(e_2) < e ? +1 : _X;
@@ -193,20 +193,20 @@ int main() {
     Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
-          _R = +1;
-          _Y = _;
-          _X = _;
+          zr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
+            _R = +1;
+            _Y = _;
+            _X = _;
 
-          zr.enqueue_task([&_R, &driver]() mutable {
             _R > _ ? Xyloid2::e2(driver, true) : _;
             });
 
           return false;
         }
         else {
-          _R = _;
-
           zr.enqueue_task([&_R, &driver]() mutable {
+            _R = _;
+
             _R > _ ? _ : Xyloid2::e2(driver, false);
             });
 
@@ -215,17 +215,17 @@ int main() {
       }
       else if (e == VK_OEM_4) {
         if (a) {
-          _L = +1;
-          _Y = _;
-          _X = _;
-
           zl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &zy]() mutable {
             while (_A > _ || _D > _) {
               Time::XO(fr);
             }
 
+            _L = +1;
+            _Y = _;
+            _X = _;
+
             UINT e_ = _;
-            while (_L > _ && _X == _ && _Y == _ && e_ < +128) {
+            while (_L > _ && _X == _ && _Y == _ && e_ < +1024) {
               Time::XO(fr);
               e_ = e_ + fr;
             }
@@ -253,9 +253,9 @@ int main() {
           return false;
         }
         else {
-          _L = _;
-
           zl.enqueue_task([&_L, &at, &driver, &zy]() mutable {
+            _L = _;
+
             _L > _ ? _ : Xyloid2::e1(driver, false);
 
             is ? at = upon([&_L, &driver, &zy](int e) {
