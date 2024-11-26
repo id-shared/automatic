@@ -130,8 +130,8 @@ int main() {
       xl.enqueue_task([&_X, &_Y, &driver, e_2, e_1, e]() mutable {
         move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
 
-        _Y = +1;
-        _X = +1;
+        _Y = _Y + 1;
+        _X = _X + 1;
         });
 
       return true;
@@ -179,9 +179,6 @@ int main() {
         return true;
       }
       else {
-        _Y = _;
-        _X = _;
-
         return true;
       }
       };
@@ -208,6 +205,8 @@ int main() {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = +1;
+          _Y = _;
+          _X = _;
 
           xr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
             _R > _ ? Xyloid2::e2(driver, true) : _;
@@ -228,6 +227,8 @@ int main() {
       else if (e == VK_OEM_4) {
         if (a) {
           _L = +1;
+          _Y = _;
+          _X = _;
 
           xl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &xy]() mutable {
             while (_A > _ || _D > _) {
