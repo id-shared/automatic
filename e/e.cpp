@@ -68,8 +68,8 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
   Xyloid2::yx(x, to_integer(e_2 * e_4), _);
 
   adjust([x, e_3](double e) mutable {
-    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+1.5);
-    }, e_1, to_integer(e / +2.));
+    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+16.);
+    }, e_1, +1); // to_integer(e / +16.)
 
   return true;
 }
@@ -106,6 +106,7 @@ int main() {
   constexpr UINT FR = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
+  Parallel::Pool _Z(+1000);
   UINT _Y = _;
   UINT _X = _;
   UINT _R = _;
@@ -113,10 +114,7 @@ int main() {
   UINT _D = _;
   UINT _A = _;
 
-  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
-    Parallel::Pool xr(+1);
-    Parallel::Pool xl(+1);
-
+  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z, &driver]() mutable {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -126,18 +124,16 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &xl, &driver](double e_2, double e_1, double e) mutable {
-      xl.enqueue_task([&_X, &_Y, &driver, e_2, e_1, e]() mutable {
-        move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
+    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
+      move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
 
-        _Y = _Y + 1;
-        _X = _X + 1;
-        });
+      _Y = +1;
+      _X = +1;
 
       return true;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_L, &_R, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + e;
       const double x_ = e_1 + e;
 
@@ -174,13 +170,17 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      /***/if (find(o1, _Y > _ ? e_2 / +8 : e_2, _X > _ ? e_1 / +8 : e_1, e)) {
-        return true;
-      }
-      else {
-        return true;
-      }
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      _Z.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
+        /***/if (find(o1, _Y > _ ? e_2 / +8 : e_2, _X > _ ? e_1 / +8 : e_1, e)) {
+          return true;
+        }
+        else {
+          return true;
+        }
+        });
+
+      return true;
       };
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
