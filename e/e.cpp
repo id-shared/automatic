@@ -10,23 +10,23 @@
 
 const int _ = -1 + 1;
 
-static bool adjust(std::function<bool(double)> z, double value, int steps_count) {
-  steps_count <= 0 ? throw steps_count : steps_count;
+static bool adjust(std::function<bool(double)> z, double e_1, int e) {
+  e <= 0 ? throw e : e;
 
-  double magnitude = std::abs(value);
-  double base_step = std::floor(magnitude / steps_count);
-  double remainder = magnitude - base_step * steps_count;
-  double sign = (value < 0) ? -1.0 : 1.0;
+  double magnitude = std::abs(e_1);
+  double base_step = std::floor(magnitude / e);
+  double remainder = magnitude - base_step * e;
+  double sign = (e_1 < 0) ? -1.0 : 1.0;
 
-  std::vector<double> steps(steps_count, base_step);
+  std::vector<double> steps(e, base_step);
 
   for (int i = 0; i < static_cast<int>(remainder); ++i) {
     steps[i] += 1.0;
   }
 
-  for (int i = 0; i < steps_count; ++i) {
+  for (int i = 0; i < e; ++i) {
     double adjustment = steps[i] * sign;
-    value -= adjustment;
+    e_1 -= adjustment;
     adjustment == _ ? _ : z(adjustment);
   }
 
