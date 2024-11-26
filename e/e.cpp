@@ -225,7 +225,7 @@ int main() {
             _X = _;
 
             UINT e_ = _;
-            while (_L > _ && _X == _ && _Y == _ && e_ < +1024) {
+            while (_L > _ && (_X == _ || _Y == _) && e_ < +1024) {
               Time::XO(fr);
               e_ = e_ + fr;
             }
