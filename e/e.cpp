@@ -118,11 +118,11 @@ int main() {
   UINT _D = _;
   UINT _A = _;
 
-  std::function<void()> action2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
-    Parallel::Pool zz(+1000);
-    Parallel::Pool zr(+1);
-    Parallel::Pool zl(+1);
-    Parallel::Pool za(+1);
+  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
+    Parallel::Pool xz(+1000);
+    Parallel::Pool xr(+1);
+    Parallel::Pool xl(+1);
+    Parallel::Pool xa(+1);
 
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
@@ -136,8 +136,8 @@ int main() {
     double _y = _;
     double _x = _;
 
-    std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &zl, &driver](double e_2, double e_1, double e) mutable {
-      zl.enqueue_task([&_x, &_y, &_X, &_Y, &driver, e_2, e_1, e]() mutable {
+    std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &xl, &driver](double e_2, double e_1, double e) mutable {
+      xl.enqueue_task([&_x, &_y, &_X, &_Y, &driver, e_2, e_1, e]() mutable {
         (e_2 == _y && e_1 == _x) || move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
 
         _Y = abs(e_2) < e ? +1 : _Y;
@@ -145,12 +145,14 @@ int main() {
 
         _y = e_2;
         _x = e_1;
+
+        return true;
         });
 
       return true;
       };
 
-    std::function<bool(double, double, double)> task = [&_x, &_y, &_L, &_R, &_X, &za, &zl, &zr, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_x, &_y, &_L, &_R, &_X, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + e;
       const double x_ = e_1 + e;
 
@@ -192,8 +194,8 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      zz.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &xz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      xz.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
         /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
           return true;
         }
@@ -207,30 +209,30 @@ int main() {
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, fr);
     };
-  std::thread thread2(action2);
+  std::thread thread2(z2);
 
 
-  std::function<void()> action1 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &driver]() mutable {
-    Parallel::Pool zy(+1);
-    Parallel::Pool zx(+1);
-    Parallel::Pool zr(+1);
-    Parallel::Pool zl(+1);
-    Parallel::Pool zd(+1);
-    Parallel::Pool za(+1);
+  std::function<void()> z1 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &driver]() mutable {
+    Parallel::Pool xy(+1);
+    Parallel::Pool xx(+1);
+    Parallel::Pool xr(+1);
+    Parallel::Pool xl(+1);
+    Parallel::Pool xd(+1);
+    Parallel::Pool xa(+1);
 
     const int size = +64;
     const int each = +16;
     const bool is = false;
     int at = +1;
 
-    Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = +1;
           _Y = _;
           _X = _;
 
-          zr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
+          xr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
             _R > _ ? Xyloid2::e2(driver, true) : _;
             });
 
@@ -239,7 +241,7 @@ int main() {
         else {
           _R = _;
 
-          zr.enqueue_task([&_R, &driver]() mutable {
+          xr.enqueue_task([&_R, &driver]() mutable {
             _R > _ ? _ : Xyloid2::e2(driver, false);
             });
 
@@ -252,7 +254,7 @@ int main() {
           _Y = _;
           _X = _;
 
-          zl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &zy]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &xy]() mutable {
             while (_A > _ || _D > _) {
               Time::XO(fr);
             }
@@ -265,11 +267,11 @@ int main() {
 
             _L > _ ? Xyloid2::e1(driver, true) : _;
 
-            is ? at = till([&_L, &driver, &zy](int e) {
+            is ? at = till([&_L, &driver, &xy](int e) {
               const bool back = _L > _ && (size >= e);
 
               if (back) {
-                zy.enqueue_task([e, &driver]() mutable {
+                xy.enqueue_task([e, &driver]() mutable {
                   pattern(driver, e, true);
                   });
 
@@ -288,14 +290,14 @@ int main() {
         else {
           _L = _;
 
-          zl.enqueue_task([&_L, &at, &driver, &zy]() mutable {
+          xl.enqueue_task([&_L, &at, &driver, &xy]() mutable {
             _L > _ ? _ : Xyloid2::e1(driver, false);
 
-            is ? at = upon([&_L, &driver, &zy](int e) {
+            is ? at = upon([&_L, &driver, &xy](int e) {
               const bool back = !(_L > _) && (+1 <= e);
 
               if (back) {
-                zy.enqueue_task([&driver, e]() mutable {
+                xy.enqueue_task([&driver, e]() mutable {
                   pattern(driver, e, false);
                   });
 
@@ -322,7 +324,7 @@ int main() {
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
-          zd.enqueue_task([&_D, &diff, &driver]() mutable {
+          xd.enqueue_task([&_D, &diff, &driver]() mutable {
             prevent(driver, VZ_L, diff / +10);
             _D = _;
             });
@@ -340,7 +342,7 @@ int main() {
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
-          za.enqueue_task([&_A, &diff, &driver]() mutable {
+          xa.enqueue_task([&_A, &diff, &driver]() mutable {
             prevent(driver, VZ_R, diff / +10);
             _A = _;
             });
@@ -353,7 +355,7 @@ int main() {
       }
       });
     };
-  std::thread thread1(action1);
+  std::thread thread1(z1);
 
   thread2.join();
   thread1.join();
