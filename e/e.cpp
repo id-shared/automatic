@@ -135,6 +135,8 @@ int main() {
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
       move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
 
+      // todo: wait it out or add condition as it's skipping frames.
+
       _Y = +1;
       _X = +1;
 
