@@ -193,11 +193,11 @@ int main() {
     Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &za, &zd, &zl, &zr, &zy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
-          zr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
-            _R = +1;
-            _Y = _;
-            _X = _;
+          _R = +1;
+          _Y = _;
+          _X = _;
 
+          zr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
             _R > _ ? Xyloid2::e2(driver, true) : _;
             });
 
@@ -215,14 +215,14 @@ int main() {
       }
       else if (e == VK_OEM_4) {
         if (a) {
+          _L = +1;
+          _Y = _;
+          _X = _;
+
           zl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &zy]() mutable {
             while (_A > _ || _D > _) {
               Time::XO(fr);
             }
-
-            _L = +1;
-            _Y = _;
-            _X = _;
 
             UINT e_ = _;
             while (_L > _ && (_X == _ || _Y == _) && e_ < +1024) {
