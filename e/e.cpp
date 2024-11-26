@@ -151,7 +151,7 @@ int main() {
 
     std::function<bool(double, double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_4, double e_3, double e_2, double e_1, double e) mutable {
       zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_4, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_4 == _y && e_3 == _x) || move(driver, (_Y > _ ? _ : xy) * e_4, xx * e_3, xy * e_2 * +16, xx * e_1 * +16, fr);
+        const bool back = (e_4 == _y && e_3 == _x) || move(driver, (_Y > _ ? _ : xy) * e_4, xx * e_3, xy * e_2 * +16, xx * e_1 * +16, e);
 
         _Y = abs(e_4) < e_2 ? +1 : _Y;
         _X = abs(e_3) < e_1 ? +1 : _X;
@@ -168,10 +168,10 @@ int main() {
       const double x_ = e_2 + e;
 
       /***/if (_R > _) {
-        return work(y_, x_, e_1 * +4, e * +4, fr);
+        return work(y_, x_, e_1 * +4, e_1 * +4, fr);
       }
       else if (_L > _) {
-        return work(y_, x_, e_1 * +4, e * +4, fr);
+        return work(y_, x_, e_1 * +4, e_1 * +4, fr);
       }
       else {
         _X = _;
