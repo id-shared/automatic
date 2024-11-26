@@ -139,7 +139,7 @@ int main() {
       return true;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &_X, &_Y, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_L, &_R, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + e;
       const double x_ = e_1 + e;
 
@@ -150,9 +150,6 @@ int main() {
         return work(y_, x_, FR);
       }
       else {
-        _Y = _;
-        _X = _;
-
         return true;
       }
       };
@@ -185,6 +182,9 @@ int main() {
           return true;
         }
         else {
+          _Y = _;
+          _X = _;
+
           return true;
         }
         });
