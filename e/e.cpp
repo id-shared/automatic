@@ -41,35 +41,24 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-bool adjust(std::function<bool(double)> z, double value, double steps_count) {
-  if (steps_count <= 0) {
-    throw steps_count;
-  }
+bool adjust(std::function<bool(double)> z, double value, int steps_count) {
+  steps_count <= 0 ? throw steps_count : steps_count;
 
   double magnitude = std::abs(value);
   double base_step = std::floor(magnitude / steps_count);
   double remainder = magnitude - base_step * steps_count;
   double sign = (value < 0) ? -1.0 : 1.0;
 
-  int full_steps = static_cast<int>(steps_count);
-  double fractional_part = steps_count - full_steps;
-
-  std::vector<double> steps(full_steps, base_step);
+  std::vector<double> steps(steps_count, base_step);
 
   for (int i = 0; i < static_cast<int>(remainder); ++i) {
     steps[i] += 1.0;
   }
 
-  for (int i = 0; i < full_steps; ++i) {
+  for (int i = 0; i < steps_count; ++i) {
     double adjustment = steps[i] * sign;
     value -= adjustment;
-    z(adjustment);
-  }
-
-  if (fractional_part > 0) {
-    double fractional_step = magnitude * fractional_part / steps_count * sign;
-    value -= fractional_step;
-    z(fractional_step);
+    adjustment == _ ? _ : z(adjustment);
   }
 
   return true;
@@ -81,10 +70,11 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, to_integer(y_), _);
 
-  adjust([&x_, &x](double e) mutable {
-    Xyloid2::yx(x, _, to_integer(e));
-    return Time::XO(+4);
-    }, x_, e / e);
+  adjust([&x](double e) mutable {
+    const int x_ = to_integer(e);
+    Xyloid2::yx(x, _, x_);
+    return Time::XO(+1);
+    }, x_, to_integer(e) / +2);
 
   return true;
 }
@@ -118,7 +108,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT fr = +32;
+  constexpr UINT fr = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
