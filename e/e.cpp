@@ -74,7 +74,7 @@ static bool move(HANDLE x, double e_6, double e_5, double e_4, double e_3, doubl
     const int x_ = to_integer(e_5 * e);
     Xyloid2::yx(x, _, x_);
     return Time::XO(+1);
-    }, x_, to_integer(e) / +2);
+    }, x_, to_integer(e));
 
   return true;
 }
@@ -139,12 +139,12 @@ int main() {
     double _y = _;
     double _x = _;
 
-    std::function<bool(double, double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_4, double e_3, double e_2, double e_1, double e) mutable {
-      zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_4, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_4 == _y && e_3 == _x) || move(driver, xy, xx, _Y > _ ? _ : e_4, e_3, e_2 * +16, e_1 * +16, e);
+    std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_4, double e_3, double e_2) mutable {
+      zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_4, e_3, e_2]() mutable {
+        const bool back = (e_4 == _y && e_3 == _x) || move(driver, xy, xx, _Y > _ ? _ : e_4, e_3, e_2 * +16, e_2 * +16, fr);
 
         _Y = abs(e_4) < e_2 ? +1 : _Y;
-        _X = abs(e_3) < e_1 ? +1 : _X;
+        _X = abs(e_3) < e_2 ? +1 : _X;
 
         _y = e_4;
         _x = e_3;
@@ -158,10 +158,10 @@ int main() {
       const double x_ = e_2 + e;
 
       /***/if (_R > _) {
-        return work(y_, x_, e_1 * +4, e_1 * +4, fr);
+        return work(y_, x_, e_1 * +4);
       }
       else if (_L > _) {
-        return work(y_, x_, e_1 * +4, e_1 * +4, fr);
+        return work(y_, x_, e_1 * +4);
       }
       else {
         _X = _;
