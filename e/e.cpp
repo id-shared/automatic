@@ -204,9 +204,9 @@ int main() {
           return false;
         }
         else {
-          zr.enqueue_task([&_R, &driver]() mutable {
-            _R = _;
+          _R = _;
 
+          zr.enqueue_task([&_R, &driver]() mutable {
             _R > _ ? _ : Xyloid2::e2(driver, false);
             });
 
@@ -253,9 +253,9 @@ int main() {
           return false;
         }
         else {
-          zl.enqueue_task([&_L, &at, &driver, &zy]() mutable {
-            _L = _;
+          _L = _;
 
+          zl.enqueue_task([&_L, &at, &driver, &zy]() mutable {
             _L > _ ? _ : Xyloid2::e1(driver, false);
 
             is ? at = upon([&_L, &driver, &zy](int e) {
