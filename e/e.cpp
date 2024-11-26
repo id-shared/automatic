@@ -103,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +64;
+  constexpr UINT FR = +48;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -139,7 +139,7 @@ int main() {
       return true;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &_X, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_L, &_R, &_X, &_Y, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + e;
       const double x_ = e_1 + e;
 
@@ -150,6 +150,9 @@ int main() {
         return work(y_, x_, FR);
       }
       else {
+        _Y = _;
+        _X = _;
+
         return true;
       }
       };
@@ -178,7 +181,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &xz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       xz.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
+        /***/if (find(o1, _Y > _ ? e_2 / +8 : e_2, _X > _ ? e_1 / +8 : e_1, e)) {
           return true;
         }
         else {
@@ -211,8 +214,6 @@ int main() {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = +1;
-          _Y = _;
-          _X = _;
 
           xr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
             _R > _ ? Xyloid2::e2(driver, true) : _;
@@ -233,8 +234,6 @@ int main() {
       else if (e == VK_OEM_4) {
         if (a) {
           _L = +1;
-          _Y = _;
-          _X = _;
 
           xl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &xy]() mutable {
             while (_A > _ || _D > _) {
@@ -299,7 +298,7 @@ int main() {
       else if (e == VK_D) {
         if (a) {
           _Z64 = GetTickCount64();
-          _D = _D + 1;
+          _D = +1;
 
           return true;
         }
@@ -317,7 +316,7 @@ int main() {
       else if (e == VK_A) {
         if (a) {
           _Z64 = GetTickCount64();
-          _A = _A + 1;
+          _A = +1;
 
           return true;
         }
