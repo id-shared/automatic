@@ -103,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT fr = +64;
+  constexpr UINT FR = +32;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -144,10 +144,10 @@ int main() {
       const double x_ = e_1 + e;
 
       /***/if (_R > _) {
-        return work(y_, x_, fr);
+        return work(y_, x_, FR);
       }
       else if (_L > _) {
-        return work(y_, x_, fr);
+        return work(y_, x_, FR);
       }
       else {
         return true;
@@ -189,7 +189,7 @@ int main() {
       return true;
       };
 
-    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, fr);
+    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
     };
   std::thread thread2(z2);
 
@@ -238,13 +238,13 @@ int main() {
 
           xl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &xy]() mutable {
             while (_A > _ || _D > _) {
-              Time::XO(fr);
+              Time::XO(FR);
             }
 
             UINT e_ = _;
-            while (_L > _ && (_X == _ || _Y == _) && e_ < +1024) {
-              Time::XO(fr);
-              e_ = e_ + fr;
+            while (_L > _ && (_X == _ || _Y == _) && e_ < FR) {
+              Time::XO(FR);
+              e_ = e_ + FR;
             }
 
             _L > _ ? Xyloid2::e1(driver, true) : _;
