@@ -41,11 +41,43 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
-  const double y_ = e_3 == _ ? _ : e_3 >= _ ? min(e_1, e_3) : max(-e_1, e_3);
-  const double x_ = e_2 == _ ? _ : e_2 >= _ ? min(e, e_2) : max(-e, e_2);
+bool bringToZero(double x, int n) {
+  double magnitude = std::abs(x); // Total magnitude to adjust
+  double baseStep = std::floor(magnitude / n); // Minimum step size (at least 1)
+  double remainder = magnitude - baseStep * n; // Remainder to distribute
+  double sign = (x < 0) ? -1 : 1; // Determine the sign of x
 
-  return Xyloid2::yx(x, to_integer(y_), to_integer(x_));
+  // Create a vector to store the steps
+  std::vector<double> steps(n, baseStep);
+
+  // Distribute the remainder across the first few steps
+  for (int i = 0; i < remainder; ++i) {
+    steps[i] += 1;
+  }
+
+  // Apply the steps and output the results
+  std::cout << "Starting value: " << x << "\n";
+  for (int i = 0; i < n; ++i) {
+    x -= steps[i] * sign; // Adjust the value
+    std::cout << "Step " << i + 1 << ": Adjust by " << steps[i] * sign
+      << ", New value: " << x << "\n";
+  }
+
+  return true;
+}
+
+static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
+  double y_ = e_4 == _ ? _ : e_4 >= _ ? min(e_2, e_4) : max(-e_2, e_4);
+  double x_ = e_3 == _ ? _ : e_3 >= _ ? min(e_1, e_3) : max(-e_1, e_3);
+
+  Xyloid2::yx(x, to_integer(y_), _);
+
+  while (x_ > _) {
+    Xyloid2::yx(x, _, to_integer(x_));
+    x_ = x_ - 1;
+  }
+
+  return true;
 }
 
 static bool is_red(uint8_t* x) {
@@ -82,6 +114,8 @@ int main() {
   UINT _D = _;
   UINT _A = _;
 
+  bringToZero(-10.52, +32);
+
   std::function<void()> action2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
     Parallel::Pool zz(+1000);
     Parallel::Pool zr(+1);
@@ -105,7 +139,7 @@ int main() {
 
     std::function<bool(double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_3, double e_2, double e_1, double e) mutable {
       zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +4, xx * e * +4);
+        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +16, xx * e * +16, fr);
 
         _Y = abs(e_3) < e_1 ? +1 : _Y;
         _X = abs(e_2) < e ? +1 : _X;
