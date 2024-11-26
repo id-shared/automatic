@@ -72,7 +72,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT fr = +16;
+  constexpr UINT fr = +32;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -105,7 +105,7 @@ int main() {
 
     std::function<bool(double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_3, double e_2, double e_1, double e) mutable {
       zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +16, xx * e * +16);
+        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +4, xx * e * +4);
 
         _Y = abs(e_3) < e_1 ? +1 : _Y;
         _X = abs(e_2) < e ? +1 : _X;
@@ -122,10 +122,10 @@ int main() {
       const double x_ = e_2 + e;
 
       /***/if (_R > _) {
-        return work(y_, x_, e_1, e);
+        return work(y_, x_, e_1 * +4, e * +4);
       }
       else if (_L > _) {
-        return work(y_, x_, e_1, e);
+        return work(y_, x_, e_1 * +4, e * +4);
       }
       else {
         _X = _;
@@ -160,8 +160,8 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      zz.enqueue_task([&_X, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, _X > _ ? e_1 / +4 : e_1, e)) {
+      zz.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
+        /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
           return true;
         }
         else {
