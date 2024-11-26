@@ -20,12 +20,12 @@ static bool adjust(std::function<bool(double)> z, double e_1, int e) {
 
   std::vector<double> steps(e, base_step);
 
-  for (int i = 0; i < static_cast<int>(remainder); ++i) {
-    steps[i] += 1.0;
+  for (int _e = 0; _e < static_cast<int>(remainder); ++_e) {
+    steps[_e] += 1.0;
   }
 
-  for (int i = 0; i < e; ++i) {
-    double adjustment = steps[i] * sign;
+  for (int _e = 0; _e < e; ++_e) {
+    double adjustment = steps[_e] * sign;
     e_1 -= adjustment;
     adjustment == _ ? _ : z(adjustment);
   }
