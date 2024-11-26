@@ -103,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +48;
+  constexpr UINT FR = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
