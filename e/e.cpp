@@ -41,26 +41,30 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-bool bringToZero(double x, int n) {
-  double magnitude = std::abs(x); // Total magnitude to adjust
-  double baseStep = std::floor(magnitude / n); // Minimum step size (at least 1)
-  double remainder = magnitude - baseStep * n; // Remainder to distribute
-  double sign = (x < 0) ? -1 : 1; // Determine the sign of x
-
-  // Create a vector to store the steps
-  std::vector<double> steps(n, baseStep);
-
-  // Distribute the remainder across the first few steps
-  for (int i = 0; i < remainder; ++i) {
-    steps[i] += 1;
+bool bring_to_zero(std::function<bool(double)> z, double value, double steps_count) {
+  if (steps_count <= 0) {
+    std::cerr << "Error: steps_count must be greater than 0." << std::endl;
+    return false;
   }
 
-  // Apply the steps and output the results
-  std::cout << "Starting value: " << x << "\n";
-  for (int i = 0; i < n; ++i) {
-    x -= steps[i] * sign; // Adjust the value
-    std::cout << "Step " << i + 1 << ": Adjust by " << steps[i] * sign
-      << ", New value: " << x << "\n";
+  double magnitude = std::abs(value);
+  double base_step = std::floor(magnitude / steps_count);
+  double remainder = magnitude - base_step * steps_count;
+  double sign = (value < 0) ? -1.0 : 1.0;
+
+  std::vector<double> steps(steps_count, base_step);
+
+  for (int i = 0; i < static_cast<int>(remainder); ++i) {
+    steps[i] += 1.0;
+  }
+
+  std::cout << "Starting value: " << value << "\n";
+  for (int i = 0; i < steps_count; ++i) {
+    double adjustment = steps[i] * sign;
+    value -= adjustment;
+    //std::cout << "Step " << i + 1 << ": Adjust by " << adjustment << ", New value: " << value << "\n";
+
+    z(adjustment);
   }
 
   return true;
@@ -72,10 +76,11 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, to_integer(y_), _);
 
-  while (x_ > _) {
-    Xyloid2::yx(x, _, to_integer(x_));
-    x_ = x_ - 1;
-  }
+  std::function<bool(double)> act = [&x, &x_](double e) mutable {
+    return Xyloid2::yx(x, _, to_integer(e));
+    };
+
+  bring_to_zero(act, x_, e);
 
   return true;
 }
@@ -113,8 +118,6 @@ int main() {
   UINT _L = _;
   UINT _D = _;
   UINT _A = _;
-
-  bringToZero(-10.52, +32);
 
   std::function<void()> action2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
     Parallel::Pool zz(+1000);
