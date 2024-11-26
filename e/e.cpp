@@ -10,6 +10,29 @@
 
 const int _ = -1 + 1;
 
+static bool adjust(std::function<bool(double)> z, double value, int steps_count) {
+  steps_count <= 0 ? throw steps_count : steps_count;
+
+  double magnitude = std::abs(value);
+  double base_step = std::floor(magnitude / steps_count);
+  double remainder = magnitude - base_step * steps_count;
+  double sign = (value < 0) ? -1.0 : 1.0;
+
+  std::vector<double> steps(steps_count, base_step);
+
+  for (int i = 0; i < static_cast<int>(remainder); ++i) {
+    steps[i] += 1.0;
+  }
+
+  for (int i = 0; i < steps_count; ++i) {
+    double adjustment = steps[i] * sign;
+    value -= adjustment;
+    adjustment == _ ? _ : z(adjustment);
+  }
+
+  return true;
+}
+
 static int to_integer(double e) {
   return static_cast<int>(round(e));
 }
@@ -41,35 +64,12 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool adjust(std::function<bool(double)> z, double value, int steps_count) {
-  steps_count <= 0 ? throw steps_count : steps_count;
-
-  double magnitude = std::abs(value);
-  double base_step = std::floor(magnitude / steps_count);
-  double remainder = magnitude - base_step * steps_count;
-  double sign = (value < 0) ? -1.0 : 1.0;
-
-  std::vector<double> steps(steps_count, base_step);
-
-  for (int i = 0; i < static_cast<int>(remainder); ++i) {
-    steps[i] += 1.0;
-  }
-
-  for (int i = 0; i < steps_count; ++i) {
-    double adjustment = steps[i] * sign;
-    value -= adjustment;
-    adjustment == _ ? _ : z(adjustment);
-  }
-
-  return true;
-}
-
 static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
   Xyloid2::yx(x, to_integer(e_2 * e_4), _);
 
   adjust([x, e_3](double e) mutable {
-    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+1);
-    }, e_1, to_integer(e) / +2);
+    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+2);
+    }, e_1, to_integer(e / +4));
 
   return true;
 }
@@ -103,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT fr = +32;
+  constexpr UINT fr = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
