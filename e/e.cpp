@@ -43,8 +43,7 @@ static bool pattern(HANDLE x, int e, bool a) {
 
 bool bring_to_zero(std::function<bool(double)> z, double value, double steps_count) {
   if (steps_count <= 0) {
-    std::cerr << "Error: steps_count must be greater than 0." << std::endl;
-    return false;
+    throw steps_count;
   }
 
   double magnitude = std::abs(value);
@@ -52,19 +51,25 @@ bool bring_to_zero(std::function<bool(double)> z, double value, double steps_cou
   double remainder = magnitude - base_step * steps_count;
   double sign = (value < 0) ? -1.0 : 1.0;
 
-  std::vector<double> steps(steps_count, base_step);
+  int full_steps = static_cast<int>(steps_count);
+  double fractional_part = steps_count - full_steps;
+
+  std::vector<double> steps(full_steps, base_step);
 
   for (int i = 0; i < static_cast<int>(remainder); ++i) {
     steps[i] += 1.0;
   }
 
-  std::cout << "Starting value: " << value << "\n";
-  for (int i = 0; i < steps_count; ++i) {
+  for (int i = 0; i < full_steps; ++i) {
     double adjustment = steps[i] * sign;
     value -= adjustment;
-    //std::cout << "Step " << i + 1 << ": Adjust by " << adjustment << ", New value: " << value << "\n";
-
     z(adjustment);
+  }
+
+  if (fractional_part > 0) {
+    double fractional_step = magnitude * fractional_part / steps_count * sign;
+    value -= fractional_step;
+    z(fractional_step);
   }
 
   return true;
