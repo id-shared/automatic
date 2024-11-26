@@ -124,9 +124,6 @@ int main() {
     Parallel::Pool zl(+1);
     Parallel::Pool za(+1);
 
-    const double xy = +2;
-    const double xx = +2;
-
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -139,29 +136,29 @@ int main() {
     double _y = _;
     double _x = _;
 
-    std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_4, double e_3, double e_2) mutable {
-      zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_4, e_3, e_2]() mutable {
-        const bool back = (e_4 == _y && e_3 == _x) || move(driver, xy, xx, _Y > _ ? _ : e_4, e_3, e_2 * +16, e_2 * +16, fr);
+    std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &zl, &driver](double e_2, double e_1, double e) mutable {
+      zl.enqueue_task([&_x, &_y, &_X, &_Y, &driver, e_2, e_1, e]() mutable {
+        (e_2 == _y && e_1 == _x) || move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
 
-        _Y = abs(e_4) < e_2 ? +1 : _Y;
-        _X = abs(e_3) < e_2 ? +1 : _X;
+        _Y = abs(e_2) < e ? +1 : _Y;
+        _X = abs(e_1) < e ? +1 : _X;
 
-        _y = e_4;
-        _x = e_3;
+        _y = e_2;
+        _x = e_1;
         });
 
       return true;
       };
 
-    std::function<bool(double, double, double, double)> task = [&_x, &_y, &_L, &_R, &_X, &za, &zl, &zr, &work](double e_3, double e_2, double e_1, double e) mutable {
-      const double y_ = e_3 + e_1;
-      const double x_ = e_2 + e;
+    std::function<bool(double, double, double)> task = [&_x, &_y, &_L, &_R, &_X, &za, &zl, &zr, &work](double e_2, double e_1, double e) mutable {
+      const double y_ = e_2 + e;
+      const double x_ = e_1 + e;
 
       /***/if (_R > _) {
-        return work(y_, x_, e_1 * +4);
+        return work(y_, x_, e);
       }
       else if (_L > _) {
-        return work(y_, x_, e_1 * +4);
+        return work(y_, x_, e);
       }
       else {
         _X = _;
@@ -173,7 +170,7 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &ex, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       const int ny = e_2 / +2;
       const int nx = e_1 / +2;
 
@@ -187,7 +184,7 @@ int main() {
             const int axis_y = e_y - ny;
             const int axis_x = e_x - nx;
 
-            return task(axis_y, axis_x, ey / +256., _);
+            return task(axis_y, axis_x, ey / +512.);
           }
         }
       }
