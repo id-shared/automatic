@@ -64,14 +64,14 @@ bool adjust(std::function<bool(double)> z, double value, int steps_count) {
   return true;
 }
 
-static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
+static bool move(HANDLE x, double e_6, double e_5, double e_4, double e_3, double e_2, double e_1, double e) {
   double y_ = e_4 == _ ? _ : e_4 >= _ ? min(e_2, e_4) : max(-e_2, e_4);
   double x_ = e_3 == _ ? _ : e_3 >= _ ? min(e_1, e_3) : max(-e_1, e_3);
 
-  Xyloid2::yx(x, to_integer(y_), _);
+  Xyloid2::yx(x, to_integer(e_6 * y_), _);
 
-  adjust([&x](double e) mutable {
-    const int x_ = to_integer(e);
+  adjust([x, e_5](double e) mutable {
+    const int x_ = to_integer(e_5 * e);
     Xyloid2::yx(x, _, x_);
     return Time::XO(+1);
     }, x_, to_integer(e) / +2);
@@ -141,7 +141,7 @@ int main() {
 
     std::function<bool(double, double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_4, double e_3, double e_2, double e_1, double e) mutable {
       zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_4, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_4 == _y && e_3 == _x) || move(driver, (_Y > _ ? _ : xy) * e_4, xx * e_3, xy * e_2 * +16, xx * e_1 * +16, e);
+        const bool back = (e_4 == _y && e_3 == _x) || move(driver, xy, xx, _Y > _ ? _ : e_4, e_3, e_2 * +16, e_1 * +16, e);
 
         _Y = abs(e_4) < e_2 ? +1 : _Y;
         _X = abs(e_3) < e_1 ? +1 : _X;
