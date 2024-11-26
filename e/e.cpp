@@ -68,8 +68,8 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
   Xyloid2::yx(x, to_integer(e_2 * e_4), _);
 
   adjust([x, e_3](double e) mutable {
-    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+2);
-    }, e_1, to_integer(e / +4));
+    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+1);
+    }, e_1, to_integer(e / +2));
 
   return true;
 }
