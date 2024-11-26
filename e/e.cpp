@@ -10,27 +10,28 @@
 
 const int _ = -1 + 1;
 
-static bool adjust(std::function<bool(double)> z, double e_1, int e) {
+static std::vector<int> part(int x, int e) {
   e <= 0 ? throw e : e;
 
-  double magnitude = std::abs(e_1);
-  double base_step = std::floor(magnitude / e);
-  double remainder = magnitude - base_step * e;
-  double sign = (e_1 < 0) ? -1.0 : 1.0;
+  if (x > e) {
+    std::vector<int> back(e, x / e);
+    const int remainder = x % e;
 
-  std::vector<double> steps(e, base_step);
+    for (int i = 0; i < remainder; ++i) {
+      back[i] = back[i] + 1;
+    }
 
-  for (int _e = 0; _e < static_cast<int>(remainder); ++_e) {
-    steps[_e] += 1.0;
+    return back;
   }
+  else {
+    std::vector<int> back(e, 0);
 
-  for (int _e = 0; _e < e; ++_e) {
-    double adjustment = steps[_e] * sign;
-    e_1 -= adjustment;
-    adjustment == _ ? _ : z(adjustment);
+    for (int i = 0; i < x; ++i) {
+      back[i] = 1;
+    }
+
+    return back;
   }
-
-  return true;
 }
 
 static int to_integer(double e) {
@@ -65,11 +66,18 @@ static bool pattern(HANDLE x, int e, bool a) {
 }
 
 static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
-  Xyloid2::yx(x, to_integer(e_2 * e_4), _);
+  const int y_ = abs(to_integer(e_4 * e_2));
+  const int x_ = abs(to_integer(e_3 * e_1));
+  const int n_ = to_integer(e / +8.);
+  std::vector<int> _y = part(y_, n_);
+  std::vector<int> _x = part(x_, n_);
+  const int __y = e_2 > _ ? +1 : -1;
+  const int __x = e_1 > _ ? +1 : -1;
 
-  adjust([x, e_3](double e) mutable {
-    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+16.);
-    }, e_1, +1); // to_integer(e / +16.)
+  for (int _e = 0; _e < n_; ++_e) {
+    Xyloid2::yx(x, __y * _y.at(_e), __x * _x.at(_e));
+    Time::XO(+4.);
+  }
 
   return true;
 }
