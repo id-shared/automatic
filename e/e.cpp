@@ -138,15 +138,20 @@ int main() {
 
     std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &xl, &driver](double e_2, double e_1, double e) mutable {
       xl.enqueue_task([&_x, &_y, &_X, &_Y, &driver, e_2, e_1, e]() mutable {
-        (e_2 == _y && e_1 == _x) || move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
+        if (e_2 != _y && e_1 != _x) {
+          move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
 
-        _Y = abs(e_2) < e ? +1 : _Y;
-        _X = abs(e_1) < e ? +1 : _X;
+          _Y = abs(e_2) < e ? +1 : _Y;
+          _X = abs(e_1) < e ? +1 : _X;
 
-        _y = e_2;
-        _x = e_1;
+          _y = e_2;
+          _x = e_1;
 
-        return true;
+          return true;
+        }
+        else {
+          return true;
+        }
         });
 
       return true;
