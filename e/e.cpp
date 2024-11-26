@@ -105,7 +105,7 @@ int main() {
 
     std::function<bool(double, double, double, double)> work = [&_x, &_y, &_X, &_Y, &xx, &xy, &zl, &driver](double e_3, double e_2, double e_1, double e) mutable {
       zl.enqueue_task([&_x, &_y, &_X, &_Y, &xx, &xy, &driver, e_3, e_2, e_1, e]() mutable {
-        const bool back = (e_3 == _y && e_2 == _x) || move(driver, e_3 * (_Y > _ ? _ : xy), e_2 * xx, e_1 * xy * +16, e * xx * +16);
+        const bool back = (e_3 == _y && e_2 == _x) || move(driver, (_Y > _ ? _ : xy) * e_3, xx * e_2, xy * e_1 * +32, xx * e * +32);
 
         _Y = abs(e_3) < e_1 ? +1 : _Y;
         _X = abs(e_2) < e ? +1 : _X;
@@ -161,7 +161,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &zz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       zz.enqueue_task([&_X, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, _X > _ ? e_1 / +16 : e_1, e)) {
+        /***/if (find(o1, e_2, _X > _ ? e_1 / +4 : e_1, e)) {
           return true;
         }
         else {
