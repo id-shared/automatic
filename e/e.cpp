@@ -41,7 +41,7 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-bool adjust(std::function<bool(double)> z, double value, int steps_count) {
+static bool adjust(std::function<bool(double)> z, double value, int steps_count) {
   steps_count <= 0 ? throw steps_count : steps_count;
 
   double magnitude = std::abs(value);
@@ -74,7 +74,7 @@ static bool move(HANDLE x, double e_6, double e_5, double e_4, double e_3, doubl
     const int x_ = to_integer(e_5 * e);
     Xyloid2::yx(x, _, x_);
     return Time::XO(+1);
-    }, x_, to_integer(e));
+    }, x_, +1); // to_integer(e)
 
   return true;
 }
@@ -133,31 +133,18 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    double _y = _;
-    double _x = _;
+    std::function<bool(double, double, double)> work = [&_X, &_Y, &xl, &driver](double e_2, double e_1, double e) mutable {
+      xl.enqueue_task([&_X, &_Y, &driver, e_2, e_1, e]() mutable {
+        move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
 
-    std::function<bool(double, double, double)> work = [&_x, &_y, &_X, &_Y, &xl, &driver](double e_2, double e_1, double e) mutable {
-      xl.enqueue_task([&_x, &_y, &_X, &_Y, &driver, e_2, e_1, e]() mutable {
-        if (e_2 != _y && e_1 != _x) {
-          move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
-
-          _Y = abs(e_2) < e ? +1 : _Y;
-          _X = abs(e_1) < e ? +1 : _X;
-
-          _y = e_2;
-          _x = e_1;
-
-          return true;
-        }
-        else {
-          return true;
-        }
+        _Y = abs(e_2) < e ? +1 : _Y;
+        _X = abs(e_1) < e ? +1 : _X;
         });
 
       return true;
       };
 
-    std::function<bool(double, double, double)> task = [&_x, &_y, &_L, &_R, &_X, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_L, &_R, &_X, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + e;
       const double x_ = e_1 + e;
 
@@ -168,11 +155,6 @@ int main() {
         return work(y_, x_, e);
       }
       else {
-        _X = _;
-
-        _y = _;
-        _x = _;
-
         return true;
       }
       };
