@@ -64,17 +64,12 @@ static bool adjust(std::function<bool(double)> z, double value, int steps_count)
   return true;
 }
 
-static bool move(HANDLE x, double e_6, double e_5, double e_4, double e_3, double e_2, double e_1, double e) {
-  double y_ = e_4 == _ ? _ : e_4 >= _ ? min(e_2, e_4) : max(-e_2, e_4);
-  double x_ = e_3 == _ ? _ : e_3 >= _ ? min(e_1, e_3) : max(-e_1, e_3);
+static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
+  Xyloid2::yx(x, to_integer(e_2 * e_4), _);
 
-  Xyloid2::yx(x, to_integer(e_6 * y_), _);
-
-  adjust([x, e_5](double e) mutable {
-    const int x_ = to_integer(e_5 * e);
-    Xyloid2::yx(x, _, x_);
-    return Time::XO(+1);
-    }, x_, +1); // to_integer(e)
+  adjust([x, e_3](double e) mutable {
+    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+1);
+    }, e_1, to_integer(e) / +2);
 
   return true;
 }
@@ -100,7 +95,7 @@ int main() {
   /*adjust([](double e) mutable {
     std::cout << e << std::endl;
     return true;
-    }, +0, +32);*/
+    }, +35, +32);*/
 
   HANDLE driver = Device::driver(device);
 
@@ -108,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT fr = +64;
+  constexpr UINT fr = +32;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -135,10 +130,10 @@ int main() {
 
     std::function<bool(double, double, double)> work = [&_X, &_Y, &xl, &driver](double e_2, double e_1, double e) mutable {
       xl.enqueue_task([&_X, &_Y, &driver, e_2, e_1, e]() mutable {
-        move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e * +16, e * +16, fr);
+        move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
 
-        _Y = abs(e_2) < e ? +1 : _Y;
-        _X = abs(e_1) < e ? +1 : _X;
+        _Y = +1;
+        _X = +1;
         });
 
       return true;
@@ -149,10 +144,10 @@ int main() {
       const double x_ = e_1 + e;
 
       /***/if (_R > _) {
-        return work(y_, x_, e);
+        return work(y_, x_, fr);
       }
       else if (_L > _) {
-        return work(y_, x_, e);
+        return work(y_, x_, fr);
       }
       else {
         return true;
@@ -209,7 +204,7 @@ int main() {
 
     const int size = +64;
     const int each = +16;
-    const bool is = false;
+    const bool is = true;
     int at = +1;
 
     Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
