@@ -103,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +8;
+  constexpr UINT FR = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -114,10 +114,8 @@ int main() {
   UINT _A = _;
 
   std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
-    Parallel::Pool xz(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
-    Parallel::Pool xa(+1);
 
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
@@ -139,7 +137,7 @@ int main() {
       return true;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &xa, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_L, &_R, &xl, &xr, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + e;
       const double x_ = e_1 + e;
 
@@ -176,20 +174,16 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &xz, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      xz.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, _Y > _ ? e_2 / +8 : e_2, _X > _ ? e_1 / +8 : e_1, e)) {
-          return true;
-        }
-        else {
-          _Y = _;
-          _X = _;
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      /***/if (find(o1, _Y > _ ? e_2 / +8 : e_2, _X > _ ? e_1 / +8 : e_1, e)) {
+        return true;
+      }
+      else {
+        _Y = _;
+        _X = _;
 
-          return true;
-        }
-        });
-
-      return true;
+        return true;
+      }
       };
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
