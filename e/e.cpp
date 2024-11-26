@@ -68,8 +68,8 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
   Xyloid2::yx(x, to_integer(e_2 * e_4), _);
 
   adjust([x, e_3](double e) mutable {
-    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+1);
-    }, e_1, to_integer(e / +2));
+    return Xyloid2::yx(x, _, to_integer(e * e_3)) && Time::XO(+1.5);
+    }, e_1, to_integer(e / +2.));
 
   return true;
 }
@@ -103,7 +103,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +48;
+  constexpr UINT FR = +8;
 
   ULONGLONG _Z64 = GetTickCount64();
   UINT _Y = _;
@@ -114,7 +114,7 @@ int main() {
   UINT _A = _;
 
   std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
-    Parallel::Pool xz(+1000);
+    Parallel::Pool xz(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
     Parallel::Pool xa(+1);
