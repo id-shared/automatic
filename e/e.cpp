@@ -110,10 +110,11 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +64;
+  constexpr UINT FR = +32;
 
   ULONGLONG _Z64 = GetTickCount64();
-  Parallel::Pool _Z(+1000);
+  Parallel::Pool _Z1K(+1000);
+  UINT _Z = _;
   UINT _Y = _;
   UINT _X = _;
   UINT _R = _;
@@ -121,7 +122,7 @@ int main() {
   UINT _D = _;
   UINT _A = _;
 
-  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z, &driver]() mutable {
+  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z, &_Z1K, &driver]() mutable {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -131,15 +132,20 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
+    std::function<bool(double, double, double)> work = [&_X, &_Y, &_Z, &driver](double e_2, double e_1, double e) mutable {
+      if (_Z < +1) {
+        _Z = _Z + 1;
+        move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
+        _Z = _;
 
-      // todo: wait it out or add condition as it's skipping frames.
+        _Y = _Y + 1;
+        _X = _X + 1;
 
-      _Y = _Y + 1;
-      _X = _X + 1;
-
-      return true;
+        return true;
+      }
+      else {
+        return true;
+      }
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &work](double e_2, double e_1, double e) mutable {
@@ -179,8 +185,8 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      _Z1K.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
         /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
           return true;
         }
