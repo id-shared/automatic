@@ -45,11 +45,7 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
   const int y_ = to_integer(e_4 * e_2);
   const int x_ = to_integer(e_3 * e_1);
 
-  Xyloid2::yx(x, y_, x_);
-
-  Time::XO(e);
-
-  return true;
+  return Time::XO(e / +2.) && Xyloid2::yx(x, y_, x_) && Time::XO(e / +2.);
 }
 
 static bool is_red(uint8_t* x) {
