@@ -68,7 +68,7 @@ static bool pattern(HANDLE x, int e, bool a) {
 static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
   const int y_ = abs(to_integer(e_4 * e_2));
   const int x_ = abs(to_integer(e_3 * e_1));
-  const int n_ = to_integer(e / +4.);
+  const int n_ = to_integer(e / +8.);
   std::vector<int> _y = part(y_, n_);
   std::vector<int> _x = part(x_, n_);
   const int __y = e_2 > _ ? +1 : -1;
@@ -82,6 +82,9 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
     double diff = ((_e + 1) * __n) - static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count());
     diff > _&& Time::XO(diff);
   }
+
+  double diff = (e * __n) - static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count());
+  diff > _&& Time::XO(diff);
 
   return true;
 }
