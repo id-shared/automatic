@@ -47,7 +47,7 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, y_, x_);
 
-  Time::XO(e / +2.);
+  Time::XO(e);
 
   return true;
 }
@@ -76,7 +76,8 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +16;
+  constexpr UINT FR = +32;
+  constexpr UINT AT = +1;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -100,7 +101,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_Z, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, +2, +2, _Z > +4 ? _ : e_2, e_1 / ((_Z % +4) + 1), e);
+      move(driver, +2, +2, _Z > AT ? _ : e_2, e_1 / ((_Z % AT) + 1), e);
 
       _Z = _Z + 1;
 
@@ -148,7 +149,7 @@ int main() {
       if (_IS) {
         _IS = false;
         _Z1K.enqueue_task([&_Z, &_IS, &find, o1, e_2, e_1, e]() mutable {
-          /***/if (find(o1, _Z > +4 ? e_2 / +4 : e_2, _Z > +4 ? e_1 / +4 : e_1, e)) {
+          /***/if (find(o1, _Z > AT ? e_2 / +4 : e_2, _Z > AT ? e_1 / +4 : e_1, e)) {
             _IS = true;
 
             return _IS;
@@ -217,7 +218,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && _Z < +4 && (FR * +4) > e_) {
+            while (_L > _ && !(_Z > AT) && (AT * FR) > e_) {
               Time::XO(FR);
               e_ = e_ + FR;
             }
