@@ -68,19 +68,19 @@ static bool pattern(HANDLE x, int e, bool a) {
 static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
   const int y_ = abs(to_integer(e_4 * e_2));
   const int x_ = abs(to_integer(e_3 * e_1));
-  const int n_ = to_integer(e / +16.);
+  const int n_ = to_integer(e / +4.);
   std::vector<int> _y = part(y_, n_);
   std::vector<int> _x = part(x_, n_);
   const int __y = e_2 > _ ? +1 : -1;
   const int __x = e_1 > _ ? +1 : -1;
-  const int __n = +4;
+  const int __n = +1;
 
   auto now = std::chrono::steady_clock::now();
 
   for (int _e = 0; _e < n_; ++_e) {
     Xyloid2::yx(x, __y * _y.at(_e), __x * _x.at(_e));
     double diff = ((_e + 1) * __n) - static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count());
-    diff > _ && Time::XO(diff);
+    diff > _&& Time::XO(diff);
   }
 
   return true;
@@ -185,16 +185,12 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
-          return true;
-        }
-        else {
-          return true;
-        }
-        });
-
-      return true;
+      /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
+        return true;
+      }
+      else {
+        return true;
+      }
       };
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
