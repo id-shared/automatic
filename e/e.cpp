@@ -100,9 +100,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_Z, &driver](double e_2, double e_1, double e) mutable {
-      int at = _Z % +4;
-
-      move(driver, +2, +2, at == _ ? _ : e_2, e_1 / (at + 1), e);
+      move(driver, +2, +2, _Z > +4 ? _ : e_2, e_1 / ((_Z % +4) + 1), e);
 
       _Z = _Z + 1;
 
@@ -150,7 +148,7 @@ int main() {
       if (_IS < +1) {
         _IS = _IS + 1;
         _Z1K.enqueue_task([&_Z, &_IS, &find, o1, e_2, e_1, e]() mutable {
-          /***/if (find(o1, _Z > _ ? e_2 / +4 : e_2, _Z > _ ? e_1 / +4 : e_1, e)) {
+          /***/if (find(o1, _Z > +4 ? e_2 / +4 : e_2, _Z > +4 ? e_1 / +4 : e_1, e)) {
             _IS = _;
 
             return true;
@@ -219,7 +217,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && _Z % +4 > _ && FR > e_) {
+            while (_L > _ && (FR * +4) > e_ && (_Z % +4) == _) {
               Time::XO(FR);
               e_ = e_ + FR;
             }
