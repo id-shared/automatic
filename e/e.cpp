@@ -80,6 +80,7 @@ int main() {
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
+  bool _IS = true;
   UINT _Z = _;
   UINT _Y = _;
   UINT _X = _;
@@ -88,7 +89,7 @@ int main() {
   UINT _D = _;
   UINT _A = _;
 
-  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z, &_Z1K, &driver]() mutable {
+  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z, &_IS, &_Z1K, &driver]() mutable {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -98,13 +99,12 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      int at = _X % +4;
+    std::function<bool(double, double, double)> work = [&_Z, &driver](double e_2, double e_1, double e) mutable {
+      int at = _Z % +4;
 
-      move(driver, +2, +2, _Y > _ ? _ : e_2, e_1 / (at + 1), e);
+      move(driver, +2, +2, at == _ ? _ : e_2, e_1 / (at + 1), e);
 
-      _Y = _Y + 1;
-      _X = _X + 1;
+      _Z = _Z + 1;
 
       return true;
       };
@@ -146,17 +146,17 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      if (_Z < +1) {
-        _Z = _Z + 1;
-        _Z1K.enqueue_task([&_X, &_Y, &_Z, &find, o1, e_2, e_1, e]() mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_IS, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      if (_IS < +1) {
+        _IS = _IS + 1;
+        _Z1K.enqueue_task([&_X, &_Y, &_IS, &find, o1, e_2, e_1, e]() mutable {
           /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
-            _Z = _;
+            _IS = _;
 
             return true;
           }
           else {
-            _Z = _;
+            _IS = _;
 
             return true;
           }
@@ -174,7 +174,7 @@ int main() {
   std::thread thread2(z2);
 
 
-  std::function<void()> z1 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &driver]() mutable {
+  std::function<void()> z1 = [&_A, &_D, &_L, &_R, &_Z, &_Z64, &driver]() mutable {
     Parallel::Pool xy(+1);
     Parallel::Pool xx(+1);
     Parallel::Pool xr(+1);
@@ -187,14 +187,12 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_Z, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = +1;
-          _Y = _;
-          _X = _;
 
-          xr.enqueue_task([&_R, &_X, &_Y, &driver]() mutable {
+          xr.enqueue_task([&_R, &driver]() mutable {
             _R > _ ? Xyloid2::e2(driver, true) : _;
             });
 
@@ -212,17 +210,16 @@ int main() {
       }
       else if (e == VK_OEM_4) {
         if (a) {
+          _Z = +1;
           _L = +1;
-          _Y = _;
-          _X = _;
 
-          xl.enqueue_task([&_A, &_D, &_L, &_X, &_Y, &at, &driver, &xy]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_Z, &at, &driver, &xy]() mutable {
             while (_A > _ || _D > _) {
               Time::XO(FR);
             }
 
             UINT e_ = _;
-            while (_L > _ && (_X < +2 || _Y < +2) && e_ < FR) {
+            while (_L > _ && _Z == +1 && e_ < FR) {
               Time::XO(FR);
               e_ = e_ + FR;
             }
