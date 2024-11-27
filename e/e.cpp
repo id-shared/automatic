@@ -45,7 +45,11 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
   const int y_ = to_integer(e_4 * e_2);
   const int x_ = to_integer(e_3 * e_1);
 
-  return Time::XO(e / +2.) && Xyloid2::yx(x, y_, x_) && Time::XO(e / +2.);
+  Xyloid2::yx(x, y_, x_);
+
+  Time::XO(e / +2.);
+
+  return true;
 }
 
 static bool is_red(uint8_t* x) {
@@ -72,7 +76,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +32;
+  constexpr UINT FR = +16;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -95,7 +99,9 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
+      int at = _X % +4;
+
+      move(driver, +2, +2, _Y > _ ? _ : e_2, e_1 / (at + 1), e);
 
       _Y = _Y + 1;
       _X = _X + 1;
