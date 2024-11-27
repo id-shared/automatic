@@ -75,8 +75,10 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
   const int __x = e_1 > _ ? +1 : -1;
 
   for (int _e = 0; _e < n_; ++_e) {
+    auto start = std::chrono::steady_clock::now();
     Xyloid2::yx(x, __y * _y.at(_e), __x * _x.at(_e));
-    Time::XO(+2.);
+    auto end = std::chrono::steady_clock::now();
+    std::this_thread::sleep_for(std::chrono::milliseconds(+4) - (end - start));
   }
 
   return true;
