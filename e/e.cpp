@@ -68,12 +68,12 @@ static bool pattern(HANDLE x, int e, bool a) {
 static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
   const int y_ = abs(to_integer(e_4 * e_2));
   const int x_ = abs(to_integer(e_3 * e_1));
-  const int n_ = to_integer(e / +8.);
+  const int n_ = to_integer(e / +4.);
   std::vector<int> _y = part(y_, n_);
   std::vector<int> _x = part(x_, n_);
   const int __y = e_2 > _ ? +1 : -1;
   const int __x = e_1 > _ ? +1 : -1;
-  const int __n = +1;
+  const int __n = +4;
 
   auto now = std::chrono::steady_clock::now();
 
@@ -132,20 +132,13 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &_Z, &driver](double e_2, double e_1, double e) mutable {
-      if (_Z < +1) {
-        _Z = _Z + 1;
-        move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
-        _Z = _;
+    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
+      move(driver, +2, +2, _Y > _ ? _ : e_2, e_1, e);
 
-        _Y = _Y + 1;
-        _X = _X + 1;
+      _Y = _Y + 1;
+      _X = _X + 1;
 
-        return true;
-      }
-      else {
-        return true;
-      }
+      return true;
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &work](double e_2, double e_1, double e) mutable {
@@ -185,17 +178,27 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z1K.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
-          return true;
-        }
-        else {
-          return true;
-        }
-        });
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      if (_Z < +1) {
+        _Z = _Z + 1;
+        _Z1K.enqueue_task([&_X, &_Y, &_Z, &find, o1, e_2, e_1, e]() mutable {
+          /***/if (find(o1, _Y > _ ? e_2 / +4 : e_2, _X > _ ? e_1 / +4 : e_1, e)) {
+            _Z = _;
 
-      return true;
+            return true;
+          }
+          else {
+            _Z = _;
+
+            return true;
+          }
+          });
+
+        return true;
+      }
+      else {
+        return true;
+      }
       };
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
