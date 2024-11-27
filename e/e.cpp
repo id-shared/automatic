@@ -109,8 +109,8 @@ int main() {
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + e;
-      const double x_ = e_1 + e;
+      const double y_ = e_2 + (e * +2);
+      const double x_ = e_1 + (e * +1);
 
       /***/if (_R > _) {
         return work(y_, x_, FR);
