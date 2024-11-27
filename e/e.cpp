@@ -47,8 +47,6 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, y_, x_);
 
-  Time::XO(e);
-
   return true;
 }
 
@@ -76,8 +74,8 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +32;
-  constexpr UINT AT = +1;
+  constexpr UINT FR = +16;
+  constexpr UINT AT = +4;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -218,7 +216,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && !(_Z > AT) && (AT * FR) > e_) {
+            while (_L > _ && !(_Z > AT) && ((AT + 1) * FR) > e_) {
               Time::XO(FR);
               e_ = e_ + FR;
             }
