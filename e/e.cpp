@@ -68,19 +68,24 @@ static bool pattern(HANDLE x, int e, bool a) {
 static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
   const int y_ = abs(to_integer(e_4 * e_2));
   const int x_ = abs(to_integer(e_3 * e_1));
-  const int n_ = to_integer(e / +4.);
+  const int n_ = to_integer(e / +2.);
   std::vector<int> _y = part(y_, n_);
   std::vector<int> _x = part(x_, n_);
   const int __y = e_2 > _ ? +1 : -1;
   const int __x = e_1 > _ ? +1 : -1;
+  const int __n = +1;
+
+  auto now = std::chrono::steady_clock::now();
 
   for (int _e = 0; _e < n_; ++_e) {
-    auto start = std::chrono::steady_clock::now();
     Xyloid2::yx(x, __y * _y.at(_e), __x * _x.at(_e));
-    auto end = std::chrono::steady_clock::now();
-    std::this_thread::sleep_for(std::chrono::milliseconds(+4) - (end - start));
+    double diff = ((_e + 1) * __n) - static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count());
+    diff > _ && Time::XO(diff);
   }
 
+  double diff = to_integer(e) - static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count());
+  diff > _&& Time::XO(diff);
+  std::cout << diff << std::endl;
   return true;
 }
 
