@@ -145,18 +145,18 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_Z, &_IS, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      if (_IS < +1) {
-        _IS = _IS + 1;
+      if (_IS) {
+        _IS = false;
         _Z1K.enqueue_task([&_Z, &_IS, &find, o1, e_2, e_1, e]() mutable {
           /***/if (find(o1, _Z > +4 ? e_2 / +4 : e_2, _Z > +4 ? e_1 / +4 : e_1, e)) {
-            _IS = _;
+            _IS = true;
 
-            return true;
+            return _IS;
           }
           else {
-            _IS = _;
+            _IS = true;
 
-            return true;
+            return _IS;
           }
           });
 
@@ -217,7 +217,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && (FR * +4) > e_ && (_Z % +4) == _) {
+            while (_L > _ && _Z < +4 && (FR * +4) > e_) {
               Time::XO(FR);
               e_ = e_ + FR;
             }
