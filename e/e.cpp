@@ -47,6 +47,8 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, y_, x_);
 
+  Time::XO(e);
+
   return true;
 }
 
@@ -111,10 +113,10 @@ int main() {
       const double x_ = e_1 + (e * +1);
 
       /***/if (_R > _) {
-        return work(y_, x_, FR);
+        return work(y_, x_, FR / AT);
       }
       else if (_L > _) {
-        return work(y_, x_, FR);
+        return work(y_, x_, FR / AT);
       }
       else {
         return true;
