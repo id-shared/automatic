@@ -96,12 +96,10 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
-      move(driver, +2, +2, _Y ? _ : e_2, e_1, FR);
+      move(driver, +2, +2, a ? _ : e_2, a ? e_1 : e_1 / +4, FR);
 
-      if (a) {
-        _Y = true;
-        _X = true;
-      }
+      _Y = _Y || a;
+      _X = _X || a;
 
       return _X;
       };
@@ -147,16 +145,16 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, e_1 / +16, e, true)) {
+        /***/if (find(o1, e_2 / +8, e_1 / +8, e, true)) {
           return true;
         }
-        else if (find(o1, e_2, e_1 / +4, e, false)) {
+        else if (find(o1, e_2 / +4, e_1 / +4, e, false)) {
           return true;
         }
-        else if (find(o1, e_2, e_1 / +2, e, false)) {
+        else if (find(o1, e_2 / +2, e_1 / +2, e, false)) {
           return true;
         }
-        else if (find(o1, e_2, e_1 / +1, e, false)) {
+        else if (find(o1, e_2 / +1, e_1 / +1, e, false)) {
           return true;
         }
         else {
