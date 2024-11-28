@@ -85,7 +85,7 @@ int main() {
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
     const int cy = ey / +16;
-    const int cx = ex / +4;
+    const int cx = ex / +8;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
@@ -141,10 +141,7 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2, e_1 / +4, e, true, true)) {
-          return true;
-        }
-        else if (find(o1, e_2, e_1 / +2, e, true, false)) {
+        /***/if (find(o1, e_2, e_1 / +2, e, true, false)) {
           return true;
         }
         else if (find(o1, e_2, e_1 / +1, e, true, false)) {
