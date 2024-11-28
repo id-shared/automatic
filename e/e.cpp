@@ -209,7 +209,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L && !_X && e_ < (FR * +3)) {
+            while (_L && !_X && e_ < (FR * +2)) {
               e_ = e_ + +1;
               Time::XO(+1);
             }
