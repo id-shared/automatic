@@ -47,8 +47,6 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, y_, x_);
 
-  Time::XO(e);
-
   return true;
 }
 
@@ -76,7 +74,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +16;
+  constexpr UINT FR = +32;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -98,10 +96,10 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, +2, +2, _Y ? _ : e_2, e_1 / +4, FR);
+      move(driver, +2, +2, _Y ? _ : e_2, e_1, FR);
 
       _Y = _Y || true;
-      _X = _X || abs(e_1) <= e;
+      _X = _X || true;
 
       return _X;
       };
@@ -145,16 +143,12 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z1K.enqueue_task([&_X, &_Y, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, _Y ? e_2 / +4 : e_2, _X ? e_1 / +4 : e_1, e)) {
-          return true;
-        }
-        else {
-          return true;
-        }
-        });
-
-      return true;
+      /***/if (find(o1, _Y ? e_2 / +4 : e_2, _X ? e_1 / +4 : e_1, e)) {
+        return true;
+      }
+      else {
+        return true;
+      }
       };
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
