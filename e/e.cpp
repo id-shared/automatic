@@ -111,10 +111,10 @@ int main() {
       const double y_ = e_2 + (e * +2);
       const double x_ = e_1 + (e * +1);
 
-      /***/if (_R > _) {
+      /***/if (_R) {
         return work(y_, x_, FR);
       }
-      else if (_L > _) {
+      else if (_L) {
         return work(y_, x_, FR);
       }
       else {
@@ -268,7 +268,7 @@ int main() {
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
-          xd.enqueue_task([&_D, &diff, &driver]() mutable {
+          xd.enqueue_task([&_D, &diff, &driver, a]() mutable {
             prevent(driver, VZ_L, diff / +10);
             _D = a;
             });
@@ -286,7 +286,7 @@ int main() {
         else {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
-          xa.enqueue_task([&_A, &diff, &driver]() mutable {
+          xa.enqueue_task([&_A, &diff, &driver, a]() mutable {
             prevent(driver, VZ_R, diff / +10);
             _A = a;
             });
