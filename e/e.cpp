@@ -47,6 +47,8 @@ static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, doubl
 
   Xyloid2::yx(x, y_, x_);
 
+  //Time::XO(e / +2);
+
   return true;
 }
 
@@ -74,7 +76,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +32;
+  constexpr UINT FR = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -95,31 +97,31 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
-      move(driver, +2, +2, a ? _ : e_2, a ? e_1 : e_1 / +4, FR);
+    std::function<bool(double, double, double, bool, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a_1, bool a) mutable {
+      move(driver, +2, +2, a ? _ : e_2, a ? e_1 : e_1 / +2, FR);
 
-      _Y = _Y || a;
+      _Y = _Y || a_1;
       _X = _X || a;
 
       return _X;
       };
 
-    std::function<bool(double, double, double, bool)> task = [&_L, &_R, &work](double e_2, double e_1, double e, bool a) mutable {
+    std::function<bool(double, double, double, bool, bool)> task = [&_L, &_R, &work](double e_2, double e_1, double e, bool a_1, bool a) mutable {
       const double y_ = e_2 + (e * +2);
       const double x_ = e_1 + (e * +1);
 
       /***/if (_R) {
-        return work(y_, x_, e, a);
+        return work(y_, x_, e, a_1, a);
       }
       else if (_L) {
-        return work(y_, x_, e, a);
+        return work(y_, x_, e, a_1, a);
       }
       else {
         return true;
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT, bool, bool)> find = [&ax, &ay, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a_1, bool a) mutable {
       const int ny = e_2 / +2;
       const int nx = e_1 / +2;
 
@@ -134,6 +136,7 @@ int main() {
               static_cast<int>(e_y) - ny,
               static_cast<int>(e_x) - nx,
               ey / +512.,
+              a_1,
               a
             );
           }
@@ -145,16 +148,13 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2 / +8, e_1 / +8, e, true)) {
+        /***/if (find(o1, e_2 / +4, e_1 / +4, e, true, false)) {
           return true;
         }
-        else if (find(o1, e_2 / +4, e_1 / +4, e, false)) {
+        else if (find(o1, e_2 / +2, e_1 / +2, e, true, false)) {
           return true;
         }
-        else if (find(o1, e_2 / +2, e_1 / +2, e, false)) {
-          return true;
-        }
-        else if (find(o1, e_2 / +1, e_1 / +1, e, false)) {
+        else if (find(o1, e_2 / +1, e_1 / +1, e, true, false)) {
           return true;
         }
         else {
