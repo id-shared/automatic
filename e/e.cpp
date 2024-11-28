@@ -119,7 +119,7 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> find = [&ax, &ay, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       const int ny = e_2 / +2;
       const int nx = e_1 / +2;
 
@@ -143,12 +143,25 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      /***/if (find(o1, _Y ? e_2 / +4 : e_2, _X ? e_1 / +4 : e_1, e)) {
-        return true;
-      }
-      else {
-        return true;
-      }
+      _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
+        /***/if (find(o1, e_2, e_1 / +16, e, true)) {
+          return true;
+        }
+        else if (find(o1, e_2, e_1 / +4, e, false)) {
+          return true;
+        }
+        else if (find(o1, e_2, e_1 / +2, e, false)) {
+          return true;
+        }
+        else if (find(o1, e_2, e_1 / +1, e, false)) {
+          return true;
+        }
+        else {
+          return true;
+        }
+        });
+
+      return true;
       };
 
     Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
