@@ -69,7 +69,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +48;
+  constexpr UINT FR = +32;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -141,7 +141,10 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, +1, +1, e_2 / +1, e_1 / +2, e)) {
+        /***/if (find(o1, +1, +1, e_2 / +1, e_1 / +4, e)) {
+          return true;
+        }
+        else if (find(o1, +1, +2, e_2 / +1, e_1 / +2, e)) {
           return true;
         }
         else if (find(o1, +1, +2, e_2 / +1, e_1 / +1, e)) {
