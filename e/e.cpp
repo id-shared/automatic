@@ -81,10 +81,10 @@ int main() {
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
   bool _XYZ = false;
-  bool _R = _;
-  bool _L = _;
-  bool _D = _;
-  bool _A = _;
+  bool _R = false;
+  bool _L = false;
+  bool _D = false;
+  bool _A = false;
   int Z = _;
   int Y = _;
   int X = _;
@@ -100,7 +100,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_XYZ, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, +2, +2, _XYZ ? _ : e_2, e_1 / +1, e);
+      move(driver, +2, +2, _XYZ ? _ : e_2, e_1, e);
 
       _XYZ = true;
 
@@ -133,7 +133,7 @@ int main() {
           uint8_t* px_x = px_y + ((ax - nx) + e_x) * +4;
 
           if (is_red(px_x)) {
-            return task(e_y - ny, e_x - nx, ey / +512.);
+            return task(static_cast<int>(e_y) - ny, static_cast<int>(e_x) - nx, ey / +512.);
           }
         }
       }
