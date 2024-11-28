@@ -98,8 +98,10 @@ int main() {
     std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
       move(driver, +2, +2, _Y ? _ : e_2, e_1, FR);
 
-      _Y = _Y || true;
-      _X = _X || true;
+      if (a) {
+        _Y = true;
+        _X = true;
+      }
 
       return _X;
       };
@@ -216,7 +218,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L && !_X && e_ < (FR * +2)) {
+            while (_L && !_X && e_ < (FR * +4)) {
               e_ = e_ + +1;
               Time::XO(+1);
             }
