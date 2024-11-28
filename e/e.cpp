@@ -95,7 +95,7 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
       move(driver, +2, +2, _Y ? _ : e_2, e_1, FR);
 
       _Y = _Y || true;
@@ -104,15 +104,15 @@ int main() {
       return _X;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &work](double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double, bool)> task = [&_L, &_R, &work](double e_2, double e_1, double e, bool a) mutable {
       const double y_ = e_2 + (e * +2);
       const double x_ = e_1 + (e * +1);
 
       /***/if (_R) {
-        return work(y_, x_, e);
+        return work(y_, x_, e, a);
       }
       else if (_L) {
-        return work(y_, x_, e);
+        return work(y_, x_, e, a);
       }
       else {
         return true;
@@ -133,7 +133,8 @@ int main() {
             return task(
               static_cast<int>(e_y) - ny,
               static_cast<int>(e_x) - nx,
-              ey / +512.
+              ey / +512.,
+              a
             );
           }
         }
