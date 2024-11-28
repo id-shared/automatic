@@ -133,7 +133,11 @@ int main() {
           uint8_t* px_x = px_y + ((ax - nx) + e_x) * +4;
 
           if (is_red(px_x)) {
-            return task(static_cast<int>(e_y) - ny, static_cast<int>(e_x) - nx, ey / +512.);
+            return task(
+              static_cast<int>(e_y) - ny,
+              static_cast<int>(e_x) - nx,
+              ey / +512.
+            );
           }
         }
       }
