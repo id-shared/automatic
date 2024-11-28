@@ -148,16 +148,13 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, e_2 / +1, e_1 / +16, e, true, true)) {
+        /***/if (find(o1, e_2, e_1 / +4, e, true, true)) {
           return true;
         }
-        else if (find(o1, e_2 / +1, e_1 / +4, e, true, false)) {
+        else if (find(o1, e_2, e_1 / +2, e, true, false)) {
           return true;
         }
-        else if (find(o1, e_2 / +1, e_1 / +2, e, true, false)) {
-          return true;
-        }
-        else if (find(o1, e_2 / +1, e_1 / +1, e, true, false)) {
+        else if (find(o1, e_2, e_1 / +1, e, true, false)) {
           return true;
         }
         else {
