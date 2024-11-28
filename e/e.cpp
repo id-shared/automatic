@@ -76,7 +76,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +16;
+  constexpr UINT FR = +32;
   constexpr UINT AT = +4;
 
   ULONGLONG _Z64 = GetTickCount64();
@@ -113,10 +113,10 @@ int main() {
       const double x_ = e_1 + (e * +1);
 
       /***/if (_R > _) {
-        return work(y_, x_, FR / AT);
+        return work(y_, x_, FR);
       }
       else if (_L > _) {
-        return work(y_, x_, FR / AT);
+        return work(y_, x_, FR);
       }
       else {
         return true;
@@ -149,7 +149,7 @@ int main() {
       if (_IS) {
         _IS = false;
         _Z1K.enqueue_task([&_Z, &_IS, &find, o1, e_2, e_1, e]() mutable {
-          /***/if (find(o1, _Z > AT ? e_2 / +4 : e_2, _Z > AT ? e_1 / +4 : e_1, e)) {
+          /***/if (find(o1, _Z > (AT * +4) ? e_2 / +4 : e_2, _Z > (AT * +4) ? e_1 / +4 : e_1, e)) {
             _IS = true;
 
             return _IS;
@@ -218,7 +218,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L > _ && !(_Z > AT) && ((AT + 1) * FR) > e_) {
+            while (_L > _ && _Z < AT && (AT * FR) >= e_) {
               Time::XO(FR);
               e_ = e_ + FR;
             }
