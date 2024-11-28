@@ -98,7 +98,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double, bool, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a_1, bool a) mutable {
-      move(driver, +2, +2, a ? _ : e_2, a ? e_1 : e_1 / +2, FR);
+      move(driver, +2, +2, _Y ? _ : e_2, a ? e_1 : e_1 / +2, FR);
 
       _Y = _Y || a_1;
       _X = _X || a;
@@ -106,9 +106,9 @@ int main() {
       return _X;
       };
 
-    std::function<bool(double, double, double, bool, bool)> task = [&_L, &_R, &work](double e_2, double e_1, double e, bool a_1, bool a) mutable {
-      const double y_ = e_2 + (e * +2);
-      const double x_ = e_1 + (e * +1);
+    std::function<bool(double, double, double, bool, bool)> task = [&_L, &_R, &ey, &work](double e_2, double e_1, double e, bool a_1, bool a) mutable {
+      const double y_ = e_2 + (ey / +256.);
+      const double x_ = e_1 + (ey / +512.);
 
       /***/if (_R) {
         return work(y_, x_, e, a_1, a);
@@ -121,7 +121,7 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT, bool, bool)> find = [&ax, &ay, &ey, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a_1, bool a) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT, bool, bool)> find = [&ax, &ay, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a_1, bool a) mutable {
       const int ny = e_2 / +2;
       const int nx = e_1 / +2;
 
@@ -135,7 +135,7 @@ int main() {
             return task(
               static_cast<int>(e_y) - ny,
               static_cast<int>(e_x) - nx,
-              ey / +512.,
+              +1.,
               a_1,
               a
             );
