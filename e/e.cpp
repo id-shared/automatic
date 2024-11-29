@@ -76,13 +76,14 @@ int main() {
   bool _Y = false;
   bool _X = false;
   bool _R = false;
+  bool _N = false;
   bool _L = false;
   bool _D = false;
   bool _A = false;
 
   int _e = _;
 
-  std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z1K, &driver]() mutable {
+  std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_N, &_R, &_X, &_Y, &_Z1K, &driver]() mutable {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -141,18 +142,21 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_N, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      _N = _e % 4 == _;
+      _e = _e + 1;
+
+      _Z1K.enqueue_task([&_N, &find, o1, e_2, e_1, e]() mutable {
         /***/if (find(o1, +1, +1, e_2 / +1, e_1 / +4, e)) {
           return true;
         }
-        else if (find(o1, +1, +2, e_2 / +1, e_1 / +3, e)) {
+        else if (_N && find(o1, +1, +2, e_2 / +1, e_1 / +3, e)) {
           return true;
         }
-        else if (find(o1, +1, +2, e_2 / +1, e_1 / +2, e)) {
+        else if (_N && find(o1, +1, +2, e_2 / +1, e_1 / +2, e)) {
           return true;
         }
-        else if (find(o1, +1, +2, e_2 / +1, e_1 / +1, e)) {
+        else if (_N && find(o1, +1, +2, e_2 / +1, e_1 / +1, e)) {
           return true;
         }
         else {
