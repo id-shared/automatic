@@ -69,7 +69,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +64;
+  constexpr UINT FR = +16;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -80,7 +80,9 @@ int main() {
   bool _D = false;
   bool _A = false;
 
-  std::function<void()> z2 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z1K, &driver]() mutable {
+  int _e = _;
+
+  std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z1K, &driver]() mutable {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -139,7 +141,7 @@ int main() {
       return false;
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&find, o1, e_2, e_1, e]() mutable {
         /***/if (find(o1, +1, +1, e_2 / +1, e_1 / +4, e)) {
           return true;
@@ -147,10 +149,10 @@ int main() {
         else if (find(o1, +1, +2, e_2 / +1, e_1 / +3, e)) {
           return true;
         }
-        else if (find(o1, +1, +3, e_2 / +1, e_1 / +2, e)) {
+        else if (find(o1, +1, +2, e_2 / +1, e_1 / +2, e)) {
           return true;
         }
-        else if (find(o1, +1, +4, e_2 / +1, e_1 / +1, e)) {
+        else if (find(o1, +1, +2, e_2 / +1, e_1 / +1, e)) {
           return true;
         }
         else {
