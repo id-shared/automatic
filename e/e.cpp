@@ -149,9 +149,6 @@ int main() {
         /***/if (_e % +4 == _ && find(o1, +1, +1, e_2 / +1, e_1 / +4, e)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, +1, +2, e_2 / +1, e_1 / +3, e)) {
-          return true;
-        }
         else if (_e % +2 == _ && find(o1, +1, +2, e_2 / +1, e_1 / +2, e)) {
           return true;
         }
