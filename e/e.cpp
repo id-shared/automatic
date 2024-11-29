@@ -69,7 +69,7 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +32;
+  constexpr UINT FR = +64;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -93,7 +93,7 @@ int main() {
     std::function<bool(double, double, double, double, double)> work = [&_X, &_Y, &driver](double e_4, double e_3, double e_2, double e_1, double e) mutable {
       move(driver, +2, +2, _Y ? _ : e_2, e_1 / e_3, FR);
 
-      _Y = _Y || e_4 == +1;
+      _Y = _Y || e_3 == +1;
       _X = _X || e_3 == +1;
 
       return _X;
@@ -144,10 +144,13 @@ int main() {
         /***/if (find(o1, +1, +1, e_2 / +1, e_1 / +4, e)) {
           return true;
         }
-        else if (find(o1, +1, +2, e_2 / +1, e_1 / +2, e)) {
+        else if (find(o1, +1, +2, e_2 / +1, e_1 / +3, e)) {
           return true;
         }
-        else if (find(o1, +1, +2, e_2 / +1, e_1 / +1, e)) {
+        else if (find(o1, +1, +3, e_2 / +1, e_1 / +2, e)) {
+          return true;
+        }
+        else if (find(o1, +1, +4, e_2 / +1, e_1 / +1, e)) {
           return true;
         }
         else {
