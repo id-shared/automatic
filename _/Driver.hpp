@@ -3,6 +3,8 @@
 #include <array>
 #include <libusb-1.0/libusb.h>
 
+const int _ = -1 + 1;
+
 namespace Driver {
   using Byte = unsigned char;
 
@@ -40,12 +42,12 @@ namespace Driver {
     Byte data[+13];
     int size;
 
-    Parallel::Pool pool(std::thread::hardware_concurrency());
+    Parallel::Pool pool(+1000);
 
     while (true) {
-      int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, +0);
-      if (re == +0 && size > +0) {
-        pool.enqueue_task([&back, &data, z]() mutable {
+      int re = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &size, _);
+      if (re == _ && size > _) {
+        pool.enqueue_task([&back, &data, &z]() mutable {
           back = z(data, back);
           });
       }
