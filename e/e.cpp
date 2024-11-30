@@ -170,24 +170,27 @@ int main() {
       _e = _e + 1;
 
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (_e % +4 == _ && find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
-          /**/if (_e % +4 == _ && find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
+        /***/if (_e % +2 == _ && find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
+          /***/if (find(o1, AA / +1., e_2, e_1 / +8, e, true)) {
+            return true;
+          }
+          else if (find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
             return true;
           }
           else {
             return true;
           }
         }
-        else if (_e % +2 == _ && find(o1, AA / +2., e_2, e_1 / +8, e, true)) {
+        else if (find(o1, AA / +2., e_2, e_1 / +8, e, true)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, AA / +4., e_2, e_1 / +4, e, true)) {
+        else if (find(o1, AA / +4., e_2, e_1 / +4, e, true)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, AA / +8., e_2, e_1 / +2, e, true)) {
+        else if (find(o1, AA / +8., e_2, e_1 / +2, e, true)) {
           return true;
         }
-        else if (find(o1, AA / +16., e_2, e_1 / +1, e, true)) {
+        else if (find(o1, AA / +16, e_2, e_1 / +1, e, true)) {
           return true;
         }
         else {
