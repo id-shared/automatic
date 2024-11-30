@@ -183,19 +183,6 @@ int main() {
             return true;
           }
         }
-        else if (find(o1, AA / +1., e_2, e_1 / +8, e, false)) {
-          /***/if (_e % +2 == _) {
-            /***/if (find(o1, AA / +2., e_2, e_1 / +4, e, true)) {
-              return true;
-            }
-            else {
-              return true;
-            }
-          }
-          else {
-            return true;
-          }
-        }
         else if (_e % +2 == _) {
           /***/if (find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
             return true;
