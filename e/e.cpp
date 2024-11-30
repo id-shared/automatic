@@ -146,13 +146,16 @@ int main() {
       _e = _e + 1;
 
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (_e % +4 == _ && find(o1, +1, +1, e_2, e_1, e)) {
+        /***/if (_e % +8 == _ && find(o1, +1, +1, e_2, e_1 / +8, e)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, +2, +2, e_2, e_1, e)) {
+        else if (_e % +4 == _ && find(o1, +2, +2, e_2, e_1 / +4, e)) {
           return true;
         }
-        else if (find(o1, +4, +4, e_2, e_1, e)) {
+        else if (_e % +2 == _ && find(o1, +4, +4, e_2, e_1 / +2, e)) {
+          return true;
+        }
+        else if (_e % +1 == _ && find(o1, +8, +8, e_2, e_1 / +1, e)) {
           return true;
         }
         else {
