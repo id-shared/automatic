@@ -100,7 +100,9 @@ int main() {
   constexpr UINT VZ_L = 0x4b;
   constexpr UINT VK_D = 0x44;
   constexpr UINT VK_A = 0x41;
-  constexpr UINT FR = +16;
+
+  constexpr double FR = +16;
+  constexpr double AA = +2;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -124,35 +126,35 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double, double, double)> work = [&_X, &_Y, &driver](double e_4, double e_3, double e_2, double e_1, double e) mutable {
-      move(driver, _Y ? _ : e_2 / e_4, e_1 / e_3, e);
+    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
+      move(driver, _Y ? _ : e_2, e_1, e);
 
-      _Y = _Y || e_4 == +1;
-      _X = _X || e_3 == +1;
+      _Y = _Y || e == AA;
+      _X = _X || e == AA;
 
       return _X;
       };
 
-    std::function<bool(double, double, double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_4, double e_3, double e_2, double e_1, double e) mutable {
+    std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + (ey / +256.);
       const double x_ = e_1 + (ey / +512.);
 
       /***/if (_R) {
-        return work(e_4, e_3, y_, x_, e);
+        return work(y_, x_, e);
       }
       else if (_L) {
-        return work(e_4, e_3, y_, x_, e);
+        return work(y_, x_, e);
       }
       else {
         return true;
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT, UINT, UINT)> find = [&ax, &ay, &task](uint8_t* o1, UINT e_4, UINT e_3, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, double, UINT, UINT, UINT)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
-        return task(e_4, e_3, axis.y, axis.x, +2);
+        return task(axis.y, axis.x, e_3);
       }
       else {
         return false;
@@ -163,17 +165,17 @@ int main() {
       _e = _e + 1;
 
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (_e % +4 == _ && find(o1, +1, +1, e_2, e_1 / +8, e)) {
+        /***/if (_e % +4 == _ && find(o1, AA / +1, e_2, e_1 / +8, e)) {
           // TODO: use +4 here.
           return true;
         }
-        else if (_e % +2 == _ && find(o1, +2, +2, e_2, e_1 / +4, e)) {
+        else if (_e % +2 == _ && find(o1, AA / +2, e_2, e_1 / +4, e)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, +4, +4, e_2, e_1 / +2, e)) {
+        else if (_e % +2 == _ && find(o1, AA / +4, e_2, e_1 / +2, e)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, +8, +8, e_2, e_1 / +1, e)) {
+        else if (_e % +2 == _ && find(o1, AA / +8, e_2, e_1 / +1, e)) {
           return true;
         }
         else {
@@ -184,7 +186,7 @@ int main() {
       return true;
       };
 
-    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, FR);
+    Capture::screen(each, (ey - cy) / +2, (ex - cx) / +2, cy, cx, static_cast<UINT>(FR));
     };
   std::thread thread2(z2);
 
@@ -231,7 +233,7 @@ int main() {
 
           xl.enqueue_task([&_A, &_D, &_L, &_X, &at, &driver, &xy]() mutable {
             while (_A || _D) {
-              Time::XO(FR);
+              Time::XO(+1);
             }
 
             UINT e_ = _;
