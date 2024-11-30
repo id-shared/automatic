@@ -150,32 +150,38 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, double, UINT, UINT, UINT)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
-        return task(axis.y, axis.x, e_3);
+        return a && task(axis.y, axis.x, e_3);
       }
       else {
         return false;
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &ax, &ay, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _e = _e + 1;
 
-      _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (_e % +4 == _ && find(o1, AA / +1, e_2, e_1 / +8, e)) {
-          // TODO: use +4 here.
+      _Z1K.enqueue_task([&_e, &ax, &ay, &find, o1, e_2, e_1, e]() mutable {
+        Axis axis = detect(o1, ay, ax, e_2, e_1 / +8, e);
+
+        /***/if (axis.is) {
+          if (_e % +2 == _ && find(o1, AA / +1, e_2, e_1 / +4, e, true)) {
+            return true;
+          }
+          else {
+            return true;
+          }
+        }
+        else if (_e % +2 == _ && find(o1, AA / +2, e_2, e_1 / +4, e, true)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, AA / +2, e_2, e_1 / +4, e)) {
+        else if (_e % +2 == _ && find(o1, AA / +4, e_2, e_1 / +2, e, true)) {
           return true;
         }
-        else if (_e % +2 == _ && find(o1, AA / +4, e_2, e_1 / +2, e)) {
-          return true;
-        }
-        else if (_e % +2 == _ && find(o1, AA / +8, e_2, e_1 / +1, e)) {
+        else if (_e % +2 == _ && find(o1, AA / +8, e_2, e_1 / +1, e, true)) {
           return true;
         }
         else {
