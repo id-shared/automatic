@@ -3,6 +3,7 @@
 #include "Driver.hpp"
 #include "Xyloid1.hpp"
 #include "Xyloid2.hpp"
+#include <iostream>
 
 int main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
@@ -24,7 +25,7 @@ int main() {
     int ay = n6 == 255 ? (n5 - n6) - 1 : n5 - n6;
     int ax = n4 == 255 ? (n3 - n4) - 1 : n3 - n4;
     bool a_ = n1 == _;
-    a_ == o1[0] ? ax == _ && ay == _ ? false : Xyloid2::yx(driver, ay, ax) : false;
+    a_ ? ax == _ && ay == _ ? false : Xyloid2::yx(driver, ay, ax) : false;
 
     bool a1 = n1 == +1;
     a1 == o1[1] ? false : Xyloid1::ea(driver, 0x1a, a1);
@@ -40,7 +41,7 @@ int main() {
 
     Driver::Byte n7 = o1_1[6];
 
-    n7 == _ ? true : Xyloid2::zv(driver, n7 == 255 ? 64 : -64);
+    n7 == _ ? false : Xyloid2::zv(driver, n7 == 255 ? 64 : -64);
 
     o1[4] = a4;
     o1[3] = a3;
