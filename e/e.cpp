@@ -57,6 +57,37 @@ static int till(std::function<bool(int)> z, int i) {
   return z(i) ? till(z, i + 1) : i;
 }
 
+class Axis {
+public:
+  int y;
+  int x;
+  bool is;
+  Axis(int e_1, int e, bool a) : y(e_1), x(e), is(a) {}
+};
+
+static Axis detect(uint8_t* o1, UINT e_4, UINT e_3, UINT e_2, UINT e_1, UINT e) {
+  const int ny = e_2 / +2;
+  const int nx = e_1 / +2;
+
+  for (UINT e_y = _; e_y < e_2; ++e_y) {
+    uint8_t* px_y = o1 + ((e_4 - ny) + e_y) * e;
+
+    for (UINT e_x = _; e_x < e_1; ++e_x) {
+      uint8_t* px_x = px_y + ((e_3 - nx) + e_x) * +4;
+
+      if (is_red(px_x)) {
+        return Axis(
+          static_cast<int>(e_y) - ny,
+          static_cast<int>(e_x) - nx,
+          true
+        );
+      }
+    }
+  }
+
+  return Axis(_, _, false);
+}
+
 int main() {
   LPCWSTR device = Contact::device([](std::wstring_view c) {
     using namespace std::literals;
@@ -118,28 +149,14 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT, UINT, UINT)> find = [&ax, &ay, &task](uint8_t* o1, UINT e_4, UINT e_3, UINT e_2, UINT e_1, UINT e) mutable {
-      const int ny = e_2 / +2;
-      const int nx = e_1 / +2;
+      Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
-      for (UINT e_y = _; e_y < e_2; ++e_y) {
-        uint8_t* px_y = o1 + ((ay - ny) + e_y) * e;
-
-        for (UINT e_x = _; e_x < e_1; ++e_x) {
-          uint8_t* px_x = px_y + ((ax - nx) + e_x) * +4;
-
-          if (is_red(px_x)) {
-            return task(
-              e_4,
-              e_3,
-              static_cast<int>(e_y) - ny,
-              static_cast<int>(e_x) - nx,
-              +1.
-            );
-          }
-        }
+      if (axis.is) {
+        return task(e_4, e_3, axis.y, axis.x, +1);
       }
-
-      return false;
+      else {
+        return false;
+      }
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
