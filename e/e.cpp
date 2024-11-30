@@ -171,13 +171,8 @@ int main() {
 
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
         /***/if (find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
-          /***/if (_e % +3 == _) {
-            /***/if (find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
-              return true;
-            }
-            else {
-              return true;
-            }
+          /***/if (_e % +4 == _ && find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
+            return true;
           }
           else {
             return true;
