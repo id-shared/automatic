@@ -41,8 +41,8 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_4, double e_3, double e_2, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e_4 * e_2), to_integer(e_3 * e_1));
+static bool move(HANDLE x, double e_2, double e_1, double e) {
+  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1));
 }
 
 static bool is_red(uint8_t* x) {
@@ -125,7 +125,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double, double, double)> work = [&_X, &_Y, &driver](double e_4, double e_3, double e_2, double e_1, double e) mutable {
-      move(driver, +2, +2, _Y ? _ : e_2 / e_4, e_1 / e_3, FR);
+      move(driver, _Y ? _ : e_2 / e_4, e_1 / e_3, e);
 
       _Y = _Y || e_4 == +1;
       _X = _X || e_3 == +1;
@@ -152,7 +152,7 @@ int main() {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
-        return task(e_4, e_3, axis.y, axis.x, +1);
+        return task(e_4, e_3, axis.y, axis.x, +2);
       }
       else {
         return false;
