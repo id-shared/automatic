@@ -173,7 +173,7 @@ int main() {
         else if (_e % +2 == _ && find(o1, +4, +4, e_2, e_1 / +2, e)) {
           return true;
         }
-        else if (_e % +1 == _ && find(o1, +8, +8, e_2, e_1 / +1, e)) {
+        else if (_e % +2 == _ && find(o1, +8, +8, e_2, e_1 / +1, e)) {
           return true;
         }
         else {
