@@ -167,11 +167,11 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _e = _e + 1;
-
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        /***/if (find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
-          /***/if (_e % +2 == _) {
+        /***/if (_e == _ || _e % +3 == _) {
+          _e = _e + 1;
+
+          /***/if (find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
             /***/if (find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
               return true;
             }
@@ -179,12 +179,7 @@ int main() {
               return true;
             }
           }
-          else {
-            return true;
-          }
-        }
-        else if (_e % +2 == _) {
-          /***/if (find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
+          else if (find(o1, AA / +1., e_2, e_1 / +4, e, true)) {
             return true;
           }
           else if (find(o1, AA / +2., e_2, e_1 / +2, e, true)) {
@@ -210,7 +205,7 @@ int main() {
   std::thread thread2(z2);
 
 
-  std::function<void()> z1 = [&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &driver]() mutable {
+  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &driver]() mutable {
     Parallel::Pool xy(+1);
     Parallel::Pool xx(+1);
     Parallel::Pool xr(+1);
@@ -223,10 +218,11 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
+          _e = _;
 
           xr.enqueue_task([&_R, &driver]() mutable {
             _R ? Xyloid2::e2(driver, _R) : _;
@@ -249,6 +245,7 @@ int main() {
           _Y = false;
           _X = false;
           _L = a;
+          _e = _;
 
           xl.enqueue_task([&_A, &_D, &_L, &_X, &at, &driver, &xy]() mutable {
             while (_A || _D) {
