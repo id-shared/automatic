@@ -46,7 +46,7 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
   const double x_ = abs(e_1);
   const double e_ = max(y_, x_);
 
-  for (double _e = +1; _e <= e_; ++_e) {
+  for (double _e = +1; _e <= e_; _e = _e + 1) {
     const double _y = y_ > _e ? e_2 > _ ? +1 : -1 : _;
     const double _x = x_ > _e ? e_1 > _ ? +1 : -1 : _;
 
