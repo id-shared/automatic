@@ -41,8 +41,21 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_2, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
+static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
+  const double y_ = abs(e_2);
+  const double x_ = abs(e_1);
+  const double e_ = max(y_, x_);
+
+  for (int e = _; e < e_; ++e) {
+    const int _y = to_integer(e * e_2);
+    const int _x = to_integer(e * e_1);
+
+    Xyloid2::yx(x, _y, _x);
+
+    Time::XO(+0.5);
+  }
+
+  return true;
 }
 
 static bool is_red(uint8_t* x) {
@@ -102,6 +115,7 @@ int main() {
   constexpr UINT VK_A = 0x41;
 
   constexpr double FR = +16;
+  constexpr double FA = +4;
   constexpr double AA = +2;
 
   ULONGLONG _Z64 = GetTickCount64();
@@ -127,7 +141,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, _Y ? _ : e_2, e_1, e);
+      move(driver, FR * FA, _Y ? _ : e_2, e_1, e);
 
       _Y = _Y || e == AA;
       _X = _X || e == AA;
