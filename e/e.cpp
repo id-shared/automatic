@@ -187,12 +187,13 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        const bool ok = _e < FA;
+      int id = _e;
+      _e = _e + 1;
 
-        _e = _e + +1;
- 
-        /***/if (ok || _e % FA == _) {
+      _Z1K.enqueue_task([&find, id, o1, e_2, e_1, e]() mutable {
+        const bool ok = id < FA;
+
+        /***/if (id % FA == _) {
           /***/if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +16, e, false)) {
             /***/if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +2, e, true)) {
               return true;
