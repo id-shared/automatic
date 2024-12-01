@@ -46,11 +46,11 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
   const double x_ = abs(e_1);
   const double e_ = max(y_, x_);
 
-  for (int e = _; e < e_; ++e) {
-    const int _y = to_integer(e * e_2);
-    const int _x = to_integer(e * e_1);
+  for (double _e = +1; _e <= e_; ++_e) {
+    const double _y = e * e_2;
+    const double _x = e * e_1;
 
-    Xyloid2::yx(x, _y, _x);
+    Xyloid2::yx(x, to_integer(_y), to_integer(_x));
 
     Time::XO(+0.5);
   }
