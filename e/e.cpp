@@ -45,14 +45,16 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
   const double y_ = abs(e_2);
   const double x_ = abs(e_1);
   const double e_ = max(y_, x_);
+  const double c_ = e_ / e_3;
 
   for (double _e = +1; _e <= e_; _e = _e + 1) {
     const double _y = y_ > _e ? e_2 > _ ? +1 : -1 : _;
     const double _x = x_ > _e ? e_1 > _ ? +1 : -1 : _;
+    const double _c = c_ - 0.2;
 
     Xyloid2::yx(x, to_integer(e * _y), to_integer(e * _x));
 
-    Time::XO(+0.5);
+    Time::XO(_c);
   }
 
   return true;
@@ -109,14 +111,16 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  constexpr UINT VZ_R = 0x4d;
-  constexpr UINT VZ_L = 0x4b;
-  constexpr UINT VK_D = 0x44;
-  constexpr UINT VK_A = 0x41;
+  constexpr UINT K_R = 0x4d;
+  constexpr UINT K_L = 0x4b;
 
-  constexpr double FR = +16;
-  constexpr double FA = +4;
-  constexpr double AA = +2;
+  constexpr UINT KD = 0x44;
+  constexpr UINT KA = 0x41;
+
+  constexpr UINT FR = +16;
+  constexpr UINT FA = +4;
+
+  constexpr UINT AA = +2;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -184,7 +188,7 @@ int main() {
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
         _e = _e + 1;
 
-        /***/if (_e % +4 == _) {
+        /***/if (_e % FA == _) {
           /***/if (find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
             /***/if (find(o1, AA / +1., e_2, e_1 / +2, e, true)) {
               return true;
@@ -318,7 +322,7 @@ int main() {
           return false;
         }
       }
-      else if (e == VK_D) {
+      else if (e == KD) {
         if (a) {
           _Z64 = GetTickCount64();
           _D = a;
@@ -329,14 +333,14 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           xd.enqueue_task([&_D, &diff, &driver, a]() mutable {
-            prevent(driver, VZ_L, diff / +10);
+            prevent(driver, K_L, diff / +10);
             _D = a;
             });
 
           return true;
         }
       }
-      else if (e == VK_A) {
+      else if (e == KA) {
         if (a) {
           _Z64 = GetTickCount64();
           _A = a;
@@ -347,7 +351,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           xa.enqueue_task([&_A, &diff, &driver, a]() mutable {
-            prevent(driver, VZ_R, diff / +10);
+            prevent(driver, K_R, diff / +10);
             _A = a;
             });
 
