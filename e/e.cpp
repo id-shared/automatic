@@ -45,14 +45,14 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
   const double y_ = abs(e_2);
   const double x_ = abs(e_1);
   const double n_ = max(y_, x_);
-  const double e_ = n_ / e_3;
-  const double c_ = std::floor(e_);
-  const double a_ = c_;
+  const double e_ = std::floor(n_ / e_3);
+  const double c_ = e_ + 1;
+  const double a_ = n_ - (e_ * e_3);
 
-  for (double _n = _; _n < n_; _n = _n + 1) {
-    const double _y = y_ > _n ? e_2 > _ ? +1 : -1 : _;
-    const double _x = x_ > _n ? e_1 > _ ? +1 : -1 : _;
-    const double _c = max(+0.5, e_ - 0.2);
+  for (double _n = _; _n <= n_; _n = _n + c_) {
+    const double _y = y_ > _n ? e_2 > _ ? c_ : -c_ : _;
+    const double _x = x_ > _n ? e_1 > _ ? c_ : -c_ : _;
+    const double _c = max(+0.5, e_ - 0.5);
 
     Xyloid2::yx(x, to_integer(e * _y), to_integer(e * _x));
 
