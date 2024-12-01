@@ -42,7 +42,7 @@ static bool pattern(HANDLE x, int e, bool a) {
 }
 
 static bool move(HANDLE x, double e_2, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1));
+  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
 }
 
 static bool is_red(uint8_t* x) {
