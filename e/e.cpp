@@ -155,9 +155,9 @@ int main() {
       return _X;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / +256.);
-      const double x_ = e_1 + (ey / +512.);
+    std::function<bool(double, double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_3, double e_2, double e_1, double e) mutable {
+      const double y_ = e_2 + (ey / e_3);
+      const double x_ = e_1 + (ex / e_3);
 
       /***/if (_R) {
         return work(y_, x_, e);
@@ -170,12 +170,12 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
+    std::function<bool(uint8_t*, double, double, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, double e_4, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
         if (a) {
-          return task(axis.y, axis.x, e_3);
+          return task(e_4, axis.y, axis.x, e_3);
         }
         else {
           return true;
@@ -191,18 +191,18 @@ int main() {
         _e = _e + 1;
 
         /***/if (_e % FA == _) {
-          /***/if (find(o1, AA / +1., e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, AA / +1., e_2, e_1 / +2, e, true)) {
+          /***/if (find(o1, +1024., AA / +1., e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, +1024., AA / +1., e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, AA / +1., e_2, e_1 / +2, e, true)) {
+          else if (find(o1, +1024., AA / +1., e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, AA / +2., e_2, e_1 / +1, e, true)) {
+          else if (find(o1, +1024., AA / +2., e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
