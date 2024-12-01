@@ -59,9 +59,9 @@ static int till(std::function<bool(int)> z, int i) {
 
 class Axis {
 public:
+  bool is;
   int y;
   int x;
-  bool is;
   Axis(int e_1, int e, bool a) : y(e_1), x(e), is(a) {}
 };
 
