@@ -41,7 +41,7 @@ static bool pattern(HANDLE x, int e, bool a) {
   }
 }
 
-static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
+static bool move2(HANDLE x, double e_3, double e_2, double e_1, double e) {
   const double y_ = abs(e_2);
   const double x_ = abs(e_1);
   const double n_ = max(y_, x_);
@@ -60,6 +60,10 @@ static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
   }
 
   return true;
+}
+
+static bool move1(HANDLE x, double e_3, double e_2, double e_1, double e) {
+  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
 }
 
 static bool is_red(uint8_t* x) {
@@ -147,7 +151,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move(driver, FR * FA, _Y ? _ : e_2, e_1, e);
+      move1(driver, FR * FA, _Y ? _ : e_2, e_1, e);
 
       _Y = _Y || e == AA;
       _X = _X || e == AA;
@@ -191,21 +195,21 @@ int main() {
       _e = _e + 1;
 
       _Z1K.enqueue_task([&find, id, o1, e_2, e_1, e]() mutable {
-        const bool ok = id < FA;
+        const bool init = id == _;
 
-        /***/if (id % FA == _) {
-          /***/if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+        /***/if (init || id % FA == _) {
+          /***/if (find(o1, +1024., AA / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, +1024., AA / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          else if (find(o1, +1024., AA / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, +1024., AA / (ok ? +1. : +2.), e_2, e_1 / +1, e, true)) {
+          else if (find(o1, +1024., AA / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
