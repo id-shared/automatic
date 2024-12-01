@@ -118,7 +118,7 @@ int main() {
   constexpr UINT KA = 0x41;
 
   constexpr UINT FR = +16;
-  constexpr UINT FA = +4;
+  constexpr UINT FA = +3;
 
   constexpr UINT AA = +2;
 
