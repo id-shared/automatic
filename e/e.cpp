@@ -188,21 +188,23 @@ int main() {
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       _Z1K.enqueue_task([&_e, &find, o1, e_2, e_1, e]() mutable {
-        _e = _e + 1;
+        const bool ok = _e < FA;
 
-        /***/if (_e % FA == _) {
-          /***/if (find(o1, +1024., AA / +1., e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, +1024., AA / +1., e_2, e_1 / +2, e, true)) {
+        _e = _e + +1;
+ 
+        /***/if (ok || _e % FA == _) {
+          /***/if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, +1024., AA / +1., e_2, e_1 / +2, e, true)) {
+          else if (find(o1, +1024., AA / (ok ? +1. : +1.), e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, +1024., AA / +2., e_2, e_1 / +1, e, true)) {
+          else if (find(o1, +1024., AA / (ok ? +1. : +2.), e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
