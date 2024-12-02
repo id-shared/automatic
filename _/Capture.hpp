@@ -1,4 +1,5 @@
 #pragma once
+#include "Time.hpp"
 #include <functional>
 #include <chrono>
 #include <d3d11.h>
@@ -50,18 +51,13 @@ namespace Capture {
     hr = device->CreateTexture2D(&desc, nullptr, &stagingTexture);
     if (FAILED(hr)) throw hr;
 
-    auto queue_frame_time = std::chrono::steady_clock::now();
-    const auto frame_time = std::chrono::milliseconds(e);
-
     while (true) {
       ComPtr<IDXGIResource> desktopResource;
       DXGI_OUTDUPL_FRAME_INFO frameInfo;
 
-      std::this_thread::sleep_until(queue_frame_time);
       hr = duplication->AcquireNextFrame(0, &frameInfo, &desktopResource);
 
       if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
-        queue_frame_time += frame_time;
         continue;
       }
       if (FAILED(hr)) throw hr;
@@ -81,7 +77,8 @@ namespace Capture {
       }
 
       duplication->ReleaseFrame();
-      queue_frame_time += frame_time;
+
+      Time::XO(e);
     }
 
     return true;

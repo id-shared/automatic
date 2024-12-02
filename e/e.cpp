@@ -142,7 +142,7 @@ int main() {
   int _e = _;
 
   std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
-    Parallel::Pool _Z1K(+1);
+    Parallel::Pool _Z1K(+1000);
 
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
@@ -197,14 +197,7 @@ int main() {
       int id = _e;
       _e = _e + 1;
 
-      const int tick1 = GetTickCount();
-
-      _Z1K.enqueue_task([tick1, &find, id, o1, e_2, e_1, e]() mutable {
-        Time::XO(+16);
-        int tick2 = GetTickCount();
-
-        std::cout << (tick2 - tick1) << std::endl;
-
+      _Z1K.enqueue_task([&find, id, o1, e_2, e_1, e]() mutable {
         const bool init = id == _;
 
         /***/if (init || id % FA == _) {
@@ -425,3 +418,7 @@ int main() {
 
   return +1;
 }
+
+/*const int tick1 = GetTickCount();
+int tick2 = GetTickCount();
+std::cout << (tick2 - tick1) << std::endl;*/
