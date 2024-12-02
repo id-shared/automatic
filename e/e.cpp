@@ -160,7 +160,7 @@ int main() {
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / 512.);
+      const double y_ = e_2 + (ey / 256.);
       const double x_ = e_1 + (ex / 1024.);
 
       /***/if (_R) {
