@@ -122,7 +122,10 @@ int main() {
   constexpr UINT K_R = 0x4d;
   constexpr UINT K_L = 0x4b;
 
+  constexpr UINT KX = 0x58;
+  constexpr UINT KQ = 0x51;
   constexpr UINT KD = 0x44;
+  constexpr UINT KC = 0x43;
   constexpr UINT KA = 0x41;
 
   constexpr UINT FR = +16;
@@ -234,7 +237,9 @@ int main() {
     Parallel::Pool xx(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
+    Parallel::Pool xq(+1);
     Parallel::Pool xd(+1);
+    Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
     const int size = +64;
@@ -242,7 +247,7 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xd, &xl, &xr, &xy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xc, &xd, &xq, &xl, &xr, &xy](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -329,6 +334,37 @@ int main() {
             });
 
           return false;
+        }
+      }
+      else if (e == KQ) {
+        if (a) {
+          xq.enqueue_task([&driver]() mutable {
+            Time::XO(+1000);
+
+            Xyloid2::e1(driver, true);
+            Time::XO(+64);
+            Xyloid2::e1(driver, false);
+            });
+
+        }
+        else {
+          return true;
+        }
+      }
+      else if (e == KC) {
+        if (a) {
+          xc.enqueue_task([&driver]() mutable {
+            Time::XO(+1000);
+
+            Xyloid2::e1(driver, true);
+            Time::XO(+64);
+            Xyloid2::e1(driver, false);
+            });
+
+          return true;
+        }
+        else {
+          return true;
         }
       }
       else if (e == KD) {
