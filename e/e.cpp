@@ -126,7 +126,7 @@ int main() {
   constexpr UINT FR = +16;
   constexpr UINT FA = +3;
 
-  constexpr UINT AA = +2;
+  constexpr UINT AA = +1.75;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
