@@ -277,7 +277,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L && !_X && e_ < +128) {
+            while (_L && !_X && e_ < (FR * FA)) {
               e_ = e_ + +1;
               Time::XO(+1);
             }
