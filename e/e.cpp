@@ -119,15 +119,6 @@ int main() {
 
   constexpr double XY = +1 / +0.566;
 
-  constexpr UINT K_R = 0x4d;
-  constexpr UINT K_L = 0x4b;
-
-  constexpr UINT KX = 0x58;
-  constexpr UINT KQ = 0x51;
-  constexpr UINT KD = 0x44;
-  constexpr UINT KC = 0x43;
-  constexpr UINT KA = 0x41;
-
   constexpr UINT FR = +16;
   constexpr UINT FA = +3;
 
@@ -148,7 +139,7 @@ int main() {
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
     const int cy = ey / +16;
-    const int cx = ex / +8;
+    const int cx = ex / +4;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
@@ -234,6 +225,15 @@ int main() {
 
   std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
     ULONGLONG _Z64 = GetTickCount64();
+
+    constexpr UINT K_R = 0x4d;
+    constexpr UINT K_L = 0x4b;
+
+    constexpr UINT KX = 0x58;
+    constexpr UINT KQ = 0x51;
+    constexpr UINT KD = 0x44;
+    constexpr UINT KC = 0x43;
+    constexpr UINT KA = 0x41;
 
     Parallel::Pool xy(+1);
     Parallel::Pool xx(+1);
