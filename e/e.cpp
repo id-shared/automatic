@@ -198,18 +198,18 @@ int main() {
         const bool init = id == _;
 
         /***/if (init || id % FA == _) {
-          /***/if (find(o1, +1024., XY / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, +1024., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          /***/if (find(o1, +512., XY / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, +512., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, +1024., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          else if (find(o1, +512., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, +1024., XY / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
+          else if (find(o1, +512., XY / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
