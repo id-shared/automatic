@@ -226,8 +226,9 @@ int main() {
   std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
     ULONGLONG _Z64 = GetTickCount64();
 
-    constexpr UINT K_R = 0x4d;
-    constexpr UINT K_L = 0x4b;
+    constexpr UINT AKR = 0x4d;
+    constexpr UINT AKL = 0x4b;
+    constexpr UINT AKC = 0x1d;
 
     constexpr UINT KX = 0x58;
     constexpr UINT KQ = 0x51;
@@ -237,6 +238,7 @@ int main() {
 
     Parallel::Pool xy(+1);
     Parallel::Pool xx(+1);
+    Parallel::Pool xs(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
     Parallel::Pool xq(+1);
@@ -249,7 +251,7 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &at, &driver, &xa, &xc, &xd, &xq, &xl, &xr, &xy](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xs, &xy, &at, &driver](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -278,7 +280,7 @@ int main() {
           _L = a;
           _e = _;
 
-          xl.enqueue_task([&_A, &_D, &_L, &_X, &at, &driver, &xy]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_X, &at, &xs, &driver, &xy]() mutable {
             while (_A || _D) {
               Time::XO(+1);
             }
@@ -290,6 +292,12 @@ int main() {
             }
 
             _L ? Xyloid2::e1(driver, true) : _;
+
+            xs.enqueue_task([&_A, &_D, &_L, &_X, &at, &driver, &xy]() mutable {
+              Xyloid1::ea(driver, AKC, true);
+              Time::XO(160);
+              Xyloid1::ea(driver, AKC, false);
+              });
 
             is ? at = till([&_L, &driver, &xy](int e) {
               const bool back = _L && (size >= e);
@@ -381,7 +389,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           xd.enqueue_task([&_D, &diff, &driver, a]() mutable {
-            prevent(driver, K_L, diff / +10);
+            prevent(driver, AKL, diff / +10);
             _D = a;
             });
 
@@ -399,7 +407,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           xa.enqueue_task([&_A, &diff, &driver, a]() mutable {
-            prevent(driver, K_R, diff / +10);
+            prevent(driver, AKR, diff / +10);
             _A = a;
             });
 
