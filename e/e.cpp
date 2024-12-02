@@ -139,7 +139,7 @@ int main() {
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
     const int cy = ey / +16;
-    const int cx = ex / +4;
+    const int cx = ex / +8;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
