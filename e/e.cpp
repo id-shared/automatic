@@ -117,7 +117,7 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
-  constexpr double XY = +1.75;
+  constexpr double XY = +1 / +0.566;
 
   constexpr UINT K_R = 0x4d;
   constexpr UINT K_L = 0x4b;
