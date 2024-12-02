@@ -131,8 +131,6 @@ int main() {
   constexpr UINT FR = +16;
   constexpr UINT FA = +3;
 
-  ULONGLONG _Z64 = GetTickCount64();
-  Parallel::Pool _Z1K(+1000);
   bool _Y = false;
   bool _X = false;
   bool _R = false;
@@ -143,7 +141,9 @@ int main() {
 
   int _e = _;
 
-  std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z1K, &driver]() mutable {
+  std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
+    Parallel::Pool _Z1K(+1);
+
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
@@ -197,7 +197,14 @@ int main() {
       int id = _e;
       _e = _e + 1;
 
-      _Z1K.enqueue_task([&find, id, o1, e_2, e_1, e]() mutable {
+      const int tick1 = GetTickCount();
+
+      _Z1K.enqueue_task([tick1, &find, id, o1, e_2, e_1, e]() mutable {
+        Time::XO(+16);
+        int tick2 = GetTickCount();
+
+        std::cout << (tick2 - tick1) << std::endl;
+
         const bool init = id == _;
 
         /***/if (init || id % FA == _) {
@@ -232,7 +239,9 @@ int main() {
   std::thread thread2(z2);
 
 
-  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &driver]() mutable {
+  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
+    ULONGLONG _Z64 = GetTickCount64();
+
     Parallel::Pool xy(+1);
     Parallel::Pool xx(+1);
     Parallel::Pool xr(+1);
