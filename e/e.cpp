@@ -160,14 +160,14 @@ int main() {
       };
 
     std::function<bool(double, double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_3, double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / e_3);
-      const double x_ = e_1 + (ex / e_3);
+      const double y_ = e_2 + (ey / e);
+      const double x_ = e_1 + (ex / e);
 
       /***/if (_R) {
-        return work(y_, x_, e);
+        return work(y_, x_, e_3);
       }
       else if (_L) {
-        return work(y_, x_, e);
+        return work(y_, x_, e_3);
       }
       else {
         return true;
@@ -198,18 +198,18 @@ int main() {
         const bool init = id == _;
 
         /***/if (init || id % FA == _) {
-          /***/if (find(o1, +512., XY / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, +512., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          /***/if (find(o1, XY / (init ? +1. : +1.), +512., e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, XY / (init ? +1. : +1.), +512., e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, +512., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          else if (find(o1, XY / (init ? +1. : +1.), +512., e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, +512., XY / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
+          else if (find(o1, XY / (init ? +1. : +2.), +512., e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
