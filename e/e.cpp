@@ -26,7 +26,7 @@ static bool pattern(HANDLE x, int e, bool a) {
   const int n_ = +4;
 
   if (abs(y_) > _) {
-    Xyloid2::yx(x, to_integer(y_ * +1.5), x_);
+    Xyloid2::yx(x, y_, x_);
     Time::XO(n_);
     Xyloid2::yx(x, y_, _);
     Time::XO(n_);
@@ -117,6 +117,8 @@ int main() {
 
   HANDLE driver = Device::driver(device);
 
+  constexpr double XY = +1.75;
+
   constexpr UINT K_R = 0x4d;
   constexpr UINT K_L = 0x4b;
 
@@ -125,8 +127,6 @@ int main() {
 
   constexpr UINT FR = +16;
   constexpr UINT FA = +3;
-
-  constexpr UINT AA = +1.75;
 
   ULONGLONG _Z64 = GetTickCount64();
   Parallel::Pool _Z1K(+1000);
@@ -153,8 +153,8 @@ int main() {
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
       move1(driver, FR * FA, _Y ? _ : e_2, e_1, e);
 
-      _Y = _Y || e == AA;
-      _X = _X || e == AA;
+      _Y = _Y || e == XY;
+      _X = _X || e == XY;
 
       return _X;
       };
@@ -198,18 +198,18 @@ int main() {
         const bool init = id == _;
 
         /***/if (init || id % FA == _) {
-          /***/if (find(o1, +1024., AA / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, +1024., AA / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          /***/if (find(o1, +1024., XY / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, +1024., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, +1024., AA / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          else if (find(o1, +1024., XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, +1024., AA / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
+          else if (find(o1, +1024., XY / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
