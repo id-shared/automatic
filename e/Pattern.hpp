@@ -3,8 +3,6 @@
 namespace Pattern {
   int dy(int n) {
     switch (n) {
-    case +55:
-    case +54:
     case +53:
     case +52:
     case +48:
@@ -17,10 +15,8 @@ namespace Pattern {
     case +39:
     case +38:
     case +37:
-      return +2;
     case +36:
     case +35:
-      return +1;
     case +34:
     case +33:
     case +32:

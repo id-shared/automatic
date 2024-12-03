@@ -124,6 +124,7 @@ int main() {
 
   bool _Y = false;
   bool _X = false;
+  bool _S = false;
   bool _R = false;
   bool _N = false;
   bool _L = false;
@@ -223,7 +224,7 @@ int main() {
   std::thread thread2(z2);
 
 
-  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
+  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_S, &_X, &_Y, &driver]() mutable {
     ULONGLONG _Z64 = GetTickCount64();
 
     constexpr UINT AKR = 0x4d;
@@ -251,7 +252,7 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xs, &xy, &at, &driver](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_S, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xs, &xy, &at, &driver](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -280,7 +281,7 @@ int main() {
           _L = a;
           _e = _;
 
-          xl.enqueue_task([&_A, &_D, &_L, &_X, &at, &xs, &driver, &xy]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_S, &_X, &at, &xs, &driver, &xy]() mutable {
             while (_A || _D) {
               Time::XO(+1);
             }
@@ -293,9 +294,15 @@ int main() {
 
             _L ? Xyloid2::e1(driver, true) : _;
 
-            xs.enqueue_task([&_A, &_D, &_L, &_X, &at, &driver, &xy]() mutable {
+            xs.enqueue_task([&_L, _S, &driver]() mutable {
               Xyloid1::ea(driver, AKC, true);
-              Time::XO(160);
+
+              UINT e_ = _;
+              while (_L && e_ < +160) {
+                e_ = e_ + +1;
+                Time::XO(+1);
+              }
+
               Xyloid1::ea(driver, AKC, false);
               });
 
