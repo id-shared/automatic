@@ -298,7 +298,7 @@ int main() {
               Xyloid1::ea(driver, AKC, true);
 
               UINT e_ = _;
-              while (_L && e_ < +160) {
+              while (_L && e_ < +320) {
                 e_ = e_ + +1;
                 Time::XO(+1);
               }
