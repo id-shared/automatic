@@ -46,10 +46,7 @@ namespace Pattern {
       return +1;
 
     case +20:
-    case +19:
-    case +18:
-    case +17:
-      return +4;
+      return +16;
 
     default:
       return +0;
