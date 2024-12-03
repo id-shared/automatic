@@ -44,11 +44,7 @@ namespace Pattern {
     case +19:
     case +18:
     case +17:
-    case +16:
-    case +15:
-    case +14:
-    case +13:
-      return +2;
+      return +4;
     default:
       return +0;
     }
