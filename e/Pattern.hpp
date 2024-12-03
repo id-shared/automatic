@@ -20,6 +20,7 @@ namespace Pattern {
     case +34:
     case +33:
       return +2;
+
     case +32:
       return +2;
     case +31:
@@ -30,21 +31,23 @@ namespace Pattern {
     case +28:
     case +27:
       return +1;
+
     case +26:
       return +2;
     case +25:
+
     case +24:
-      return +1;
     case +23:
-      return +2;
     case +22:
     case +21:
-      return +1;
+      return +2;
+
     case +20:
     case +19:
     case +18:
     case +17:
-      return +4;
+      return +2;
+
     default:
       return +0;
     }

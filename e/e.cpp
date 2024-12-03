@@ -247,7 +247,7 @@ int main() {
     Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
-    const int size = +56;
+    const int size = +20;
     const int each = +16;
     const bool is = true;
     int at = +1;
@@ -294,7 +294,7 @@ int main() {
 
             _L ? Xyloid2::e1(driver, true) : _;
 
-            xs.enqueue_task([&_L, _S, &driver]() mutable {
+            /*xs.enqueue_task([&_L, _S, &driver]() mutable {
               Xyloid1::ea(driver, AKC, true);
 
               UINT e_ = _;
@@ -304,13 +304,15 @@ int main() {
               }
 
               Xyloid1::ea(driver, AKC, false);
-              });
+              });*/
 
             is ? at = till([&_L, &driver, &xy](int e) {
               const bool back = _L && (size >= e);
 
               if (back) {
                 xy.enqueue_task([e, &driver]() mutable {
+                  e == +20 && Xyloid1::ea(driver, AKC, false);
+                  e == +1 && Xyloid1::ea(driver, AKC, true);
                   pattern(driver, e, true);
                   });
 
@@ -319,7 +321,7 @@ int main() {
                 return back;
               }
               else {
-                //Xyloid2::e1(driver, false);
+                Xyloid2::e1(driver, false);
                 return back;
               }
               }, at) - 1 : _;
