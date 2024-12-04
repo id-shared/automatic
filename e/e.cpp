@@ -330,30 +330,14 @@ int main() {
           return false;
         }
       }
-      else if (e == KQ) {
-        if (a) {
-          xq.enqueue_task([&driver]() mutable {
-            Time::XO(+800);
-
-            Xyloid2::e1(driver, true);
-            Time::XO(+64);
-            Xyloid2::e1(driver, false);
-            });
-
-          return true;
-        }
-        else {
-          return true;
-        }
-      }
       else if (e == KC) {
         if (a) {
           xc.enqueue_task([&driver]() mutable {
-            Time::XO(+1000);
+            Time::XO(+800);
 
-            Xyloid2::e1(driver, true);
+            Xyloid2::e2(driver, true);
             Time::XO(+64);
-            Xyloid2::e1(driver, false);
+            Xyloid2::e2(driver, false);
             });
 
           return true;
