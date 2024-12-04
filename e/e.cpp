@@ -31,13 +31,24 @@ static bool prevent(HANDLE x, USHORT e_1, UINT e) {
 static bool pattern(HANDLE x, double e_1, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int x_ = (a ? -1 : +1) * Pattern::dx(e);
-  const UINT n_ = to_integer (e_1 / +4.);
+  const int n_ = to_integer (e_1 / +4.);
 
-  std::function<bool(UINT)> f1 = [&](UINT e) {
-    return Xyloid2::yx(x, y_, e == _ ? x_ : _) && Time::XO(e_1 / n_);
+  const int _y = abs(y_);
+  const int _x = abs(x_);
+
+  std::function<bool(UINT)> fy = [&](UINT e) {
+    return Xyloid2::yx(x, y_ > _ ? +1 : -1, _) && Time::XO(e_1 / n_ / _y);
     };
 
-  return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
+  std::function<bool(UINT)> fx = [&](UINT e) {
+    return Xyloid2::yx(x, _, x_);
+    };
+
+  std::function<bool(UINT)> f1 = [&](UINT e) {
+    return repeat(_y, fy);
+    };
+
+  return abs(y_) > _ ? repeat(_x, fx) && repeat(n_, f1) : Time::XO(e_1);
 }
 
 static bool move2(HANDLE x, double e_3, double e_2, double e_1, double e) {
