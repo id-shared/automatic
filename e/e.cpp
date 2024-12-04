@@ -119,22 +119,34 @@ int main() {
 
   constexpr double XY = +1 / +0.566;
 
+  constexpr UINT AKR = 0x4d;
+  constexpr UINT AKL = 0x4b;
+  constexpr UINT AKC = 0x1d;
+
+  constexpr UINT KX = 0x58;
+  constexpr UINT KQ = 0x51;
+  constexpr UINT KD = 0x44;
+  constexpr UINT KC = 0x43;
+  constexpr UINT KA = 0x41;
+
   constexpr UINT FR = +16;
   constexpr UINT FA = +3;
 
   bool _Y = false;
   bool _X = false;
-  bool _S = false;
   bool _R = false;
   bool _N = false;
   bool _L = false;
   bool _D = false;
+  bool _C = false;
   bool _A = false;
 
   int _e = _;
 
   std::function<void()> z2 = [&_e, &_A, &_D, &_L, &_R, &_X, &_Y, &driver]() mutable {
     Parallel::Pool _Z1K(+1000);
+
+    Parallel::Pool xs(+1);
 
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
@@ -185,11 +197,11 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &xs, &_X, &_Y, &_Z1K, &find, &driver](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
       int id = _e;
       _e = _e + 1;
 
-      _Z1K.enqueue_task([&find, id, o1, e_2, e_1, e]() mutable {
+      _Z1K.enqueue_task([&xs, &find, &driver, id, o1, e_2, e_1, e]() mutable {
         const bool init = id == _;
 
         /***/if (init || id % FA == _) {
@@ -212,7 +224,23 @@ int main() {
           }
         }
         else {
-          return true;
+          if (find(o1, XY, e_2, e_1, e, false)) {
+            xs.enqueue_task([&driver]() mutable {
+              Xyloid1::ea(driver, AKC, true);
+
+              UINT e_ = _;
+              while (e_ < FR) {
+                e_ = e_ + +1;
+                Time::XO(+1);
+              }
+
+              Xyloid1::ea(driver, AKC, false);
+              });
+            return false;
+          }
+          else {
+            return false;
+          }
         }
         });
 
@@ -224,22 +252,11 @@ int main() {
   std::thread thread2(z2);
 
 
-  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_S, &_X, &_Y, &driver]() mutable {
+  std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &driver]() mutable {
     ULONGLONG _Z64 = GetTickCount64();
-
-    constexpr UINT AKR = 0x4d;
-    constexpr UINT AKL = 0x4b;
-    constexpr UINT AKC = 0x1d;
-
-    constexpr UINT KX = 0x58;
-    constexpr UINT KQ = 0x51;
-    constexpr UINT KD = 0x44;
-    constexpr UINT KC = 0x43;
-    constexpr UINT KA = 0x41;
 
     Parallel::Pool xy(+1);
     Parallel::Pool xx(+1);
-    Parallel::Pool xs(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
     Parallel::Pool xq(+1);
@@ -252,7 +269,7 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_S, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xs, &xy, &at, &driver](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xy, &at, &driver](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -281,7 +298,7 @@ int main() {
           _L = a;
           _e = _;
 
-          xl.enqueue_task([&_A, &_D, &_L, &_S, &_X, &at, &xs, &driver, &xy]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_C, &_X, &at, &driver, &xy]() mutable {
             while (_A || _D) {
               Time::XO(+1);
             }
