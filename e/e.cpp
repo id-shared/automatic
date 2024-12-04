@@ -181,13 +181,11 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&_e, &ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
+    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
         if (a) {
-          _e = _e + 1;
-
           return task(axis.y, axis.x, e_3);
         }
         else {
@@ -200,12 +198,15 @@ int main() {
       };
 
     std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find, &driver](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      _Z1K.enqueue_task([&_e, &find, &driver, o1, e_2, e_1, e]() mutable {
-        const bool test = _e == _ || _e % FA == _;
+      int id = _e;
+      _e = _e + 1;
+
+      _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
+        const bool test = id == _ || id % FA == _;
 
         /***/if (test) {
           /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +4, e, true)) {
+            /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
