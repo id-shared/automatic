@@ -20,23 +20,24 @@ static bool prevent(HANDLE x, USHORT e_1, UINT e) {
   return n_ > _ && Xyloid1::hold(x, e_1, n_);
 }
 
-static bool pattern(HANDLE x, int e, bool a) {
+static bool pattern(HANDLE x, UINT e_1, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int x_ = (a ? -1 : +1) * Pattern::dx(e);
   const int n_ = +4;
 
   if (abs(y_) > _) {
     Xyloid2::yx(x, y_, x_);
-    Time::XO(n_);
+    Time::XO(e_1 / n_);
     Xyloid2::yx(x, y_, _);
-    Time::XO(n_);
+    Time::XO(e_1 / n_);
     Xyloid2::yx(x, y_, _);
-    Time::XO(n_);
+    Time::XO(e_1 / n_);
     Xyloid2::yx(x, y_, _);
-    Time::XO(n_);
+    Time::XO(e_1 / n_);
     return true;
   }
   else {
+    Time::XO(e_1);
     return true;
   }
 }
@@ -308,7 +309,7 @@ int main() {
               const bool back = _L && (size >= e);
 
               if (back) {
-                pattern(driver, e, true);
+                pattern(driver, +16, e, true);
 
                 return back;
               }
@@ -330,7 +331,7 @@ int main() {
               const bool back = !_L && (+1 <= e);
 
               if (back) {
-                pattern(driver, e, false);
+                pattern(driver, +16, e, false);
 
                 return back;
               }
