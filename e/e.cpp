@@ -294,18 +294,6 @@ int main() {
 
             _L ? Xyloid2::e1(driver, true) : _;
 
-            xs.enqueue_task([&_L, _S, &driver]() mutable {
-              Xyloid1::ea(driver, AKC, true);
-
-              UINT e_ = _;
-              while (_L && e_ < +320) {
-                e_ = e_ + +1;
-                Time::XO(+1);
-              }
-
-              Xyloid1::ea(driver, AKC, false);
-              });
-
             is ? at = till([&_L, &driver, &xy](int e) {
               const bool back = _L && (size >= e);
 
@@ -433,6 +421,18 @@ int main() {
 
   return +1;
 }
+
+//xs.enqueue_task([&_L, _S, &driver]() mutable {
+//  Xyloid1::ea(driver, AKC, true);
+//
+//  UINT e_ = _;
+//  while (_L && e_ < +160) {
+//    e_ = e_ + +1;
+//    Time::XO(+1);
+//  }
+//
+//  Xyloid1::ea(driver, AKC, false);
+//  });
 
 /*const int tick1 = GetTickCount();
 int tick2 = GetTickCount();
