@@ -37,14 +37,14 @@ namespace Pattern {
     case +23:
       return +2;
     case +22:
-    case +21:
       return +1;
+
+    case +21:
     case +20:
     case +19:
     case +18:
     case +17:
     case +16:
-      return +2;
     case +15:
       return +1;
 
