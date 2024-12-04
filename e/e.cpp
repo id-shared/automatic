@@ -181,11 +181,13 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
+    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&_e, &ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
         if (a) {
+          _e = _e + 1;
+
           return task(axis.y, axis.x, e_3);
         }
         else {
@@ -197,26 +199,23 @@ int main() {
       }
       };
 
-    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &xs, &_X, &_Y, &_Z1K, &find, &driver](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
-      int id = _e;
-      _e = _e + 1;
+    std::function<bool(uint8_t*, UINT, UINT, UINT)> each = [&_e, &_X, &_Y, &_Z1K, &find, &driver](uint8_t* o1, UINT e_2, UINT e_1, UINT e) mutable {
+      _Z1K.enqueue_task([&_e, &find, &driver, o1, e_2, e_1, e]() mutable {
+        const bool test = _e == _ || _e % FA == _;
 
-      _Z1K.enqueue_task([&xs, &find, &driver, id, o1, e_2, e_1, e]() mutable {
-        const bool init = id == _;
-
-        /***/if (init || id % FA == _) {
-          /***/if (find(o1, XY / (init ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+        /***/if (test) {
+          /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +4, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, XY / (init ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+          else if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +2, e, true)) {
             return true;
           }
-          else if (find(o1, XY / (init ? +1. : +2.), e_2, e_1 / +1, e, true)) {
+          else if (find(o1, XY / (test ? +1. : +2.), e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
@@ -224,23 +223,7 @@ int main() {
           }
         }
         else {
-          if (find(o1, XY, e_2, e_1, e, false)) {
-            xs.enqueue_task([&driver]() mutable {
-              Xyloid1::ea(driver, AKC, true);
-
-              UINT e_ = _;
-              while (e_ < FR) {
-                e_ = e_ + +1;
-                Time::XO(+1);
-              }
-
-              Xyloid1::ea(driver, AKC, false);
-              });
-            return false;
-          }
-          else {
-            return false;
-          }
+          return false;
         }
         });
 
@@ -310,6 +293,18 @@ int main() {
             }
 
             _L ? Xyloid2::e1(driver, true) : _;
+
+            /*xs.enqueue_task([&_L, &driver]() mutable {
+              Xyloid1::ea(driver, AKC, true);
+
+              UINT e_ = _;
+              while (_L && e_ < (FR / +1.5)) {
+                e_ = e_ + +1;
+                Time::XO(+1);
+              }
+
+              Xyloid1::ea(driver, AKC, false);
+              });*/
 
             is ? at = till([&_L, &driver, &xy](int e) {
               const bool back = _L && (size >= e);
