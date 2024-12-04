@@ -120,7 +120,7 @@ int main() {
   constexpr double XY = +1 / +0.566;
 
   constexpr UINT FR = +16;
-  constexpr UINT FA = +4;
+  constexpr UINT FA = +3;
 
   bool _Y = false;
   bool _X = false;

@@ -58,6 +58,7 @@ namespace Capture {
       hr = duplication->AcquireNextFrame(0, &frameInfo, &desktopResource);
 
       if (hr == DXGI_ERROR_WAIT_TIMEOUT) {
+        Time::XO(e);
         continue;
       }
       if (FAILED(hr)) throw hr;
