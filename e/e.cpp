@@ -239,8 +239,6 @@ int main() {
   std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &driver]() mutable {
     ULONGLONG _Z64 = GetTickCount64();
 
-    Parallel::Pool xy(+1);
-    Parallel::Pool xx(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
     Parallel::Pool xq(+1);
@@ -307,13 +305,11 @@ int main() {
               Xyloid1::ea(driver, AKC, false);
               });*/
 
-            is ? at = till([&_L, &driver, &xy](int e) {
+            is ? at = till([&_L, &driver](int e) {
               const bool back = _L && (size >= e);
 
               if (back) {
-                xy.enqueue_task([e, &driver]() mutable {
-                  pattern(driver, e, true);
-                  });
+                pattern(driver, e, true);
 
                 Time::XO(each);
 
@@ -330,16 +326,14 @@ int main() {
         else {
           _L = a;
 
-          xl.enqueue_task([&_L, &at, &driver, &xy]() mutable {
+          xl.enqueue_task([&_L, &at, &driver]() mutable {
             _L ? _ : Xyloid2::e1(driver, false);
 
-            is ? at = upon([&_L, &driver, &xy](int e) {
+            is ? at = upon([&_L, &driver](int e) {
               const bool back = !_L && (+1 <= e);
 
               if (back) {
-                xy.enqueue_task([&driver, e]() mutable {
-                  pattern(driver, e, false);
-                  });
+                pattern(driver, e, false);
 
                 Time::XO(each);
 
