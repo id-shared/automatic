@@ -256,7 +256,7 @@ int main() {
     Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
-    const int size = +64;
+    const int size = +56;
     const bool is = true;
     int at = +1;
 
