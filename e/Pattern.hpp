@@ -9,7 +9,7 @@ namespace Pattern {
     case +45:
     case +44:
     case +43:
-      return +2;
+      return +1;
 
     case +41:
     case +40:

@@ -250,7 +250,7 @@ int main() {
     Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
-    const int size = +45;
+    const int size = +49;
     const bool is = true;
     int at = +1;
 
