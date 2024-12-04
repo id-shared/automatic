@@ -247,11 +247,10 @@ int main() {
     Parallel::Pool xa(+1);
 
     const int size = +64;
-    const int each = +16;
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xy, &at, &driver](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &at, &driver](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -280,7 +279,7 @@ int main() {
           _L = a;
           _e = _;
 
-          xl.enqueue_task([&_A, &_D, &_L, &_C, &_X, &at, &driver, &xy]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_C, &_X, &at, &driver]() mutable {
             while (_A || _D) {
               Time::XO(+1);
             }
@@ -311,8 +310,6 @@ int main() {
               if (back) {
                 pattern(driver, e, true);
 
-                Time::XO(each);
-
                 return back;
               }
               else {
@@ -334,8 +331,6 @@ int main() {
 
               if (back) {
                 pattern(driver, e, false);
-
-                Time::XO(each);
 
                 return back;
               }
