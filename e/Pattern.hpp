@@ -46,16 +46,18 @@ namespace Pattern {
     case +16:
       return +2;
     case +15:
+
     case +14:
-      return +1;
-    case +13:
-    case +12:
-    case +11:
     case +10:
-    case +6:
-    case +5:
+    case +9:
+    case +8:
+      return +1;
+
+    case +7:
     case +4:
     case +3:
+    case +2:
+    case +1:
       return +1;
     default:
       return +0;

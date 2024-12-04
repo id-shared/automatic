@@ -31,7 +31,7 @@ static bool prevent(HANDLE x, USHORT e_1, UINT e) {
 static bool pattern(HANDLE x, double e_1, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int x_ = (a ? -1 : +1) * Pattern::dx(e);
-  const int n_ = to_integer (e_1 / +4.);
+  const int n_ = to_integer(e_1 / +4.);
 
   const int _y = abs(y_);
   const int _x = abs(x_);
@@ -48,7 +48,9 @@ static bool pattern(HANDLE x, double e_1, int e, bool a) {
     return repeat(_y, fy);
     };
 
-  return abs(y_) > _ ? repeat(_x, fx) && repeat(n_, f1) : Time::XO(e_1);
+  // repeat(_x, fx)
+
+  return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
 }
 
 static bool move2(HANDLE x, double e_3, double e_2, double e_1, double e) {
@@ -256,7 +258,7 @@ int main() {
     Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
-    const int size = +56;
+    const int size = +14;
     const bool is = true;
     int at = +1;
 
@@ -326,6 +328,8 @@ int main() {
                 return back;
               }
               }, at) - 1 : _;
+
+            Xyloid2::e1(driver, false);
             });
 
           return false;
