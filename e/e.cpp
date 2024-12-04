@@ -14,32 +14,30 @@ static int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
+bool repeat(UINT n, const std::function<bool(UINT)>& func) {
+  for (UINT i = _; i < n; ++i) {
+    if (!func(i)) return false;
+  }
+
+  return true;
+}
+
 static bool prevent(HANDLE x, USHORT e_1, UINT e) {
   const int n_ = Pattern::dn(e);
 
   return n_ > _ && Xyloid1::hold(x, e_1, n_);
 }
 
-static bool pattern(HANDLE x, UINT e_1, int e, bool a) {
+static bool pattern(HANDLE x, double e_1, int e, bool a) {
   const int y_ = (a ? +1 : -1) * Pattern::dy(e);
   const int x_ = (a ? -1 : +1) * Pattern::dx(e);
-  const int n_ = +4;
+  const UINT n_ = to_integer (e_1 / +4.);
 
-  if (abs(y_) > _) {
-    Xyloid2::yx(x, y_, x_);
-    Time::XO(e_1 / n_);
-    Xyloid2::yx(x, y_, _);
-    Time::XO(e_1 / n_);
-    Xyloid2::yx(x, y_, _);
-    Time::XO(e_1 / n_);
-    Xyloid2::yx(x, y_, _);
-    Time::XO(e_1 / n_);
-    return true;
-  }
-  else {
-    Time::XO(e_1);
-    return true;
-  }
+  std::function<bool(UINT)> f1 = [&](UINT e) {
+    return Xyloid2::yx(x, y_, e == _ ? x_ : _) && Time::XO(e_1 / n_);
+    };
+
+  return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
 }
 
 static bool move2(HANDLE x, double e_3, double e_2, double e_1, double e) {
