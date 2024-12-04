@@ -134,7 +134,7 @@ int main() {
   constexpr UINT KA = 0x41;
 
   constexpr UINT FR = +16;
-  constexpr UINT FA = +3;
+  constexpr UINT FA = +2;
 
   bool _Y = false;
   bool _X = false;
@@ -155,7 +155,7 @@ int main() {
     const int ey = GetSystemMetrics(SM_CYSCREEN);
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
-    const int cy = ey / +16;
+    const int cy = ey / +8;
     const int cx = ex / +8;
 
     const int ay = cy / +2;
