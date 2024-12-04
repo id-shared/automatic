@@ -134,7 +134,7 @@ int main() {
   constexpr UINT KA = 0x41;
 
   constexpr UINT FR = +16;
-  constexpr UINT FA = +2;
+  constexpr UINT FA = +3;
 
   bool _Y = false;
   bool _X = false;
@@ -171,8 +171,8 @@ int main() {
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / (1024. * +1.));
-      const double x_ = e_1 + (ex / (1024. * +4.));
+      const double y_ = e_2 + (ey / (512. * +1.));
+      const double x_ = e_1 + (ex / (512. * +2.));
 
       /***/if (_R) {
         return work(y_, x_, e);
@@ -206,21 +206,16 @@ int main() {
       _e = _e + 1;
 
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
-        const bool test = id == _ || id % FA == _;
-
-        /***/if (test) {
-          /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +2, e, true)) {
+        /***/if (id == _ || id % FA == _) {
+          /***/if (find(o1, XY, e_2, e_1 / +16, e, false)) {
+            /***/if (find(o1, XY, e_2, e_1 / +4, e, true)) {
               return true;
             }
             else {
               return true;
             }
           }
-          else if (find(o1, XY / (test ? +1. : +1.), e_2, e_1 / +2, e, true)) {
-            return true;
-          }
-          else if (find(o1, XY / (test ? +1. : +2.), e_2, e_1 / +1, e, true)) {
+          else if (find(o1, XY, e_2, e_1, e, true)) {
             return true;
           }
           else {
