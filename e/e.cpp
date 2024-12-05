@@ -208,7 +208,7 @@ int main() {
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
         /***/if (id == _ || id % FA == _) {
           /***/if (find(o1, XY, e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY, e_2, e_1 / +2, e, true)) {
+            /***/if (find(o1, XY, e_2, e_1 / +4, e, true)) {
               return true;
             }
             else {
