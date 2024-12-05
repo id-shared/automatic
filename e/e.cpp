@@ -247,8 +247,10 @@ int main() {
     Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
-    const int size = +49;
+    const int unit = +128;
     const int step = +4;
+
+    const int size = +49;
 
     const bool is = true;
 
@@ -359,8 +361,11 @@ int main() {
           _D = a;
 
           xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
+            Time::XO(unit);
+
             while (_D && !_L) {
               Xyloid2::yx(driver, _, to_integer(XY * -1));
+
               Time::XO(step);
             }
             });
@@ -384,8 +389,11 @@ int main() {
           _A = a;
 
           xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
+            Time::XO(unit);
+
             while (_A && !_L) {
               Xyloid2::yx(driver, _, to_integer(XY * +1));
+
               Time::XO(step);
             }
             });
