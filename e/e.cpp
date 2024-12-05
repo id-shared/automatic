@@ -46,19 +46,17 @@ static bool pattern(HANDLE x, double e_1, int e, bool a) {
 }
 
 static bool move3(HANDLE x, double e_3, double e_2, double e_1, double e) {
-  if (e_1 > +1) {
-    Xyloid2::yx(x, _, to_integer(e * +1)) && Time::XO(e_3);
+  /***/if (e_1 >= +1) {
+    Xyloid2::yx(x, e_2, to_integer(e * +1)) && Time::XO(e_3);
 
-    return move3(x, e_3, e_2, e_1 - 1., e);
+    return move3(x, e_3, _, e_1 - 1., e);
   }
-  if (e_1 < -1) {
-    Xyloid2::yx(x, _, to_integer(e * -1)) && Time::XO(e_3);
+  else if (e_1 <= -1) {
+    Xyloid2::yx(x, e_2, to_integer(e * -1)) && Time::XO(e_3);
 
-    return move3(x, e_3, e_2, e_1 + 1., e);
+    return move3(x, e_3, _, e_1 + 1., e);
   }
   else {
-    // Xyloid2::yx(x, _, to_integer(e * e_1)) && Time::XO(e_3);
-
     return true;
   }
 }
@@ -118,7 +116,7 @@ static Axis detect(uint8_t* o1, UINT e_4, UINT e_3, UINT e_2, UINT e_1, UINT e) 
     for (UINT e_x = _; e_x < e_1; ++e_x) {
       uint8_t* px_x = px_y + ((e_3 - nx) + e_x) * +4;
 
-      if (is_red(px_x)) {
+      /***/if (is_red(px_x)) {
         return Axis(
           static_cast<int>(e_y) - ny,
           static_cast<int>(e_x) - nx,
