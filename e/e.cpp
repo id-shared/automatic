@@ -248,7 +248,10 @@ int main() {
     Parallel::Pool xa(+1);
 
     const int size = +49;
+    const int step = +4;
+
     const bool is = true;
+
     int at = +1;
 
     Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xx, &xy, &at, &driver](UINT e, bool a) mutable {
@@ -358,7 +361,7 @@ int main() {
           xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
             while (_D && !_L) {
               Xyloid2::yx(driver, _, to_integer(XY * -1));
-              Time::XO(+4);
+              Time::XO(step);
             }
             });
 
@@ -383,7 +386,7 @@ int main() {
           xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
             while (_A && !_L) {
               Xyloid2::yx(driver, _, to_integer(XY * +1));
-              Time::XO(+4);
+              Time::XO(step);
             }
             });
 
