@@ -171,8 +171,8 @@ int main() {
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / (1024. * +1.));
-      const double x_ = e_1 + (ex / (1024. * +2.));
+      const double y_ = e_2 + (ey / (256. * +1.));
+      const double x_ = e_1 + (ex / (256. * +4.));
 
       /***/if (_R) {
         return work(y_, x_, e);
@@ -208,7 +208,7 @@ int main() {
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
         /***/if (id == _ || id % FA == _) {
           /***/if (find(o1, XY, e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY, e_2, e_1 / +4, e, true)) {
+            /***/if (find(o1, XY, e_2, e_1 / +2, e, true)) {
               return true;
             }
             else {
