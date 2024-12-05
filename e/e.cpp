@@ -358,7 +358,7 @@ int main() {
           xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
             while (_D && !_L) {
               Xyloid2::yx(driver, _, to_integer(XY * -1));
-              Time::XO(+4);
+              Time::XO(+2);
             }
             });
 
@@ -383,7 +383,7 @@ int main() {
           xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
             while (_A && !_L) {
               Xyloid2::yx(driver, _, to_integer(XY * +1));
-              Time::XO(+4);
+              Time::XO(+2);
             }
             });
 
