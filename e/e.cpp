@@ -238,6 +238,8 @@ int main() {
   std::function<void()> z1 = [&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &driver]() mutable {
     ULONGLONG _Z64 = GetTickCount64();
 
+    Parallel::Pool xy(+1);
+    Parallel::Pool xx(+1);
     Parallel::Pool xr(+1);
     Parallel::Pool xl(+1);
     Parallel::Pool xq(+1);
@@ -249,7 +251,7 @@ int main() {
     const bool is = true;
     int at = +1;
 
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &at, &driver](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xx, &xy, &at, &driver](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -353,6 +355,13 @@ int main() {
           _Z64 = GetTickCount64();
           _D = a;
 
+          xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
+            while (_D && !_L) {
+              Xyloid2::yx(driver, _, to_integer(XY * -1));
+              Time::XO(+5);
+            }
+            });
+
           return true;
         }
         else {
@@ -370,6 +379,13 @@ int main() {
         if (a) {
           _Z64 = GetTickCount64();
           _A = a;
+
+          xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
+            while (_A && !_L) {
+              Xyloid2::yx(driver, _, to_integer(XY * +1));
+              Time::XO(+5);
+            }
+            });
 
           return true;
         }
