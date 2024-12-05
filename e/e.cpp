@@ -45,44 +45,23 @@ static bool pattern(HANDLE x, double e_1, int e, bool a) {
   return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
 }
 
-static bool move3(HANDLE x, double e_3, double e_2, double e_1, double e) {
+static bool shift(HANDLE x, double e_3, double e_2, double e_1, double e) {
   /***/if (e_1 >= +1) {
-    Xyloid2::yx(x, e_2, to_integer(e * +1)) && Time::XO(e_3);
+    Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * +1)) && Time::XO(e_3);
 
-    return move3(x, e_3, _, e_1 - 1., e);
+    return shift(x, e_3, _, e_1 - 1., e);
   }
   else if (e_1 <= -1) {
-    Xyloid2::yx(x, e_2, to_integer(e * -1)) && Time::XO(e_3);
+    Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * -1)) && Time::XO(e_3);
 
-    return move3(x, e_3, _, e_1 + 1., e);
+    return shift(x, e_3, _, e_1 + 1., e);
   }
   else {
     return true;
   }
 }
 
-static bool move2(HANDLE x, double e_3, double e_2, double e_1, double e) {
-  const double y_ = abs(e_2);
-  const double x_ = abs(e_1);
-  const double n_ = max(y_, x_);
-  const double e_ = std::floor(n_ / e_3);
-  const double c_ = e_ + 1;
-  const double a_ = n_ - (e_ * e_3);
-
-  for (double _n = _; _n <= n_; _n = _n + c_) {
-    const double _y = y_ > _n ? e_2 > _ ? c_ : -c_ : _;
-    const double _x = x_ > _n ? e_1 > _ ? c_ : -c_ : _;
-    const double _c = max(+0.5, e_ - 0.5);
-
-    Xyloid2::yx(x, to_integer(e * _y), to_integer(e * _x));
-
-    Time::XO(_c);
-  }
-
-  return true;
-}
-
-static bool move1(HANDLE x, double e_3, double e_2, double e_1, double e) {
+static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
   return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
 }
 
@@ -177,8 +156,10 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move3(driver, +0.2, _Y ? _ : e_2, e_1, e);
+    const double _x = (static_cast<int>(FR) * (static_cast<int>(FA) - 1.)) / static_cast<int>(ax);
+
+    std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
+      shift(driver, _x, _Y ? _ : e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
