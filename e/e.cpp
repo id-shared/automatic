@@ -45,6 +45,24 @@ static bool pattern(HANDLE x, double e_1, int e, bool a) {
   return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
 }
 
+static bool move3(HANDLE x, double e_3, double e_2, double e_1, double e) {
+  if (e_1 > +1) {
+    Xyloid2::yx(x, _, to_integer(e * +1)) && Time::XO(e_3);
+
+    return move3(x, e_3, e_2, e_1 - 1., e);
+  }
+  if (e_1 < -1) {
+    Xyloid2::yx(x, _, to_integer(e * -1)) && Time::XO(e_3);
+
+    return move3(x, e_3, e_2, e_1 + 1., e);
+  }
+  else {
+    // Xyloid2::yx(x, _, to_integer(e * e_1)) && Time::XO(e_3);
+
+    return true;
+  }
+}
+
 static bool move2(HANDLE x, double e_3, double e_2, double e_1, double e) {
   const double y_ = abs(e_2);
   const double x_ = abs(e_1);
@@ -162,7 +180,7 @@ int main() {
     const int ax = cx / +2;
 
     std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      move1(driver, FR * FA, _Y ? _ : e_2, e_1, e);
+      move3(driver, +0.2, _Y ? _ : e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
@@ -208,7 +226,7 @@ int main() {
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
         /***/if (id == _ || id % FA == _) {
           /***/if (find(o1, XY, e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY, e_2, e_1 / +4, e, true)) {
+            /***/if (find(o1, XY, e_2, e_1, e, true)) {
               return true;
             }
             else {
@@ -248,7 +266,7 @@ int main() {
     Parallel::Pool xa(+1);
 
     const int unit = +128;
-    const int step = +4;
+    const int step = +5;
 
     const int size = +49;
 
@@ -360,7 +378,7 @@ int main() {
           _Z64 = GetTickCount64();
           _D = a;
 
-          xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
+          /*xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
             Time::XO(unit);
 
             while (_D && !_L) {
@@ -368,7 +386,7 @@ int main() {
 
               Time::XO(step);
             }
-            });
+            });*/
 
           return true;
         }
@@ -388,7 +406,7 @@ int main() {
           _Z64 = GetTickCount64();
           _A = a;
 
-          xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
+          /*xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
             Time::XO(unit);
 
             while (_A && !_L) {
@@ -396,7 +414,7 @@ int main() {
 
               Time::XO(step);
             }
-            });
+            });*/
 
           return true;
         }
