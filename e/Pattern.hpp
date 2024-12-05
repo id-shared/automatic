@@ -24,7 +24,7 @@ namespace Pattern {
     case +31:
     case +30:
     case +29:
-      return +3;
+      return +2;
 
     case +26:
     case +25:
