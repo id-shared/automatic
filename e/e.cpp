@@ -130,6 +130,7 @@ int main() {
 
   constexpr UINT FZ = +4;
   constexpr UINT FR = +4;
+  constexpr UINT FA = +4;
 
   bool _Y = false;
   bool _X = false;
@@ -156,7 +157,7 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    const double _x = static_cast<double>(FR * FZ * +4) / static_cast<double>(ax);
+    const double _x = static_cast<double>(FZ * FR * FA) / static_cast<double>(ax);
     const double _a = ay / +16.;
 
     std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
@@ -205,10 +206,10 @@ int main() {
 
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
         /***/if (id == _ || id % FZ == _) {
-          /***/if (find(o1, e_2, e_1 / +16, e, true)) {
+          /***/if (find(o1, e_2, e_1 / +4, e, true)) {
             return true;
           }
-          else if (find(o1, e_2, e_1 / +1, e, false)) {
+          else if (find(o1, e_2, e_1, e, false)) {
             return true;
           }
           else {
@@ -279,7 +280,7 @@ int main() {
             }
 
             UINT e_ = _;
-            while (_L && !_X && e_ < (FR * FZ)) {
+            while (_L && !_X && e_ < (FZ * FR * FA)) {
               e_ = e_ + +1;
               Time::XO(+1);
             }
