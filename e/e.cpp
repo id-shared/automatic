@@ -129,7 +129,7 @@ int main() {
   constexpr UINT KA = 0x41;
 
   constexpr UINT FR = +16;
-  constexpr UINT FA = +4;
+  constexpr UINT FA = +3;
 
   bool _Y = false;
   bool _X = false;
@@ -169,7 +169,7 @@ int main() {
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
       const double y_ = e_2 + (ey / (256. * +1.));
-      const double x_ = e_1 + (ex / (256. * +4.));
+      const double x_ = e_1 + (ex / (256. * +2.));
 
       /***/if (_R) {
         return work(y_, x_, e);
