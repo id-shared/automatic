@@ -128,8 +128,8 @@ int main() {
   constexpr UINT KC = 0x43;
   constexpr UINT KA = 0x41;
 
-  constexpr UINT FR = +16;
-  constexpr UINT FA = +4;
+  constexpr UINT FZ = +4;
+  constexpr UINT FR = +4;
 
   bool _Y = false;
   bool _X = false;
@@ -156,11 +156,11 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    const double _x = static_cast<double>(FR * FA) / static_cast<double>(ax);
+    const double _x = static_cast<double>(FR * FZ) / static_cast<double>(ax);
     const double _a = ey / 512.;
 
     std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      shift(driver, _x, _Y ? _ : e_2, e_1, e);
+      _Y ? move(driver, _x, _, e_1, e) : shift(driver, _x, e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
@@ -204,7 +204,7 @@ int main() {
       _e = _e + 1;
 
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
-        /***/if (id == _ || id % FA == _) {
+        /***/if (id == _ || id % FZ == _) {
           /***/if (find(o1, XY, e_2, e_1 / +16, e, true)) {
             return true;
           }
@@ -240,16 +240,11 @@ int main() {
     Parallel::Pool xc(+1);
     Parallel::Pool xa(+1);
 
-    const int unit = +128;
-    const int step = +5;
-
     const int size = +49;
 
-    const bool is = true;
+    int init = +1;
 
-    int at = +1;
-
-    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xx, &xy, &at, &driver](UINT e, bool a) mutable {
+    Event::KeyboardHook hook([&_e, &_A, &_D, &_L, &_R, &_C, &_X, &_Y, &_Z64, &xa, &xc, &xd, &xq, &xl, &xr, &xx, &xy, &init, &driver](UINT e, bool a) mutable {
       /***/if (e == VK_OEM_6) {
         if (a) {
           _R = a;
@@ -278,20 +273,20 @@ int main() {
           _L = a;
           _e = _;
 
-          xl.enqueue_task([&_A, &_D, &_L, &_C, &_X, &at, &driver]() mutable {
+          xl.enqueue_task([&_A, &_D, &_L, &_C, &_X, &init, &driver]() mutable {
             while (_A || _D) {
               Time::XO(+1);
             }
 
             UINT e_ = _;
-            while (_L && !_X && e_ < (FR * FA)) {
+            while (_L && !_X && e_ < (FR * FZ)) {
               e_ = e_ + +1;
               Time::XO(+1);
             }
 
             _L ? Xyloid2::e1(driver, true) : _;
 
-            at = is ? till([&_L, &driver](int e) {
+            init = till([&_L, &driver](int e) {
               const bool back = _L && (size >= e);
 
               if (back) {
@@ -302,7 +297,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) - 1 : +1;
+              }, init) - 1;
 
             //_L ? Xyloid2::e1(driver, false) : _;
             });
@@ -312,10 +307,10 @@ int main() {
         else {
           _L = a;
 
-          xl.enqueue_task([&_L, &at, &driver]() mutable {
+          xl.enqueue_task([&_L, &init, &driver]() mutable {
             _L ? _ : Xyloid2::e1(driver, false);
 
-            at = is ? upon([&_L, &driver](int e) {
+            init = upon([&_L, &driver](int e) {
               const bool back = !_L && (+1 <= e);
 
               if (back) {
@@ -326,7 +321,7 @@ int main() {
               else {
                 return back;
               }
-              }, at) + 1 : +1;
+              }, init) + 1;
             });
 
           return false;
@@ -353,16 +348,6 @@ int main() {
           _Z64 = GetTickCount64();
           _D = a;
 
-          /*xx.enqueue_task([&_D, &_L, &driver, a]() mutable {
-            Time::XO(unit);
-
-            while (_D && !_L) {
-              Xyloid2::yx(driver, _, to_integer(XY * -1));
-
-              Time::XO(step);
-            }
-            });*/
-
           return true;
         }
         else {
@@ -380,16 +365,6 @@ int main() {
         if (a) {
           _Z64 = GetTickCount64();
           _A = a;
-
-          /*xx.enqueue_task([&_A, &_L, &driver, a]() mutable {
-            Time::XO(unit);
-
-            while (_A && !_L) {
-              Xyloid2::yx(driver, _, to_integer(XY * +1));
-
-              Time::XO(step);
-            }
-            });*/
 
           return true;
         }
