@@ -157,10 +157,10 @@ int main() {
     const int ax = cx / +2;
 
     const double _x = static_cast<double>(FR * FZ) / static_cast<double>(ax);
-    const double _a = ey / 512.;
+    const double _a = +3;
 
     std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      _Y ? move(driver, _x, _, e_1, e) : shift(driver, _x, e_2, e_1, e);
+      _Y ? move(driver, _x, _, e_1, e) : move(driver, _x, e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
@@ -298,8 +298,6 @@ int main() {
                 return back;
               }
               }, init) - 1;
-
-            //_L ? Xyloid2::e1(driver, false) : _;
             });
 
           return false;
