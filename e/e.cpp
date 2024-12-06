@@ -157,6 +157,7 @@ int main() {
     const int ax = cx / +2;
 
     const double _x = static_cast<double>(FR * FA) / static_cast<double>(ax);
+    const double _a = ey / 512.;
 
     std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
       shift(driver, _x, _Y ? _ : e_2, e_1, e);
@@ -167,9 +168,9 @@ int main() {
       return _X;
       };
 
-    std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / 512.);
-      const double x_ = e_1 + (ey / 512.);
+    std::function<bool(double, double, double)> task = [&_a, &_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
+      const double y_ = e_2 + _a;
+      const double x_ = e_1 + _a;
 
       /***/if (_R) {
         return work(y_, x_, e);
