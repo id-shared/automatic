@@ -129,7 +129,7 @@ int main() {
   constexpr UINT KA = 0x41;
 
   constexpr UINT FR = +16;
-  constexpr UINT FA = +3;
+  constexpr UINT FA = +4;
 
   bool _Y = false;
   bool _X = false;
@@ -156,7 +156,7 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    const double _x = static_cast<double>(FR * (FA - 1)) / static_cast<double>(ax);
+    const double _x = static_cast<double>(FR * FA) / static_cast<double>(ax);
 
     std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
       shift(driver, _x, _Y ? _ : e_2, e_1, e);
@@ -168,8 +168,8 @@ int main() {
       };
 
     std::function<bool(double, double, double)> task = [&_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + (ey / (256. * +2.));
-      const double x_ = e_1 + (ey / (256. * +2.));
+      const double y_ = e_2 + (ey / 512.);
+      const double x_ = e_1 + (ey / 512.);
 
       /***/if (_R) {
         return work(y_, x_, e);
