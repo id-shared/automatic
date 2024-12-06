@@ -162,10 +162,15 @@ int main() {
     std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
       _Y ? track(driver, _, e_1, e) : track(driver, e_2, e_1, e);
 
-      _Y = _Y || a;
-      _X = _X || a;
+      /***/if (a) {
+        _Y = a;
+        _X = a;
 
-      return _X;
+        return true;
+      }
+      else {
+        return true;
+      }
       };
 
     std::function<bool(double, double, double, bool)> task = [&_a, &_x, &_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e, bool a) mutable {
