@@ -22,20 +22,20 @@ static int to_integer(double e) {
   return static_cast<int>(round(e));
 }
 
-static bool track(HANDLE x, double e_3, double e_2, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
+static bool track(HANDLE x, double e_2, double e_1, double e) {
+  return Xyloid2::yx(x, to_integer(e_2), to_integer(e_1)) && Time::XO(+4);
 }
 
-static bool shift(HANDLE x, double e_3, double e_2, double e_1, double e) {
+static bool shift(HANDLE x, double e_2, double e_1, double e) {
   /***/if (e_1 >= +1) {
-    Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * +1)) && Time::XO(e_3);
+    Xyloid2::yx(x, to_integer(e_2), to_integer(+1)) && Time::XO(e);
 
-    return shift(x, e_3, _, e_1 - 1., e);
+    return shift(x, _, e_1 - 1., e);
   }
   else if (e_1 <= -1) {
-    Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * -1)) && Time::XO(e_3);
+    Xyloid2::yx(x, to_integer(e_2), to_integer(-1)) && Time::XO(e);
 
-    return shift(x, e_3, _, e_1 + 1., e);
+    return shift(x, _, e_1 + 1., e);
   }
   else {
     return true;
@@ -159,8 +159,8 @@ int main() {
     const double _x = static_cast<double>(FR * FZ) / static_cast<double>(ax);
     const double _a = +3;
 
-    std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      _Y ? track(driver, _x, _, e_1, e) : shift(driver, _x, e_2, e_1, e);
+    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
+      _Y ? track(driver, _, e_1, e) : shift(driver, e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
@@ -168,27 +168,27 @@ int main() {
       return _X;
       };
 
-    std::function<bool(double, double, double)> task = [&_a, &_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = e_2 + _a;
-      const double x_ = e_1 + _a;
+    std::function<bool(double, double, double)> task = [&_a, &_x, &_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
+      const double y_ = XY * (e_2 + _a);
+      const double x_ = XY * (e_1 + _a);
 
       /***/if (_R) {
-        return work(y_, x_, e);
+        return work(y_, x_, _x);
       }
       else if (_L) {
-        return work(y_, x_, e);
+        return work(y_, x_, _x);
       }
       else {
         return true;
       }
       };
 
-    std::function<bool(uint8_t*, double, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, double e_3, UINT e_2, UINT e_1, UINT e, bool a) mutable {
+    std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
       if (axis.is) {
         if (a) {
-          return task(axis.y, axis.x, e_3);
+          return task(axis.y, axis.x, +1);
         }
         else {
           return true;
@@ -205,16 +205,10 @@ int main() {
 
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
         /***/if (id == _ || id % FZ == _) {
-          /***/if (find(o1, XY, e_2, e_1 / +16, e, true)) {
+          /***/if (find(o1, e_2, e_1 / +16, e, true)) {
             return true;
           }
-          else if (find(o1, XY, e_2, e_1 / +4, e, true)) {
-            return true;
-          }
-          else if (find(o1, XY, e_2, e_1 / +2, e, true)) {
-            return true;
-          }
-          else if (find(o1, XY, e_2, e_1 / +1, e, true)) {
+          else if (find(o1, e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
