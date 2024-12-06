@@ -160,7 +160,7 @@ int main() {
     const double _a = +3;
 
     std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      _Y ? track(driver, _x, _, e_1, e) : track(driver, _x, e_2, e_1, e);
+      _Y ? track(driver, _x, _, e_1, e) : shift(driver, _x, e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
