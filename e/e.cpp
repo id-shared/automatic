@@ -151,7 +151,7 @@ int main() {
     const int ex = GetSystemMetrics(SM_CXSCREEN);
 
     const int cy = ey / +16;
-    const int cx = ex / +8;
+    const int cx = ex / +4;
 
     const int ay = cy / +2;
     const int ax = cx / +2;
@@ -205,13 +205,8 @@ int main() {
 
       _Z1K.enqueue_task([&find, &driver, id, o1, e_2, e_1, e]() mutable {
         /***/if (id == _ || id % FA == _) {
-          /***/if (find(o1, XY, e_2, e_1 / +16, e, false)) {
-            /***/if (find(o1, XY, e_2, e_1 / +4, e, true)) {
-              return true;
-            }
-            else {
-              return true;
-            }
+          /***/if (find(o1, XY, e_2, e_1 / +16, e, true)) {
+            return true;
           }
           else if (find(o1, XY, e_2, e_1, e, true)) {
             return true;
