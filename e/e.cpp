@@ -159,24 +159,24 @@ int main() {
     const double _x = static_cast<double>(FR * FZ) / static_cast<double>(ax);
     const double _a = +3;
 
-    std::function<bool(double, double, double)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      _Y ? track(driver, _, e_1, e) : shift(driver, e_2, e_1, e);
+    std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
+      _Y ? track(driver, _, e_1, e) : track(driver, e_2, e_1, e);
 
-      _Y = _Y || e == XY;
-      _X = _X || e == XY;
+      _Y = _Y || a;
+      _X = _X || a;
 
       return _X;
       };
 
-    std::function<bool(double, double, double)> task = [&_a, &_x, &_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e) mutable {
-      const double y_ = XY * (e_2 + _a);
-      const double x_ = XY * (e_1 + _a);
+    std::function<bool(double, double, double, bool)> task = [&_a, &_x, &_L, &_R, &ex, &ey, &work](double e_2, double e_1, double e, bool a) mutable {
+      const double y_ = (e_2 + _a) * e;
+      const double x_ = (e_1 + _a) * e;
 
       /***/if (_R) {
-        return work(y_, x_, _x);
+        return work(y_, x_, _x, a);
       }
       else if (_L) {
-        return work(y_, x_, _x);
+        return work(y_, x_, _x, a);
       }
       else {
         return true;
@@ -186,13 +186,8 @@ int main() {
     std::function<bool(uint8_t*, UINT, UINT, UINT, bool)> find = [&ax, &ay, &task](uint8_t* o1, UINT e_2, UINT e_1, UINT e, bool a) mutable {
       Axis axis = detect(o1, ay, ax, e_2, e_1, e);
 
-      if (axis.is) {
-        if (a) {
-          return task(axis.y, axis.x, +1);
-        }
-        else {
-          return true;
-        }
+      /***/if (axis.is) {
+        return task(axis.y, axis.x, XY, a);
       }
       else {
         return false;
