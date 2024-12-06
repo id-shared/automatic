@@ -156,11 +156,11 @@ int main() {
     const int ay = cy / +2;
     const int ax = cx / +2;
 
-    const double _x = static_cast<double>(FR * FZ) / static_cast<double>(ax);
-    const double _a = +3;
+    const double _x = static_cast<double>(FR * FZ * +4) / static_cast<double>(ax);
+    const double _a = ay / +16.;
 
     std::function<bool(double, double, double, bool)> work = [&_X, &_Y, &driver](double e_2, double e_1, double e, bool a) mutable {
-      _Y ? track(driver, _, e_1, e) : track(driver, e_2, e_1, e);
+      _Y ? track(driver, _, e_1, e) : shift(driver, e_2, e_1, e);
 
       /***/if (a) {
         _Y = a;
@@ -208,7 +208,7 @@ int main() {
           /***/if (find(o1, e_2, e_1 / +16, e, true)) {
             return true;
           }
-          else if (find(o1, e_2, e_1 / +1, e, true)) {
+          else if (find(o1, e_2, e_1 / +1, e, false)) {
             return true;
           }
           else {
