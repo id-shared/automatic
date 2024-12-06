@@ -208,7 +208,13 @@ int main() {
           /***/if (find(o1, XY, e_2, e_1 / +16, e, true)) {
             return true;
           }
-          else if (find(o1, XY, e_2, e_1, e, true)) {
+          else if (find(o1, XY, e_2, e_1 / +4, e, true)) {
+            return true;
+          }
+          else if (find(o1, XY, e_2, e_1 / +2, e, true)) {
+            return true;
+          }
+          else if (find(o1, XY, e_2, e_1 / +1, e, true)) {
             return true;
           }
           else {
