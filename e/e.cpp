@@ -10,11 +10,7 @@
 
 const int _ = -1 + 1;
 
-static int to_integer(double e) {
-  return static_cast<int>(round(e));
-}
-
-bool repeat(UINT n, const std::function<bool(UINT)>& func) {
+static bool repeat(UINT n, const std::function<bool(UINT)>& func) {
   for (UINT i = _; i < n; ++i) {
     if (!func(i)) return false;
   }
@@ -22,27 +18,12 @@ bool repeat(UINT n, const std::function<bool(UINT)>& func) {
   return true;
 }
 
-static bool prevent(HANDLE x, USHORT e_1, UINT e) {
-  const int n_ = Pattern::dn(e);
-
-  return n_ > _ && Xyloid1::hold(x, e_1, n_);
+static int to_integer(double e) {
+  return static_cast<int>(round(e));
 }
 
-static bool pattern(HANDLE x, double e_1, int e, bool a) {
-  const int y_ = (a ? +1 : -1) * Pattern::dy(e);
-  const int n_ = to_integer(e_1 / +4.);
-
-  const int _y = abs(y_);
-
-  std::function<bool(UINT)> fy = [&](UINT e) {
-    return Xyloid2::yx(x, y_ > _ ? +1 : -1, _) && Time::XO(e_1 / n_ / _y);
-    };
-
-  std::function<bool(UINT)> f1 = [&](UINT e) {
-    return repeat(_y, fy);
-    };
-
-  return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
+static bool track(HANDLE x, double e_3, double e_2, double e_1, double e) {
+  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
 }
 
 static bool shift(HANDLE x, double e_3, double e_2, double e_1, double e) {
@@ -61,8 +42,27 @@ static bool shift(HANDLE x, double e_3, double e_2, double e_1, double e) {
   }
 }
 
-static bool move(HANDLE x, double e_3, double e_2, double e_1, double e) {
-  return Xyloid2::yx(x, to_integer(e * e_2), to_integer(e * e_1)) && Time::XO(+4);
+static bool move_y(HANDLE x, double e_1, int e, bool a) {
+  const int y_ = (a ? +1 : -1) * Pattern::dy(e);
+  const int n_ = to_integer(e_1 / +4.);
+
+  const int _y = abs(y_);
+
+  std::function<bool(UINT)> fy = [&](UINT e) {
+    return Xyloid2::yx(x, y_ > _ ? +1 : -1, _) && Time::XO(e_1 / n_ / _y);
+    };
+
+  std::function<bool(UINT)> f1 = [&](UINT e) {
+    return repeat(_y, fy);
+    };
+
+  return abs(y_) > _ ? repeat(n_, f1) : Time::XO(e_1);
+}
+
+static bool halt(HANDLE x, USHORT e_1, UINT e) {
+  const int n_ = Pattern::dn(e);
+
+  return n_ > _ && Xyloid1::hold(x, e_1, n_);
 }
 
 static bool is_red(uint8_t* x) {
@@ -160,7 +160,7 @@ int main() {
     const double _a = +3;
 
     std::function<bool(double, double, double)> work = [&_x, &_X, &_Y, &driver](double e_2, double e_1, double e) mutable {
-      _Y ? move(driver, _x, _, e_1, e) : move(driver, _x, e_2, e_1, e);
+      _Y ? track(driver, _x, _, e_1, e) : track(driver, _x, e_2, e_1, e);
 
       _Y = _Y || e == XY;
       _X = _X || e == XY;
@@ -290,7 +290,7 @@ int main() {
               const bool back = _L && (size >= e);
 
               if (back) {
-                pattern(driver, +16, e, true);
+                move_y(driver, +16, e, true);
 
                 return back;
               }
@@ -312,7 +312,7 @@ int main() {
               const bool back = !_L && (+1 <= e);
 
               if (back) {
-                pattern(driver, +16, e, false);
+                move_y(driver, +16, e, false);
 
                 return back;
               }
@@ -352,7 +352,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           xd.enqueue_task([&_D, &diff, &driver, a]() mutable {
-            prevent(driver, AKL, diff / +10);
+            halt(driver, AKL, diff / +10);
             _D = a;
             });
 
@@ -370,7 +370,7 @@ int main() {
           UINT diff = static_cast<unsigned int>(GetTickCount64() - _Z64);
 
           xa.enqueue_task([&_A, &diff, &driver, a]() mutable {
-            prevent(driver, AKR, diff / +10);
+            halt(driver, AKR, diff / +10);
             _A = a;
             });
 
